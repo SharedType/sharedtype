@@ -37,11 +37,11 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <annotationProcessorPaths>
-                        <annotationProcessorPath>
+                        <path>
                             <groupId>org.jets</groupId>
                             <artifactId>jets-ap</artifactId>
                             <version>${project.version}</version>
-                        </annotationProcessorPath>
+                        </path>
                     </annotationProcessorPaths>
                     <showWarnings>true</showWarnings>
                 </configuration>
