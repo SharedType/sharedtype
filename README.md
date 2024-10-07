@@ -10,19 +10,16 @@ Jets uses Java annotation processing + templating. Here's a speed comparison:
 * [bsorrentino/java2typescript](https://github.com/bsorrentino/java2typescript)
 * [vojtechhabarta/typescript-generator](https://github.com/vojtechhabarta/typescript-generator)
 
+## Doc
+
 ## Development
 
-Setup Java env vars:
+Setup Java env vars (>= Java17 for development):
 ```bash
 . setenv
 ```
 
-Optionally, mount tmpfs for build output dir:
-```bash
-sudo ./mount-tmpfs.sh
-```
-
-## Author & Contributors
+## Authors
 Cause Chung (cuzfrog@gmail.com)
 
 ## License

@@ -6,7 +6,7 @@ function tmpfsify() {
   sudo mount -t tmpfs -o size="$2" -o noatime tmpfs "$DIR/$1"
 }
 
-tmpfsify "target" 64M
 tmpfsify "annotation/target" 128M
 tmpfsify "processor/target" 256M
+tmpfsify "it/target" 256M
 echo "tmpfs mounted"
