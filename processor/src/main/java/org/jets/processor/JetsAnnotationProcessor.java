@@ -18,7 +18,7 @@ import java.util.Set;
 @SupportedAnnotationTypes("org.jets.annotation.EmitTypescript")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @AutoService(Processor.class)
-public class JetsAnnotationProcessor extends AbstractProcessor {
+final class JetsAnnotationProcessor extends AbstractProcessor {
     private final TypeElementParser parser;
 
     @Inject
