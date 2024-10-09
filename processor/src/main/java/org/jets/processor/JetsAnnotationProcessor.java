@@ -31,8 +31,7 @@ final class JetsAnnotationProcessor extends AbstractProcessor {
         for (TypeElement annotation : annotations) {
             for (Element element : roundEnv.getElementsAnnotatedWith(annotation)) {
                 if (element instanceof TypeElement typeElement) {
-                    var anno = element.getAnnotation(EmitTypescript.class);
-                    var ctx = JetsContext.builder().processingEnv(processingEnv).anno(anno).build();
+                    var ctx = JetsContext.builder().processingEnv(processingEnv).build();
                     var typeInfo = parser.parse(typeElement, ctx);
                 } else {
                     throw new UnsupportedOperationException("Unsupported element: " + element);
