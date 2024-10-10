@@ -23,7 +23,7 @@ final class CompositeTypeElementParserTest {
     private CompositeTypeElementParser parser;
 
     private @Mock TypeElement typeElement;
-    private final JetsContext ctx = JetsContext.builder().build();
+    private final JetsContext ctx = new JetsContext(null);
     private final TypeInfo typeInfo = TypeInfo.builder().build();
 
     @BeforeEach

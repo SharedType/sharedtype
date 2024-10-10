@@ -1,6 +1,7 @@
 package org.jets.processor.parser;
 
 import lombok.Builder;
+import lombok.ToString;
 import org.jets.annotation.EmitTypescript;
 
 import javax.lang.model.element.ElementKind;
