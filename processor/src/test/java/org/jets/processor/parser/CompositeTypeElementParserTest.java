@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,8 +24,7 @@ final class CompositeTypeElementParserTest {
 
     private @Mock TypeElement typeElement;
     private final JetsContext ctx = JetsContext.builder().build();
-    private final TypeInfo typeInfo1 = TypeInfo.builder().name("Type1").build();
-    private final TypeInfo typeInfo2 = TypeInfo.builder().name("Type2").build();
+    private final TypeInfo typeInfo = TypeInfo.builder().build();
 
     @BeforeEach
     void setUp() {
@@ -34,25 +32,25 @@ final class CompositeTypeElementParserTest {
                 ElementKind.RECORD, delegate1,
                 ElementKind.ENUM, delegate2
         ));
-        when(delegate1.parse(typeElement, ctx)).thenReturn(List.of(typeInfo1));
-        when(delegate2.parse(typeElement, ctx)).thenReturn(List.of(typeInfo2));
+        when(delegate1.parse(typeElement, ctx)).thenReturn(typeInfo);
+        when(delegate2.parse(typeElement, ctx)).thenReturn(typeInfo);
     }
 
     @Test
     void parse() {
         when(typeElement.getKind()).thenReturn(ElementKind.RECORD);
-        var infoList = parser.parse(typeElement, ctx);
+        var info = parser.parse(typeElement, ctx);
         verify(delegate1).parse(typeElement, ctx);
-        assertThat(infoList).containsExactly(typeInfo1);
+        assertThat(info).isEqualTo(typeInfo);
 
         when(typeElement.getKind()).thenReturn(ElementKind.ENUM);
-        infoList = parser.parse(typeElement, ctx);
+        info = parser.parse(typeElement, ctx);
         verify(delegate2).parse(typeElement, ctx);
-        assertThat(infoList).containsExactly(typeInfo2);
+        assertThat(info).isEqualTo(typeInfo);
 
 
         when(typeElement.getKind()).thenReturn(ElementKind.CONSTRUCTOR);
-        infoList = parser.parse(typeElement, ctx);
-        assertThat(infoList).isEmpty();
+        info = parser.parse(typeElement, ctx);
+        assertThat(info).isNull();
     }
 }
