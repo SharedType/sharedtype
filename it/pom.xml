@@ -17,16 +17,11 @@
             <groupId>org.jets</groupId>
             <artifactId>jets</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.jets</groupId>-->
-<!--            <artifactId>jets-ap</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--            <optional>true</optional>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

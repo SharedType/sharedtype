@@ -1,8 +1,8 @@
 package com.github.jets.types;
 
-import org.jets.annotation.EmitTypescript;
+import org.jets.annotation.EmitType;
 
-@EmitTypescript
+@EmitType
 public record JavaRecord(
     String name,
     int age,

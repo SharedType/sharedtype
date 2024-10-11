@@ -1,20 +1,17 @@
 package org.jets.processor.parser;
 
+import javax.lang.model.element.ElementKind;
+
 import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.ClassKey;
 import dagger.multibindings.IntoMap;
 import org.jets.processor.dagger.ElementKindKey;
+import org.jets.processor.parser.type.TypeMapperModule;
 
-import javax.inject.Singleton;
-import javax.lang.model.element.ElementKind;
-import java.util.Map;
-
-@Module
+@Module(includes = TypeMapperModule.class)
 interface ParserModule {
     @Binds @IntoMap @ElementKindKey(ElementKind.RECORD)
-    TypeElementParser parser(JavaRecordParser javaRecordParser);
+    TypeElementParser parser(RecordParser recordParser);
     @Binds
     TypeElementParser bindTypeElementParser(CompositeTypeElementParser compositeTypeElementParser);
 }

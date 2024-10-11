@@ -1,4 +1,4 @@
-package org.jets.processor.parser;
+package org.jets.processor.domain;
 
 public interface ComponentInfo {
 }

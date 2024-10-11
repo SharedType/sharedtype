@@ -1,18 +1,19 @@
 package org.jets.processor.parser;
 
+import java.util.Map;
+
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
+
 import org.jets.processor.JetsContext;
+import org.jets.processor.domain.ClassInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.TypeElement;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,8 +24,8 @@ final class CompositeTypeElementParserTest {
     private CompositeTypeElementParser parser;
 
     private @Mock TypeElement typeElement;
-    private final JetsContext ctx = new JetsContext(null);
-    private final TypeInfo typeInfo = TypeInfo.builder().build();
+    private final JetsContext ctx = new JetsContext(null, null);
+    private final ClassInfo typeInfo = ClassInfo.builder().build();
 
     @BeforeEach
     void setUp() {

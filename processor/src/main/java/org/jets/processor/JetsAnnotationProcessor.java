@@ -1,8 +1,6 @@
 package org.jets.processor;
 
-import com.google.auto.service.AutoService;
-import org.jets.processor.parser.DaggerParserComponent;
-import org.jets.processor.parser.TypeElementParser;
+import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -13,9 +11,13 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import java.util.Set;
 
-@SupportedAnnotationTypes("org.jets.annotation.EmitTypescript")
+import com.google.auto.service.AutoService;
+import org.jets.processor.config.JetsProps;
+import org.jets.processor.parser.DaggerParserComponent;
+import org.jets.processor.parser.TypeElementParser;
+
+@SupportedAnnotationTypes("org.jets.annotation.EmitType")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @AutoService(Processor.class)
 public class JetsAnnotationProcessor extends AbstractProcessor {
@@ -30,7 +32,7 @@ public class JetsAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         for (TypeElement annotation : annotations) {
-            var ctx = new JetsContext(processingEnv);
+            var ctx = new JetsContext(processingEnv, new JetsProps());
             for (Element element : roundEnv.getElementsAnnotatedWith(annotation)) {
                 if (element instanceof TypeElement typeElement) {
                     var typeInfo = parser.parse(typeElement, ctx);
