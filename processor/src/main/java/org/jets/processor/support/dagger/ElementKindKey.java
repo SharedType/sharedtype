@@ -1,8 +1,8 @@
-package org.jets.processor.dagger;
-
-import dagger.MapKey;
+package org.jets.processor.support.dagger;
 
 import javax.lang.model.element.ElementKind;
+
+import dagger.MapKey;
 
 @MapKey
 public @interface ElementKindKey {

@@ -14,7 +14,6 @@ import javax.lang.model.element.TypeElement;
 
 import com.google.auto.service.AutoService;
 import org.jets.processor.config.JetsProps;
-import org.jets.processor.parser.DaggerParserComponent;
 import org.jets.processor.parser.TypeElementParser;
 
 @SupportedAnnotationTypes("org.jets.annotation.EmitType")
@@ -25,7 +24,7 @@ public class JetsAnnotationProcessor extends AbstractProcessor {
 
     @Override public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        var component = DaggerParserComponent.create();
+        var component = DaggerJetsComponent.create();
         parser = component.parser();
     }
 
