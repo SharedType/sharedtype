@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
-import org.jets.processor.JetsContext;
+import org.jets.processor.GlobalContext;
 import org.jets.processor.domain.ClassInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,34 +24,36 @@ final class CompositeTypeElementParserTest {
     private CompositeTypeElementParser parser;
 
     private @Mock TypeElement typeElement;
-    private final JetsContext ctx = new JetsContext(null, null);
+    private final GlobalContext ctx = new GlobalContext(null, null);
     private final ClassInfo typeInfo = ClassInfo.builder().build();
 
     @BeforeEach
     void setUp() {
-        parser = new CompositeTypeElementParser(Map.of(
+        parser = new CompositeTypeElementParser(
+            ctx, 
+            Map.of(
                 ElementKind.RECORD, delegate1,
                 ElementKind.ENUM, delegate2
         ));
-        when(delegate1.parse(typeElement, ctx)).thenReturn(typeInfo);
-        when(delegate2.parse(typeElement, ctx)).thenReturn(typeInfo);
+        when(delegate1.parse(typeElement)).thenReturn(typeInfo);
+        when(delegate2.parse(typeElement)).thenReturn(typeInfo);
     }
 
     @Test
     void parse() {
         when(typeElement.getKind()).thenReturn(ElementKind.RECORD);
-        var info = parser.parse(typeElement, ctx);
-        verify(delegate1).parse(typeElement, ctx);
+        var info = parser.parse(typeElement);
+        verify(delegate1).parse(typeElement);
         assertThat(info).isEqualTo(typeInfo);
 
         when(typeElement.getKind()).thenReturn(ElementKind.ENUM);
-        info = parser.parse(typeElement, ctx);
-        verify(delegate2).parse(typeElement, ctx);
+        info = parser.parse(typeElement);
+        verify(delegate2).parse(typeElement);
         assertThat(info).isEqualTo(typeInfo);
 
 
         when(typeElement.getKind()).thenReturn(ElementKind.CONSTRUCTOR);
-        info = parser.parse(typeElement, ctx);
+        info = parser.parse(typeElement);
         assertThat(info).isNull();
     }
 }

@@ -10,14 +10,14 @@ import lombok.Getter;
 import org.jets.processor.config.JetsProps;
 import org.jets.processor.domain.TypeSymbol;
 
-public final class JetsContext {
+public final class GlobalContext {
     private final Set<TypeSymbol> typeSymbols = new HashSet<>();
     @Getter
     private final ProcessingEnvironment processingEnv;
     @Getter
     private final JetsProps props;
 
-    public JetsContext(ProcessingEnvironment processingEnv, JetsProps props) {
+    public GlobalContext(ProcessingEnvironment processingEnv, JetsProps props) {
         this.processingEnv = processingEnv;
         this.props = props;
     }

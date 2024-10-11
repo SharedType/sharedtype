@@ -22,19 +22,21 @@ import org.jets.processor.parser.TypeElementParser;
 public class JetsAnnotationProcessor extends AbstractProcessor {
     private TypeElementParser parser;
 
-    @Override public synchronized void init(ProcessingEnvironment processingEnv) {
+    @Override 
+    public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        var component = DaggerJetsComponent.create();
+        var ctx = new GlobalContext(processingEnv, new JetsProps());
+        var component = DaggerJetsComponent.builder().withContext(ctx).build();
         parser = component.parser();
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         for (TypeElement annotation : annotations) {
-            var ctx = new JetsContext(processingEnv, new JetsProps());
+            
             for (Element element : roundEnv.getElementsAnnotatedWith(annotation)) {
                 if (element instanceof TypeElement typeElement) {
-                    var typeInfo = parser.parse(typeElement, ctx);
+                    var typeInfo = parser.parse(typeElement);
                 } else {
                     throw new UnsupportedOperationException("Unsupported element: " + element);
                 }

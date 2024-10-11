@@ -9,18 +9,19 @@ import javax.lang.model.element.RecordComponentElement;
 import javax.lang.model.element.TypeElement;
 
 import lombok.RequiredArgsConstructor;
-import org.jets.processor.JetsContext;
+import org.jets.processor.GlobalContext;
 import org.jets.processor.domain.ClassInfo;
 import org.jets.processor.domain.FieldInfo;
-import org.jets.processor.parser.type.TypeMapper;
+import org.jets.processor.parser.mapper.TypeMapper;
 
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 @Singleton
 final class RecordParser implements TypeElementParser {
     private final TypeMapper typeMapper;
+    private final GlobalContext ctx;
 
     @Override
-    public ClassInfo parse(TypeElement typeElement, JetsContext ctx) {
+    public ClassInfo parse(TypeElement typeElement) {
         ctx.checkArgument(typeElement.getKind() == ElementKind.RECORD,
                 "Unsupported element kind: " + typeElement.getKind());
 
@@ -37,7 +38,7 @@ final class RecordParser implements TypeElementParser {
                     .name(recordComponent.getSimpleName().toString())
                     .modifiers(recordComponent.getModifiers())
                     .optional(recordComponent.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
-                    .type(typeMapper.map(recordComponent.asType(), ctx))
+                    .type(typeMapper.map(recordComponent.asType()))
                     .build();
             fields.add(fieldInfo);
         }

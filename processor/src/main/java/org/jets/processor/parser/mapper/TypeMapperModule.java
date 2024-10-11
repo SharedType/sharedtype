@@ -1,4 +1,4 @@
-package org.jets.processor.parser.type;
+package org.jets.processor.parser.mapper;
 
 import dagger.Binds;
 import dagger.Module;
