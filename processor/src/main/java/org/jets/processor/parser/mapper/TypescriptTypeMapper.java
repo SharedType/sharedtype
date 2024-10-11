@@ -57,22 +57,19 @@ final class TypescriptTypeMapper implements TypeMapper {
     var qualifiedName = typeMirror.toString();
     var typeKind = typeMirror.getKind();
     if (typeKind.isPrimitive()) {
-      return new Result(qualifiedName, PRIMITIVES.get(typeKind));
+      return new Result(qualifiedName, PRIMITIVES.get(typeKind), true);
     } else if (typeKind == TypeKind.ARRAY) {
       throw new UnsupportedOperationException("Not implemented");
     } else if (typeKind == TypeKind.DECLARED) {
       var targetTypeName = objectTypes.get(qualifiedName);
       if (targetTypeName != null) {
-        return new Result(qualifiedName, targetTypeName);
-      } else {
-        if (!ctx.hasType(qualifiedName)) {
-          throw new JetsInternalError(String.format("Java type not found: '%s'", qualifiedName));
-        }
-        return new Result(qualifiedName, ctx.getTypename(qualifiedName));
+        return new Result(qualifiedName, targetTypeName, true);
+      } else if (ctx.hasType(qualifiedName)) {
+        return new Result(qualifiedName, ctx.getTypename(qualifiedName), true);
       }
     } else {
       ctx.error("Unsupported type kind: " + typeKind);
-      return new Result(null, null);
     }
+    return new Result(qualifiedName, null, false);
   }
 }

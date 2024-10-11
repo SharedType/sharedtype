@@ -13,7 +13,8 @@ public record FieldInfo(
   Set<Modifier> modifiers,
   boolean optional,
   String javaQualifiedTypename,
-  String typename
+  String typename,
+  boolean typeResolved
 ) {
   
 }

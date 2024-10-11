@@ -10,6 +10,7 @@ import javax.lang.model.element.RecordComponentElement;
 import javax.lang.model.element.TypeElement;
 
 import lombok.RequiredArgsConstructor;
+import org.jets.processor.context.AnnoConfig;
 import org.jets.processor.context.GlobalContext;
 import org.jets.processor.domain.ClassInfo;
 import org.jets.processor.domain.DefInfo;
@@ -44,6 +45,7 @@ final class RecordParser implements TypeElementParser {
                     .optional(recordComponent.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
                     .javaQualifiedTypename(types.javaQualifiedTypename())
                     .typename(types.typename())
+                    .typeResolved(types.resolved())
                     .build();
             fields.add(fieldInfo);
         }
