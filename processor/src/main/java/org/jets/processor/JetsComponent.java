@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
+import org.jets.processor.context.GlobalContext;
 import org.jets.processor.parser.ParserModule;
 import org.jets.processor.parser.TypeElementParser;
 

@@ -1,17 +1,13 @@
-package org.jets.processor;
+package org.jets.processor.context;
 
-import java.util.HashSet;
-import java.util.Set;
+import lombok.Getter;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic;
 
-import lombok.Getter;
-import org.jets.processor.config.JetsProps;
-import org.jets.processor.domain.TypeSymbol;
-
 public final class GlobalContext {
-    private final Set<TypeSymbol> typeSymbols = new HashSet<>();
+    private static final String LINE_ENDING = System.lineSeparator();
+    private final TypeCache typeCache = new TypeCache();
     @Getter
     private final ProcessingEnvironment processingEnv;
     @Getter
@@ -26,18 +22,30 @@ public final class GlobalContext {
         log(Diagnostic.Kind.NOTE, message);
     }
 
+    public void error(String message) {
+        log(Diagnostic.Kind.ERROR, message);
+    }
+
     public void checkArgument(boolean condition, String message) {
         if (!condition) {
             log(Diagnostic.Kind.ERROR, message);
         }
     }
 
-    public void saveTypeSymbol(TypeSymbol typeSymbol) {
-        typeSymbols.add(typeSymbol);
+    public void saveType(String qualifiedName, String name) {
+        typeCache.add(qualifiedName, name);
     }
 
-    public boolean hasTypeSymbol(TypeSymbol typeSymbol) {
-        return typeSymbols.contains(typeSymbol);
+    public boolean hasType(String qualifiedName) {
+        return typeCache.contains(qualifiedName);
+    }
+
+    /**
+     * Should check if the type is saved to the context by calling {@link #hasType(String)} first.
+     * @return the simple name of the type, null if not saved to the context.
+     */
+    public String getTypename(String qualifiedName) {
+        return typeCache.getName(qualifiedName);
     }
 
     private void log(Diagnostic.Kind level, String message) {

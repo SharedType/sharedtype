@@ -1,11 +1,12 @@
 package org.jets.processor.parser;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
-import org.jets.processor.GlobalContext;
+import org.jets.processor.context.GlobalContext;
 import org.jets.processor.domain.ClassInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,25 +36,24 @@ final class CompositeTypeElementParserTest {
                 ElementKind.RECORD, delegate1,
                 ElementKind.ENUM, delegate2
         ));
-        when(delegate1.parse(typeElement)).thenReturn(typeInfo);
-        when(delegate2.parse(typeElement)).thenReturn(typeInfo);
+        when(delegate1.parse(typeElement)).thenReturn(List.of(typeInfo));
+        when(delegate2.parse(typeElement)).thenReturn(List.of(typeInfo));
     }
 
     @Test
     void parse() {
         when(typeElement.getKind()).thenReturn(ElementKind.RECORD);
-        var info = parser.parse(typeElement);
+        var infoList = parser.parse(typeElement);
         verify(delegate1).parse(typeElement);
-        assertThat(info).isEqualTo(typeInfo);
+        assertThat(infoList).containsExactly(typeInfo);
 
         when(typeElement.getKind()).thenReturn(ElementKind.ENUM);
-        info = parser.parse(typeElement);
+        infoList = parser.parse(typeElement);
         verify(delegate2).parse(typeElement);
-        assertThat(info).isEqualTo(typeInfo);
-
+        assertThat(infoList).containsExactly(typeInfo);
 
         when(typeElement.getKind()).thenReturn(ElementKind.CONSTRUCTOR);
-        info = parser.parse(typeElement);
-        assertThat(info).isNull();
+        infoList = parser.parse(typeElement);
+        assertThat(infoList).isNull();
     }
 }

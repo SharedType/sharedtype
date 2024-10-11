@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface EmitType {
   /**
-   * The name of the emitted type. If not specified, the name of the annotated type will be used.
+   * The name of the emitted type. If not specified, the simple name of the annotated type will be used.
    */
   String name() default "";
 

@@ -1,6 +1,7 @@
 package org.jets.processor.parser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -9,8 +10,9 @@ import javax.lang.model.element.RecordComponentElement;
 import javax.lang.model.element.TypeElement;
 
 import lombok.RequiredArgsConstructor;
-import org.jets.processor.GlobalContext;
+import org.jets.processor.context.GlobalContext;
 import org.jets.processor.domain.ClassInfo;
+import org.jets.processor.domain.DefInfo;
 import org.jets.processor.domain.FieldInfo;
 import org.jets.processor.parser.mapper.TypeMapper;
 
@@ -21,11 +23,12 @@ final class RecordParser implements TypeElementParser {
     private final GlobalContext ctx;
 
     @Override
-    public ClassInfo parse(TypeElement typeElement) {
+    public List<DefInfo> parse(TypeElement typeElement) {
         ctx.checkArgument(typeElement.getKind() == ElementKind.RECORD,
                 "Unsupported element kind: " + typeElement.getKind());
 
         var config = new AnnoConfig(typeElement);
+        ctx.saveType(config.getQualifiedName(), config.getName());
 
         var builder = ClassInfo.builder().name(config.getName());
         var recordComponents = typeElement.getRecordComponents();
@@ -34,11 +37,13 @@ final class RecordParser implements TypeElementParser {
             if (config.isComponentExcluded(recordComponent)) {
                 continue;
             }
+            var types = typeMapper.map(recordComponent.asType());
             var fieldInfo = FieldInfo.builder()
                     .name(recordComponent.getSimpleName().toString())
                     .modifiers(recordComponent.getModifiers())
                     .optional(recordComponent.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
-                    .type(typeMapper.map(recordComponent.asType()))
+                    .javaQualifiedTypename(types.javaQualifiedTypename())
+                    .typename(types.typename())
                     .build();
             fields.add(fieldInfo);
         }
@@ -48,6 +53,6 @@ final class RecordParser implements TypeElementParser {
             // TODO
         }
 
-        return builder.build();
+        return List.of(builder.build());
     }
 }

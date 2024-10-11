@@ -11,5 +11,5 @@ import lombok.Builder;
 public record ClassInfo(
     String name,
     List<FieldInfo> fields
-) implements TypeInfo {
+) implements DefInfo {
 }
