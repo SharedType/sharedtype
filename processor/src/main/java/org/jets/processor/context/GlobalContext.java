@@ -1,13 +1,12 @@
 package org.jets.processor.context;
 
-import lombok.Getter;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic;
 
+import lombok.Getter;
+
 public final class GlobalContext {
-    private static final String LINE_ENDING = System.lineSeparator();
-    private final TypeCache typeCache = new TypeCache();
+    private final TypeCache resolvedTypes = new TypeCache();
     @Getter
     private final ProcessingEnvironment processingEnv;
     @Getter
@@ -18,12 +17,12 @@ public final class GlobalContext {
         this.props = props;
     }
 
-    public void info(String message) {
-        log(Diagnostic.Kind.NOTE, message);
+    public void info(String message, Object... objects) {
+        log(Diagnostic.Kind.NOTE, message, objects);
     }
 
-    public void error(String message) {
-        log(Diagnostic.Kind.ERROR, message);
+    public void error(String message, Object... objects) {
+        log(Diagnostic.Kind.ERROR, message, objects);
     }
 
     public void checkArgument(boolean condition, String message) {
@@ -33,11 +32,11 @@ public final class GlobalContext {
     }
 
     public void saveType(String qualifiedName, String name) {
-        typeCache.add(qualifiedName, name);
+        resolvedTypes.add(qualifiedName, name);
     }
 
     public boolean hasType(String qualifiedName) {
-        return typeCache.contains(qualifiedName);
+        return resolvedTypes.contains(qualifiedName);
     }
 
     /**
@@ -45,12 +44,12 @@ public final class GlobalContext {
      * @return the simple name of the type, null if not saved to the context.
      */
     public String getTypename(String qualifiedName) {
-        return typeCache.getName(qualifiedName);
+        return resolvedTypes.getName(qualifiedName);
     }
 
-    private void log(Diagnostic.Kind level, String message) {
+    private void log(Diagnostic.Kind level, String message, Object... objects) {
         if (processingEnv != null) {
-            processingEnv.getMessager().printMessage(level, String.format("[Jets] %s", message));
+            processingEnv.getMessager().printMessage(level, String.format("[Jets] %s", String.format(message, objects)));
         }
     }
 }

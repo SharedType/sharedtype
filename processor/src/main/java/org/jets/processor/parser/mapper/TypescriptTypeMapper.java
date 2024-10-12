@@ -1,17 +1,14 @@
 package org.jets.processor.parser.mapper;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 
 import org.jets.processor.context.GlobalContext;
-import org.jets.processor.support.exception.JetsInternalError;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
 final class TypescriptTypeMapper implements TypeMapper {
@@ -39,15 +36,11 @@ final class TypescriptTypeMapper implements TypeMapper {
   );
   private static final String OBJECT_NAME = Object.class.getName();
   private final GlobalContext ctx;
-  private final Elements elemUtils;
-  private final Types typeUtils;
   private final Map<String, String> objectTypes;
 
   @Inject
   TypescriptTypeMapper(GlobalContext ctx) {
     this.ctx = ctx;
-    this.elemUtils = ctx.getProcessingEnv().getElementUtils();
-    this.typeUtils = ctx.getProcessingEnv().getTypeUtils();
     this.objectTypes = new HashMap<>(PREDEFINED_OBJECT_TYPES);
     objectTypes.put(OBJECT_NAME, ctx.getProps().getJavaObjectMapType());
   }

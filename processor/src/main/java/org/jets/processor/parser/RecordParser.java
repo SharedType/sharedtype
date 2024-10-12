@@ -25,8 +25,7 @@ final class RecordParser implements TypeElementParser {
 
     @Override
     public List<DefInfo> parse(TypeElement typeElement) {
-        ctx.checkArgument(typeElement.getKind() == ElementKind.RECORD,
-                "Unsupported element kind: " + typeElement.getKind());
+        ctx.checkArgument(typeElement.getKind() == ElementKind.RECORD, "Unsupported element kind: " + typeElement.getKind());
 
         var config = new AnnoConfig(typeElement);
         ctx.saveType(config.getQualifiedName(), config.getName());

@@ -22,6 +22,8 @@ public record JavaRecord(
     String primitiveString,
     String boxedString,
     Object object,
-    Void aVoid
+    Void aVoid,
+
+    DependencyClassA a
 ) {
 }
