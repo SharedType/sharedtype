@@ -5,14 +5,14 @@ import javax.tools.Diagnostic;
 
 import lombok.Getter;
 
-public final class GlobalContext {
+public final class Context {
     private final TypeCache resolvedTypes = new TypeCache();
     @Getter
     private final ProcessingEnvironment processingEnv;
     @Getter
     private final JetsProps props;
 
-    public GlobalContext(ProcessingEnvironment processingEnv, JetsProps props) {
+    public Context(ProcessingEnvironment processingEnv, JetsProps props) {
         this.processingEnv = processingEnv;
         this.props = props;
     }

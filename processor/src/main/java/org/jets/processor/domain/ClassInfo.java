@@ -12,4 +12,15 @@ public record ClassInfo(
     String name,
     List<FieldInfo> fields
 ) implements DefInfo {
+
+    // TODO: optimize
+    @Override
+    public boolean resolved() {
+        for (FieldInfo fieldInfo : fields) {
+            if (!fieldInfo.typeResolved()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

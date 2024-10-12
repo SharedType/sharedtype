@@ -15,10 +15,10 @@ import javax.lang.model.element.TypeElement;
 
 import com.google.auto.service.AutoService;
 import org.jets.processor.context.Constants;
-import org.jets.processor.context.GlobalContext;
+import org.jets.processor.context.Context;
 import org.jets.processor.context.JetsProps;
 import org.jets.processor.domain.DefInfo;
-import org.jets.processor.parser.TypeElementParser;
+import org.jets.processor.parser.TypeParser;
 import org.jets.processor.resolver.TypeResolver;
 import org.jets.processor.support.annotation.VisibleForTesting;
 import org.jets.processor.support.exception.JetsInternalError;
@@ -29,15 +29,15 @@ import org.jets.processor.writer.TypeWriter;
 @AutoService(Processor.class)
 public final class JetsAnnotationProcessor extends AbstractProcessor {
     private static final boolean ANNOTATION_CONSUMED = true;
-    private TypeElementParser parser;
+    private TypeParser parser;
     private TypeResolver resolver;
     private TypeWriter writer;
-    private GlobalContext ctx;
+    private Context ctx;
 
     @Override 
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        ctx = new GlobalContext(processingEnv, new JetsProps());
+        ctx = new Context(processingEnv, new JetsProps()); // TODO: check thread safety
         var component = DaggerJetsComponent.builder().withContext(ctx).build();
         parser = component.parser();
         resolver = component.resolver();

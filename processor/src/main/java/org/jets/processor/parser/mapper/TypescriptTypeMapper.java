@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
-import org.jets.processor.context.GlobalContext;
+import org.jets.processor.context.Context;
 
 @Singleton
 final class TypescriptTypeMapper implements TypeMapper {
@@ -35,11 +35,11 @@ final class TypescriptTypeMapper implements TypeMapper {
       "java.lang.Void", "never"
   );
   private static final String OBJECT_NAME = Object.class.getName();
-  private final GlobalContext ctx;
+  private final Context ctx;
   private final Map<String, String> objectTypes;
 
   @Inject
-  TypescriptTypeMapper(GlobalContext ctx) {
+  TypescriptTypeMapper(Context ctx) {
     this.ctx = ctx;
     this.objectTypes = new HashMap<>(PREDEFINED_OBJECT_TYPES);
     objectTypes.put(OBJECT_NAME, ctx.getProps().getJavaObjectMapType());

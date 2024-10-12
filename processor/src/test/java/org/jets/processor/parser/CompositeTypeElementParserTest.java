@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
-import org.jets.processor.context.GlobalContext;
+import org.jets.processor.context.Context;
 import org.jets.processor.domain.ClassInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,12 +20,12 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 final class CompositeTypeElementParserTest {
-    private @Mock TypeElementParser delegate1;
-    private @Mock TypeElementParser delegate2;
+    private @Mock TypeParser delegate1;
+    private @Mock TypeParser delegate2;
     private CompositeTypeElementParser parser;
 
     private @Mock TypeElement typeElement;
-    private final GlobalContext ctx = new GlobalContext(null, null);
+    private final Context ctx = new Context(null, null);
     private final ClassInfo typeInfo = ClassInfo.builder().build();
 
     @BeforeEach

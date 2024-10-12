@@ -6,6 +6,6 @@ import javax.lang.model.element.TypeElement;
 
 import org.jets.processor.domain.DefInfo;
 
-public interface TypeElementParser {
+public interface TypeParser {
     List<DefInfo> parse(TypeElement typeElement);
 }

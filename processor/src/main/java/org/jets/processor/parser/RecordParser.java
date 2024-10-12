@@ -11,7 +11,7 @@ import javax.lang.model.element.TypeElement;
 
 import lombok.RequiredArgsConstructor;
 import org.jets.processor.context.AnnoConfig;
-import org.jets.processor.context.GlobalContext;
+import org.jets.processor.context.Context;
 import org.jets.processor.domain.ClassInfo;
 import org.jets.processor.domain.DefInfo;
 import org.jets.processor.domain.FieldInfo;
@@ -19,9 +19,9 @@ import org.jets.processor.parser.mapper.TypeMapper;
 
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 @Singleton
-final class RecordParser implements TypeElementParser {
+final class RecordParser implements TypeParser {
     private final TypeMapper typeMapper;
-    private final GlobalContext ctx;
+    private final Context ctx;
 
     @Override
     public List<DefInfo> parse(TypeElement typeElement) {
