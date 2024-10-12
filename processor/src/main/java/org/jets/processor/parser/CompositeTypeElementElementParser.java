@@ -15,9 +15,9 @@ import org.jets.processor.domain.DefInfo;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
-final class CompositeTypeElementParser implements TypeParser {
+final class CompositeTypeElementElementParser implements TypeElementParser {
     private final Context ctx;
-    private final Map<ElementKind, TypeParser> parsers;
+    private final Map<ElementKind, TypeElementParser> parsers;
 
     @Override
     public List<DefInfo> parse(TypeElement typeElement) {

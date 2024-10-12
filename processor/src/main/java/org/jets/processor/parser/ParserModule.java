@@ -5,13 +5,13 @@ import javax.lang.model.element.ElementKind;
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
-import org.jets.processor.parser.mapper.TypeMapperModule;
+import org.jets.processor.parser.field.TypeParserModule;
 import org.jets.processor.support.dagger.ElementKindKey;
 
-@Module(includes = TypeMapperModule.class)
+@Module(includes = TypeParserModule.class)
 public abstract class ParserModule {
     @Binds @IntoMap @ElementKindKey(ElementKind.RECORD)
-    abstract TypeParser parser(RecordParser recordParser);
+    abstract TypeElementParser parser(ClassElementParser recordParser);
     @Binds
-    abstract TypeParser bindTypeElementParser(CompositeTypeElementParser compositeTypeElementParser);
+    abstract TypeElementParser bindTypeElementParser(CompositeTypeElementElementParser compositeTypeElementParser);
 }

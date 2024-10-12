@@ -27,8 +27,7 @@ public final class AnnoConfig {
     return excludes.contains(element.getSimpleName().toString());
   }
 
-  public boolean isIncludeGetters() {
-    return anno.includeGetters();
+  public boolean toIncludeGetters() {
+    return anno.includeAccessors();
   }
-    
 }

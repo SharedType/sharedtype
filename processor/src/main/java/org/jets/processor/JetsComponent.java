@@ -6,7 +6,7 @@ import dagger.BindsInstance;
 import dagger.Component;
 import org.jets.processor.context.Context;
 import org.jets.processor.parser.ParserModule;
-import org.jets.processor.parser.TypeParser;
+import org.jets.processor.parser.TypeElementParser;
 import org.jets.processor.resolver.ResolverModule;
 import org.jets.processor.resolver.TypeResolver;
 import org.jets.processor.writer.TypeWriter;
@@ -15,7 +15,7 @@ import org.jets.processor.writer.WriterModule;
 @Singleton
 @Component(modules = {ParserModule.class, ResolverModule.class, WriterModule.class})
 interface JetsComponent {
-    TypeParser parser();
+    TypeElementParser parser();
     TypeResolver resolver();
     TypeWriter writer();
 

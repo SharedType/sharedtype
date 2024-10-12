@@ -20,9 +20,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 final class CompositeTypeElementParserTest {
-    private @Mock TypeParser delegate1;
-    private @Mock TypeParser delegate2;
-    private CompositeTypeElementParser parser;
+    private @Mock TypeElementParser delegate1;
+    private @Mock TypeElementParser delegate2;
+    private CompositeTypeElementElementParser parser;
 
     private @Mock TypeElement typeElement;
     private final Context ctx = new Context(null, null);
@@ -30,7 +30,7 @@ final class CompositeTypeElementParserTest {
 
     @BeforeEach
     void setUp() {
-        parser = new CompositeTypeElementParser(
+        parser = new CompositeTypeElementElementParser(
             ctx, 
             Map.of(
                 ElementKind.RECORD, delegate1,

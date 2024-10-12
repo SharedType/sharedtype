@@ -8,12 +8,14 @@ import lombok.Builder;
 
 @Builder
 public record FieldInfo(
-  String name,
-  Set<Modifier> modifiers,
-  boolean optional,
-  String javaQualifiedTypename,
-  String typename,
-  boolean typeResolved
-) {
-  
+        String name,
+        Set<Modifier> modifiers,
+        boolean optional,
+        TypeInfo typeInfo,
+        boolean isArray
+) implements ComponentInfo {
+
+    public boolean typeResolved() {
+        return typeInfo.resolved();
+    }
 }

@@ -11,7 +11,7 @@ import org.jets.processor.context.Context;
 import org.jets.processor.domain.ClassInfo;
 import org.jets.processor.domain.DefInfo;
 import org.jets.processor.domain.FieldInfo;
-import org.jets.processor.parser.TypeParser;
+import org.jets.processor.parser.TypeElementParser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 final class LoopTypeResolver implements TypeResolver {
     private static final int DEPENDENCY_COUNT_EXPANSION_FACTOR = 2; // TODO: find a proper number
     private final Context ctx;
-    private final TypeParser typeParser;
+    private final TypeElementParser typeElementParser;
 
     @Override
     public List<DefInfo> resolve(List<DefInfo> typeDefs) {
@@ -38,10 +38,10 @@ final class LoopTypeResolver implements TypeResolver {
                 if (defInfo instanceof ClassInfo classInfo) {
                     for (FieldInfo fieldInfo : classInfo.fields()) {
                         if (!fieldInfo.typeResolved()) {
-                            var resolvedWithDependents = tryResolveOne(fieldInfo.javaQualifiedTypename());
-                            for (DefInfo resolved : resolvedWithDependents) {
-
-                            }
+//                            var resolvedWithDependents = tryResolveOne(fieldInfo.javaQualifiedTypename());
+//                            for (DefInfo resolved : resolvedWithDependents) {
+//
+//                            }
                         }
                     }
                 }
@@ -56,7 +56,7 @@ final class LoopTypeResolver implements TypeResolver {
         var typeElement = ctx.getProcessingEnv().getElementUtils().getTypeElement(qualifiedTypename);
         // TODO: validation
 
-        return typeParser.parse(typeElement);
+        return typeElementParser.parse(typeElement);
     }
 
 }

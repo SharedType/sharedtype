@@ -43,7 +43,7 @@ public final class Context {
      * Should check if the type is saved to the context by calling {@link #hasType(String)} first.
      * @return the simple name of the type, null if not saved to the context.
      */
-    public String getTypename(String qualifiedName) {
+    public String getSimpleName(String qualifiedName) {
         return resolvedTypes.getName(qualifiedName);
     }
 

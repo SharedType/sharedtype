@@ -13,6 +13,11 @@ public record ClassInfo(
     List<FieldInfo> fields
 ) implements DefInfo {
 
+    @Override
+    public List<FieldInfo> components() {
+        return fields;
+    }
+
     // TODO: optimize
     @Override
     public boolean resolved() {

@@ -17,7 +17,7 @@ final class TypescriptTypeWriter implements TypeWriter {
   @Override
   public void write(List<DefInfo> typeDefs) {
     // TODO 
-    typeDefs.forEach(d-> ctx.info("Write type: %s", d.name()));
+    typeDefs.forEach(d-> ctx.info("Write type: %s", d));
   }
 
 }
