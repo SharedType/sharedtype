@@ -19,6 +19,7 @@ import org.jets.processor.context.GlobalContext;
 import org.jets.processor.context.JetsProps;
 import org.jets.processor.domain.DefInfo;
 import org.jets.processor.parser.TypeElementParser;
+import org.jets.processor.resolver.TypeResolver;
 import org.jets.processor.support.annotation.VisibleForTesting;
 import org.jets.processor.support.exception.JetsInternalError;
 import org.jets.processor.writer.TypeWriter;
@@ -29,6 +30,7 @@ import org.jets.processor.writer.TypeWriter;
 public final class JetsAnnotationProcessor extends AbstractProcessor {
     private static final boolean ANNOTATION_CONSUMED = true;
     private TypeElementParser parser;
+    private TypeResolver resolver;
     private TypeWriter writer;
     private GlobalContext ctx;
 
@@ -38,6 +40,7 @@ public final class JetsAnnotationProcessor extends AbstractProcessor {
         ctx = new GlobalContext(processingEnv, new JetsProps());
         var component = DaggerJetsComponent.builder().withContext(ctx).build();
         parser = component.parser();
+        resolver = component.resolver();
         writer = component.writer();
     }
 
@@ -66,6 +69,6 @@ public final class JetsAnnotationProcessor extends AbstractProcessor {
                 throw new UnsupportedOperationException("Unsupported element: " + element);
             }
         }
-        writer.write(defs);
+        writer.write(resolver.resolve(defs));
     }
 }
