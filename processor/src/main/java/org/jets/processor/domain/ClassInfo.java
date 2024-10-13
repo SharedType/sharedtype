@@ -1,17 +1,27 @@
 package org.jets.processor.domain;
 
-import java.util.List;
-
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents info captured from a POJO or record.
  */
 @Builder
-public record ClassInfo(
-    String name,
-    List<FieldInfo> fields
-) implements DefInfo {
+@ToString
+@EqualsAndHashCode(of = "name")
+public final class ClassInfo implements DefInfo {
+    private final String name;
+    @Builder.Default
+    private final List<FieldInfo> fields = Collections.emptyList();
+
+    @Override
+    public String name() {
+        return name;
+    }
 
     @Override
     public List<FieldInfo> components() {
@@ -22,10 +32,10 @@ public record ClassInfo(
     @Override
     public boolean resolved() {
         for (FieldInfo fieldInfo : fields) {
-            if (!fieldInfo.typeResolved()) {
-                return true;
+            if (!fieldInfo.resolved()) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }

@@ -15,7 +15,7 @@ public record FieldInfo(
         boolean isArray
 ) implements ComponentInfo {
 
-    public boolean typeResolved() {
+    public boolean resolved() {
         return typeInfo.resolved();
     }
 }

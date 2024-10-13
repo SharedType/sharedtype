@@ -11,7 +11,11 @@ import org.jets.processor.support.dagger.ElementKindKey;
 @Module(includes = TypeParserModule.class)
 public abstract class ParserModule {
     @Binds @IntoMap @ElementKindKey(ElementKind.RECORD)
-    abstract TypeElementParser parser(ClassElementParser recordParser);
+    abstract TypeElementParser recordParser(ClassElementParser classElementParser);
+
+    @Binds @IntoMap @ElementKindKey(ElementKind.CLASS)
+    abstract TypeElementParser classParser(ClassElementParser classElementParser);
+
     @Binds
     abstract TypeElementParser bindTypeElementParser(CompositeTypeElementElementParser compositeTypeElementParser);
 }

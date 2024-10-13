@@ -25,7 +25,7 @@ final class ClassElementParser implements TypeElementParser {
 
     @Override
     public List<DefInfo> parse(TypeElement typeElement) {
-        var config = new AnnoConfig(typeElement);
+        var config = new AnnoConfig(typeElement); // TODO: validate typeElement's eligibility
         ctx.saveType(config.getQualifiedName(), config.getName());
 
         var builder = ClassInfo.builder().name(config.getName());

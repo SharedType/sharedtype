@@ -27,7 +27,7 @@ public record JavaRecord<T, K>(
     Object object,
     Void aVoid,
 
-    DependencyClassA a,
+    DependencyClassA a, // cyclic a -> b -> c -> a
 
     List<String> stringList,
     List<T> genericList,

@@ -1,9 +1,10 @@
 package org.jets.processor.context;
 
+import lombok.Getter;
+
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic;
-
-import lombok.Getter;
+import java.util.Collection;
 
 public final class Context {
     private final TypeCache resolvedTypes = new TypeCache();
@@ -17,6 +18,7 @@ public final class Context {
         this.props = props;
     }
 
+    // TODO: optimize by remove varargs
     public void info(String message, Object... objects) {
         log(Diagnostic.Kind.NOTE, message, objects);
     }
@@ -29,6 +31,13 @@ public final class Context {
         if (!condition) {
             log(Diagnostic.Kind.ERROR, message);
         }
+    }
+
+    public <T extends Collection<?>> T requireNonEmpty(T c, String message, Object... objects) {
+        if (c.isEmpty()) {
+            log(Diagnostic.Kind.ERROR, message, objects);
+        }
+        return c;
     }
 
     public void saveType(String qualifiedName, String name) {
