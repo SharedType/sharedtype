@@ -3,8 +3,12 @@ package org.jets.processor.context;
 import lombok.Getter;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class Context {
     private final TypeCache resolvedTypes = new TypeCache();
@@ -12,10 +16,13 @@ public final class Context {
     private final ProcessingEnvironment processingEnv;
     @Getter
     private final JetsProps props;
+    @Getter
+    private final ExtraUtils extraUtils;
 
     public Context(ProcessingEnvironment processingEnv, JetsProps props) {
         this.processingEnv = processingEnv;
         this.props = props;
+        this.extraUtils = new ExtraUtils(processingEnv, props);
     }
 
     // TODO: optimize by remove varargs
@@ -27,9 +34,9 @@ public final class Context {
         log(Diagnostic.Kind.ERROR, message, objects);
     }
 
-    public void checkArgument(boolean condition, String message) {
+    public void checkArgument(boolean condition, String message, Object... objects) {
         if (!condition) {
-            log(Diagnostic.Kind.ERROR, message);
+            log(Diagnostic.Kind.ERROR, message, objects);
         }
     }
 

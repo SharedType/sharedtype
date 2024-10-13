@@ -74,13 +74,29 @@ final class TypescriptFieldElementParser implements FieldElementParser {
     // TODO: type arguments
     private TypeInfo parseDeclared(DeclaredType declaredType) {
         var typeElement = (TypeElement)declaredType.asElement();
+
         var qualifiedName = typeElement.getQualifiedName().toString();
         var predefinedTypeInfo = predefinedObjectTypes.get(qualifiedName);
+        var typeArgs = declaredType.getTypeArguments();
         if (predefinedTypeInfo != null) {
             return predefinedTypeInfo;
         }
 
-        // TODO: check for collection and go for array
+        if (ctx.getExtraUtils().typeShouldBeTreatedAsArray(typeElement.asType())) {
+            ctx.checkArgument(typeArgs.size() == 1,
+                    "Array type must have exactly one type argument, but got: %s, type: %s", typeArgs.size(), typeElement);
+            var typeArg = typeArgs.get(0);
+            var element = types.asElement(typeArg);
+            if (element instanceof TypeElement argTypeElement) {
+                return TypeInfo.builder()
+                        .qualifiedName(argTypeElement.getQualifiedName().toString())
+                        .array(true)
+                        .resolved(false)
+                        .build();
+            } else {
+                throw new UnsupportedOperationException(String.format("Type: %s, typeArg: %s", declaredType, typeArg));
+            }
+        }
 
         if (ctx.hasType(qualifiedName)) {
             return TypeInfo.builder()

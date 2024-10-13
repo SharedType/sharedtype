@@ -2,7 +2,7 @@ package org.jets.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Getter;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -17,6 +17,9 @@ public final class TypeInfo {
     private final List<? extends TypeInfo> typeArgs = new ArrayList<>();
     @Builder.Default
     private boolean resolved = true;
+    /** When is array, the type stands for array component type */
+    @Builder.Default @Getter
+    private final boolean array = false;
 
     public static TypeInfo ofPredefined(String qualifiedName, String simpleName) {
         return TypeInfo.builder().qualifiedName(qualifiedName).simpleName(simpleName).build();
@@ -39,7 +42,8 @@ public final class TypeInfo {
     }
 
     /**
-     * @return null when type not resolved.
+     * A simple name stands for the type name used in output source code.
+     * @return null when type not resolved or has no simple name, e.g. array type.
      */
     @Nullable
     public String simpleName() {
@@ -56,9 +60,9 @@ public final class TypeInfo {
 
     @Override
     public String toString() {
-        return String.format("%s<%s>%s",
+        return String.format("%s%s%s",
                 qualifiedName,
-                typeArgs.isEmpty() ? "" : String.join(",", typeArgs.stream().map(TypeInfo::qualifiedName).toList()),
+                typeArgs.isEmpty() ? "" : "<" + String.join(",", typeArgs.stream().map(TypeInfo::qualifiedName).toList()) + ">",
                 resolved ? "" : "?"
         );
     }

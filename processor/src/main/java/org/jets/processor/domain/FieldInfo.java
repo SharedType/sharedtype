@@ -11,8 +11,7 @@ public record FieldInfo(
         String name,
         Set<Modifier> modifiers,
         boolean optional,
-        TypeInfo typeInfo,
-        boolean isArray
+        TypeInfo typeInfo
 ) implements ComponentInfo {
 
     public boolean resolved() {

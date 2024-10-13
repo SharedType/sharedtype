@@ -1,22 +1,19 @@
 package org.jets.processor.resolver;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.lang.model.util.Elements;
-
+import lombok.RequiredArgsConstructor;
 import org.jets.processor.context.Context;
 import org.jets.processor.domain.ClassInfo;
 import org.jets.processor.domain.DefInfo;
 import org.jets.processor.domain.FieldInfo;
 import org.jets.processor.domain.TypeInfo;
 import org.jets.processor.parser.TypeElementParser;
-
-import lombok.RequiredArgsConstructor;
 import org.jets.processor.support.exception.JetsInternalError;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 @Singleton
