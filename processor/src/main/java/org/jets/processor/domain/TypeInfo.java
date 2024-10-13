@@ -15,7 +15,8 @@ public final class TypeInfo {
     private String simpleName;
     @Builder.Default
     private final List<? extends TypeInfo> typeArgs = new ArrayList<>();
-    private boolean resolved;
+    @Builder.Default
+    private boolean resolved = true;
 
     public static TypeInfo ofPredefined(String qualifiedName, String simpleName) {
         return TypeInfo.builder().qualifiedName(qualifiedName).simpleName(simpleName).build();
@@ -55,6 +56,10 @@ public final class TypeInfo {
 
     @Override
     public String toString() {
-        return String.format("%s<%s>%s", qualifiedName, String.join(",", typeArgs.toString()), resolved ? "" : "?");
+        return String.format("%s<%s>%s",
+                qualifiedName,
+                typeArgs.isEmpty() ? "" : String.join(",", typeArgs.stream().map(TypeInfo::qualifiedName).toList()),
+                resolved ? "" : "?"
+        );
     }
 }

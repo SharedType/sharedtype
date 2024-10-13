@@ -1,5 +1,7 @@
 package org.jets.processor.context;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.Set;
 
@@ -17,17 +19,20 @@ public final class AnnoConfig {
   private final String qualifiedName;
   private final Set<String> excludes;
 
+  @Retention(RetentionPolicy.RUNTIME)
+  private @interface AnnoContainer {
+    EmitType anno() default @EmitType;
+  }
+
+  @AnnoContainer
+  private record DummyDefault() {}
+
   public AnnoConfig(TypeElement typeElement) {
     var simpleName = typeElement.getSimpleName().toString();
-    this.anno = typeElement.getAnnotation(EmitType.class);
-    if (anno == null) {
-      this.name = simpleName;
-      this.excludes = Collections.emptySet();
-    } else {
-      this.name = anno.name().isEmpty() ? simpleName : anno.name();
-      this.excludes = Set.of(anno.excludes());
-    }
-
+    var annoFromType = typeElement.getAnnotation(EmitType.class);
+    this.anno = annoFromType == null ? DummyDefault.class.getAnnotation(AnnoContainer.class).anno() : annoFromType;
+    this.name = anno.name().isEmpty() ? simpleName : anno.name();
+    this.excludes = Set.of(anno.excludes());
     this.qualifiedName = typeElement.getQualifiedName().toString();
   }
 

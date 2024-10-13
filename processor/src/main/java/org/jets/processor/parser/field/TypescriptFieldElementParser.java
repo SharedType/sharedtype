@@ -63,7 +63,7 @@ final class TypescriptFieldElementParser implements FieldElementParser {
         if (typeKind.isPrimitive()) {
             return PRIMITIVES.get(typeKind);
         } else if (typeKind == TypeKind.ARRAY) {
-            throw new UnsupportedOperationException("Not implemented:" + element);
+            throw new UnsupportedOperationException("Not implemented:" + typeMirror);
         } else if (typeKind == TypeKind.DECLARED) {
             return parseDeclared((DeclaredType) typeMirror);
         }
