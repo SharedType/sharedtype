@@ -12,7 +12,7 @@ public final class JetsProps {
 
     private final Class<? extends Annotation> optionalAnno = DEFAULT_OPTIONAL_ANNO;
     private final String javaObjectMapType = "any";
-    private final Set<String> toArrayTypeQualifiedNames = Set.of(
+    private final Set<String> arraylikeTypeQualifiedNames = Set.of(
             Collection.class.getName()
     );
 }

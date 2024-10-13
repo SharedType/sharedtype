@@ -1,7 +1,8 @@
 package org.jets.processor.parser.field;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.jets.processor.context.Context;
+import org.jets.processor.domain.TypeInfo;
+import org.jets.processor.support.exception.JetsInternalError;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -11,9 +12,8 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-
-import org.jets.processor.context.Context;
-import org.jets.processor.domain.TypeInfo;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 final class TypescriptFieldElementParser implements FieldElementParser {
@@ -53,6 +53,7 @@ final class TypescriptFieldElementParser implements FieldElementParser {
         this.elements = ctx.getProcessingEnv().getElementUtils();
         this.predefinedObjectTypes = new HashMap<>(PREDEFINED_OBJECT_TYPES);
         predefinedObjectTypes.put(OBJECT_NAME, TypeInfo.ofPredefined(OBJECT_NAME, ctx.getProps().getJavaObjectMapType()));
+        predefinedObjectTypes.forEach((qualifiedName, typeInfo) -> ctx.saveType(qualifiedName, typeInfo.simpleName()));
     }
 
     @Override
@@ -66,9 +67,10 @@ final class TypescriptFieldElementParser implements FieldElementParser {
             throw new UnsupportedOperationException("Not implemented:" + typeMirror);
         } else if (typeKind == TypeKind.DECLARED) {
             return parseDeclared((DeclaredType) typeMirror);
+        } else if (typeKind == TypeKind.TYPEVAR) {
+            // TODO
         }
-        ctx.error("Unsupported element: %s, kind: %s", element, typeKind);
-        return null;
+        throw new JetsInternalError(String.format("Unsupported field type, element: %s, typeKind: %s", element, typeKind)); // TODO: context info
     }
 
     // TODO: type arguments
@@ -77,36 +79,40 @@ final class TypescriptFieldElementParser implements FieldElementParser {
 
         var qualifiedName = typeElement.getQualifiedName().toString();
         var predefinedTypeInfo = predefinedObjectTypes.get(qualifiedName);
-        var typeArgs = declaredType.getTypeArguments();
+        var typeArgs = ctx.getExtraUtils().getTypeArguments(declaredType);
         if (predefinedTypeInfo != null) {
             return predefinedTypeInfo;
         }
 
-        if (ctx.getExtraUtils().typeShouldBeTreatedAsArray(typeElement.asType())) {
+        boolean isArray = false;
+        if (ctx.getExtraUtils().isArraylike(declaredType)) {
             ctx.checkArgument(typeArgs.size() == 1,
                     "Array type must have exactly one type argument, but got: %s, type: %s", typeArgs.size(), typeElement);
             var typeArg = typeArgs.get(0);
             var element = types.asElement(typeArg);
             if (element instanceof TypeElement argTypeElement) {
-                return TypeInfo.builder()
-                        .qualifiedName(argTypeElement.getQualifiedName().toString())
-                        .array(true)
-                        .resolved(false)
-                        .build();
+                qualifiedName = argTypeElement.getQualifiedName().toString();
+                isArray = true;
+                typeArgs = ctx.getExtraUtils().getTypeArguments(typeArg);
             } else {
                 throw new UnsupportedOperationException(String.format("Type: %s, typeArg: %s", declaredType, typeArg));
             }
         }
 
+        var parsedTypeArgs = typeArgs.stream().map(this::parseDeclared).toList();
+
         if (ctx.hasType(qualifiedName)) {
             return TypeInfo.builder()
                     .qualifiedName(qualifiedName)
                     .simpleName(ctx.getSimpleName(qualifiedName))
+                    .array(isArray)
+                    .typeArgs(parsedTypeArgs)
                     .build();
         }
         return TypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .resolved(false)
+                .typeArgs(parsedTypeArgs)
                 .build();
     }
 }

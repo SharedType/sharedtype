@@ -22,7 +22,7 @@ public final class Context {
     public Context(ProcessingEnvironment processingEnv, JetsProps props) {
         this.processingEnv = processingEnv;
         this.props = props;
-        this.extraUtils = new ExtraUtils(processingEnv, props);
+        this.extraUtils = new ExtraUtils(processingEnv, props, this);
     }
 
     // TODO: optimize by remove varargs
