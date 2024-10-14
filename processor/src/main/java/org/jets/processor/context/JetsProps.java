@@ -1,10 +1,9 @@
 package org.jets.processor.context;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Set;
-
 import lombok.Getter;
+
+import java.lang.annotation.Annotation;
+import java.util.Set;
 
 @Getter
 public final class JetsProps {
@@ -13,6 +12,6 @@ public final class JetsProps {
     private final Class<? extends Annotation> optionalAnno = DEFAULT_OPTIONAL_ANNO;
     private final String javaObjectMapType = "any";
     private final Set<String> arraylikeTypeQualifiedNames = Set.of(
-            Collection.class.getName()
+            Iterable.class.getName()
     );
 }

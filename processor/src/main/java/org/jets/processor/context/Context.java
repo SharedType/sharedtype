@@ -3,12 +3,8 @@ package org.jets.processor.context;
 import lombok.Getter;
 
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public final class Context {
     private final TypeCache resolvedTypes = new TypeCache();
@@ -64,8 +60,6 @@ public final class Context {
     }
 
     private void log(Diagnostic.Kind level, String message, Object... objects) {
-        if (processingEnv != null) {
-            processingEnv.getMessager().printMessage(level, String.format("[Jets] %s", String.format(message, objects)));
-        }
+        processingEnv.getMessager().printMessage(level, String.format("[Jets] %s", String.format(message, objects)));
     }
 }

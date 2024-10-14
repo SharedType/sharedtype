@@ -19,16 +19,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
-final class TypescriptFieldElementParser implements FieldElementParser {
+final class TypescriptVariableElementParser implements VariableElementParser {
     private static final Map<TypeKind, ConcreteTypeInfo> PRIMITIVES = Map.of(
         TypeKind.BOOLEAN, ConcreteTypeInfo.ofPredefined("boolean", "boolean"),
-        TypeKind.BYTE, ConcreteTypeInfo.ofPredefined("number", "number"),
-        TypeKind.CHAR, ConcreteTypeInfo.ofPredefined("string", "string"),
-        TypeKind.DOUBLE, ConcreteTypeInfo.ofPredefined("number", "number"),
-        TypeKind.FLOAT, ConcreteTypeInfo.ofPredefined("number", "number"),
-        TypeKind.INT, ConcreteTypeInfo.ofPredefined("number", "number"),
-        TypeKind.LONG, ConcreteTypeInfo.ofPredefined("number", "number"),
-        TypeKind.SHORT, ConcreteTypeInfo.ofPredefined("number", "number")
+        TypeKind.BYTE, ConcreteTypeInfo.ofPredefined("byte", "number"),
+        TypeKind.CHAR, ConcreteTypeInfo.ofPredefined("char", "string"),
+        TypeKind.DOUBLE, ConcreteTypeInfo.ofPredefined("double", "number"),
+        TypeKind.FLOAT, ConcreteTypeInfo.ofPredefined("float", "number"),
+        TypeKind.INT, ConcreteTypeInfo.ofPredefined("int", "number"),
+        TypeKind.LONG, ConcreteTypeInfo.ofPredefined("long", "number"),
+        TypeKind.SHORT, ConcreteTypeInfo.ofPredefined("short", "number")
     );
     private static final Map<String, ConcreteTypeInfo> PREDEFINED_OBJECT_TYPES = Map.of(
         "java.lang.Boolean", ConcreteTypeInfo.ofPredefined("java.lang.Boolean", "boolean"),
@@ -50,7 +50,7 @@ final class TypescriptFieldElementParser implements FieldElementParser {
     private final Map<String, ConcreteTypeInfo> predefinedObjectTypes;
 
     @Inject
-    TypescriptFieldElementParser(Context ctx) {
+    TypescriptVariableElementParser(Context ctx) {
         this.ctx = ctx;
         this.types = ctx.getProcessingEnv().getTypeUtils();
         this.elements = ctx.getProcessingEnv().getElementUtils();
@@ -76,7 +76,6 @@ final class TypescriptFieldElementParser implements FieldElementParser {
         throw new JetsInternalError(String.format("Unsupported field type, element: %s, typeKind: %s", element, typeKind)); // TODO: context info
     }
 
-    // TODO: type arguments
     private TypeInfo parseDeclared(DeclaredType declaredType) {
         var typeElement = (TypeElement)declaredType.asElement();
 

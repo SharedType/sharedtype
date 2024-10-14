@@ -15,12 +15,12 @@ import org.jets.processor.context.Context;
 import org.jets.processor.domain.ClassDef;
 import org.jets.processor.domain.TypeDef;
 import org.jets.processor.domain.FieldInfo;
-import org.jets.processor.parser.field.FieldElementParser;
+import org.jets.processor.parser.field.VariableElementParser;
 
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 @Singleton
 final class ClassElementParser implements TypeElementParser {
-    private final FieldElementParser fieldElementParser;
+    private final VariableElementParser variableElementParser;
     private final Context ctx;
 
     @Override
@@ -41,7 +41,7 @@ final class ClassElementParser implements TypeElementParser {
                     .name(element.getSimpleName().toString())
                     .modifiers(element.getModifiers())
                     .optional(element.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
-                    .typeInfo(fieldElementParser.parse((VariableElement) element))
+                    .typeInfo(variableElementParser.parse((VariableElement) element))
                     .build();
             fields.add(fieldInfo);
         }
