@@ -1,0 +1,65 @@
+package org.sharedtype.processor.context;
+
+import lombok.Getter;
+
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.tools.Diagnostic;
+import java.util.Collection;
+
+public final class Context {
+    private final TypeCache resolvedTypes = new TypeCache();
+    @Getter
+    private final ProcessingEnvironment processingEnv;
+    @Getter
+    private final Props props;
+    @Getter
+    private final ExtraUtils extraUtils;
+
+    public Context(ProcessingEnvironment processingEnv, Props props) {
+        this.processingEnv = processingEnv;
+        this.props = props;
+        this.extraUtils = new ExtraUtils(processingEnv, props, this);
+    }
+
+    // TODO: optimize by remove varargs
+    public void info(String message, Object... objects) {
+        log(Diagnostic.Kind.NOTE, message, objects);
+    }
+
+    public void error(String message, Object... objects) {
+        log(Diagnostic.Kind.ERROR, message, objects);
+    }
+
+    public void checkArgument(boolean condition, String message, Object... objects) {
+        if (!condition) {
+            log(Diagnostic.Kind.ERROR, message, objects);
+        }
+    }
+
+    public <T extends Collection<?>> T requireNonEmpty(T c, String message, Object... objects) {
+        if (c.isEmpty()) {
+            log(Diagnostic.Kind.ERROR, message, objects);
+        }
+        return c;
+    }
+
+    public void saveType(String qualifiedName, String name) {
+        resolvedTypes.add(qualifiedName, name);
+    }
+
+    public boolean hasType(String qualifiedName) {
+        return resolvedTypes.contains(qualifiedName);
+    }
+
+    /**
+     * Should check if the type is saved to the context by calling {@link #hasType(String)} first.
+     * @return the simple name of the type, null if not saved to the context.
+     */
+    public String getSimpleName(String qualifiedName) {
+        return resolvedTypes.getName(qualifiedName);
+    }
+
+    private void log(Diagnostic.Kind level, String message, Object... objects) {
+        processingEnv.getMessager().printMessage(level, String.format("[ST] %s", String.format(message, objects)));
+    }
+}

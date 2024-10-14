@@ -1,3 +1,3 @@
-module org.jets.annotation {
-    exports org.jets.annotation;
+module org.sharedtype.annotation {
+    exports org.sharedtype.annotation;
 }

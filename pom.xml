@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.jets</groupId>
-    <artifactId>jets-parent</artifactId>
+    <groupId>org.sharedtype</groupId>
+    <artifactId>sharedtype-parent</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Jets Parent</name>
-    <url>https://github.com/cuzfrog/jets</url>
+    <name>SharedType Parent</name>
+    <url>https://github.com/cuzfrog/sharedtype</url>
     <developers>
         <developer>
             <name>Cause Chung</name>
@@ -18,9 +18,9 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git@github.com:cuzfrog/jets.git</connection>
-        <developerConnection>scm:git:git@github.com:cuzfrog/jets.git</developerConnection>
-        <url>https://github.com/cuzfrog/jets/</url>
+        <connection>scm:git:git@github.com:cuzfrog/sharedtype.git</connection>
+        <developerConnection>scm:git:git@github.com:cuzfrog/sharedtype.git</developerConnection>
+        <url>https://github.com/cuzfrog/sharedtype/</url>
         <tag>HEAD</tag>
     </scm>
     <licenses>
@@ -50,13 +50,13 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.jets</groupId>
-                <artifactId>jets</artifactId>
+                <groupId>org.sharedtype</groupId>
+                <artifactId>sharedtype</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.jets</groupId>
-                <artifactId>jets-ap</artifactId>
+                <groupId>org.sharedtype</groupId>
+                <artifactId>sharedtype-ap</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

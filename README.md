@@ -1,9 +1,9 @@
-# Jets - TypeScript type emitter for Java
+# SharedType - TypeScript type emitter for Java
 
 A lightweight, fast, flexible solution to share Java types and constants in Typescript.
 
 ## Why?
-Jets uses Java annotation processing + templating. Here's a speed comparison:
+SharedType uses Java annotation processing + templating. Here's a speed comparison:
 
 ## Alternatives
 

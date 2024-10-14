@@ -3,19 +3,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.jets</groupId>
-        <artifactId>jets-parent</artifactId>
+        <groupId>org.sharedtype</groupId>
+        <artifactId>sharedtype-parent</artifactId>
         <version>0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>jets-it</artifactId>
-    <name>Jets Integration Test</name>
+    <artifactId>sharedtype-it</artifactId>
+    <name>SharedType Integration Test</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.jets</groupId>
-            <artifactId>jets</artifactId>
+            <groupId>org.sharedtype</groupId>
+            <artifactId>sharedtype</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -37,8 +37,8 @@
                 <configuration>
                     <annotationProcessorPaths>
                         <path>
-                            <groupId>org.jets</groupId>
-                            <artifactId>jets-ap</artifactId>
+                            <groupId>org.sharedtype</groupId>
+                            <artifactId>sharedtype-ap</artifactId>
                             <version>${project.version}</version>
                         </path>
                         <path>
