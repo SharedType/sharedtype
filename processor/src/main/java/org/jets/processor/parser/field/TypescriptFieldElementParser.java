@@ -104,18 +104,13 @@ final class TypescriptFieldElementParser implements FieldElementParser {
 
         var parsedTypeArgs = typeArgs.stream().map(this::parseDeclared).toList();
 
-        if (ctx.hasType(qualifiedName)) {
-            return ConcreteTypeInfo.builder()
-                    .qualifiedName(qualifiedName)
-                    .simpleName(ctx.getSimpleName(qualifiedName))
-                    .array(isArray)
-                    .typeArgs(parsedTypeArgs)
-                    .build();
-        }
+        var resolved = ctx.hasType(qualifiedName);
         return ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
-                .resolved(false)
+                .simpleName(ctx.getSimpleName(qualifiedName))
+                .array(isArray)
                 .typeArgs(parsedTypeArgs)
+                .resolved(resolved)
                 .build();
     }
 

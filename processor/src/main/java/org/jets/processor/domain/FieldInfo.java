@@ -19,6 +19,6 @@ public record FieldInfo(
 
     @Override
     public String toString() {
-        return String.format("%s %s%s",typeInfo, name, optional ? "?" : "");
+        return String.format("%s %s%s", typeInfo, name, optional ? "?" : "");
     }
 }

@@ -59,9 +59,10 @@ public final class ConcreteTypeInfo implements TypeInfo {
 
     @Override
     public String toString() {
-        return String.format("%s%s%s",
+        return String.format("%s%s%s%s",
                 qualifiedName,
                 typeArgs.isEmpty() ? "" : "<" + String.join(",", typeArgs.stream().map(TypeInfo::toString).toList()) + ">",
+                array ? "[]" : "",
                 resolved ? "" : "?"
         );
     }
