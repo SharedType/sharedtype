@@ -3,8 +3,13 @@ package org.sharedtype.processor.context;
 import lombok.Getter;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
-import java.util.Collection;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class Context {
     private final TypeCache resolvedTypes = new TypeCache();
@@ -12,13 +17,18 @@ public final class Context {
     private final ProcessingEnvironment processingEnv;
     @Getter
     private final Props props;
-    @Getter
-    private final ExtraUtils extraUtils;
+    private final Types types;
+    private final Elements elements;
+    private final Set<TypeMirror> arraylikeTypes;
 
     public Context(ProcessingEnvironment processingEnv, Props props) {
         this.processingEnv = processingEnv;
         this.props = props;
-        this.extraUtils = new ExtraUtils(processingEnv, props, this);
+        types = processingEnv.getTypeUtils();
+        elements = processingEnv.getElementUtils();
+        arraylikeTypes = props.getArraylikeTypeQualifiedNames().stream()
+                .map(qualifiedName -> types.erasure(elements.getTypeElement(qualifiedName).asType()))
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     // TODO: optimize by remove varargs
@@ -57,6 +67,28 @@ public final class Context {
      */
     public String getSimpleName(String qualifiedName) {
         return resolvedTypes.getName(qualifiedName);
+    }
+
+    public boolean isArraylike(TypeMirror typeMirror) {
+        for (TypeMirror toArrayType : arraylikeTypes) {
+            if (types.isSubtype(types.erasure(typeMirror), toArrayType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<DeclaredType> getTypeArguments(DeclaredType declaredType) {
+        var typeArgs = declaredType.getTypeArguments();
+        var list = new ArrayList<DeclaredType>(typeArgs.size());
+        for (TypeMirror typeArg : typeArgs) {
+            if (typeArg instanceof DeclaredType argDeclaredType) {
+                list.add(argDeclaredType);
+            } else {
+                error("Type argument %s is not a DeclaredType", typeArg);
+            }
+        }
+        return list;
     }
 
     private void log(Diagnostic.Kind level, String message, Object... objects) {

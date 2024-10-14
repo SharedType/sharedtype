@@ -1,9 +1,6 @@
 package org.sharedtype.processor.parser.field;
 
 import org.assertj.core.api.SoftAssertions;
-import org.sharedtype.processor.domain.ConcreteTypeInfo;
-import org.sharedtype.processor.parser.context.ContextMocks;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,6 +8,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.sharedtype.processor.context.ContextMocks;
+import org.sharedtype.processor.domain.ConcreteTypeInfo;
 
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
@@ -23,10 +22,6 @@ import static org.mockito.Mockito.when;
 class TypescriptVariableElementParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypescriptVariableElementParser parser = new TypescriptVariableElementParser(ctxMocks.getContext());
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @ParameterizedTest
     @CsvSource({
@@ -83,13 +78,13 @@ class TypescriptVariableElementParserTest {
                 .withTypeElementQualifiedName("java.util.List")
                 .withTypeArgumentQualifiedNames("java.lang.String")
                 .build();
-        when(ctxMocks.getExtraUtils().isArraylike(any())).thenReturn(true);
+        when(ctxMocks.getContext().isArraylike(any())).thenReturn(true);
 
         var typeInfo = (ConcreteTypeInfo)parser.parse(element);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
-            softly.assertThat(typeInfo.simpleName()).isNull();
-            softly.assertThat(typeInfo.resolved()).isFalse();
+            softly.assertThat(typeInfo.simpleName()).isEqualTo("string");
+            softly.assertThat(typeInfo.resolved()).isTrue();
             softly.assertThat(typeInfo.isArray()).isTrue();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });

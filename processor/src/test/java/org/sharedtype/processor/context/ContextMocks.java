@@ -1,11 +1,8 @@
-package org.sharedtype.processor.parser.context;
+package org.sharedtype.processor.context;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.sharedtype.processor.context.Context;
-import org.sharedtype.processor.context.ExtraUtils;
-import org.sharedtype.processor.context.Props;
 import org.junit.platform.commons.util.Preconditions;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -23,25 +20,34 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @Getter
 public final class ContextMocks {
+    private final TypeCache typeCache = new TypeCache();
     private final Props props;
     private final ProcessingEnvironment processingEnv = mock(ProcessingEnvironment.class);
-    private final Context context = mock(Context.class);
-    private final ExtraUtils extraUtils = mock(ExtraUtils.class);
     private final Types types = mock(Types.class);
     private final Elements elements = mock(Elements.class);
+    private final Context context = mock(Context.class);
 
     public ContextMocks(Props props) {
         this.props = props;
         when(context.getProps()).thenReturn(props);
-        when(context.getExtraUtils()).thenReturn(extraUtils);
         when(context.getProcessingEnv()).thenReturn(processingEnv);
         when(processingEnv.getElementUtils()).thenReturn(elements);
         when(processingEnv.getTypeUtils()).thenReturn(types);
+        doAnswer(invoc -> {
+            String qualifiedName = invoc.getArgument(0);
+            String simpleName = invoc.getArgument(1);
+            typeCache.add(qualifiedName, simpleName);
+            return null;
+        }).when(context).saveType(anyString(), anyString());
+        when(context.getSimpleName(anyString())).then(invoc -> typeCache.getName(invoc.getArgument(0)));
+        when(context.hasType(anyString())).then(invoc -> typeCache.contains(invoc.getArgument(0)));
     }
 
     public ContextMocks() {
@@ -51,7 +57,7 @@ public final class ContextMocks {
     public <E extends Element, T extends TypeMirror> ElementAndTypeBuilder<E, T> typeMockBuilder(Class<E> elementClass, Class<T> typeMirrorClass) {
         return new ElementAndTypeBuilder<>(mock(elementClass), mock(typeMirrorClass));
     }
-    public <E extends Element, T extends TypeMirror> ElementAndTypeBuilder<E, TypeMirror> typeMockBuilder(Class<E> elementClass) {
+    public <E extends Element> ElementAndTypeBuilder<E, TypeMirror> typeMockBuilder(Class<E> elementClass) {
         return typeMockBuilder(elementClass, TypeMirror.class);
     }
 
@@ -108,7 +114,7 @@ public final class ContextMocks {
                     when(types.asElement(typeArgMirror)).thenReturn(typeArgElement);
                     return typeArgMirror;
                 }).toList();
-                when(extraUtils.getTypeArguments(declaredType)).thenReturn(typeArgs);
+                when(context.getTypeArguments(declaredType)).thenReturn(typeArgs);
             }
             when(type.getKind()).thenReturn(typeKind);
             if (type instanceof DeclaredType || type instanceof TypeVariable) {

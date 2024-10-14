@@ -1,18 +1,5 @@
 package org.sharedtype.processor;
 
-import java.util.ArrayList;
-import java.util.Set;
-
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
-
 import com.google.auto.service.AutoService;
 import org.sharedtype.processor.context.Constants;
 import org.sharedtype.processor.context.Context;
@@ -23,6 +10,18 @@ import org.sharedtype.processor.resolver.TypeResolver;
 import org.sharedtype.processor.support.annotation.VisibleForTesting;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 import org.sharedtype.processor.writer.TypeWriter;
+
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
+import java.util.ArrayList;
+import java.util.Set;
 
 @SupportedAnnotationTypes("org.sharedtype.annotation.EmitType")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)

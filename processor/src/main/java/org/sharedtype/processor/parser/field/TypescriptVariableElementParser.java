@@ -81,13 +81,13 @@ final class TypescriptVariableElementParser implements VariableElementParser {
 
         var qualifiedName = typeElement.getQualifiedName().toString();
         var predefinedTypeInfo = predefinedObjectTypes.get(qualifiedName);
-        var typeArgs = ctx.getExtraUtils().getTypeArguments(declaredType);
+        var typeArgs = ctx.getTypeArguments(declaredType);
         if (predefinedTypeInfo != null) {
             return predefinedTypeInfo;
         }
 
         boolean isArray = false;
-        if (ctx.getExtraUtils().isArraylike(declaredType)) {
+        if (ctx.isArraylike(declaredType)) {
             ctx.checkArgument(typeArgs.size() == 1,
                     "Array type must have exactly one type argument, but got: %s, type: %s", typeArgs.size(), typeElement);
             var typeArg = typeArgs.get(0);
@@ -95,7 +95,7 @@ final class TypescriptVariableElementParser implements VariableElementParser {
             if (element instanceof TypeElement argTypeElement) {
                 qualifiedName = argTypeElement.getQualifiedName().toString();
                 isArray = true;
-                typeArgs = ctx.getExtraUtils().getTypeArguments(typeArg);
+                typeArgs = ctx.getTypeArguments(typeArg);
             } else {
                 throw new UnsupportedOperationException(String.format("Type: %s, typeArg: %s", declaredType, typeArg));
             }
