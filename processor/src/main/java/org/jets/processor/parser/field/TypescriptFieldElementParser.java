@@ -1,7 +1,9 @@
 package org.jets.processor.parser.field;
 
 import org.jets.processor.context.Context;
+import org.jets.processor.domain.ConcreteTypeInfo;
 import org.jets.processor.domain.TypeInfo;
+import org.jets.processor.domain.TypeVariableInfo;
 import org.jets.processor.support.exception.JetsInternalError;
 
 import javax.inject.Inject;
@@ -10,6 +12,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.util.HashMap;
@@ -17,34 +20,34 @@ import java.util.Map;
 
 @Singleton
 final class TypescriptFieldElementParser implements FieldElementParser {
-    private static final Map<TypeKind, TypeInfo> PRIMITIVES = Map.of(
-        TypeKind.BOOLEAN, TypeInfo.ofPredefined("boolean", "boolean"),
-        TypeKind.BYTE, TypeInfo.ofPredefined("number", "number"),
-        TypeKind.CHAR, TypeInfo.ofPredefined("string", "string"),
-        TypeKind.DOUBLE, TypeInfo.ofPredefined("number", "number"),
-        TypeKind.FLOAT, TypeInfo.ofPredefined("number", "number"),
-        TypeKind.INT, TypeInfo.ofPredefined("number", "number"),
-        TypeKind.LONG, TypeInfo.ofPredefined("number", "number"),
-        TypeKind.SHORT, TypeInfo.ofPredefined("number", "number")
+    private static final Map<TypeKind, ConcreteTypeInfo> PRIMITIVES = Map.of(
+        TypeKind.BOOLEAN, ConcreteTypeInfo.ofPredefined("boolean", "boolean"),
+        TypeKind.BYTE, ConcreteTypeInfo.ofPredefined("number", "number"),
+        TypeKind.CHAR, ConcreteTypeInfo.ofPredefined("string", "string"),
+        TypeKind.DOUBLE, ConcreteTypeInfo.ofPredefined("number", "number"),
+        TypeKind.FLOAT, ConcreteTypeInfo.ofPredefined("number", "number"),
+        TypeKind.INT, ConcreteTypeInfo.ofPredefined("number", "number"),
+        TypeKind.LONG, ConcreteTypeInfo.ofPredefined("number", "number"),
+        TypeKind.SHORT, ConcreteTypeInfo.ofPredefined("number", "number")
     );
-    private static final Map<String, TypeInfo> PREDEFINED_OBJECT_TYPES = Map.of(
-        "java.lang.Boolean", TypeInfo.ofPredefined("java.lang.Boolean", "boolean"),
-        "java.lang.Byte", TypeInfo.ofPredefined("java.lang.Byte", "number"),
-        "java.lang.Character", TypeInfo.ofPredefined("java.lang.Character", "string"),
-        "java.lang.Double", TypeInfo.ofPredefined("java.lang.Double", "number"),
-        "java.lang.Float", TypeInfo.ofPredefined("java.lang.Float", "number"),
-        "java.lang.Integer", TypeInfo.ofPredefined("java.lang.Integer", "number"),
-        "java.lang.Long", TypeInfo.ofPredefined("java.lang.Long", "number"),
-        "java.lang.Short", TypeInfo.ofPredefined("java.lang.Short", "number"),
-        "java.lang.String", TypeInfo.ofPredefined("java.lang.String", "string"),
-        "java.lang.Void", TypeInfo.ofPredefined("java.lang.Void", "never")
+    private static final Map<String, ConcreteTypeInfo> PREDEFINED_OBJECT_TYPES = Map.of(
+        "java.lang.Boolean", ConcreteTypeInfo.ofPredefined("java.lang.Boolean", "boolean"),
+        "java.lang.Byte", ConcreteTypeInfo.ofPredefined("java.lang.Byte", "number"),
+        "java.lang.Character", ConcreteTypeInfo.ofPredefined("java.lang.Character", "string"),
+        "java.lang.Double", ConcreteTypeInfo.ofPredefined("java.lang.Double", "number"),
+        "java.lang.Float", ConcreteTypeInfo.ofPredefined("java.lang.Float", "number"),
+        "java.lang.Integer", ConcreteTypeInfo.ofPredefined("java.lang.Integer", "number"),
+        "java.lang.Long", ConcreteTypeInfo.ofPredefined("java.lang.Long", "number"),
+        "java.lang.Short", ConcreteTypeInfo.ofPredefined("java.lang.Short", "number"),
+        "java.lang.String", ConcreteTypeInfo.ofPredefined("java.lang.String", "string"),
+        "java.lang.Void", ConcreteTypeInfo.ofPredefined("java.lang.Void", "never")
     );
 
     private static final String OBJECT_NAME = Object.class.getName();
     private final Context ctx;
     private final Types types;
     private final Elements elements;
-    private final Map<String, TypeInfo> predefinedObjectTypes;
+    private final Map<String, ConcreteTypeInfo> predefinedObjectTypes;
 
     @Inject
     TypescriptFieldElementParser(Context ctx) {
@@ -52,7 +55,7 @@ final class TypescriptFieldElementParser implements FieldElementParser {
         this.types = ctx.getProcessingEnv().getTypeUtils();
         this.elements = ctx.getProcessingEnv().getElementUtils();
         this.predefinedObjectTypes = new HashMap<>(PREDEFINED_OBJECT_TYPES);
-        predefinedObjectTypes.put(OBJECT_NAME, TypeInfo.ofPredefined(OBJECT_NAME, ctx.getProps().getJavaObjectMapType()));
+        predefinedObjectTypes.put(OBJECT_NAME, ConcreteTypeInfo.ofPredefined(OBJECT_NAME, ctx.getProps().getJavaObjectMapType()));
         predefinedObjectTypes.forEach((qualifiedName, typeInfo) -> ctx.saveType(qualifiedName, typeInfo.simpleName()));
     }
 
@@ -68,7 +71,7 @@ final class TypescriptFieldElementParser implements FieldElementParser {
         } else if (typeKind == TypeKind.DECLARED) {
             return parseDeclared((DeclaredType) typeMirror);
         } else if (typeKind == TypeKind.TYPEVAR) {
-            // TODO
+            return parseTypeVariable((TypeVariable) typeMirror);
         }
         throw new JetsInternalError(String.format("Unsupported field type, element: %s, typeKind: %s", element, typeKind)); // TODO: context info
     }
@@ -102,17 +105,23 @@ final class TypescriptFieldElementParser implements FieldElementParser {
         var parsedTypeArgs = typeArgs.stream().map(this::parseDeclared).toList();
 
         if (ctx.hasType(qualifiedName)) {
-            return TypeInfo.builder()
+            return ConcreteTypeInfo.builder()
                     .qualifiedName(qualifiedName)
                     .simpleName(ctx.getSimpleName(qualifiedName))
                     .array(isArray)
                     .typeArgs(parsedTypeArgs)
                     .build();
         }
-        return TypeInfo.builder()
+        return ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .resolved(false)
                 .typeArgs(parsedTypeArgs)
+                .build();
+    }
+
+    private TypeInfo parseTypeVariable(TypeVariable typeVariable) {
+        return TypeVariableInfo.builder()
+                .name(typeVariable.asElement().getSimpleName().toString())
                 .build();
     }
 }

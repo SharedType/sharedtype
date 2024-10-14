@@ -13,10 +13,12 @@ import java.util.List;
 @Builder
 @ToString
 @EqualsAndHashCode(of = "name")
-public final class ClassInfo implements DefInfo {
+public final class ClassDef implements TypeDef {
     private final String name;
     @Builder.Default
     private final List<FieldInfo> fields = Collections.emptyList();
+    @Builder.Default
+    private final List<TypeVariableInfo> typeVariables = Collections.emptyList();
 
     @Override
     public String name() {
@@ -26,6 +28,10 @@ public final class ClassInfo implements DefInfo {
     @Override
     public List<FieldInfo> components() {
         return fields;
+    }
+
+    public List<TypeVariableInfo> typeVariables() {
+        return typeVariables;
     }
 
     // TODO: optimize

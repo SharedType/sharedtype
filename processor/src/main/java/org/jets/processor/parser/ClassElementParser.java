@@ -12,8 +12,8 @@ import javax.lang.model.element.VariableElement;
 import lombok.RequiredArgsConstructor;
 import org.jets.processor.context.AnnoConfig;
 import org.jets.processor.context.Context;
-import org.jets.processor.domain.ClassInfo;
-import org.jets.processor.domain.DefInfo;
+import org.jets.processor.domain.ClassDef;
+import org.jets.processor.domain.TypeDef;
 import org.jets.processor.domain.FieldInfo;
 import org.jets.processor.parser.field.FieldElementParser;
 
@@ -24,11 +24,11 @@ final class ClassElementParser implements TypeElementParser {
     private final Context ctx;
 
     @Override
-    public List<DefInfo> parse(TypeElement typeElement) {
+    public List<TypeDef> parse(TypeElement typeElement) {
         var config = new AnnoConfig(typeElement); // TODO: validate typeElement's eligibility
         ctx.saveType(config.getQualifiedName(), config.getName());
 
-        var builder = ClassInfo.builder().name(config.getName());
+        var builder = ClassDef.builder().name(config.getName());
         var fieldElements = typeElement.getEnclosedElements().stream()
                 .filter(elem -> elem instanceof VariableElement variableElement && variableElement.getKind() == ElementKind.FIELD)
                 .toList();

@@ -17,7 +17,7 @@ import com.google.auto.service.AutoService;
 import org.jets.processor.context.Constants;
 import org.jets.processor.context.Context;
 import org.jets.processor.context.JetsProps;
-import org.jets.processor.domain.DefInfo;
+import org.jets.processor.domain.TypeDef;
 import org.jets.processor.parser.TypeElementParser;
 import org.jets.processor.resolver.TypeResolver;
 import org.jets.processor.support.annotation.VisibleForTesting;
@@ -61,7 +61,7 @@ public final class JetsAnnotationProcessor extends AbstractProcessor {
 
     @VisibleForTesting
     void doProcess(Set<? extends Element> elements) {
-        var defs = new ArrayList<DefInfo>();
+        var defs = new ArrayList<TypeDef>();
         for (Element element : elements) {
             if (element instanceof TypeElement typeElement) {
                 defs.addAll(parser.parse(typeElement));

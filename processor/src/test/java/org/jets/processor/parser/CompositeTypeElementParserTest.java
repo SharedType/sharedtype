@@ -7,7 +7,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import org.jets.processor.context.Context;
-import org.jets.processor.domain.ClassInfo;
+import org.jets.processor.domain.ClassDef;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ final class CompositeTypeElementParserTest {
 
     private @Mock TypeElement typeElement;
     private final Context ctx = new Context(null, null);
-    private final ClassInfo typeInfo = ClassInfo.builder().build();
+    private final ClassDef typeInfo = ClassDef.builder().build();
 
     @BeforeEach
     void setUp() {

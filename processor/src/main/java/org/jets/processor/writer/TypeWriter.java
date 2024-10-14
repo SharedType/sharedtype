@@ -2,8 +2,8 @@ package org.jets.processor.writer;
 
 import java.util.List;
 
-import org.jets.processor.domain.DefInfo;
+import org.jets.processor.domain.TypeDef;
 
 public interface TypeWriter {
-  void write(List<DefInfo> typeDefs);
+  void write(List<TypeDef> typeDefs);
 }

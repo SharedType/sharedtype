@@ -1,10 +1,9 @@
 package org.jets.processor.domain;
 
-import java.util.Set;
+import lombok.Builder;
 
 import javax.lang.model.element.Modifier;
-
-import lombok.Builder;
+import java.util.Set;
 
 @Builder
 public record FieldInfo(
@@ -16,5 +15,10 @@ public record FieldInfo(
 
     public boolean resolved() {
         return typeInfo.resolved();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s%s",typeInfo, name, optional ? "?" : "");
     }
 }

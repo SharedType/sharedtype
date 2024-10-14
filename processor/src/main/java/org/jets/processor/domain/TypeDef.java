@@ -2,7 +2,7 @@ package org.jets.processor.domain;
 
 import java.util.List;
 
-public sealed interface DefInfo permits ClassInfo{
+public sealed interface TypeDef permits ClassDef {
   String name();
 
   List<? extends ComponentInfo> components();
