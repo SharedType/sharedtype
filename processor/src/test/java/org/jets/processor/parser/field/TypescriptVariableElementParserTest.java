@@ -4,19 +4,19 @@ import org.assertj.core.api.SoftAssertions;
 import org.jets.processor.domain.ConcreteTypeInfo;
 import org.jets.processor.parser.context.ContextMocks;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-import javax.lang.model.element.Name;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,10 +40,7 @@ class TypescriptVariableElementParserTest {
             "BOOLEAN, boolean"
     })
     void parsePrimitives(TypeKind typeKind, String expectedSimpleName) {
-        var element = mock(VariableElement.class);
-        var typeMirror = mock(TypeMirror.class);
-        when(element.asType()).thenReturn(typeMirror);
-        when(typeMirror.getKind()).thenReturn(typeKind);
+        var element = ctxMocks.typeMockBuilder(VariableElement.class).withTypeKind(typeKind).build();
 
         var typeInfo = (ConcreteTypeInfo)parser.parse(element);
         SoftAssertions.assertSoftly(softly -> {
@@ -67,16 +64,8 @@ class TypescriptVariableElementParserTest {
             "java.lang.Object, any"
     })
     void parsePredefinedObject(String objectName, String expectedSimpleName) {
-        var element = mock(VariableElement.class);
-        var typeMirror = mock(DeclaredType.class);
-        when(element.asType()).thenReturn(typeMirror);
-        when(typeMirror.getKind()).thenReturn(TypeKind.DECLARED);
-
-        var typeElement = mock(TypeElement.class);
-        when(typeMirror.asElement()).thenReturn(typeElement);
-        var typeElementName = mock(Name.class);
-        when(typeElement.getQualifiedName()).thenReturn(typeElementName);
-        when(typeElementName.toString()).thenReturn(objectName);
+        var element = ctxMocks.typeMockBuilder(VariableElement.class, DeclaredType.class)
+                .withTypeKind(TypeKind.DECLARED).withTypeElementQualifiedName(objectName).build();
 
         var typeInfo = (ConcreteTypeInfo)parser.parse(element);
         SoftAssertions.assertSoftly(softly -> {
@@ -84,6 +73,25 @@ class TypescriptVariableElementParserTest {
             softly.assertThat(typeInfo.simpleName()).isEqualTo(expectedSimpleName);
             softly.assertThat(typeInfo.resolved()).isTrue();
             softly.assertThat(typeInfo.isArray()).isFalse();
+        });
+    }
+
+    @Test @MockitoSettings(strictness = Strictness.LENIENT)
+    void parseArraylikeObject() {
+        var element = ctxMocks.typeMockBuilder(VariableElement.class, DeclaredType.class)
+                .withTypeKind(TypeKind.DECLARED)
+                .withTypeElementQualifiedName("java.util.List")
+                .withTypeArgumentQualifiedNames("java.lang.String")
+                .build();
+        when(ctxMocks.getExtraUtils().isArraylike(any())).thenReturn(true);
+
+        var typeInfo = (ConcreteTypeInfo)parser.parse(element);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
+            softly.assertThat(typeInfo.simpleName()).isNull();
+            softly.assertThat(typeInfo.resolved()).isFalse();
+            softly.assertThat(typeInfo.isArray()).isTrue();
+            softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
     }
 }

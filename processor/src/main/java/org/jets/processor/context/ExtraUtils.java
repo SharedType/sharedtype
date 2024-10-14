@@ -34,7 +34,7 @@ public final class ExtraUtils {
         return false;
     }
 
-    public List<? extends DeclaredType> getTypeArguments(DeclaredType declaredType) {
+    public List<DeclaredType> getTypeArguments(DeclaredType declaredType) {
         var typeArgs = declaredType.getTypeArguments();
         var list = new ArrayList<DeclaredType>(typeArgs.size());
         for (TypeMirror typeArg : typeArgs) {
