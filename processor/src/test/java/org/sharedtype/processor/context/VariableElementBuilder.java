@@ -32,7 +32,7 @@ public final class VariableElementBuilder<T extends TypeMirror> extends Abstract
         return this;
     }
 
-    public VariableElementBuilder<T> withTypeArguments(DeclaredType... typeArgsArr) {
+    public VariableElementBuilder<T> withTypeArguments(TypeMirror... typeArgsArr) {
         var typeArgs = Arrays.asList(typeArgsArr);
         if (type instanceof DeclaredType declaredType) {
             when(declaredType.getTypeArguments()).thenAnswer(invoc -> typeArgs);

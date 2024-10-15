@@ -1,4 +1,4 @@
-package org.sharedtype.processor.parser.field;
+package org.sharedtype.processor.parser.type;
 
 import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.domain.ConcreteTypeInfo;
@@ -22,7 +22,7 @@ import java.util.Map;
 import static org.sharedtype.processor.support.Preconditions.checkArgument;
 
 @Singleton
-final class TypescriptVariableElementParser implements VariableElementParser {
+final class TypescriptTypeMirrorParser implements TypeMirrorParser {
     private static final Map<TypeKind, ConcreteTypeInfo> PRIMITIVES = Map.of(
         TypeKind.BOOLEAN, ConcreteTypeInfo.ofPredefined("boolean", "boolean"),
         TypeKind.BYTE, ConcreteTypeInfo.ofPredefined("byte", "number"),
@@ -53,7 +53,7 @@ final class TypescriptVariableElementParser implements VariableElementParser {
     private final Map<String, ConcreteTypeInfo> predefinedObjectTypes;
 
     @Inject
-    TypescriptVariableElementParser(Context ctx) {
+    TypescriptTypeMirrorParser(Context ctx) {
         this.ctx = ctx;
         this.types = ctx.getProcessingEnv().getTypeUtils();
         this.elements = ctx.getProcessingEnv().getElementUtils();

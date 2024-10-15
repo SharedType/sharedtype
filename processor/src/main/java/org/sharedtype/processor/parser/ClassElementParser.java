@@ -7,7 +7,7 @@ import org.sharedtype.processor.domain.ClassDef;
 import org.sharedtype.processor.domain.FieldInfo;
 import org.sharedtype.processor.domain.TypeDef;
 import org.sharedtype.processor.domain.TypeVariableInfo;
-import org.sharedtype.processor.parser.field.VariableElementParser;
+import org.sharedtype.processor.parser.type.TypeMirrorParser;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 @Singleton
 final class ClassElementParser implements TypeElementParser {
-    private final VariableElementParser variableElementParser;
+    private final TypeMirrorParser typeMirrorParser;
     private final Context ctx;
 
     @Override
@@ -59,7 +59,7 @@ final class ClassElementParser implements TypeElementParser {
               .name(element.getSimpleName().toString())
               .modifiers(element.getModifiers())
               .optional(element.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
-              .typeInfo(variableElementParser.parse(element.asType()))
+              .typeInfo(typeMirrorParser.parse(element.asType()))
               .build();
             fields.add(fieldInfo);
         }

@@ -48,4 +48,8 @@ public final class ContextMocks {
     public <T extends TypeMirror> VariableElementBuilder<T> variableElement(Class<T> typeClazz) {
         return new VariableElementBuilder<>(typeClazz, context, types);
     }
+
+    public TypeParameterElementBuilder typeParameterElement(String simpleName) {
+        return new TypeParameterElementBuilder(simpleName, context, types);
+    }
 }

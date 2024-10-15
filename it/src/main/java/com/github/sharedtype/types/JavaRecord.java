@@ -3,6 +3,7 @@ package com.github.sharedtype.types;
 import org.sharedtype.annotation.EmitType;
 
 import java.util.List;
+import java.util.Set;
 
 @EmitType
 public record JavaRecord<T, K>(
@@ -29,7 +30,9 @@ public record JavaRecord<T, K>(
 //    DependencyClassA a, // cyclic a -> b -> c -> a
 
 //    List<Container<String>> containerStringList,
-    List<T> genericList
+    List<T> genericList,
+    Set<T> genericSet
+//    List<Set<T>> genericListSet
 //    Map<K, T> genericMap
 ) {
 }

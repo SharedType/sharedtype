@@ -1,11 +1,11 @@
-package org.sharedtype.processor.parser.field;
+package org.sharedtype.processor.parser.type;
 
 import org.sharedtype.annotation.EmitType;
 import org.sharedtype.processor.domain.TypeInfo;
 
 import javax.lang.model.type.TypeMirror;
 
-public interface VariableElementParser {
+public interface TypeMirrorParser {
     /**
      * If a dependent type is not explicitly registered by {@link EmitType},
      * it may not have been resolved in the context by the time of the mapper call.

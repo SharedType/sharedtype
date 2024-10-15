@@ -1,4 +1,4 @@
-package org.sharedtype.processor.parser.field;
+package org.sharedtype.processor.parser.type;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
@@ -21,9 +21,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-class TypescriptVariableElementParserTest {
+class TypescriptTypeMirrorParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final TypescriptVariableElementParser parser = new TypescriptVariableElementParser(ctxMocks.getContext());
+    private final TypescriptTypeMirrorParser parser = new TypescriptTypeMirrorParser(ctxMocks.getContext());
 
     @ParameterizedTest
     @CsvSource({
@@ -159,7 +159,7 @@ class TypescriptVariableElementParserTest {
             ctxMocks.typeElement("com.github.cuzfrog.Container").element()
           )
           .withTypeArguments(
-            ctxMocks.typeElement("T").type()
+            ctxMocks.typeParameterElement("T").type()
           )
           .type();
 

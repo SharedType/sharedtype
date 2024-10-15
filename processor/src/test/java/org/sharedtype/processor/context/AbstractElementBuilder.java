@@ -36,4 +36,10 @@ abstract class AbstractElementBuilder<E extends Element, T extends TypeMirror, B
         when(typeElement.getQualifiedName()).thenReturn(typeElementName);
         when(typeElementName.toString()).thenReturn(qualifiedName);
     }
+
+    static void setSimpleName(Element element, String simpleName) {
+        var elementName = mock(Name.class);
+        when(element.getSimpleName()).thenReturn(elementName);
+        when(elementName.toString()).thenReturn(simpleName);
+    }
 }

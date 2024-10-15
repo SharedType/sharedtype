@@ -1,12 +1,12 @@
 package org.sharedtype.processor.parser;
 
-import javax.lang.model.element.ElementKind;
-
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
-import org.sharedtype.processor.parser.field.TypeParserModule;
+import org.sharedtype.processor.parser.type.TypeParserModule;
 import org.sharedtype.processor.support.dagger.ElementKindKey;
+
+import javax.lang.model.element.ElementKind;
 
 @Module(includes = TypeParserModule.class)
 public abstract class ParserModule {
