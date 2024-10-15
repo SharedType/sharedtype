@@ -41,11 +41,11 @@ public final class ContextMocks {
         this(new Props());
     }
 
-    public TypeElementBuilder buildTypeElement(String qualifiedName) {
+    public TypeElementBuilder typeElement(String qualifiedName) {
         return new TypeElementBuilder(qualifiedName, context, types);
     }
 
-    public <T extends TypeMirror> VariableElementBuilder<T> buildVariableElement(Class<T> typeClazz) {
+    public <T extends TypeMirror> VariableElementBuilder<T> variableElement(Class<T> typeClazz) {
         return new VariableElementBuilder<>(typeClazz, context, types);
     }
 }
