@@ -2,8 +2,8 @@ package org.sharedtype.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,7 +11,6 @@ import java.util.List;
  * Represents info captured from a POJO or record.
  */
 @Builder
-@ToString
 @EqualsAndHashCode(of = "name")
 public final class ClassDef implements TypeDef {
     private final String name;
@@ -43,5 +42,14 @@ public final class ClassDef implements TypeDef {
             }
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        var rows = new ArrayList<String>(fields.size()+2);
+        rows.add(String.format("%s%s {", name, typeVariables.isEmpty() ? "" : "<" + String.join(",", typeVariables.stream().map(TypeVariableInfo::toString).toList()) + ">"));
+        rows.addAll(fields.stream().map(f -> String.format("  %s", f)).toList());
+        rows.add("}");
+        return String.join(System.lineSeparator(), rows);
     }
 }

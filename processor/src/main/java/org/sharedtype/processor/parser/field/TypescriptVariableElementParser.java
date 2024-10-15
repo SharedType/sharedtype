@@ -9,14 +9,17 @@ import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.sharedtype.processor.support.Preconditions.checkArgument;
 
 @Singleton
 final class TypescriptVariableElementParser implements VariableElementParser {
@@ -60,8 +63,7 @@ final class TypescriptVariableElementParser implements VariableElementParser {
     }
 
     @Override
-    public TypeInfo parse(VariableElement element) {
-        var typeMirror = element.asType();
+    public TypeInfo parse(TypeMirror typeMirror) {
         var typeKind = typeMirror.getKind();
 
         if (typeKind.isPrimitive()) {
@@ -73,7 +75,7 @@ final class TypescriptVariableElementParser implements VariableElementParser {
         } else if (typeKind == TypeKind.TYPEVAR) {
             return parseTypeVariable((TypeVariable) typeMirror);
         }
-        throw new SharedTypeInternalError(String.format("Unsupported field type, element: %s, typeKind: %s", element, typeKind)); // TODO: context info
+        throw new SharedTypeInternalError(String.format("Unsupported field type, element: %s, typeKind: %s", typeMirror, typeKind)); // TODO: context info
     }
 
     private TypeInfo parseDeclared(DeclaredType declaredType) {
@@ -81,29 +83,37 @@ final class TypescriptVariableElementParser implements VariableElementParser {
 
         var qualifiedName = typeElement.getQualifiedName().toString();
         var predefinedTypeInfo = predefinedObjectTypes.get(qualifiedName);
-        var typeArgs = ctx.getTypeArguments(declaredType);
+        var typeArgs = declaredType.getTypeArguments();
+        declaredType.getTypeArguments();
         if (predefinedTypeInfo != null) {
             return predefinedTypeInfo;
         }
 
         boolean isArray = false;
+        boolean noNeedToResolve = false;
         if (ctx.isArraylike(declaredType)) {
-            ctx.checkArgument(typeArgs.size() == 1,
-                    "Array type must have exactly one type argument, but got: %s, type: %s", typeArgs.size(), typeElement);
+            checkArgument(typeArgs.size() == 1, "Array type must have exactly one type argument, but got: %s, type: %s", typeArgs.size(), typeElement);
+            isArray = true;
             var typeArg = typeArgs.get(0);
-            var element = types.asElement(typeArg);
-            if (element instanceof TypeElement argTypeElement) {
-                qualifiedName = argTypeElement.getQualifiedName().toString();
-                isArray = true;
-                typeArgs = ctx.getTypeArguments(typeArg);
-            } else {
-                throw new UnsupportedOperationException(String.format("Type: %s, typeArg: %s", declaredType, typeArg));
+            if (typeArg instanceof DeclaredType argDeclaredType) {
+                var element = types.asElement(typeArg);
+                if (element instanceof TypeElement argTypeElement) {
+                    qualifiedName = argTypeElement.getQualifiedName().toString();
+                    typeArgs = argDeclaredType.getTypeArguments();
+                } else {
+                    throw new UnsupportedOperationException(String.format("Type: %s, typeArg: %s", declaredType, typeArg));
+                }
+            } else if (typeArg instanceof TypeVariable argTypeVariable) {
+                var typeVarInfo = parseTypeVariable(argTypeVariable);
+                qualifiedName = typeVarInfo.getName();
+                typeArgs = Collections.emptyList();
+                noNeedToResolve = true;
             }
         }
 
-        var parsedTypeArgs = typeArgs.stream().map(this::parseDeclared).toList();
+        var resolved = noNeedToResolve ||ctx.hasType(qualifiedName);
+        var parsedTypeArgs = typeArgs.stream().map(this::parse).toList();
 
-        var resolved = ctx.hasType(qualifiedName);
         return ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .simpleName(ctx.getSimpleName(qualifiedName))
@@ -113,7 +123,7 @@ final class TypescriptVariableElementParser implements VariableElementParser {
                 .build();
     }
 
-    private TypeInfo parseTypeVariable(TypeVariable typeVariable) {
+    private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable) {
         return TypeVariableInfo.builder()
                 .name(typeVariable.asElement().getSimpleName().toString())
                 .build();

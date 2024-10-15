@@ -16,10 +16,6 @@ final class ConsoleDebugWriter implements TypeWriter{
     @Override
     public void write(List<TypeDef> typeDefs) {
         // TODO
-        typeDefs.forEach(d-> {
-            ctx.info("Write type: %s {", d.name());
-            d.components().forEach(c-> ctx.info("  %s", c));
-            ctx.info("}");
-        });
+        typeDefs.forEach(d-> ctx.info("Write type: %s%s", System.lineSeparator(), d));
     }
 }

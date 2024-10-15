@@ -3,12 +3,11 @@ package org.sharedtype.processor.context;
 import lombok.Getter;
 
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
-import java.util.*;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class Context {
@@ -40,19 +39,6 @@ public final class Context {
         log(Diagnostic.Kind.ERROR, message, objects);
     }
 
-    public void checkArgument(boolean condition, String message, Object... objects) {
-        if (!condition) {
-            log(Diagnostic.Kind.ERROR, message, objects);
-        }
-    }
-
-    public <T extends Collection<?>> T requireNonEmpty(T c, String message, Object... objects) {
-        if (c.isEmpty()) {
-            log(Diagnostic.Kind.ERROR, message, objects);
-        }
-        return c;
-    }
-
     public void saveType(String qualifiedName, String name) {
         resolvedTypes.add(qualifiedName, name);
     }
@@ -76,19 +62,6 @@ public final class Context {
             }
         }
         return false;
-    }
-
-    public List<DeclaredType> getTypeArguments(DeclaredType declaredType) {
-        var typeArgs = declaredType.getTypeArguments();
-        var list = new ArrayList<DeclaredType>(typeArgs.size());
-        for (TypeMirror typeArg : typeArgs) {
-            if (typeArg instanceof DeclaredType argDeclaredType) {
-                list.add(argDeclaredType);
-            } else {
-                error("Type argument %s is not a DeclaredType", typeArg);
-            }
-        }
-        return list;
     }
 
     private void log(Diagnostic.Kind level, String message, Object... objects) {

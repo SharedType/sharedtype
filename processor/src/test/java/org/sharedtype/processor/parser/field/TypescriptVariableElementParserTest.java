@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.sharedtype.processor.context.ContextMocks;
 import org.sharedtype.processor.domain.ConcreteTypeInfo;
+import org.sharedtype.processor.domain.TypeVariableInfo;
 
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
@@ -36,9 +37,9 @@ class TypescriptVariableElementParserTest {
       "BOOLEAN, boolean"
     })
     void parsePrimitives(TypeKind typeKind, String expectedSimpleName) {
-        var element = ctxMocks.variableElement(PrimitiveType.class).withTypeKind(typeKind).element();
+        var type = ctxMocks.variableElement(PrimitiveType.class).withTypeKind(typeKind).type();
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(element);
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.simpleName()).isEqualTo(expectedSimpleName);
             softly.assertThat(typeInfo.resolved()).isTrue();
@@ -60,11 +61,12 @@ class TypescriptVariableElementParserTest {
       "java.lang.Object, any"
     })
     void parsePredefinedObject(String objectName, String expectedSimpleName) {
-        var typeElement = ctxMocks.typeElement(objectName).element();
-        var element = ctxMocks.variableElement(DeclaredType.class)
-          .withTypeKind(TypeKind.DECLARED).withTypeElement(typeElement).element();
+        var type = ctxMocks.variableElement(DeclaredType.class)
+          .withTypeKind(TypeKind.DECLARED)
+          .withTypeElement(ctxMocks.typeElement(objectName).element())
+          .type();
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(element);
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo(objectName);
             softly.assertThat(typeInfo.simpleName()).isEqualTo(expectedSimpleName);
@@ -75,16 +77,16 @@ class TypescriptVariableElementParserTest {
 
     @Test
     void parseArraylikeObject() {
-        var element = ctxMocks.variableElement(DeclaredType.class)
+        var type = ctxMocks.variableElement(DeclaredType.class)
           .withTypeKind(TypeKind.DECLARED)
           .withTypeElement(
             ctxMocks.typeElement("java.util.List").element()
           )
           .withTypeArguments(ctxMocks.typeElement("java.lang.String").type())
-          .element();
+          .type();
         when(ctxMocks.getContext().isArraylike(any())).thenReturn(true);
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(element);
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
             softly.assertThat(typeInfo.simpleName()).isEqualTo("string");
@@ -96,12 +98,12 @@ class TypescriptVariableElementParserTest {
 
     @Test
     void parseObject() {
-        var element = ctxMocks.variableElement(DeclaredType.class)
+        var type = ctxMocks.variableElement(DeclaredType.class)
           .withTypeKind(TypeKind.DECLARED)
           .withTypeElement(ctxMocks.typeElement("com.github.cuzfrog.Abc").element())
-          .element();
+          .type();
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(element);
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
             softly.assertThat(typeInfo.simpleName()).isNull();
@@ -112,8 +114,8 @@ class TypescriptVariableElementParserTest {
     }
 
     @Test
-    void parseGenericObject() {
-        var element = ctxMocks.variableElement(DeclaredType.class)
+    void parseGenericObjectWithKnownTypeArgs() {
+        var type = ctxMocks.variableElement(DeclaredType.class)
           .withTypeKind(TypeKind.DECLARED)
           .withTypeElement(
             ctxMocks.typeElement("com.github.cuzfrog.Tuple").element()
@@ -122,9 +124,9 @@ class TypescriptVariableElementParserTest {
             ctxMocks.typeElement("java.lang.String").type(),
             ctxMocks.typeElement("com.github.cuzfrog.Abc").type()
           )
-          .element();
+          .type();
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(element);
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Tuple");
             softly.assertThat(typeInfo.simpleName()).isNull();
@@ -144,6 +146,34 @@ class TypescriptVariableElementParserTest {
                   softly.assertThat(typeArg.resolved()).isFalse();
                   softly.assertThat(typeArg.isArray()).isFalse();
                   softly.assertThat(typeArg.typeArgs()).isEmpty();
+              }
+            );
+        });
+    }
+
+    @Test
+    void parseGenericObjectWithTypeVar() {
+        var type = ctxMocks.variableElement(DeclaredType.class)
+          .withTypeKind(TypeKind.DECLARED)
+          .withTypeElement(
+            ctxMocks.typeElement("com.github.cuzfrog.Container").element()
+          )
+          .withTypeArguments(
+            ctxMocks.typeElement("T").type()
+          )
+          .type();
+
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Container");
+            softly.assertThat(typeInfo.simpleName()).isNull();
+            softly.assertThat(typeInfo.resolved()).isFalse();
+            softly.assertThat(typeInfo.isArray()).isFalse();
+            softly.assertThat(typeInfo.typeArgs()).map(t -> (TypeVariableInfo) t).satisfiesExactly(
+              typeArg -> {
+                  softly.assertThat(typeArg.getName()).isEqualTo("T");
+                  softly.assertThat(typeArg.resolved()).isTrue();
+                  softly.assertThat(typeArg.isArray()).isFalse();
               }
             );
         });

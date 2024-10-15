@@ -28,8 +28,8 @@ public record JavaRecord<T, K>(
 
 //    DependencyClassA a, // cyclic a -> b -> c -> a
 
-    List<Container<String>> containerStringList
-//    List<T> genericList,
+//    List<Container<String>> containerStringList,
+    List<T> genericList
 //    Map<K, T> genericMap
 ) {
 }

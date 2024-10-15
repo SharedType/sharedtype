@@ -23,6 +23,8 @@ import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.Set;
 
+import static org.sharedtype.processor.support.Preconditions.checkArgument;
+
 @SupportedAnnotationTypes("org.sharedtype.annotation.EmitType")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @AutoService(Processor.class)
@@ -52,7 +54,7 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
             throw new SharedTypeInternalError(String.format("Only '%s' is expected.", Constants.ANNOTATION_QUALIFIED_NAME));
         }
         var annotation = annotations.iterator().next();
-        ctx.checkArgument(annotation.getQualifiedName().contentEquals(Constants.ANNOTATION_QUALIFIED_NAME), null);
+        checkArgument(annotation.getQualifiedName().contentEquals(Constants.ANNOTATION_QUALIFIED_NAME), "Wrong anno: %s", annotation);
 
         doProcess(roundEnv.getElementsAnnotatedWith(annotation));
         return ANNOTATION_CONSUMED;

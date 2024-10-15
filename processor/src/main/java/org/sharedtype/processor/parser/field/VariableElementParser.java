@@ -3,7 +3,7 @@ package org.sharedtype.processor.parser.field;
 import org.sharedtype.annotation.EmitType;
 import org.sharedtype.processor.domain.TypeInfo;
 
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 public interface VariableElementParser {
     /**
@@ -15,6 +15,6 @@ public interface VariableElementParser {
      * So there's no information, e.g. name, saved in global context yet.
      * </p>
      */
-    TypeInfo parse(VariableElement element);
+    TypeInfo parse(TypeMirror typeMirror);
 
 }
