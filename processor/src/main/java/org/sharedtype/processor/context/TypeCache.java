@@ -21,4 +21,9 @@ final class TypeCache {
     public boolean contains(String qualifiedName) {
         return qualifiedNames.contains(qualifiedName);
     }
+
+    void clear() {
+        qualifiedNames.clear();
+        names.clear();
+    }
 }

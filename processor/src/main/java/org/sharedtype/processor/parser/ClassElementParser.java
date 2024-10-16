@@ -20,8 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 @Singleton
 final class ClassElementParser implements TypeElementParser {
-    private final TypeMirrorParser typeMirrorParser;
     private final Context ctx;
+    private final TypeMirrorParser typeMirrorParser;
 
     @Override
     public List<TypeDef> parse(TypeElement typeElement) {
@@ -32,9 +32,11 @@ final class ClassElementParser implements TypeElementParser {
         builder.typeVariables(parseTypeVariables(typeElement));
         builder.fields(parseFields(typeElement, config));
 
-        if (config.toIncludeGetters()) {
+        if (config.toIncludeAccessors()) {
             // TODO
         }
+
+        // TODO supertypes
 
         return List.of(builder.build());
     }
@@ -52,14 +54,14 @@ final class ClassElementParser implements TypeElementParser {
           .toList();
         var fields = new ArrayList<FieldInfo>(fieldElements.size());
         for (var element : fieldElements) {
-            if (config.isComponentExcluded(element)) {
+            if (config.isComponentIgnored(element)) {
                 continue;
             }
             var fieldInfo = FieldInfo.builder()
               .name(element.getSimpleName().toString())
               .modifiers(element.getModifiers())
               .optional(element.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
-              .typeInfo(typeMirrorParser.parse(element.asType()))
+              .type(typeMirrorParser.parse(element.asType()))
               .build();
             fields.add(fieldInfo);
         }

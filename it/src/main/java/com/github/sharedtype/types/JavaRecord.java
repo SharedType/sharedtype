@@ -1,12 +1,12 @@
 package com.github.sharedtype.types;
 
-import org.sharedtype.annotation.EmitType;
+import org.sharedtype.annotation.SharedType;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-@EmitType
+@SharedType
 public record JavaRecord<T, K>(
 //    String string,
 //    byte primitiveByte,

@@ -2,12 +2,8 @@ package org.sharedtype.processor.parser.type;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.sharedtype.processor.context.ContextMocks;
 import org.sharedtype.processor.domain.ArrayTypeInfo;
 import org.sharedtype.processor.domain.ConcreteTypeInfo;
@@ -19,8 +15,6 @@ import javax.lang.model.type.TypeKind;
 
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class TypescriptTypeMirrorParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypescriptTypeMirrorParser parser = new TypescriptTypeMirrorParser(ctxMocks.getContext());
@@ -37,7 +31,7 @@ class TypescriptTypeMirrorParserTest {
       "BOOLEAN, boolean"
     })
     void parsePrimitives(TypeKind typeKind, String expectedSimpleName) {
-        var type = ctxMocks.variableElement(PrimitiveType.class).withTypeKind(typeKind).type();
+        var type = ctxMocks.variableElement("field1", PrimitiveType.class).withTypeKind(typeKind).type();
 
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
@@ -45,7 +39,7 @@ class TypescriptTypeMirrorParserTest {
             softly.assertThat(typeInfo.resolved()).isTrue();
         });
 
-        var arrayType =ctxMocks.array(type).type();
+        var arrayType = ctxMocks.array(type).type();
         var arrayTypeInfo = (ArrayTypeInfo) parser.parse(arrayType);
         SoftAssertions.assertSoftly(softly -> {
             var componentTypeInfo = (ConcreteTypeInfo) arrayTypeInfo.getComponent();
@@ -69,7 +63,7 @@ class TypescriptTypeMirrorParserTest {
       "java.lang.Object, any"
     })
     void parsePredefinedObject(String objectName, String expectedSimpleName) {
-        var type = ctxMocks.variableElement(DeclaredType.class)
+        var type = ctxMocks.variableElement("field1", DeclaredType.class)
           .withTypeKind(TypeKind.DECLARED)
           .withTypeElement(ctxMocks.typeElement(objectName).element())
           .type();
@@ -81,7 +75,7 @@ class TypescriptTypeMirrorParserTest {
             softly.assertThat(typeInfo.resolved()).isTrue();
         });
 
-        var arrayType =ctxMocks.array(type).type();
+        var arrayType = ctxMocks.array(type).type();
         var arrayTypeInfo = (ArrayTypeInfo) parser.parse(arrayType);
         SoftAssertions.assertSoftly(softly -> {
             var componentTypeInfo = (ConcreteTypeInfo) arrayTypeInfo.getComponent();
@@ -92,7 +86,7 @@ class TypescriptTypeMirrorParserTest {
 
     @Test
     void parseArraylikeObject() {
-        var type = ctxMocks.variableElement(DeclaredType.class)
+        var type = ctxMocks.variableElement("field1", DeclaredType.class)
           .withTypeKind(TypeKind.DECLARED)
           .withTypeElement(
             ctxMocks.typeElement("java.util.List").element()
@@ -118,7 +112,7 @@ class TypescriptTypeMirrorParserTest {
             ctxMocks.typeElement("java.lang.String").type()
           )
           .type();
-        var type = ctxMocks.variableElement(DeclaredType.class)
+        var type = ctxMocks.variableElement("field1", DeclaredType.class)
           .withTypeKind(TypeKind.DECLARED)
           .withTypeElement(
             ctxMocks.typeElement("java.util.List").element()
@@ -143,7 +137,7 @@ class TypescriptTypeMirrorParserTest {
 
     @Test
     void parseObject() {
-        var type = ctxMocks.variableElement(DeclaredType.class)
+        var type = ctxMocks.variableElement("field1", DeclaredType.class)
           .withTypeKind(TypeKind.DECLARED)
           .withTypeElement(ctxMocks.typeElement("com.github.cuzfrog.Abc").element())
           .type();
@@ -159,7 +153,7 @@ class TypescriptTypeMirrorParserTest {
 
     @Test
     void parseGenericObjectWithKnownTypeArgs() {
-        var type = ctxMocks.variableElement(DeclaredType.class)
+        var type = ctxMocks.variableElement("field1", DeclaredType.class)
           .withTypeKind(TypeKind.DECLARED)
           .withTypeElement(
             ctxMocks.typeElement("com.github.cuzfrog.Tuple").element()
@@ -194,7 +188,7 @@ class TypescriptTypeMirrorParserTest {
 
     @Test
     void parseGenericObjectWithTypeVar() {
-        var type = ctxMocks.variableElement(DeclaredType.class)
+        var type = ctxMocks.variableElement("field1", DeclaredType.class)
           .withTypeKind(TypeKind.DECLARED)
           .withTypeElement(
             ctxMocks.typeElement("com.github.cuzfrog.Container").element()

@@ -10,15 +10,15 @@ public record FieldInfo(
         String name,
         Set<Modifier> modifiers,
         boolean optional,
-        TypeInfo typeInfo
+        TypeInfo type
 ) implements ComponentInfo {
 
     public boolean resolved() {
-        return typeInfo.resolved();
+        return type.resolved();
     }
 
     @Override
     public String toString() {
-        return String.format("%s %s%s", typeInfo, name, optional ? "?" : "");
+        return String.format("%s %s%s", type, name, optional ? "?" : "");
     }
 }

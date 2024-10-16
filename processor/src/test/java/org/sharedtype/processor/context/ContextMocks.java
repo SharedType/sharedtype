@@ -45,8 +45,8 @@ public final class ContextMocks {
         return new TypeElementMock(qualifiedName, context, types);
     }
 
-    public <T extends TypeMirror> VariableElementMock<T> variableElement(Class<T> typeClazz) {
-        return new VariableElementMock<>(typeClazz, context, types);
+    public <T extends TypeMirror> VariableElementMock<T> variableElement(String name, Class<T> typeClazz) {
+        return new VariableElementMock<>(name, typeClazz, context, types);
     }
 
     public TypeParameterElementMock typeParameterElement(String simpleName) {

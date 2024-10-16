@@ -1,6 +1,7 @@
 package org.sharedtype.processor.context;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -25,6 +26,11 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, B ex
         this.ctx = ctx;
         this.types = types;
         when(element.asType()).thenReturn(type);
+    }
+
+    public B withElementKind(ElementKind elementKind) {
+        when(element.getKind()).thenReturn(elementKind);
+        return (B)this;
     }
 
     public B withTypeArguments(TypeMirror... typeArgsArr) {

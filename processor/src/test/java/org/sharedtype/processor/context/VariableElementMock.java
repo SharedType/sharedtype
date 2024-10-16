@@ -12,8 +12,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public final class VariableElementMock<T extends TypeMirror> extends AbstractElementMock<VariableElement, T, VariableElementMock<T>> {
-    VariableElementMock(Class<T> typeClazz, Context ctx, Types types) {
+    VariableElementMock(String name, Class<T> typeClazz, Context ctx, Types types) {
         super(mock(VariableElement.class), mock(typeClazz), ctx, types);
+        setSimpleName(element, name);
     }
 
     public VariableElementMock<T> withTypeKind(TypeKind typeKind) {

@@ -1,26 +1,23 @@
 package org.sharedtype.processor.context;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.Set;
+import lombok.Getter;
+import org.sharedtype.annotation.SharedType;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-
-import lombok.Getter;
-import org.sharedtype.annotation.EmitType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 public final class Config {
-  private final EmitType anno;
+  private final SharedType anno;
   @Getter
   private final String name;
   @Getter
   private final String qualifiedName;
-  private final Set<String> excludes;
 
   @Retention(RetentionPolicy.RUNTIME)
   private @interface AnnoContainer {
-    EmitType anno() default @EmitType;
+    SharedType anno() default @SharedType;
   }
 
   @AnnoContainer
@@ -28,18 +25,18 @@ public final class Config {
 
   public Config(TypeElement typeElement) {
     var simpleName = typeElement.getSimpleName().toString();
-    var annoFromType = typeElement.getAnnotation(EmitType.class);
+    var annoFromType = typeElement.getAnnotation(SharedType.class);
     this.anno = annoFromType == null ? DummyDefault.class.getAnnotation(AnnoContainer.class).anno() : annoFromType;
     this.name = anno.name().isEmpty() ? simpleName : anno.name();
-    this.excludes = Set.of(anno.excludes());
     this.qualifiedName = typeElement.getQualifiedName().toString();
   }
 
-  public boolean isComponentExcluded(Element element) {
-    return excludes.contains(element.getSimpleName().toString());
+  public boolean isComponentIgnored(Element element) {
+    var ignored = element.getAnnotation(SharedType.Ignore.class);
+    return ignored != null;
   }
 
-  public boolean toIncludeGetters() {
+  public boolean toIncludeAccessors() {
     return anno.includeAccessors();
   }
 }

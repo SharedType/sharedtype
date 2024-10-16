@@ -36,7 +36,7 @@ final class LoopTypeResolver implements TypeResolver {
             if (defInfo instanceof ClassDef classInfo) {
                 for (FieldInfo fieldInfo : classInfo.components()) {
                     if (!fieldInfo.resolved()) {
-                        var dependentDefs = tryRecursivelyResolve(fieldInfo.typeInfo());
+                        var dependentDefs = tryRecursivelyResolve(fieldInfo.type());
                         dependentDefs.forEach(processingDefs::push);
                     }
                 }
