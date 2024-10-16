@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.sharedtype.processor.context.ContextMocks;
+import org.sharedtype.processor.domain.ArrayTypeInfo;
 import org.sharedtype.processor.domain.ConcreteTypeInfo;
 import org.sharedtype.processor.domain.TypeVariableInfo;
 
@@ -16,7 +17,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,6 +43,14 @@ class TypescriptTypeMirrorParserTest {
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.simpleName()).isEqualTo(expectedSimpleName);
             softly.assertThat(typeInfo.resolved()).isTrue();
+        });
+
+        var arrayType =ctxMocks.array(type).type();
+        var arrayTypeInfo = (ArrayTypeInfo) parser.parse(arrayType);
+        SoftAssertions.assertSoftly(softly -> {
+            var componentTypeInfo = (ConcreteTypeInfo) arrayTypeInfo.getComponent();
+            softly.assertThat(componentTypeInfo.simpleName()).isEqualTo(expectedSimpleName);
+            softly.assertThat(componentTypeInfo.resolved()).isTrue();
         });
     }
 
@@ -71,7 +79,14 @@ class TypescriptTypeMirrorParserTest {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo(objectName);
             softly.assertThat(typeInfo.simpleName()).isEqualTo(expectedSimpleName);
             softly.assertThat(typeInfo.resolved()).isTrue();
-            softly.assertThat(typeInfo.isArray()).isFalse();
+        });
+
+        var arrayType =ctxMocks.array(type).type();
+        var arrayTypeInfo = (ArrayTypeInfo) parser.parse(arrayType);
+        SoftAssertions.assertSoftly(softly -> {
+            var componentTypeInfo = (ConcreteTypeInfo) arrayTypeInfo.getComponent();
+            softly.assertThat(componentTypeInfo.simpleName()).isEqualTo(expectedSimpleName);
+            softly.assertThat(componentTypeInfo.resolved()).isTrue();
         });
     }
 
@@ -84,14 +99,44 @@ class TypescriptTypeMirrorParserTest {
           )
           .withTypeArguments(ctxMocks.typeElement("java.lang.String").type())
           .type();
-        when(ctxMocks.getContext().isArraylike(any())).thenReturn(true);
+        when(ctxMocks.getContext().isArraylike(type)).thenReturn(true);
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type);
+        var arrayTypeInfo = (ArrayTypeInfo) parser.parse(type);
+        var typeInfo = (ConcreteTypeInfo) arrayTypeInfo.getComponent();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
             softly.assertThat(typeInfo.simpleName()).isEqualTo("string");
             softly.assertThat(typeInfo.resolved()).isTrue();
-            softly.assertThat(typeInfo.isArray()).isTrue();
+            softly.assertThat(typeInfo.typeArgs()).isEmpty();
+        });
+    }
+
+    @Test
+    void parseNestedArrays() {
+        var nestedType = ctxMocks.typeElement("java.lang.Set")
+          .withTypeArguments(
+            ctxMocks.typeElement("java.lang.String").type()
+          )
+          .type();
+        var type = ctxMocks.variableElement(DeclaredType.class)
+          .withTypeKind(TypeKind.DECLARED)
+          .withTypeElement(
+            ctxMocks.typeElement("java.util.List").element()
+          )
+          .withTypeArguments(
+            nestedType
+          )
+          .type();
+        when(ctxMocks.getContext().isArraylike(type)).thenReturn(true);
+        when(ctxMocks.getContext().isArraylike(nestedType)).thenReturn(true);
+
+        var arrayTypeInfo = (ArrayTypeInfo) parser.parse(type);
+        var nestedArrayTypeInfo = (ArrayTypeInfo) arrayTypeInfo.getComponent();
+        var typeInfo = (ConcreteTypeInfo) nestedArrayTypeInfo.getComponent();
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
+            softly.assertThat(typeInfo.simpleName()).isEqualTo("string");
+            softly.assertThat(typeInfo.resolved()).isTrue();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
     }
@@ -108,7 +153,6 @@ class TypescriptTypeMirrorParserTest {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
             softly.assertThat(typeInfo.simpleName()).isNull();
             softly.assertThat(typeInfo.resolved()).isFalse();
-            softly.assertThat(typeInfo.isArray()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
     }
@@ -131,20 +175,17 @@ class TypescriptTypeMirrorParserTest {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Tuple");
             softly.assertThat(typeInfo.simpleName()).isNull();
             softly.assertThat(typeInfo.resolved()).isFalse();
-            softly.assertThat(typeInfo.isArray()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).map(t -> (ConcreteTypeInfo) t).satisfiesExactly(
               typeArg -> {
                   softly.assertThat(typeArg.qualifiedName()).isEqualTo("java.lang.String");
                   softly.assertThat(typeArg.simpleName()).isEqualTo("string");
                   softly.assertThat(typeArg.resolved()).isTrue();
-                  softly.assertThat(typeArg.isArray()).isFalse();
                   softly.assertThat(typeArg.typeArgs()).isEmpty();
               },
               typeArg -> {
                   softly.assertThat(typeArg.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
                   softly.assertThat(typeArg.simpleName()).isNull();
                   softly.assertThat(typeArg.resolved()).isFalse();
-                  softly.assertThat(typeArg.isArray()).isFalse();
                   softly.assertThat(typeArg.typeArgs()).isEmpty();
               }
             );
@@ -168,12 +209,10 @@ class TypescriptTypeMirrorParserTest {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Container");
             softly.assertThat(typeInfo.simpleName()).isNull();
             softly.assertThat(typeInfo.resolved()).isFalse();
-            softly.assertThat(typeInfo.isArray()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).map(t -> (TypeVariableInfo) t).satisfiesExactly(
               typeArg -> {
                   softly.assertThat(typeArg.getName()).isEqualTo("T");
                   softly.assertThat(typeArg.resolved()).isTrue();
-                  softly.assertThat(typeArg.isArray()).isFalse();
               }
             );
         });

@@ -1,6 +1,7 @@
 package org.sharedtype.processor.parser.type;
 
 import org.sharedtype.processor.context.Context;
+import org.sharedtype.processor.domain.ArrayTypeInfo;
 import org.sharedtype.processor.domain.ConcreteTypeInfo;
 import org.sharedtype.processor.domain.TypeInfo;
 import org.sharedtype.processor.domain.TypeVariableInfo;
@@ -9,12 +10,11 @@ import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,15 +48,11 @@ final class TypescriptTypeMirrorParser implements TypeMirrorParser {
 
     private static final String OBJECT_NAME = Object.class.getName();
     private final Context ctx;
-    private final Types types;
-    private final Elements elements;
     private final Map<String, ConcreteTypeInfo> predefinedObjectTypes;
 
     @Inject
     TypescriptTypeMirrorParser(Context ctx) {
         this.ctx = ctx;
-        this.types = ctx.getProcessingEnv().getTypeUtils();
-        this.elements = ctx.getProcessingEnv().getElementUtils();
         this.predefinedObjectTypes = new HashMap<>(PREDEFINED_OBJECT_TYPES);
         predefinedObjectTypes.put(OBJECT_NAME, ConcreteTypeInfo.ofPredefined(OBJECT_NAME, ctx.getProps().getJavaObjectMapType()));
         predefinedObjectTypes.forEach((qualifiedName, typeInfo) -> ctx.saveType(qualifiedName, typeInfo.simpleName()));
@@ -69,7 +65,7 @@ final class TypescriptTypeMirrorParser implements TypeMirrorParser {
         if (typeKind.isPrimitive()) {
             return PRIMITIVES.get(typeKind);
         } else if (typeKind == TypeKind.ARRAY) {
-            throw new UnsupportedOperationException("Not implemented:" + typeMirror);
+            return new ArrayTypeInfo(parse(((ArrayType) typeMirror).getComponentType()));
         } else if (typeKind == TypeKind.DECLARED) {
             return parseDeclared((DeclaredType) typeMirror);
         } else if (typeKind == TypeKind.TYPEVAR) {
@@ -80,47 +76,48 @@ final class TypescriptTypeMirrorParser implements TypeMirrorParser {
 
     private TypeInfo parseDeclared(DeclaredType declaredType) {
         var typeElement = (TypeElement)declaredType.asElement();
-
         var qualifiedName = typeElement.getQualifiedName().toString();
-        var predefinedTypeInfo = predefinedObjectTypes.get(qualifiedName);
         var typeArgs = declaredType.getTypeArguments();
-        declaredType.getTypeArguments();
-        if (predefinedTypeInfo != null) {
-            return predefinedTypeInfo;
-        }
 
-        boolean isArray = false;
-        boolean noNeedToResolve = false;
-        if (ctx.isArraylike(declaredType)) {
-            checkArgument(typeArgs.size() == 1, "Array type must have exactly one type argument, but got: %s, type: %s", typeArgs.size(), typeElement);
-            isArray = true;
-            var typeArg = typeArgs.get(0);
-            if (typeArg instanceof DeclaredType argDeclaredType) {
-                var element = types.asElement(typeArg);
-                if (element instanceof TypeElement argTypeElement) {
-                    qualifiedName = argTypeElement.getQualifiedName().toString();
-                    typeArgs = argDeclaredType.getTypeArguments();
-                } else {
-                    throw new UnsupportedOperationException(String.format("Type: %s, typeArg: %s", declaredType, typeArg));
-                }
-            } else if (typeArg instanceof TypeVariable argTypeVariable) {
+        int arrayStack = 0;
+        boolean isTypeVar = false;
+        TypeMirror currentType = declaredType;
+        while (ctx.isArraylike(currentType)) {
+            checkArgument(typeArgs.size() == 1, "Array type must have exactly one type argument, but got: %s, type: %s", typeArgs.size(), currentType);
+            arrayStack++;
+            currentType = typeArgs.get(0);
+            if (currentType instanceof DeclaredType argDeclaredType) {
+                var element = (TypeElement)argDeclaredType.asElement();
+                qualifiedName = element.getQualifiedName().toString();
+                typeArgs = argDeclaredType.getTypeArguments();
+            } else if (currentType instanceof TypeVariable argTypeVariable) {
                 var typeVarInfo = parseTypeVariable(argTypeVariable);
                 qualifiedName = typeVarInfo.getName();
                 typeArgs = Collections.emptyList();
-                noNeedToResolve = true;
+                isTypeVar = true;
             }
         }
 
-        var resolved = noNeedToResolve ||ctx.hasType(qualifiedName);
-        var parsedTypeArgs = typeArgs.stream().map(this::parse).toList();
+        TypeInfo typeInfo;
+        var predefinedTypeInfo = predefinedObjectTypes.get(qualifiedName);
+        if (predefinedTypeInfo != null) {
+            typeInfo = predefinedTypeInfo;
+        } else {
+            var resolved = isTypeVar ||ctx.hasType(qualifiedName);
+            var parsedTypeArgs = typeArgs.stream().map(this::parse).toList();
+            typeInfo = ConcreteTypeInfo.builder()
+              .qualifiedName(qualifiedName)
+              .simpleName(ctx.getSimpleName(qualifiedName))
+              .typeArgs(parsedTypeArgs)
+              .resolved(resolved)
+              .build();
+        }
 
-        return ConcreteTypeInfo.builder()
-                .qualifiedName(qualifiedName)
-                .simpleName(ctx.getSimpleName(qualifiedName))
-                .array(isArray)
-                .typeArgs(parsedTypeArgs)
-                .resolved(resolved)
-                .build();
+        while (arrayStack > 0) {
+            typeInfo = new ArrayTypeInfo(typeInfo);
+            arrayStack--;
+        }
+        return typeInfo;
     }
 
     private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable) {

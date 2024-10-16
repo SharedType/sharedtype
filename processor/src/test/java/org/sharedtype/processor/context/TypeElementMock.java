@@ -8,8 +8,8 @@ import javax.lang.model.util.Types;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public final class TypeElementBuilder extends AbstractElementBuilder<TypeElement, DeclaredType, TypeElementBuilder> {
-    TypeElementBuilder(String qualifiedName, Context ctx, Types types) {
+public final class TypeElementMock extends AbstractElementMock<TypeElement, DeclaredType, TypeElementMock> {
+    TypeElementMock(String qualifiedName, Context ctx, Types types) {
         super(mock(TypeElement.class, qualifiedName), mock(DeclaredType.class, qualifiedName), ctx, types);
         setQualifiedName(element, qualifiedName);
         when(type.getKind()).thenReturn(TypeKind.DECLARED);

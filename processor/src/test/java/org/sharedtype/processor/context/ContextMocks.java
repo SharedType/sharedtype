@@ -41,15 +41,19 @@ public final class ContextMocks {
         this(new Props());
     }
 
-    public TypeElementBuilder typeElement(String qualifiedName) {
-        return new TypeElementBuilder(qualifiedName, context, types);
+    public TypeElementMock typeElement(String qualifiedName) {
+        return new TypeElementMock(qualifiedName, context, types);
     }
 
-    public <T extends TypeMirror> VariableElementBuilder<T> variableElement(Class<T> typeClazz) {
-        return new VariableElementBuilder<>(typeClazz, context, types);
+    public <T extends TypeMirror> VariableElementMock<T> variableElement(Class<T> typeClazz) {
+        return new VariableElementMock<>(typeClazz, context, types);
     }
 
-    public TypeParameterElementBuilder typeParameterElement(String simpleName) {
-        return new TypeParameterElementBuilder(simpleName, context, types);
+    public TypeParameterElementMock typeParameterElement(String simpleName) {
+        return new TypeParameterElementMock(simpleName, context, types);
+    }
+
+    public ArrayTypeBuilder array(TypeMirror componentType) {
+        return new ArrayTypeBuilder(componentType);
     }
 }

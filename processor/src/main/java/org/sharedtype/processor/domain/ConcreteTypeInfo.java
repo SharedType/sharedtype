@@ -2,7 +2,6 @@ package org.sharedtype.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.Setter;
 
 import javax.annotation.Nullable;
@@ -19,9 +18,6 @@ public final class ConcreteTypeInfo implements TypeInfo {
     private final List<? extends TypeInfo> typeArgs = Collections.emptyList();
     @Builder.Default
     private boolean resolved = true;
-    /** When is array, the type stands for array component type */
-    @Builder.Default @Getter
-    private final boolean array = false;
 
     public static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
         return ConcreteTypeInfo.builder().qualifiedName(qualifiedName).simpleName(simpleName).build();
@@ -59,10 +55,9 @@ public final class ConcreteTypeInfo implements TypeInfo {
 
     @Override
     public String toString() {
-        return String.format("%s%s%s%s",
+        return String.format("%s%s%s",
                 qualifiedName,
                 typeArgs.isEmpty() ? "" : "<" + String.join(",", typeArgs.stream().map(TypeInfo::toString).toList()) + ">",
-                array ? "[]" : "",
                 resolved ? "" : "?"
         );
     }
