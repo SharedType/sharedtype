@@ -15,9 +15,9 @@ import javax.lang.model.type.TypeKind;
 
 import static org.mockito.Mockito.when;
 
-class TypescriptTypeMirrorParserTest {
+class TypescriptTypeInfoParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final TypescriptTypeMirrorParser parser = new TypescriptTypeMirrorParser(ctxMocks.getContext());
+    private final TypescriptTypeInfoParser parser = new TypescriptTypeInfoParser(ctxMocks.getContext());
 
     @ParameterizedTest
     @CsvSource({

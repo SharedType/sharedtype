@@ -2,6 +2,7 @@ package org.sharedtype.processor.context;
 
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
@@ -13,5 +14,9 @@ public final class Props {
     private final String javaObjectMapType = "any";
     private final Set<String> arraylikeTypeQualifiedNames = Set.of(
             Iterable.class.getName()
+    );
+    private final Set<String> ignoredTypeQualifiedNames = Set.of(
+        Record.class.getName(),
+        Serializable.class.getName()
     );
 }

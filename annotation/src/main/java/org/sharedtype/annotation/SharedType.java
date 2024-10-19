@@ -26,16 +26,24 @@ public @interface SharedType {
 
     /**
      * Whether to include getters in POJO or accessors in record.
-     * Methods starting with 'get' or 'is' with 0 arguments in POJO or methods with 0 arguments in record will be included.
+     * <p>
+     *     <b>Accessors are:</b>
+     *     <ul>
+     *         <li>Methods starting with 'get' or 'is' with 0 arguments</li>
+     *         <li>Methods annotated with {@link Accessor}</li>
+     *     </ul>
+     * </p>
      * To exclude a particular one, use {@link Ignore}
      */
-    boolean includeAccessors() default false;
+    ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS};
 
     /**
-     * Whether to flatten and include all inherited components from super type(s) in this type.
-     * When is true, supertypes will not be emitted.
+     * Mark a method as an accessor regardless of its name.
      */
-    boolean flattenInheritance() default false;
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface Accessor {
+    }
 
     /**
      * Exclude fields, record components, accessors in a type. Or ignore a dependent type, e.g. a supertype.
@@ -48,5 +56,10 @@ public @interface SharedType {
     @Target({ElementType.METHOD, ElementType.FIELD, ElementType.RECORD_COMPONENT, ElementType.TYPE})
     @Retention(RetentionPolicy.SOURCE)
     @interface Ignore {
+    }
+
+    enum ComponentType {
+        FIELDS,
+        ACCESSORS,
     }
 }

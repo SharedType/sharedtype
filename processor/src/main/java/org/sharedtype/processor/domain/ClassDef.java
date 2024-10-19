@@ -8,16 +8,24 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents info captured from a POJO or record.
+ * Represents info captured from an interface, class, or record.
  */
 @Builder
 @EqualsAndHashCode(of = "name")
 public final class ClassDef implements TypeDef {
+    private final String qualifiedName;
     private final String name;
     @Builder.Default
     private final List<FieldInfo> fields = Collections.emptyList();
     @Builder.Default
     private final List<TypeVariableInfo> typeVariables = Collections.emptyList();
+    @Builder.Default
+    private final List<TypeDef> supertypes = Collections.emptyList(); // direct supertypes
+
+    @Override
+    public String qualifiedName() {
+        return qualifiedName;
+    }
 
     @Override
     public String name() {
@@ -31,6 +39,10 @@ public final class ClassDef implements TypeDef {
 
     public List<TypeVariableInfo> typeVariables() {
         return typeVariables;
+    }
+
+    public List<TypeDef> supertypes() {
+        return supertypes;
     }
 
     // TODO: optimize
@@ -47,9 +59,17 @@ public final class ClassDef implements TypeDef {
     @Override
     public String toString() {
         var rows = new ArrayList<String>(fields.size()+2);
-        rows.add(String.format("%s%s {", name, typeVariables.isEmpty() ? "" : "<" + String.join(",", typeVariables.stream().map(TypeVariableInfo::toString).toList()) + ">"));
+        rows.add(String.format("%s%s%s {", name, typeVariablesToString(), supertypesToString()));
         rows.addAll(fields.stream().map(f -> String.format("  %s", f)).toList());
         rows.add("}");
         return String.join(System.lineSeparator(), rows);
+    }
+
+    private String typeVariablesToString() {
+        return typeVariables.isEmpty() ? "" : "<" + String.join(",", typeVariables.stream().map(TypeVariableInfo::toString).toList()) + ">";
+    }
+
+    private String supertypesToString() {
+        return supertypes.isEmpty() ? "" : " extends " + String.join(" & ", supertypes.stream().map(TypeDef::qualifiedName).toList());
     }
 }

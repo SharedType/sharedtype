@@ -5,7 +5,7 @@ import org.sharedtype.processor.domain.TypeInfo;
 
 import javax.lang.model.type.TypeMirror;
 
-public interface TypeMirrorParser {
+public interface TypeInfoParser {
     /**
      * If a dependent type is not explicitly registered by {@link SharedType},
      * it may not have been resolved in the context by the time of the mapper call.

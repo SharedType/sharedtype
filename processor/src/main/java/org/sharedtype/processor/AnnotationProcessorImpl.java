@@ -1,28 +1,23 @@
 package org.sharedtype.processor;
 
 import com.google.auto.service.AutoService;
-import org.sharedtype.processor.context.Constants;
 import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.context.Props;
 import org.sharedtype.processor.domain.TypeDef;
-import org.sharedtype.processor.parser.TypeElementParser;
+import org.sharedtype.processor.parser.TypeDefParser;
 import org.sharedtype.processor.resolver.TypeResolver;
 import org.sharedtype.processor.support.annotation.VisibleForTesting;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 import org.sharedtype.processor.writer.TypeWriter;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.Set;
 
+import static org.sharedtype.processor.context.Constants.ANNOTATION_QUALIFIED_NAME;
 import static org.sharedtype.processor.support.Preconditions.checkArgument;
 
 @SupportedAnnotationTypes("org.sharedtype.annotation.SharedType")
@@ -30,14 +25,15 @@ import static org.sharedtype.processor.support.Preconditions.checkArgument;
 @AutoService(Processor.class)
 public final class AnnotationProcessorImpl extends AbstractProcessor {
     private static final boolean ANNOTATION_CONSUMED = true;
-    private TypeElementParser parser;
+    private Context ctx;
+    private TypeDefParser parser;
     private TypeResolver resolver;
     private TypeWriter writer;
 
     @Override 
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        Context ctx = new Context(processingEnv, new Props()); // TODO: check thread safety
+        ctx = new Context(processingEnv, new Props()); // TODO: check thread safety
         var component = DaggerComponents.builder().withContext(ctx).build();
         parser = component.parser();
         resolver = component.resolver();
@@ -50,10 +46,10 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
             return ANNOTATION_CONSUMED;
         }
         if (annotations.size() > 1) {
-            throw new SharedTypeInternalError(String.format("Only '%s' is expected.", Constants.ANNOTATION_QUALIFIED_NAME));
+            throw new SharedTypeInternalError(String.format("Only '%s' is expected.", ANNOTATION_QUALIFIED_NAME));
         }
         var annotation = annotations.iterator().next();
-        checkArgument(annotation.getQualifiedName().contentEquals(Constants.ANNOTATION_QUALIFIED_NAME), "Wrong anno: %s", annotation);
+        checkArgument(annotation.getQualifiedName().contentEquals(ANNOTATION_QUALIFIED_NAME), "Wrong anno: %s", annotation);
 
         doProcess(roundEnv.getElementsAnnotatedWith(annotation));
         return ANNOTATION_CONSUMED;
@@ -64,6 +60,10 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
         var defs = new ArrayList<TypeDef>();
         for (Element element : elements) {
             if (element instanceof TypeElement typeElement) {
+                if (ctx.isTypeIgnored(typeElement)) {
+                    ctx.warning("Type '%s' is ignored, but annotated with '%s'.", typeElement.getQualifiedName(), ANNOTATION_QUALIFIED_NAME);
+                    continue;
+                }
                 defs.addAll(parser.parse(typeElement));
             } else {
                 throw new UnsupportedOperationException("Unsupported element: " + element);

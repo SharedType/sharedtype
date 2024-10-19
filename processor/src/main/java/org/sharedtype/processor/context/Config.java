@@ -36,7 +36,7 @@ public final class Config {
     return ignored != null;
   }
 
-  public boolean toIncludeAccessors() {
-    return anno.includeAccessors();
+  public SharedType.ComponentType[] includeMode() {
+    return anno.includes();
   }
 }

@@ -38,5 +38,5 @@ public record JavaRecord<T, K>(
 //    Map<K, T> genericMap
 
     Integer[] integerArray
-) {
+) implements InterfaceA {
 }

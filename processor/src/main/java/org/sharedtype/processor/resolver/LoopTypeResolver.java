@@ -3,7 +3,7 @@ package org.sharedtype.processor.resolver;
 import lombok.RequiredArgsConstructor;
 import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.domain.*;
-import org.sharedtype.processor.parser.TypeElementParser;
+import org.sharedtype.processor.parser.TypeDefParser;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.inject.Inject;
@@ -17,7 +17,7 @@ import java.util.List;
 final class LoopTypeResolver implements TypeResolver {
     private static final int DEPENDENCY_COUNT_EXPANSION_FACTOR = 2; // TODO: find a proper number
     private final Context ctx;
-    private final TypeElementParser typeElementParser;
+    private final TypeDefParser typeDefParser;
 
     @Override
     public List<TypeDef> resolve(List<TypeDef> typeDefs) {
@@ -53,7 +53,7 @@ final class LoopTypeResolver implements TypeResolver {
             var defs = new ArrayList<TypeDef>();
             if (!concreteTypeInfo.shallowResolved()) {
                 var typeElement = ctx.getProcessingEnv().getElementUtils().getTypeElement(concreteTypeInfo.qualifiedName());
-                var parsedList = typeElementParser.parse(typeElement);
+                var parsedList = typeDefParser.parse(typeElement);
                 concreteTypeInfo.setSimpleName(parsedList.get(0).name());
                 concreteTypeInfo.markShallowResolved();
                 defs.addAll(parsedList);

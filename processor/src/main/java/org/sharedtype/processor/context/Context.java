@@ -3,6 +3,7 @@ package org.sharedtype.processor.context;
 import lombok.Getter;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -34,7 +35,9 @@ public final class Context {
     public void info(String message, Object... objects) {
         log(Diagnostic.Kind.NOTE, message, objects);
     }
-
+    public void warning(String message, Object... objects) {
+        log(Diagnostic.Kind.WARNING, message, objects);
+    }
     public void error(String message, Object... objects) {
         log(Diagnostic.Kind.ERROR, message, objects);
     }
@@ -62,6 +65,10 @@ public final class Context {
             }
         }
         return false;
+    }
+
+    public boolean isTypeIgnored(TypeElement typeElement) {
+        return props.getIgnoredTypeQualifiedNames().contains(typeElement.getQualifiedName().toString());
     }
 
     private void log(Diagnostic.Kind level, String message, Object... objects) {

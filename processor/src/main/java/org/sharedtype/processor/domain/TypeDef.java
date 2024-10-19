@@ -3,12 +3,14 @@ package org.sharedtype.processor.domain;
 import java.util.List;
 
 public sealed interface TypeDef permits ClassDef {
-  String name();
+    String qualifiedName();
 
-  List<? extends ComponentInfo> components();
+    String name();
 
-  /**
-   * @return true if all required types are resolved.
-   */
-  boolean resolved();
+    List<? extends ComponentInfo> components();
+
+    /**
+     * @return true if all required types are resolved.
+     */
+    boolean resolved();
 }

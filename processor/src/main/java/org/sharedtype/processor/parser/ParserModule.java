@@ -11,11 +11,14 @@ import javax.lang.model.element.ElementKind;
 @Module(includes = TypeParserModule.class)
 public abstract class ParserModule {
     @Binds @IntoMap @ElementKindKey(ElementKind.RECORD)
-    abstract TypeElementParser recordParser(ClassElementParser classElementParser);
+    abstract TypeDefParser recordElementParser(TypeDefParserImpl typeDefParserImpl);
 
     @Binds @IntoMap @ElementKindKey(ElementKind.CLASS)
-    abstract TypeElementParser classParser(ClassElementParser classElementParser);
+    abstract TypeDefParser classElementParser(TypeDefParserImpl typeDefParserImpl);
+
+    @Binds @IntoMap @ElementKindKey(ElementKind.INTERFACE)
+    abstract TypeDefParser interfaceElementParser(TypeDefParserImpl typeDefParserImpl);
 
     @Binds
-    abstract TypeElementParser bindTypeElementParser(CompositeTypeElementElementParser compositeTypeElementParser);
+    abstract TypeDefParser bindTypeElementParser(CompositeTypeElementDefParser compositeTypeElementParser);
 }

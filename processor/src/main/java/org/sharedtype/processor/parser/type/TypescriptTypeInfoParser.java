@@ -22,7 +22,7 @@ import java.util.Map;
 import static org.sharedtype.processor.support.Preconditions.checkArgument;
 
 @Singleton
-final class TypescriptTypeMirrorParser implements TypeMirrorParser {
+final class TypescriptTypeInfoParser implements TypeInfoParser {
     private static final Map<TypeKind, ConcreteTypeInfo> PRIMITIVES = Map.of(
         TypeKind.BOOLEAN, ConcreteTypeInfo.ofPredefined("boolean", "boolean"),
         TypeKind.BYTE, ConcreteTypeInfo.ofPredefined("byte", "number"),
@@ -51,7 +51,7 @@ final class TypescriptTypeMirrorParser implements TypeMirrorParser {
     private final Map<String, ConcreteTypeInfo> predefinedObjectTypes;
 
     @Inject
-    TypescriptTypeMirrorParser(Context ctx) {
+    TypescriptTypeInfoParser(Context ctx) {
         this.ctx = ctx;
         this.predefinedObjectTypes = new HashMap<>(PREDEFINED_OBJECT_TYPES);
         predefinedObjectTypes.put(OBJECT_NAME, ConcreteTypeInfo.ofPredefined(OBJECT_NAME, ctx.getProps().getJavaObjectMapType()));

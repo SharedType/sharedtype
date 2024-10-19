@@ -31,6 +31,16 @@ public final class TypeElementMock extends AbstractElementMock<TypeElement, Decl
         return this;
     }
 
+    public TypeElementMock withSuperClass(DeclaredType superClass) {
+        when(element.getSuperclass()).thenReturn(superClass);
+        return this;
+    }
+
+    public TypeElementMock withInterfaces(DeclaredType... interfaces) {
+        when(element.getInterfaces()).then(invoc -> Arrays.asList(interfaces));
+        return this;
+    }
+
     private static String getLastPart(String str) {
         int lastDotIndex = str.lastIndexOf('.');
         return str.substring(lastDotIndex + 1);

@@ -1,6 +1,6 @@
 package org.sharedtype.processor.domain;
 
-public interface TypeInfo {
+public sealed interface TypeInfo permits ArrayTypeInfo, ConcreteTypeInfo, TypeVariableInfo {
     default boolean resolved() {
         return true;
     }
