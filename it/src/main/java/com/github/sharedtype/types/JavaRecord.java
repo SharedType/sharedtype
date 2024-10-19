@@ -30,13 +30,13 @@ public record JavaRecord<T, K>(
 
 //    DependencyClassA a, // cyclic a -> b -> c -> a
 
-  List<Container<String>> containerStringList,
-  List<Collection<Container<String>>> containerStringListCollection,
-  List<T> genericList,
-  Set<T> genericSet,
-  List<Set<T>> genericListSet,
+    List<Container<String>> containerStringList,
+    List<Collection<Container<String>>> containerStringListCollection,
+    List<T> genericList,
+    Set<T> genericSet,
+    List<Set<T>> genericListSet,
 //    Map<K, T> genericMap
 
-  Integer[] integerArray
+    Integer[] integerArray
 ) {
 }

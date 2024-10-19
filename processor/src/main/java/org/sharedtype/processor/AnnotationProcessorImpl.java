@@ -25,7 +25,7 @@ import java.util.Set;
 
 import static org.sharedtype.processor.support.Preconditions.checkArgument;
 
-@SupportedAnnotationTypes("org.sharedtype.annotation.EmitType")
+@SupportedAnnotationTypes("org.sharedtype.annotation.SharedType")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @AutoService(Processor.class)
 public final class AnnotationProcessorImpl extends AbstractProcessor {
@@ -33,12 +33,11 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
     private TypeElementParser parser;
     private TypeResolver resolver;
     private TypeWriter writer;
-    private Context ctx;
 
     @Override 
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        ctx = new Context(processingEnv, new Props()); // TODO: check thread safety
+        Context ctx = new Context(processingEnv, new Props()); // TODO: check thread safety
         var component = DaggerComponents.builder().withContext(ctx).build();
         parser = component.parser();
         resolver = component.resolver();
