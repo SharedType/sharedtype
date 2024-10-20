@@ -25,15 +25,19 @@ public @interface SharedType {
     String name() default "";
 
     /**
-     * Whether to include getters in POJO or accessors in record.
+     * Includes fields, record components, accessors, or constants in a type.
      * <p>
-     *     <b>Accessors are:</b>
+     *     To exclude a particular component, use {@link Ignore}.
+     * </p>
+     * <br>
+     * <p>
+     *     Fields and accessors duplicates resolution:
      *     <ul>
-     *         <li>Methods starting with 'get' or 'is' with 0 arguments</li>
-     *         <li>Methods annotated with {@link Accessor}</li>
+     *         <li>In classes, fields and accessors effectively with the same name will be merged.</li>
+     *         <li>In records, when accessors are included, records components are ignored.</li>
      *     </ul>
      * </p>
-     * To exclude a particular one, use {@link Ignore}
+     * @see ComponentType
      */
     ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS};
 
@@ -48,9 +52,9 @@ public @interface SharedType {
     /**
      * Exclude fields, record components, accessors in a type. Or ignore a dependent type, e.g. a supertype.
      * <p>
-     *     <b>When placed on type:</b> a subtype of this type will not include inherited members from this type.
-     *     But if this type is referenced directly as type of a field or return type of an accessor, an error will be reported,
-     *     unless the field or accessor is also ignored.
+     * <b>When placed on type:</b> a subtype of this type will not include inherited members from this type.
+     * But if this type is referenced directly as type of a field or return type of an accessor, an error will be reported,
+     * unless the field or accessor is also ignored.
      * </p>
      */
     @Target({ElementType.METHOD, ElementType.FIELD, ElementType.RECORD_COMPONENT, ElementType.TYPE})
@@ -59,7 +63,29 @@ public @interface SharedType {
     }
 
     enum ComponentType {
+        /**
+         * Represents:
+         * <ul>
+         *     <li>Class fields.</li>
+         *     <li>Record components</li>
+         * </ul>
+         */
         FIELDS,
+        /**
+         * Represents:
+         * <ul>
+         *     <li>Methods starting with a getter prefix and 0 arguments. By default, prefixes include 'get' or 'is'.</li>
+         *     <li>Methods annotated with {@link Accessor}</li>
+         * </ul>
+         */
         ACCESSORS,
+        /**
+         * Represents:
+         * <ul>
+         *     <li>Class/record static fields with static values.</li>
+         * </ul>
+         * Fields with values that cannot be resolved at compile time will not be included. A corresponding warning will be given.
+         */
+        CONSTANTS,
     }
 }

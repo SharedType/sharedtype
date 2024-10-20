@@ -6,7 +6,7 @@ import javax.lang.model.element.Modifier;
 import java.util.Set;
 
 @Builder
-public record FieldInfo(
+public record FieldComponentInfo(
         String name,
         Set<Modifier> modifiers,
         boolean optional,

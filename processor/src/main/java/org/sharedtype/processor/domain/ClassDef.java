@@ -16,7 +16,7 @@ public final class ClassDef implements TypeDef {
     private final String qualifiedName;
     private final String name;
     @Builder.Default
-    private final List<FieldInfo> fields = Collections.emptyList();
+    private final List<FieldComponentInfo> components = Collections.emptyList();
     @Builder.Default
     private final List<TypeVariableInfo> typeVariables = Collections.emptyList();
     @Builder.Default
@@ -33,8 +33,8 @@ public final class ClassDef implements TypeDef {
     }
 
     @Override
-    public List<FieldInfo> components() {
-        return fields;
+    public List<FieldComponentInfo> components() {
+        return components;
     }
 
     public List<TypeVariableInfo> typeVariables() {
@@ -48,8 +48,8 @@ public final class ClassDef implements TypeDef {
     // TODO: optimize
     @Override
     public boolean resolved() {
-        for (FieldInfo fieldInfo : fields) {
-            if (!fieldInfo.resolved()) {
+        for (FieldComponentInfo fieldComponentInfo : components) {
+            if (!fieldComponentInfo.resolved()) {
                 return false;
             }
         }
@@ -58,9 +58,9 @@ public final class ClassDef implements TypeDef {
 
     @Override
     public String toString() {
-        var rows = new ArrayList<String>(fields.size()+2);
+        var rows = new ArrayList<String>(components.size()+2);
         rows.add(String.format("%s%s%s {", name, typeVariablesToString(), supertypesToString()));
-        rows.addAll(fields.stream().map(f -> String.format("  %s", f)).toList());
+        rows.addAll(components.stream().map(f -> String.format("  %s", f)).toList());
         rows.add("}");
         return String.join(System.lineSeparator(), rows);
     }

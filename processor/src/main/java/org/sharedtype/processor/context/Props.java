@@ -12,6 +12,7 @@ public final class Props {
 
     private final Class<? extends Annotation> optionalAnno = DEFAULT_OPTIONAL_ANNO;
     private final String javaObjectMapType = "any";
+    private final Set<String> accessorGetterPrefixes = Set.of("get", "is");
     private final Set<String> arraylikeTypeQualifiedNames = Set.of(
             Iterable.class.getName()
     );

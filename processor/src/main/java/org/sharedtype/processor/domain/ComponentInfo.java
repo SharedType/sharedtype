@@ -1,4 +1,4 @@
 package org.sharedtype.processor.domain;
 
-public sealed interface ComponentInfo permits FieldInfo {
+public sealed interface ComponentInfo permits FieldComponentInfo {
 }

@@ -36,7 +36,12 @@ public record JavaRecord<T, K>(
     Set<T> genericSet,
     List<Set<T>> genericListSet,
 //    Map<K, T> genericMap
+    Integer[] integerArray,
 
-    Integer[] integerArray
+    String duplicateAccessor
 ) implements InterfaceA {
+    @SharedType.Accessor
+    String getDuplicateAccessor() {
+        return duplicateAccessor;
+    }
 }
