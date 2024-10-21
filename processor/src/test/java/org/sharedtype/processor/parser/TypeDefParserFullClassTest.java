@@ -2,13 +2,13 @@ package org.sharedtype.processor.parser;
 
 import org.junit.jupiter.api.Test;
 import org.sharedtype.processor.context.ContextMocks;
+import org.sharedtype.processor.context.TypeElementMock;
 import org.sharedtype.processor.domain.ClassDef;
 import org.sharedtype.processor.domain.ConcreteTypeInfo;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -19,12 +19,14 @@ final class TypeDefParserFullClassTest {
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
     private final TypeDefParserImpl parser = new TypeDefParserImpl(ctxMocks.getContext(), typeInfoParser);
 
+    private final TypeElementMock string = ctxMocks.typeElement("java.lang.String");
+
     @Test
     void parseComplexClass() {
-        var field1 = ctxMocks.variableElement("field1", PrimitiveType.class).withElementKind(ElementKind.FIELD);
-        var field2 = ctxMocks.variableElement("field2", DeclaredType.class).withElementKind(ElementKind.FIELD);
-        var method1 = ctxMocks.executableElement("method1").withElementKind(ElementKind.METHOD);
-        var method2 = ctxMocks.executableElement("getValue").withElementKind(ElementKind.METHOD);
+        var field1 = ctxMocks.primitiveVariable("field1", TypeKind.BOOLEAN);
+        var field2 = ctxMocks.declaredTypeVariable("field2", string.type()).withElementKind(ElementKind.FIELD);
+        var method1 = ctxMocks.executable("method1").withElementKind(ElementKind.METHOD);
+        var method2 = ctxMocks.executable("getValue").withElementKind(ElementKind.METHOD);
         var element = ctxMocks.typeElement("com.github.cuzfrog.Abc")
           .withEnclosedElements(
             field1.element(),
@@ -33,13 +35,13 @@ final class TypeDefParserFullClassTest {
             method2.element()
           )
           .withTypeParameters(
-            ctxMocks.typeParameterElement("T").element(),
-            ctxMocks.typeParameterElement("U").element()
+            ctxMocks.typeParameter("T").element(),
+            ctxMocks.typeParameter("U").element()
           )
           .withSuperClass(
             ctxMocks.typeElement("com.github.cuzfrog.SuperClassA")
               .withEnclosedElements(
-                ctxMocks.variableElement("a", PrimitiveType.class).withElementKind(ElementKind.FIELD).element()
+                ctxMocks.primitiveVariable("a", TypeKind.INT).element()
               )
               .type()
           )

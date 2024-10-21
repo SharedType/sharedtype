@@ -3,6 +3,8 @@ package org.sharedtype.processor.context;
 import lombok.Getter;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -45,15 +47,19 @@ public final class ContextMocks {
         return new TypeElementMock(qualifiedName, context, types);
     }
 
-    public <T extends TypeMirror> VariableElementMock<T> variableElement(String name, Class<T> typeClazz) {
-        return new VariableElementMock<>(name, typeClazz, context, types);
+    public DeclaredTypeVariableElementMock declaredTypeVariable(String name, DeclaredType type) {
+        return new DeclaredTypeVariableElementMock(name, type, context, types);
     }
 
-    public TypeParameterElementMock typeParameterElement(String simpleName) {
+    public PrimitiveVariableElementMock primitiveVariable(String name, TypeKind typeKind) {
+        return new PrimitiveVariableElementMock(name, typeKind, context, types);
+    }
+
+    public TypeParameterElementMock typeParameter(String simpleName) {
         return new TypeParameterElementMock(simpleName, context, types);
     }
 
-    public ExecutableElementMock executableElement(String name) {
+    public ExecutableElementMock executable(String name) {
         return new ExecutableElementMock(name, context, types);
     }
 

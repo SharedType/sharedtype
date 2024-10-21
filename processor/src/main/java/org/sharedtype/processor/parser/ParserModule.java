@@ -20,5 +20,5 @@ public abstract class ParserModule {
     abstract TypeDefParser interfaceElementParser(TypeDefParserImpl typeDefParserImpl);
 
     @Binds
-    abstract TypeDefParser bindTypeElementParser(CompositeTypeElementDefParser compositeTypeElementParser);
+    abstract TypeDefParser bindTypeElementParser(CompositeTypeDefParser compositeTypeElementParser);
 }

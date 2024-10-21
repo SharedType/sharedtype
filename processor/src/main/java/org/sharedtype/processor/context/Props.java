@@ -14,9 +14,10 @@ public final class Props {
     private final String javaObjectMapType = "any";
     private final Set<String> accessorGetterPrefixes = Set.of("get", "is");
     private final Set<String> arraylikeTypeQualifiedNames = Set.of(
-            Iterable.class.getName()
+        Iterable.class.getName()
     );
     private final Set<String> ignoredTypeQualifiedNames = Set.of(
+        Object.class.getName(),
         Record.class.getName(),
         Serializable.class.getName()
     );

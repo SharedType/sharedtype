@@ -62,8 +62,8 @@ final class TypeDefParserImpl implements TypeDefParser {
     private List<TypeVariableInfo> parseTypeVariables(TypeElement typeElement) {
         var typeParameters = typeElement.getTypeParameters();
         return typeParameters.stream()
-          .map(typeParameterElement -> TypeVariableInfo.builder().name(typeParameterElement.getSimpleName().toString()).build())
-          .toList();
+            .map(typeParameterElement -> TypeVariableInfo.builder().name(typeParameterElement.getSimpleName().toString()).build())
+            .toList();
     }
 
     private List<TypeDef> parseSupertypes(TypeElement typeElement) {
@@ -87,11 +87,11 @@ final class TypeDefParserImpl implements TypeDefParser {
         var fields = new ArrayList<FieldComponentInfo>(componentElems.size());
         for (var element : componentElems) {
             var fieldInfo = FieldComponentInfo.builder()
-              .name(element.getSimpleName().toString())
-              .modifiers(element.getModifiers())
-              .optional(element.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
-              .type(typeInfoParser.parse(element.asType()))
-              .build();
+                .name(element.getSimpleName().toString())
+                .modifiers(element.getModifiers())
+                .optional(element.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
+                .type(typeInfoParser.parse(element.asType()))
+                .build();
             fields.add(fieldInfo);
         }
         return fields;
@@ -112,7 +112,7 @@ final class TypeDefParserImpl implements TypeDefParser {
             var name = enclosedElement.getSimpleName().toString();
 
             if (config.includes(SharedType.ComponentType.FIELDS) && enclosedElement.getKind() == ElementKind.FIELD
-              && enclosedElement instanceof VariableElement variableElement) {
+                && enclosedElement instanceof VariableElement variableElement) {
                 if (namesOfTypes.contains(name, type)) {
                     continue;
                 }
@@ -121,16 +121,17 @@ final class TypeDefParserImpl implements TypeDefParser {
             }
 
             if (config.includes(SharedType.ComponentType.ACCESSORS) && enclosedElement instanceof ExecutableElement methodElem
-              && isZeroArgNonstaticMethod(methodElem)) {
+                && isZeroArgNonstaticMethod(methodElem)) {
                 var baseName = typeElement.getKind() == ElementKind.RECORD ? name : getAccessorBaseName(name);
                 if (baseName == null) {
                     continue;
                 }
-                if (namesOfTypes.contains(baseName, type)) {
+                var returnType = methodElem.getReturnType();
+                if (namesOfTypes.contains(baseName, returnType)) {
                     continue;
                 }
                 res.add(methodElem);
-                namesOfTypes.add(baseName, type);
+                namesOfTypes.add(baseName, returnType);
             }
 
             // TODO: CONSTANTS

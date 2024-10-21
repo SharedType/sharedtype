@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
-final class CompositeTypeElementDefParser implements TypeDefParser {
+final class CompositeTypeDefParser implements TypeDefParser {
     private final Context ctx;
     private final Map<ElementKind, TypeDefParser> parsers;
 

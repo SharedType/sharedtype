@@ -1,20 +1,21 @@
 package org.sharedtype.processor.parser;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.TypeElement;
-
-import org.sharedtype.processor.context.Context;
-import org.sharedtype.processor.domain.ClassDef;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.sharedtype.processor.context.Context;
+import org.sharedtype.processor.domain.ClassDef;
+
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,15 +23,15 @@ import static org.mockito.Mockito.when;
 final class CompositeTypeDefParserTest {
     private @Mock TypeDefParser delegate1;
     private @Mock TypeDefParser delegate2;
-    private CompositeTypeElementDefParser parser;
+    private CompositeTypeDefParser parser;
 
     private @Mock TypeElement typeElement;
-    private final Context ctx = new Context(null, null);
+    private final Context ctx = mock(Context.class);
     private final ClassDef typeInfo = ClassDef.builder().build();
 
     @BeforeEach
     void setUp() {
-        parser = new CompositeTypeElementDefParser(
+        parser = new CompositeTypeDefParser(
             ctx, 
             Map.of(
                 ElementKind.RECORD, delegate1,
@@ -53,7 +54,6 @@ final class CompositeTypeDefParserTest {
         assertThat(infoList).containsExactly(typeInfo);
 
         when(typeElement.getKind()).thenReturn(ElementKind.CONSTRUCTOR);
-        infoList = parser.parse(typeElement);
-        assertThat(infoList).isNull();
+        assertThatThrownBy(() -> parser.parse(typeElement));
     }
 }

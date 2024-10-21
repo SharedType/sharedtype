@@ -9,8 +9,6 @@ import org.sharedtype.processor.domain.ArrayTypeInfo;
 import org.sharedtype.processor.domain.ConcreteTypeInfo;
 import org.sharedtype.processor.domain.TypeVariableInfo;
 
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 
 import static org.mockito.Mockito.when;
@@ -31,7 +29,7 @@ class TypescriptTypeInfoParserTest {
       "BOOLEAN, boolean"
     })
     void parsePrimitives(TypeKind typeKind, String expectedSimpleName) {
-        var type = ctxMocks.variableElement("field1", PrimitiveType.class).withTypeKind(typeKind).type();
+        var type = ctxMocks.primitiveVariable("field1", typeKind).type();
 
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
@@ -63,9 +61,8 @@ class TypescriptTypeInfoParserTest {
       "java.lang.Object, any"
     })
     void parsePredefinedObject(String objectName, String expectedSimpleName) {
-        var type = ctxMocks.variableElement("field1", DeclaredType.class)
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement(objectName).type())
           .withTypeKind(TypeKind.DECLARED)
-          .withTypeElement(ctxMocks.typeElement(objectName).element())
           .type();
 
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
@@ -86,11 +83,8 @@ class TypescriptTypeInfoParserTest {
 
     @Test
     void parseArraylikeObject() {
-        var type = ctxMocks.variableElement("field1", DeclaredType.class)
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("java.util.List").type())
           .withTypeKind(TypeKind.DECLARED)
-          .withTypeElement(
-            ctxMocks.typeElement("java.util.List").element()
-          )
           .withTypeArguments(ctxMocks.typeElement("java.lang.String").type())
           .type();
         when(ctxMocks.getContext().isArraylike(type)).thenReturn(true);
@@ -112,11 +106,8 @@ class TypescriptTypeInfoParserTest {
             ctxMocks.typeElement("java.lang.String").type()
           )
           .type();
-        var type = ctxMocks.variableElement("field1", DeclaredType.class)
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("java.util.List").type())
           .withTypeKind(TypeKind.DECLARED)
-          .withTypeElement(
-            ctxMocks.typeElement("java.util.List").element()
-          )
           .withTypeArguments(
             nestedType
           )
@@ -137,9 +128,8 @@ class TypescriptTypeInfoParserTest {
 
     @Test
     void parseObject() {
-        var type = ctxMocks.variableElement("field1", DeclaredType.class)
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("com.github.cuzfrog.Abc").type())
           .withTypeKind(TypeKind.DECLARED)
-          .withTypeElement(ctxMocks.typeElement("com.github.cuzfrog.Abc").element())
           .type();
 
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
@@ -153,11 +143,8 @@ class TypescriptTypeInfoParserTest {
 
     @Test
     void parseGenericObjectWithKnownTypeArgs() {
-        var type = ctxMocks.variableElement("field1", DeclaredType.class)
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("com.github.cuzfrog.Tuple").type())
           .withTypeKind(TypeKind.DECLARED)
-          .withTypeElement(
-            ctxMocks.typeElement("com.github.cuzfrog.Tuple").element()
-          )
           .withTypeArguments(
             ctxMocks.typeElement("java.lang.String").type(),
             ctxMocks.typeElement("com.github.cuzfrog.Abc").type()
@@ -188,13 +175,10 @@ class TypescriptTypeInfoParserTest {
 
     @Test
     void parseGenericObjectWithTypeVar() {
-        var type = ctxMocks.variableElement("field1", DeclaredType.class)
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("com.github.cuzfrog.Container").type())
           .withTypeKind(TypeKind.DECLARED)
-          .withTypeElement(
-            ctxMocks.typeElement("com.github.cuzfrog.Container").element()
-          )
           .withTypeArguments(
-            ctxMocks.typeParameterElement("T").type()
+            ctxMocks.typeParameter("T").type()
           )
           .type();
 
@@ -214,7 +198,7 @@ class TypescriptTypeInfoParserTest {
 
     @Test
     void parseMethod() {
-        var type = ctxMocks.executableElement("value")
+        var type = ctxMocks.executable("value")
             .withReturnType(ctxMocks.typeElement("java.lang.String").type())
             .type();
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
