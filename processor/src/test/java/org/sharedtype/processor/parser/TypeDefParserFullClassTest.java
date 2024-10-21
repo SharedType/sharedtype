@@ -1,6 +1,7 @@
 package org.sharedtype.processor.parser;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
 import org.sharedtype.processor.context.ContextMocks;
 import org.sharedtype.processor.context.TypeElementMock;
 import org.sharedtype.processor.domain.ClassDef;
@@ -11,6 +12,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.type.TypeKind;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -57,6 +59,7 @@ final class TypeDefParserFullClassTest {
         when(typeInfoParser.parse(field1.type())).thenReturn(parsedField1Type);
         when(typeInfoParser.parse(field2.type())).thenReturn(parsedField2Type);
         when(typeInfoParser.parse(method2.type())).thenReturn(parsedMethod2Type);
+        InOrder inOrder = inOrder(typeInfoParser, ctxMocks.getContext());
 
         var defs = parser.parse(element);
         assertThat(defs).hasSize(1);
@@ -93,5 +96,12 @@ final class TypeDefParserFullClassTest {
         assertThat(supertype2.qualifiedName()).isEqualTo("com.github.cuzfrog.InterfaceA");
         var supertype3 = classDef.supertypes().get(2);
         assertThat(supertype3.qualifiedName()).isEqualTo("com.github.cuzfrog.InterfaceB");
+
+        assertThat(ctxMocks.getContext().getSimpleName("com.github.cuzfrog.Abc")).isEqualTo("Abc");
+
+        inOrder.verify(typeInfoParser).parse(field1.type());
+        inOrder.verify(typeInfoParser).parse(field2.type());
+        inOrder.verify(typeInfoParser).parse(method2.type());
+        inOrder.verify(ctxMocks.getContext()).saveType("com.github.cuzfrog.Abc", "Abc");
     }
 }

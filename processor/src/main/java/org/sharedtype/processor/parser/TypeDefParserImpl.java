@@ -51,13 +51,13 @@ final class TypeDefParserImpl implements TypeDefParser {
         // TODO: cache parsed type info
 
         var config = new Config(typeElement); // TODO: validate typeElement's eligibility
-        ctx.saveType(config.getQualifiedName(), config.getName());
 
         var builder = ClassDef.builder().qualifiedName(config.getQualifiedName()).name(config.getName());
         builder.typeVariables(parseTypeVariables(typeElement));
         builder.components(parseComponents(typeElement, config));
         builder.supertypes(parseSupertypes(typeElement));
 
+        ctx.saveType(config.getQualifiedName(), config.getName());
         return List.of(builder.build());
     }
 
