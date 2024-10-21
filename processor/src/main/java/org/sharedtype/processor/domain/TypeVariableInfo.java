@@ -11,6 +11,11 @@ public final class TypeVariableInfo implements TypeInfo {
     private final String name;
 
     @Override
+    public boolean resolved() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return name;
     }

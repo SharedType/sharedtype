@@ -99,9 +99,9 @@ final class TypeDefParserFullClassTest {
 
         assertThat(ctxMocks.getContext().getSimpleName("com.github.cuzfrog.Abc")).isEqualTo("Abc");
 
+        inOrder.verify(ctxMocks.getContext()).saveType("com.github.cuzfrog.Abc", "Abc");
         inOrder.verify(typeInfoParser).parse(field1.type());
         inOrder.verify(typeInfoParser).parse(field2.type());
         inOrder.verify(typeInfoParser).parse(method2.type());
-        inOrder.verify(ctxMocks.getContext()).saveType("com.github.cuzfrog.Abc", "Abc");
     }
 }

@@ -62,6 +62,10 @@ final class LoopTypeResolver implements TypeResolver {
                 defs.addAll(tryRecursivelyResolve(typeArg));
             }
             return defs;
+        } else if (typeInfo instanceof ArrayTypeInfo arrayTypeInfo) {
+            return tryRecursivelyResolve(arrayTypeInfo.component());
+        } else if (typeInfo instanceof TypeVariableInfo typeVariableInfo) {
+            throw new UnsupportedOperationException("Type variable not supported yet: " + typeVariableInfo);
         }
         throw new SharedTypeInternalError(String.format("Only ConcreteTypeInfo needs to be resolved, but got: %s with class %s", typeInfo, typeInfo.getClass()));
     }

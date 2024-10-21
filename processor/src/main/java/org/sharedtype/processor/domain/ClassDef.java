@@ -70,6 +70,9 @@ public final class ClassDef implements TypeDef {
     }
 
     private String supertypesToString() {
-        return supertypes.isEmpty() ? "" : " extends " + String.join(" & ", supertypes.stream().map(TypeDef::qualifiedName).toList());
+        if (supertypes.isEmpty()) {
+            return "";
+        }
+        return " extends " + String.join(" & ", supertypes.stream().map(t -> t.qualifiedName() + (t.resolved() ? "" : "?")).toList());
     }
 }

@@ -79,7 +79,7 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
     }
 
     private TypeInfo parseDeclared(DeclaredType declaredType) {
-        var typeElement = (TypeElement)declaredType.asElement();
+        var typeElement = (TypeElement) declaredType.asElement();
         var qualifiedName = typeElement.getQualifiedName().toString();
         var typeArgs = declaredType.getTypeArguments();
 
@@ -91,7 +91,7 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
             arrayStack++;
             currentType = typeArgs.get(0);
             if (currentType instanceof DeclaredType argDeclaredType) {
-                var element = (TypeElement)argDeclaredType.asElement();
+                var element = (TypeElement) argDeclaredType.asElement();
                 qualifiedName = element.getQualifiedName().toString();
                 typeArgs = argDeclaredType.getTypeArguments();
             } else if (currentType instanceof TypeVariable argTypeVariable) {
@@ -107,14 +107,14 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
         if (predefinedTypeInfo != null) {
             typeInfo = predefinedTypeInfo;
         } else {
-            var resolved = isTypeVar ||ctx.hasType(qualifiedName);
+            var resolved = isTypeVar || ctx.hasType(qualifiedName);
             var parsedTypeArgs = typeArgs.stream().map(this::parse).toList();
             typeInfo = ConcreteTypeInfo.builder()
-              .qualifiedName(qualifiedName)
-              .simpleName(ctx.getSimpleName(qualifiedName))
-              .typeArgs(parsedTypeArgs)
-              .resolved(resolved)
-              .build();
+                .qualifiedName(qualifiedName)
+                .simpleName(ctx.getSimpleName(qualifiedName))
+                .typeArgs(parsedTypeArgs)
+                .resolved(resolved)
+                .build();
         }
 
         while (arrayStack > 0) {
@@ -126,8 +126,8 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
 
     private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable) {
         return TypeVariableInfo.builder()
-                .name(typeVariable.asElement().getSimpleName().toString())
-                .build();
+            .name(typeVariable.asElement().getSimpleName().toString())
+            .build();
     }
 
 }

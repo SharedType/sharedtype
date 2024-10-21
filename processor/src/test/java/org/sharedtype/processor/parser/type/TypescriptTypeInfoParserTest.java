@@ -40,7 +40,7 @@ class TypescriptTypeInfoParserTest {
         var arrayType = ctxMocks.array(type).type();
         var arrayTypeInfo = (ArrayTypeInfo) parser.parse(arrayType);
         SoftAssertions.assertSoftly(softly -> {
-            var componentTypeInfo = (ConcreteTypeInfo) arrayTypeInfo.getComponent();
+            var componentTypeInfo = (ConcreteTypeInfo) arrayTypeInfo.component();
             softly.assertThat(componentTypeInfo.simpleName()).isEqualTo(expectedSimpleName);
             softly.assertThat(componentTypeInfo.resolved()).isTrue();
         });
@@ -75,7 +75,7 @@ class TypescriptTypeInfoParserTest {
         var arrayType = ctxMocks.array(type).type();
         var arrayTypeInfo = (ArrayTypeInfo) parser.parse(arrayType);
         SoftAssertions.assertSoftly(softly -> {
-            var componentTypeInfo = (ConcreteTypeInfo) arrayTypeInfo.getComponent();
+            var componentTypeInfo = (ConcreteTypeInfo) arrayTypeInfo.component();
             softly.assertThat(componentTypeInfo.simpleName()).isEqualTo(expectedSimpleName);
             softly.assertThat(componentTypeInfo.resolved()).isTrue();
         });
@@ -90,7 +90,7 @@ class TypescriptTypeInfoParserTest {
         when(ctxMocks.getContext().isArraylike(type)).thenReturn(true);
 
         var arrayTypeInfo = (ArrayTypeInfo) parser.parse(type);
-        var typeInfo = (ConcreteTypeInfo) arrayTypeInfo.getComponent();
+        var typeInfo = (ConcreteTypeInfo) arrayTypeInfo.component();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
             softly.assertThat(typeInfo.simpleName()).isEqualTo("string");
@@ -116,8 +116,8 @@ class TypescriptTypeInfoParserTest {
         when(ctxMocks.getContext().isArraylike(nestedType)).thenReturn(true);
 
         var arrayTypeInfo = (ArrayTypeInfo) parser.parse(type);
-        var nestedArrayTypeInfo = (ArrayTypeInfo) arrayTypeInfo.getComponent();
-        var typeInfo = (ConcreteTypeInfo) nestedArrayTypeInfo.getComponent();
+        var nestedArrayTypeInfo = (ArrayTypeInfo) arrayTypeInfo.component();
+        var typeInfo = (ConcreteTypeInfo) nestedArrayTypeInfo.component();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
             softly.assertThat(typeInfo.simpleName()).isEqualTo("string");

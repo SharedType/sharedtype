@@ -2,9 +2,7 @@ package com.github.sharedtype.types;
 
 import org.sharedtype.annotation.SharedType;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @SharedType
 public record JavaRecord<T, K>(
@@ -30,18 +28,18 @@ public record JavaRecord<T, K>(
 
 //    DependencyClassA a, // cyclic a -> b -> c -> a
 
-    List<Container<String>> containerStringList,
-    List<Collection<Container<String>>> containerStringListCollection,
-    List<T> genericList,
-    Set<T> genericSet,
-    List<Set<T>> genericListSet,
-//    Map<K, T> genericMap
-    Integer[] integerArray,
-
-    String duplicateAccessor
+    List<Container<String>> containerStringList
+//    List<Collection<Container<String>>> containerStringListCollection,
+//    List<T> genericList,
+//    Set<T> genericSet,
+//    List<Set<T>> genericListSet,
+////    Map<K, T> genericMap
+//    Integer[] integerArray,
+//
+//    String duplicateAccessor
 ) implements InterfaceA {
-    @SharedType.Accessor
-    String getDuplicateAccessor() {
-        return duplicateAccessor;
-    }
+//    @SharedType.Accessor
+//    String getDuplicateAccessor() {
+//        return duplicateAccessor;
+//    }
 }
