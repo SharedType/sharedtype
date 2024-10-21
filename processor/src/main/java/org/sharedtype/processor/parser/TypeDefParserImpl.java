@@ -9,17 +9,24 @@ import org.sharedtype.processor.domain.FieldComponentInfo;
 import org.sharedtype.processor.domain.TypeDef;
 import org.sharedtype.processor.domain.TypeVariableInfo;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
+import org.sharedtype.processor.support.annotation.VisibleForTesting;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 @Singleton
@@ -83,26 +90,30 @@ final class TypeDefParserImpl implements TypeDefParser {
         return fields;
     }
 
-    private List<VariableElement> resolveComponents(TypeElement typeElement, Config config) {
-        var componentElems = typeElement.getEnclosedElements().stream()
-          .filter(elem -> !config.isComponentIgnored(elem))
-          .filter(elem -> elem instanceof VariableElement)
-          .map(VariableElement.class::cast)
-          .toList();
+    @VisibleForTesting
+    List<Element> resolveComponents(TypeElement typeElement, Config config) {
+        var enclosedElements = typeElement.getEnclosedElements();
 
-        var res = new ArrayList<VariableElement>(componentElems.size());
-        var namesOfTypes = new NamesOfTypes(componentElems.size());
-        for (VariableElement componentElem : componentElems) {
-            var type = componentElem.asType();
-            var name = componentElem.getSimpleName().toString();
-            if (config.includes(SharedType.ComponentType.FIELDS) && componentElem.getKind() == ElementKind.FIELD) {
+        var res = new ArrayList<Element>(enclosedElements.size());
+        var namesOfTypes = new NamesOfTypes(enclosedElements.size());
+        for (Element enclosedElement : enclosedElements) {
+            if (config.isComponentIgnored(enclosedElement)) {
+                continue;
+            }
+
+            var type = enclosedElement.asType();
+            var name = enclosedElement.getSimpleName().toString();
+
+            if (config.includes(SharedType.ComponentType.FIELDS) && enclosedElement.getKind() == ElementKind.FIELD
+              && enclosedElement instanceof VariableElement variableElement) {
                 if (namesOfTypes.contains(name, type)) {
                     continue;
                 }
-                res.add(componentElem);
-                namesOfTypes.add(name, type);
+                res.add(variableElement);
             }
-            if (config.includes(SharedType.ComponentType.ACCESSORS) && isAccessor(componentElem, typeElement)) {
+
+            if (config.includes(SharedType.ComponentType.ACCESSORS) && enclosedElement instanceof ExecutableElement methodElem
+              && isZeroArgNonstaticMethod(methodElem)) {
                 var baseName = typeElement.getKind() == ElementKind.RECORD ? name : getAccessorBaseName(name);
                 if (baseName == null) {
                     continue;
@@ -110,28 +121,21 @@ final class TypeDefParserImpl implements TypeDefParser {
                 if (namesOfTypes.contains(baseName, type)) {
                     continue;
                 }
-                res.add(componentElem);
+                res.add(methodElem);
                 namesOfTypes.add(baseName, type);
             }
+
             // TODO: CONSTANTS
         }
+
         return res;
     }
 
-    private boolean isAccessor(VariableElement componentElem, TypeElement parentTypeElement) {
-        if (componentElem.getKind() != ElementKind.METHOD
-          || componentElem.getModifiers().contains(Modifier.STATIC)) {
+    private boolean isZeroArgNonstaticMethod(ExecutableElement componentElem) {
+        if (componentElem.getKind() != ElementKind.METHOD || componentElem.getModifiers().contains(Modifier.STATIC)) {
             return false;
         }
-        String name = componentElem.getSimpleName().toString();
-        if (parentTypeElement.getKind() != ElementKind.RECORD) {
-            if (ctx.getProps().getAccessorGetterPrefixes().stream().noneMatch(name::startsWith)) {
-                return false;
-            }
-        }
-        // TODO: check argument count:
-
-        return true;
+        return componentElem.getParameters().isEmpty();
     }
 
     @Nullable

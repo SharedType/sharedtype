@@ -23,10 +23,14 @@ class TypeDefParserTest {
     void parseClass() {
         var field1 = ctxMocks.variableElement("field1", PrimitiveType.class).withElementKind(ElementKind.FIELD);
         var field2 = ctxMocks.variableElement("field2", DeclaredType.class).withElementKind(ElementKind.FIELD);
+        var method1 = ctxMocks.executableElement("method1").withElementKind(ElementKind.METHOD);
+        var method2 = ctxMocks.executableElement("getValue").withElementKind(ElementKind.METHOD);
         var element = ctxMocks.typeElement("com.github.cuzfrog.Abc")
           .withEnclosedElements(
             field1.element(),
-            field2.element()
+            field2.element(),
+            method1.element(),
+            method2.element()
           )
           .withTypeParameters(
             ctxMocks.typeParameterElement("T").element(),
@@ -47,8 +51,10 @@ class TypeDefParserTest {
 
         var parsedField1Type = ConcreteTypeInfo.builder().qualifiedName("int").build();
         var parsedField2Type = ConcreteTypeInfo.builder().qualifiedName("java.lang.String").build();
+        var parsedMethod2Type = ConcreteTypeInfo.builder().qualifiedName("int").build();
         when(typeInfoParser.parse(field1.type())).thenReturn(parsedField1Type);
         when(typeInfoParser.parse(field2.type())).thenReturn(parsedField2Type);
+        when(typeInfoParser.parse(method2.type())).thenReturn(parsedMethod2Type);
 
         var defs = parser.parse(element);
         assertThat(defs).hasSize(1);
@@ -56,13 +62,16 @@ class TypeDefParserTest {
         assertThat(classDef.name()).isEqualTo("Abc");
 
         // components
-        assertThat(classDef.components()).hasSize(2);
+        assertThat(classDef.components()).hasSize(3);
         var field1Def = classDef.components().get(0);
         assertThat(field1Def.name()).isEqualTo("field1");
         assertThat(field1Def.type()).isEqualTo(parsedField1Type);
         var field2Def = classDef.components().get(1);
         assertThat(field2Def.name()).isEqualTo("field2");
         assertThat(field2Def.type()).isEqualTo(parsedField2Type);
+        var method2Def = classDef.components().get(2);
+        assertThat(method2Def.name()).isEqualTo("getValue");
+        assertThat(method2Def.type()).isEqualTo(parsedMethod2Type);
 
         // type variables
         assertThat(classDef.typeVariables()).hasSize(2);
@@ -82,5 +91,15 @@ class TypeDefParserTest {
         assertThat(supertype2.qualifiedName()).isEqualTo("com.github.cuzfrog.InterfaceA");
         var supertype3 = classDef.supertypes().get(2);
         assertThat(supertype3.qualifiedName()).isEqualTo("com.github.cuzfrog.InterfaceB");
+    }
+
+    @Test
+    void deduplicateFieldAndAccessor() {
+        // TODO
+    }
+
+    @Test
+    void resolveComponents() {
+        // TODO
     }
 }

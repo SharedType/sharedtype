@@ -53,6 +53,10 @@ public final class ContextMocks {
         return new TypeParameterElementMock(simpleName, context, types);
     }
 
+    public ExecutableElementMock executableElement(String name) {
+        return new ExecutableElementMock(name, context, types);
+    }
+
     public ArrayTypeBuilder array(TypeMirror componentType) {
         return new ArrayTypeBuilder(componentType);
     }

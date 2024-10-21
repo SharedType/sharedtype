@@ -62,6 +62,7 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
     public TypeInfo parse(TypeMirror typeMirror) {
         var typeKind = typeMirror.getKind();
 
+        // TODO: use enumMap
         if (typeKind.isPrimitive()) {
             return PRIMITIVES.get(typeKind);
         } else if (typeKind == TypeKind.ARRAY) {
@@ -70,6 +71,8 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
             return parseDeclared((DeclaredType) typeMirror);
         } else if (typeKind == TypeKind.TYPEVAR) {
             return parseTypeVariable((TypeVariable) typeMirror);
+        } else if (typeKind == TypeKind.EXECUTABLE) {
+            throw new UnsupportedOperationException("Not implemented");
         }
         throw new SharedTypeInternalError(String.format("Unsupported field type, element: %s, typeKind: %s", typeMirror, typeKind)); // TODO: context info
     }
