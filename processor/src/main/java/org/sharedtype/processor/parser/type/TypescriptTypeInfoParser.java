@@ -12,6 +12,7 @@ import javax.inject.Singleton;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
@@ -72,7 +73,7 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
         } else if (typeKind == TypeKind.TYPEVAR) {
             return parseTypeVariable((TypeVariable) typeMirror);
         } else if (typeKind == TypeKind.EXECUTABLE) {
-            throw new UnsupportedOperationException("Not implemented");
+            return parse(((ExecutableType) typeMirror).getReturnType());
         }
         throw new SharedTypeInternalError(String.format("Unsupported field type, element: %s, typeKind: %s", typeMirror, typeKind)); // TODO: context info
     }
@@ -128,4 +129,5 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
                 .name(typeVariable.asElement().getSimpleName().toString())
                 .build();
     }
+
 }

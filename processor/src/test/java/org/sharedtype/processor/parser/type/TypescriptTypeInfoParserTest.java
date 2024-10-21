@@ -211,4 +211,18 @@ class TypescriptTypeInfoParserTest {
             );
         });
     }
+
+    @Test
+    void parseMethod() {
+        var type = ctxMocks.executableElement("value")
+            .withReturnType(ctxMocks.typeElement("java.lang.String").type())
+            .type();
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
+            softly.assertThat(typeInfo.simpleName()).isEqualTo("string");
+            softly.assertThat(typeInfo.resolved()).isTrue();
+            softly.assertThat(typeInfo.typeArgs()).isEmpty();
+        });
+    }
 }
