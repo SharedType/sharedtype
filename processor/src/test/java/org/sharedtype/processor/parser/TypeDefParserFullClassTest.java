@@ -14,13 +14,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class TypeDefParserTest {
+final class TypeDefParserFullClassTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
     private final TypeDefParserImpl parser = new TypeDefParserImpl(ctxMocks.getContext(), typeInfoParser);
 
     @Test
-    void parseClass() {
+    void parseComplexClass() {
         var field1 = ctxMocks.variableElement("field1", PrimitiveType.class).withElementKind(ElementKind.FIELD);
         var field2 = ctxMocks.variableElement("field2", DeclaredType.class).withElementKind(ElementKind.FIELD);
         var method1 = ctxMocks.executableElement("method1").withElementKind(ElementKind.METHOD);
@@ -91,15 +91,5 @@ class TypeDefParserTest {
         assertThat(supertype2.qualifiedName()).isEqualTo("com.github.cuzfrog.InterfaceA");
         var supertype3 = classDef.supertypes().get(2);
         assertThat(supertype3.qualifiedName()).isEqualTo("com.github.cuzfrog.InterfaceB");
-    }
-
-    @Test
-    void deduplicateFieldAndAccessor() {
-        // TODO
-    }
-
-    @Test
-    void resolveComponents() {
-        // TODO
     }
 }

@@ -1,6 +1,7 @@
 package org.sharedtype.processor.context;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.DeclaredType;
@@ -12,8 +13,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public final class TypeElementMock extends AbstractElementMock<TypeElement, DeclaredType, TypeElementMock> {
+    private static final ElementKind DEFAULT_ELEMENT_KIND = ElementKind.CLASS;
     TypeElementMock(String qualifiedName, Context ctx, Types types) {
         super(mock(TypeElement.class, qualifiedName), mock(DeclaredType.class, qualifiedName), ctx, types);
+        when(element.getKind()).thenReturn(DEFAULT_ELEMENT_KIND);
         setQualifiedName(element, qualifiedName);
         setSimpleName(element, getLastPart(qualifiedName));
         when(type.getKind()).thenReturn(TypeKind.DECLARED);

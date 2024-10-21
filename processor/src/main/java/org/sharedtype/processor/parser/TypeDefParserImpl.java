@@ -1,6 +1,5 @@
 package org.sharedtype.processor.parser;
 
-import lombok.RequiredArgsConstructor;
 import org.sharedtype.annotation.SharedType;
 import org.sharedtype.processor.context.Config;
 import org.sharedtype.processor.context.Context;
@@ -22,17 +21,25 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RequiredArgsConstructor(onConstructor_ = @Inject)
 @Singleton
 final class TypeDefParserImpl implements TypeDefParser {
     private final Context ctx;
+    private final Types types;
     private final TypeInfoParser typeInfoParser;
+
+    @Inject
+    TypeDefParserImpl(Context ctx, TypeInfoParser typeInfoParser) {
+        this.ctx = ctx;
+        this.types = ctx.getProcessingEnv().getTypeUtils();
+        this.typeInfoParser = typeInfoParser;
+    }
 
     @Override
     public List<TypeDef> parse(TypeElement typeElement) {
@@ -110,6 +117,7 @@ final class TypeDefParserImpl implements TypeDefParser {
                     continue;
                 }
                 res.add(variableElement);
+                namesOfTypes.add(name, type);
             }
 
             if (config.includes(SharedType.ComponentType.ACCESSORS) && enclosedElement instanceof ExecutableElement methodElem
@@ -155,9 +163,8 @@ final class TypeDefParserImpl implements TypeDefParser {
             if (type == null) {
                 return false;
             }
-            if (!type.equals(componentType)) {
+            if (!types.isSameType(type, componentType)) {
                 ctx.error("Components with same name '%s' have different types '%s' and '%s'", name, type, componentType);
-                return false;
             }
             return true;
         }
