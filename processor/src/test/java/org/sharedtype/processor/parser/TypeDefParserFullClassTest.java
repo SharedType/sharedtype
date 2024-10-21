@@ -72,7 +72,7 @@ final class TypeDefParserFullClassTest {
         assertThat(field2Def.name()).isEqualTo("field2");
         assertThat(field2Def.type()).isEqualTo(parsedField2Type);
         var method2Def = classDef.components().get(2);
-        assertThat(method2Def.name()).isEqualTo("getValue");
+        assertThat(method2Def.name()).isEqualTo("value");
         assertThat(method2Def.type()).isEqualTo(parsedMethod2Type);
 
         // type variables

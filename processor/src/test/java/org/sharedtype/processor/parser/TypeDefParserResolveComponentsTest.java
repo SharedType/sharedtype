@@ -33,17 +33,21 @@ final class TypeDefParserResolveComponentsTest {
     private final ExecutableElementMock method1 = ctxMocks.executable("value")
         .withElementKind(ElementKind.METHOD)
         .withReturnType(string.type());
-    private final ExecutableElementMock method2 = ctxMocks.executable("value2")
+    private final ExecutableElementMock method1get = ctxMocks.executable("getValue")
+        .withElementKind(ElementKind.METHOD)
+        .withReturnType(string.type());
+    private final ExecutableElementMock method2 = ctxMocks.executable("getValue2")
         .withElementKind(ElementKind.METHOD)
         .withReturnType(string.type());
     private final TypeElement recordElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
-      .withElementKind(ElementKind.RECORD)
-      .withEnclosedElements(
-        field1.element(),
-        method1.element(),
-        method2.element()
-      )
-      .element();
+        .withElementKind(ElementKind.RECORD)
+        .withEnclosedElements(
+            field1.element(),
+            method1get.element(),
+            method1.element(),
+            method2.element()
+        )
+        .element();
 
     @BeforeEach
     void setUp() {
@@ -54,7 +58,16 @@ final class TypeDefParserResolveComponentsTest {
     @Test
     void deduplicateFieldAndAccessor() {
         var components = parser.resolveComponents(recordElement, config);
-        assertThat(components).containsExactly(field1.element(), method2.element());
+        assertThat(components).hasSize(2);
+
+        var component1 = components.get(0);
+        assertThat(component1.a()).isEqualTo(field1.element());
+        assertThat(component1.b()).isEqualTo("value");
+
+        var component2 = components.get(1);
+        assertThat(component2.a()).isEqualTo(method2.element());
+        assertThat(component2.b()).isEqualTo("value2");
+
         verify(ctxMocks.getContext(), never()).error(any(), any(Object[].class));
     }
 
@@ -62,13 +75,25 @@ final class TypeDefParserResolveComponentsTest {
     void resolveField() {
         when(config.includes(SharedType.ComponentType.ACCESSORS)).thenReturn(false);
         var components = parser.resolveComponents(recordElement, config);
-        assertThat(components).containsExactly(field1.element());
+        assertThat(components).satisfiesExactly(component -> {
+            assertThat(component.a()).isEqualTo(field1.element());
+            assertThat(component.b()).isEqualTo("value");
+        });
     }
 
     @Test
     void resolveAccessor() {
         when(config.includes(SharedType.ComponentType.FIELDS)).thenReturn(false);
         var components = parser.resolveComponents(recordElement, config);
-        assertThat(components).containsExactly(method1.element(), method2.element());
+        assertThat(components).satisfiesExactly(
+            component1 -> {
+                assertThat(component1.a()).isEqualTo(method1get.element());
+                assertThat(component1.b()).isEqualTo("value");
+            },
+            component2 -> {
+                assertThat(component2.a()).isEqualTo(method2.element());
+                assertThat(component2.b()).isEqualTo("value2");
+            }
+        );
     }
 }

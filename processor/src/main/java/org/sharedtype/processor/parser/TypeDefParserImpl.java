@@ -9,6 +9,8 @@ import org.sharedtype.processor.domain.TypeDef;
 import org.sharedtype.processor.domain.TypeVariableInfo;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
 import org.sharedtype.processor.support.annotation.VisibleForTesting;
+import org.sharedtype.processor.support.utils.Tuple;
+import org.sharedtype.processor.support.utils.Utils;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -85,9 +87,10 @@ final class TypeDefParserImpl implements TypeDefParser {
         var componentElems = resolveComponents(typeElement, config);
 
         var fields = new ArrayList<FieldComponentInfo>(componentElems.size());
-        for (var element : componentElems) {
+        for (var tuple : componentElems) {
+            var element = tuple.a();
             var fieldInfo = FieldComponentInfo.builder()
-                .name(element.getSimpleName().toString())
+                .name(tuple.b())
                 .modifiers(element.getModifiers())
                 .optional(element.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
                 .type(typeInfoParser.parse(element.asType()))
@@ -98,10 +101,10 @@ final class TypeDefParserImpl implements TypeDefParser {
     }
 
     @VisibleForTesting
-    List<Element> resolveComponents(TypeElement typeElement, Config config) {
+    List<Tuple<Element, String>> resolveComponents(TypeElement typeElement, Config config) {
         var enclosedElements = typeElement.getEnclosedElements();
 
-        var res = new ArrayList<Element>(enclosedElements.size());
+        var res = new ArrayList<Tuple<Element, String>>(enclosedElements.size());
         var namesOfTypes = new NamesOfTypes(enclosedElements.size());
         for (Element enclosedElement : enclosedElements) {
             if (config.isComponentIgnored(enclosedElement)) {
@@ -116,13 +119,13 @@ final class TypeDefParserImpl implements TypeDefParser {
                 if (namesOfTypes.contains(name, type)) {
                     continue;
                 }
-                res.add(variableElement);
+                res.add(Tuple.of(variableElement, name));
                 namesOfTypes.add(name, type);
             }
 
             if (config.includes(SharedType.ComponentType.ACCESSORS) && enclosedElement instanceof ExecutableElement methodElem
                 && isZeroArgNonstaticMethod(methodElem)) {
-                var baseName = typeElement.getKind() == ElementKind.RECORD ? name : getAccessorBaseName(name);
+                var baseName = getAccessorBaseName(name, typeElement.getKind());
                 if (baseName == null) {
                     continue;
                 }
@@ -130,7 +133,7 @@ final class TypeDefParserImpl implements TypeDefParser {
                 if (namesOfTypes.contains(baseName, returnType)) {
                     continue;
                 }
-                res.add(methodElem);
+                res.add(Tuple.of(methodElem, baseName));
                 namesOfTypes.add(baseName, returnType);
             }
 
@@ -148,8 +151,16 @@ final class TypeDefParserImpl implements TypeDefParser {
     }
 
     @Nullable
-    private String getAccessorBaseName(String name) {
-        return ctx.getProps().getAccessorGetterPrefixes().stream().filter(name::startsWith).findFirst().orElse(null);
+    private String getAccessorBaseName(String name, ElementKind parentElementKind) {
+        for (String accessorGetterPrefix : ctx.getProps().getAccessorGetterPrefixes()) {
+            if (name.startsWith(accessorGetterPrefix)) {
+                return Utils.substringAndUncapitalize(name, accessorGetterPrefix.length());
+            }
+        }
+        if (parentElementKind == ElementKind.RECORD) {
+            return name;
+        }
+        return null;
     }
 
     private final class NamesOfTypes {
