@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import java.util.List;
 import java.util.Map;
 
 @Singleton
@@ -19,7 +18,7 @@ final class CompositeTypeDefParser implements TypeDefParser {
     private final Map<ElementKind, TypeDefParser> parsers;
 
     @Override
-    public List<TypeDef> parse(TypeElement typeElement) {
+    public TypeDef parse(TypeElement typeElement) {
         ctx.info("Processing: " + typeElement.getQualifiedName());
         var parser = parsers.get(typeElement.getKind());
         if (parser == null) {

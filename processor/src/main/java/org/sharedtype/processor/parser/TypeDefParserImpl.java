@@ -25,7 +25,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,9 +43,9 @@ final class TypeDefParserImpl implements TypeDefParser {
     }
 
     @Override
-    public List<TypeDef> parse(TypeElement typeElement) {
+    public TypeDef parse(TypeElement typeElement) {
         if (ctx.isTypeIgnored(typeElement)) {
-            return Collections.emptyList();
+            return TypeDef.none();
         }
         // TODO: cache parsed type info
 
@@ -58,7 +57,7 @@ final class TypeDefParserImpl implements TypeDefParser {
         builder.components(parseComponents(typeElement, config));
         builder.supertypes(parseSupertypes(typeElement));
 
-        return List.of(builder.build());
+        return builder.build();
     }
 
     private List<TypeVariableInfo> parseTypeVariables(TypeElement typeElement) {
@@ -72,13 +71,13 @@ final class TypeDefParserImpl implements TypeDefParser {
         var supertypes = new ArrayList<TypeDef>();
         var superclass = typeElement.getSuperclass();
         if (superclass instanceof DeclaredType declaredType) {
-            supertypes.addAll(parse((TypeElement) declaredType.asElement()));
+            supertypes.add(parse((TypeElement) declaredType.asElement()));
         }
 
         var interfaceTypes = typeElement.getInterfaces();
         for (TypeMirror interfaceType : interfaceTypes) {
             var declaredType = (DeclaredType) interfaceType;
-            supertypes.addAll(parse((TypeElement) declaredType.asElement()));
+            supertypes.add(parse((TypeElement) declaredType.asElement()));
         }
         return supertypes;
     }

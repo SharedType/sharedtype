@@ -45,7 +45,9 @@ final class LoopTypeResolverTest {
                 ).build()
             ))
             .build();
-        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.Abc"))).thenReturn(List.of());
+        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.Abc"))).thenReturn(
+            ClassDef.builder().build()
+        );
 
         var defs = resolver.resolve(List.of(typeDef));
     }

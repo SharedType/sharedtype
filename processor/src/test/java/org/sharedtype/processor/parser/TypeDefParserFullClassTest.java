@@ -61,9 +61,7 @@ final class TypeDefParserFullClassTest {
         when(typeInfoParser.parse(method2.type())).thenReturn(parsedMethod2Type);
         InOrder inOrder = inOrder(typeInfoParser, ctxMocks.getContext());
 
-        var defs = parser.parse(element);
-        assertThat(defs).hasSize(1);
-        var classDef = (ClassDef) defs.get(0);
+        var classDef = (ClassDef) parser.parse(element);
         assertThat(classDef.name()).isEqualTo("Abc");
 
         // components

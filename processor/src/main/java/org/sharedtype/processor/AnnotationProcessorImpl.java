@@ -64,7 +64,7 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
                     ctx.warning("Type '%s' is ignored, but annotated with '%s'.", typeElement.getQualifiedName(), ANNOTATION_QUALIFIED_NAME);
                     continue;
                 }
-                defs.addAll(parser.parse(typeElement));
+                defs.add(parser.parse(typeElement));
             } else {
                 throw new UnsupportedOperationException("Unsupported element: " + element);
             }
