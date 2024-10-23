@@ -56,7 +56,7 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
         this.ctx = ctx;
         this.predefinedObjectTypes = new HashMap<>(PREDEFINED_OBJECT_TYPES);
         predefinedObjectTypes.put(OBJECT_NAME, ConcreteTypeInfo.ofPredefined(OBJECT_NAME, ctx.getProps().getJavaObjectMapType()));
-        predefinedObjectTypes.forEach((qualifiedName, typeInfo) -> ctx.saveType(qualifiedName, typeInfo.simpleName()));
+        predefinedObjectTypes.forEach((qualifiedName, typeInfo) -> ctx.getTypeCache().saveName(qualifiedName, typeInfo.simpleName()));
     }
 
     @Override
@@ -107,11 +107,11 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
         if (predefinedTypeInfo != null) {
             typeInfo = predefinedTypeInfo;
         } else {
-            var resolved = isTypeVar || ctx.hasType(qualifiedName);
+            var resolved = isTypeVar || ctx.getTypeCache().contains(qualifiedName);
             var parsedTypeArgs = typeArgs.stream().map(this::parse).toList();
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
-                .simpleName(ctx.getSimpleName(qualifiedName))
+                .simpleName(ctx.getTypeCache().getName(qualifiedName))
                 .typeArgs(parsedTypeArgs)
                 .resolved(resolved)
                 .build();

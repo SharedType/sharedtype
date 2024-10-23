@@ -9,6 +9,7 @@ import org.sharedtype.processor.context.ExecutableElementMock;
 import org.sharedtype.processor.context.RecordComponentMock;
 import org.sharedtype.processor.context.TypeElementMock;
 import org.sharedtype.processor.context.DeclaredTypeVariableElementMock;
+import org.sharedtype.processor.domain.ClassDef;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.lang.model.element.ElementKind;
@@ -104,5 +105,14 @@ final class TypeDefParserForRecordTest {
                 assertThat(component2.b()).isEqualTo("value2");
             }
         );
+    }
+
+    @Test
+    void useCachedTypeDef() {
+        var typeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build();
+        when(ctxMocks.getTypeCache().getType("com.github.cuzfrog.Abc")).thenReturn(typeDef);
+
+        assertThat(parser.parse(recordElement)).isSameAs(typeDef);
+        verify(typeInfoParser, never()).parse(any());
     }
 }

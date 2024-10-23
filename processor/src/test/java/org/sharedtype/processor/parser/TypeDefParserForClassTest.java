@@ -2,6 +2,7 @@ package org.sharedtype.processor.parser;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
+import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.context.ContextMocks;
 import org.sharedtype.processor.context.TypeElementMock;
 import org.sharedtype.processor.domain.ClassDef;
@@ -59,9 +60,10 @@ final class TypeDefParserForClassTest {
         when(typeInfoParser.parse(field1.type())).thenReturn(parsedField1Type);
         when(typeInfoParser.parse(field2.type())).thenReturn(parsedField2Type);
         when(typeInfoParser.parse(method2.type())).thenReturn(parsedMethod2Type);
-        InOrder inOrder = inOrder(typeInfoParser, ctxMocks.getContext());
+        InOrder inOrder = inOrder(typeInfoParser, ctxMocks.getContext().getTypeCache());
 
         var classDef = (ClassDef) parser.parse(element);
+        assert classDef != null;
         assertThat(classDef.name()).isEqualTo("Abc");
 
         // components
@@ -95,11 +97,12 @@ final class TypeDefParserForClassTest {
         var supertype3 = classDef.supertypes().get(2);
         assertThat(supertype3.qualifiedName()).isEqualTo("com.github.cuzfrog.InterfaceB");
 
-        assertThat(ctxMocks.getContext().getSimpleName("com.github.cuzfrog.Abc")).isEqualTo("Abc");
+        assertThat(ctxMocks.getContext().getTypeCache().getName("com.github.cuzfrog.Abc")).isEqualTo("Abc");
 
-        inOrder.verify(ctxMocks.getContext()).saveType("com.github.cuzfrog.Abc", "Abc");
+        inOrder.verify(ctxMocks.getContext().getTypeCache()).getType("com.github.cuzfrog.Abc");
         inOrder.verify(typeInfoParser).parse(field1.type());
         inOrder.verify(typeInfoParser).parse(field2.type());
         inOrder.verify(typeInfoParser).parse(method2.type());
+        inOrder.verify(ctxMocks.getContext().getTypeCache()).saveType("com.github.cuzfrog.Abc", classDef);
     }
 }

@@ -1,29 +1,37 @@
 package org.sharedtype.processor.context;
 
+import org.sharedtype.processor.domain.TypeDef;
+
+import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-final class TypeCache {
-    private final Set<String> qualifiedNames = new HashSet<>();
-    private final Map<String, String> names = new HashMap<>();
+public final class TypeCache {
+    private final Map<String, Container> typeByQualifiedName = new HashMap<>();
 
-    public void add(String qualifiedName, String name) {
-        qualifiedNames.add(qualifiedName);
-        names.put(qualifiedName, name);
+    public void saveName(String qualifiedName, String name) {
+        typeByQualifiedName.put(qualifiedName, new Container(name, null));
+    }
+    public void saveType(String qualifiedName, TypeDef typeDef) {
+        typeByQualifiedName.put(qualifiedName, new Container(typeDef.name(), typeDef));
     }
 
     public String getName(String qualifiedName) {
-        return names.get(qualifiedName);
+        var container = typeByQualifiedName.get(qualifiedName);
+        return container == null ? null : container.simpleName;
+    }
+    public TypeDef getType(String qualifiedName) {
+        var container = typeByQualifiedName.get(qualifiedName);
+        return container == null ? null : container.typeDef;
     }
 
     public boolean contains(String qualifiedName) {
-        return qualifiedNames.contains(qualifiedName);
+        return typeByQualifiedName.containsKey(qualifiedName);
     }
 
-    void clear() {
-        qualifiedNames.clear();
-        names.clear();
+    private record Container(
+        String simpleName,
+        @Nullable TypeDef typeDef
+    ) {
     }
 }

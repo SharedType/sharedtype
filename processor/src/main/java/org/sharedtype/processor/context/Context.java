@@ -12,7 +12,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class Context {
-    private final TypeCache resolvedTypes = new TypeCache();
+    @Getter
+    private final TypeCache typeCache = new TypeCache();
     @Getter
     private final ProcessingEnvironment processingEnv;
     @Getter
@@ -40,22 +41,6 @@ public final class Context {
     }
     public void error(String message, Object... objects) {
         log(Diagnostic.Kind.ERROR, message, objects);
-    }
-
-    public void saveType(String qualifiedName, String name) {
-        resolvedTypes.add(qualifiedName, name);
-    }
-
-    public boolean hasType(String qualifiedName) {
-        return resolvedTypes.contains(qualifiedName);
-    }
-
-    /**
-     * Should check if the type is saved to the context by calling {@link #hasType(String)} first.
-     * @return the simple name of the type, null if not saved to the context.
-     */
-    public String getSimpleName(String qualifiedName) {
-        return resolvedTypes.getName(qualifiedName);
     }
 
     public boolean isArraylike(TypeMirror typeMirror) {

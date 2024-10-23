@@ -53,17 +53,22 @@ final class TypeDefParserImpl implements TypeDefParser {
         if (ctx.isTypeIgnored(typeElement)) {
             return null;
         }
-        // TODO: cache parsed type info
+        String qualifiedName = typeElement.getQualifiedName().toString();
+        var cachedDef = ctx.getTypeCache().getType(qualifiedName);
+        if (cachedDef != null) {
+            return cachedDef;
+        }
 
         var config = new Config(typeElement); // TODO: validate typeElement's eligibility
-        ctx.saveType(config.getQualifiedName(), config.getName());
 
         var builder = ClassDef.builder().qualifiedName(config.getQualifiedName()).name(config.getName());
         builder.typeVariables(parseTypeVariables(typeElement));
         builder.components(parseComponents(typeElement, config));
         builder.supertypes(parseSupertypes(typeElement));
 
-        return builder.build();
+        var classDef = builder.build();
+        ctx.getTypeCache().saveType(config.getQualifiedName(), classDef);
+        return classDef;
     }
 
     private List<TypeVariableInfo> parseTypeVariables(TypeElement typeElement) {

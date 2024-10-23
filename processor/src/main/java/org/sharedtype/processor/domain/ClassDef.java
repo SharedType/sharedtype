@@ -53,6 +53,16 @@ public final class ClassDef implements TypeDef {
                 return false;
             }
         }
+        for (TypeVariableInfo typeVariableInfo : typeVariables) {
+            if (!typeVariableInfo.resolved()) {
+                return false;
+            }
+        }
+        for (TypeDef supertype : supertypes) {
+            if (!supertype.resolved()) {
+                return false;
+            }
+        }
         return true;
     }
 

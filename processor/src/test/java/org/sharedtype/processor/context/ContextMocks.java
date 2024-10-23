@@ -1,6 +1,7 @@
 package org.sharedtype.processor.context;
 
 import lombok.Getter;
+import org.sharedtype.processor.domain.TypeDef;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.type.DeclaredType;
@@ -9,14 +10,13 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @Getter
 public final class ContextMocks {
-    private final TypeCache typeCache = new TypeCache();
+    private final TypeCache typeCache = spy(new TypeCache());
     private final Props props;
     private final ProcessingEnvironment processingEnv = mock(ProcessingEnvironment.class);
     private final Types types = mock(Types.class);
@@ -29,14 +29,7 @@ public final class ContextMocks {
         when(context.getProcessingEnv()).thenReturn(processingEnv);
         when(processingEnv.getElementUtils()).thenReturn(elements);
         when(processingEnv.getTypeUtils()).thenReturn(types);
-        doAnswer(invoc -> {
-            String qualifiedName = invoc.getArgument(0);
-            String simpleName = invoc.getArgument(1);
-            typeCache.add(qualifiedName, simpleName);
-            return null;
-        }).when(context).saveType(anyString(), anyString());
-        when(context.getSimpleName(anyString())).then(invoc -> typeCache.getName(invoc.getArgument(0)));
-        when(context.hasType(anyString())).then(invoc -> typeCache.contains(invoc.getArgument(0)));
+        when(context.getTypeCache()).thenReturn(typeCache);
     }
 
     public ContextMocks() {
