@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import static org.sharedtype.processor.context.Constants.ANNOTATION_QUALIFIED_NAME;
 
 @Singleton
 final class TypeDefParserImpl implements TypeDefParser {
@@ -42,10 +45,13 @@ final class TypeDefParserImpl implements TypeDefParser {
         this.typeInfoParser = typeInfoParser;
     }
 
-    @Override
+    @Override @Nullable
     public TypeDef parse(TypeElement typeElement) {
         if (ctx.isTypeIgnored(typeElement)) {
-            return TypeDef.none();
+            if (typeElement.getAnnotation(SharedType.Ignore.class) == null) {
+                ctx.warning("Type '%s' is ignored, but annotated with '%s'.", typeElement.getQualifiedName(), ANNOTATION_QUALIFIED_NAME);
+            }
+            return null;
         }
         // TODO: cache parsed type info
 
@@ -68,18 +74,18 @@ final class TypeDefParserImpl implements TypeDefParser {
     }
 
     private List<TypeDef> parseSupertypes(TypeElement typeElement) {
-        var supertypes = new ArrayList<TypeDef>();
+        var supertypeElems = new ArrayList<TypeElement>();
         var superclass = typeElement.getSuperclass();
         if (superclass instanceof DeclaredType declaredType) {
-            supertypes.add(parse((TypeElement) declaredType.asElement()));
+            supertypeElems.add((TypeElement) declaredType.asElement());
         }
 
         var interfaceTypes = typeElement.getInterfaces();
         for (TypeMirror interfaceType : interfaceTypes) {
             var declaredType = (DeclaredType) interfaceType;
-            supertypes.add(parse((TypeElement) declaredType.asElement()));
+            supertypeElems.add((TypeElement) declaredType.asElement());
         }
-        return supertypes;
+        return supertypeElems.stream().map(this::parse).filter(Objects::nonNull).toList();
     }
 
     private List<FieldComponentInfo> parseComponents(TypeElement typeElement, Config config) {

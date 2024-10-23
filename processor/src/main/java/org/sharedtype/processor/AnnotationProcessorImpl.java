@@ -57,18 +57,18 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
 
     @VisibleForTesting
     void doProcess(Set<? extends Element> elements) {
-        var defs = new ArrayList<TypeDef>();
+        var discoveredDefs = new ArrayList<TypeDef>(elements.size());
         for (Element element : elements) {
             if (element instanceof TypeElement typeElement) {
-                if (ctx.isTypeIgnored(typeElement)) {
-                    ctx.warning("Type '%s' is ignored, but annotated with '%s'.", typeElement.getQualifiedName(), ANNOTATION_QUALIFIED_NAME);
-                    continue;
+                var typeDef = parser.parse(typeElement);
+                if (typeDef != null) {
+                    discoveredDefs.add(typeDef);
                 }
-                defs.add(parser.parse(typeElement));
             } else {
                 throw new UnsupportedOperationException("Unsupported element: " + element);
             }
         }
-        writer.write(resolver.resolve(defs));
+        var resolvedDefs = resolver.resolve(discoveredDefs);
+        writer.write(resolvedDefs);
     }
 }

@@ -54,9 +54,11 @@ final class LoopTypeResolver implements TypeResolver {
             if (!concreteTypeInfo.shallowResolved()) {
                 var typeElement = ctx.getProcessingEnv().getElementUtils().getTypeElement(concreteTypeInfo.qualifiedName());
                 var parsed = typeDefParser.parse(typeElement);
-                concreteTypeInfo.setSimpleName(parsed.name());
-                concreteTypeInfo.markShallowResolved();
-                defs.add(parsed);
+                if (parsed != null) {
+                    concreteTypeInfo.setSimpleName(parsed.name());
+                    concreteTypeInfo.markShallowResolved();
+                    defs.add(parsed);
+                }
             }
             for (TypeInfo typeArg : concreteTypeInfo.typeArgs()) {
                 defs.addAll(tryRecursivelyResolve(typeArg));
