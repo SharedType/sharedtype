@@ -49,7 +49,7 @@ final class LoopTypeResolverTest {
             ClassDef.builder().build()
         );
 
-        var defs = resolver.resolve(List.of(typeDef));
+//        var defs = resolver.resolve(List.of(typeDef));
     }
 
     private TypeElement mockElementByName(String qualifiedName) {

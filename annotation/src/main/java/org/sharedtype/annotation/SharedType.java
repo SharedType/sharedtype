@@ -42,7 +42,7 @@ public @interface SharedType {
     ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS};
 
     /**
-     * Mark a method as an accessor regardless of its name.
+     * Mark a method as an accessor regardless of its name. This annotation will be ignored if {@link #includes()} does not include {@link ComponentType#ACCESSORS}.
      */
     @Target({ElementType.METHOD})
     @Retention(RetentionPolicy.SOURCE)
@@ -74,8 +74,9 @@ public @interface SharedType {
         /**
          * Represents:
          * <ul>
-         *     <li>Methods starting with a getter prefix and 0 arguments. By default, prefixes include 'get' or 'is'.</li>
-         *     <li>Methods annotated with {@link Accessor}</li>
+         *     <li>In a class or enum, methods starting with a getter prefix and 0 arguments. By default, prefixes include 'get' or 'is'.</li>
+         *     <li>In a record, only components' accessors.</li>
+         *     <li>Methods annotated with {@link Accessor} in both class and records</li>
          * </ul>
          */
         ACCESSORS,

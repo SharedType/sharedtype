@@ -55,6 +55,10 @@ public final class ContextMocks {
         return new PrimitiveVariableElementMock(name, typeKind, context, types);
     }
 
+    public <T extends TypeMirror> RecordComponentMock<T> recordComponent(String name, T type) {
+        return new RecordComponentMock<>(name, type, context, types);
+    }
+
     public TypeParameterElementMock typeParameter(String simpleName) {
         return new TypeParameterElementMock(simpleName, context, types);
     }

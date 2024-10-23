@@ -10,7 +10,12 @@ import org.sharedtype.processor.support.annotation.VisibleForTesting;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 import org.sharedtype.processor.writer.TypeWriter;
 
-import javax.annotation.processing.*;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -63,6 +68,8 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
                 var typeDef = parser.parse(typeElement);
                 if (typeDef != null) {
                     discoveredDefs.add(typeDef);
+                } else {
+                    ctx.warning("Type '%s' is ignored, but annotated with '%s'.", typeElement.getQualifiedName(), ANNOTATION_QUALIFIED_NAME);
                 }
             } else {
                 throw new UnsupportedOperationException("Unsupported element: " + element);

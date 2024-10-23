@@ -19,38 +19,38 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.RecordComponentElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import static org.sharedtype.processor.context.Constants.ANNOTATION_QUALIFIED_NAME;
+import java.util.stream.Collectors;
 
 @Singleton
 final class TypeDefParserImpl implements TypeDefParser {
     private final Context ctx;
     private final Types types;
+    private final Elements elements;
     private final TypeInfoParser typeInfoParser;
 
     @Inject
     TypeDefParserImpl(Context ctx, TypeInfoParser typeInfoParser) {
         this.ctx = ctx;
         this.types = ctx.getProcessingEnv().getTypeUtils();
+        this.elements = ctx.getProcessingEnv().getElementUtils();
         this.typeInfoParser = typeInfoParser;
     }
 
     @Override @Nullable
     public TypeDef parse(TypeElement typeElement) {
         if (ctx.isTypeIgnored(typeElement)) {
-            if (typeElement.getAnnotation(SharedType.Ignore.class) == null) {
-                ctx.warning("Type '%s' is ignored, but annotated with '%s'.", typeElement.getQualifiedName(), ANNOTATION_QUALIFIED_NAME);
-            }
             return null;
         }
         // TODO: cache parsed type info
@@ -107,10 +107,15 @@ final class TypeDefParserImpl implements TypeDefParser {
 
     @VisibleForTesting
     List<Tuple<Element, String>> resolveComponents(TypeElement typeElement, Config config) {
+        var isRecord = typeElement.getKind() == ElementKind.RECORD;
         var enclosedElements = typeElement.getEnclosedElements();
+        var recordAccessors = typeElement.getRecordComponents().stream().map(RecordComponentElement::getAccessor).collect(Collectors.toUnmodifiableSet());
 
         var res = new ArrayList<Tuple<Element, String>>(enclosedElements.size());
         var namesOfTypes = new NamesOfTypes(enclosedElements.size());
+        var includeAccessors = config.includes(SharedType.ComponentType.ACCESSORS);
+        var includeFields = config.includes(SharedType.ComponentType.FIELDS) && !(isRecord && includeAccessors);
+
         for (Element enclosedElement : enclosedElements) {
             if (config.isComponentIgnored(enclosedElement)) {
                 continue;
@@ -119,18 +124,20 @@ final class TypeDefParserImpl implements TypeDefParser {
             var type = enclosedElement.asType();
             var name = enclosedElement.getSimpleName().toString();
 
-            if (config.includes(SharedType.ComponentType.FIELDS) && enclosedElement.getKind() == ElementKind.FIELD
-                && enclosedElement instanceof VariableElement variableElement) {
+            if (includeFields && enclosedElement.getKind() == ElementKind.FIELD && enclosedElement instanceof VariableElement variableElem) {
                 if (namesOfTypes.contains(name, type)) {
                     continue;
                 }
-                res.add(Tuple.of(variableElement, name));
+                res.add(Tuple.of(variableElem, name));
                 namesOfTypes.add(name, type);
             }
 
-            if (config.includes(SharedType.ComponentType.ACCESSORS) && enclosedElement instanceof ExecutableElement methodElem
-                && isZeroArgNonstaticMethod(methodElem)) {
-                var baseName = getAccessorBaseName(name, typeElement.getKind());
+            if (includeAccessors && enclosedElement instanceof ExecutableElement methodElem && isZeroArgNonstaticMethod(methodElem)) {
+                boolean explicitAccessor = methodElem.getAnnotation(SharedType.Accessor.class) != null;
+                if (!explicitAccessor && isRecord && !recordAccessors.contains(methodElem)) {
+                    continue;
+                }
+                var baseName = getAccessorBaseName(name, isRecord);
                 if (baseName == null) {
                     continue;
                 }
@@ -156,13 +163,13 @@ final class TypeDefParserImpl implements TypeDefParser {
     }
 
     @Nullable
-    private String getAccessorBaseName(String name, ElementKind parentElementKind) {
+    private String getAccessorBaseName(String name, boolean isRecord) {
         for (String accessorGetterPrefix : ctx.getProps().getAccessorGetterPrefixes()) {
             if (name.startsWith(accessorGetterPrefix)) {
                 return Utils.substringAndUncapitalize(name, accessorGetterPrefix.length());
             }
         }
-        if (parentElementKind == ElementKind.RECORD) {
+        if (isRecord) {
             return name;
         }
         return null;

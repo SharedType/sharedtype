@@ -6,12 +6,14 @@ import org.sharedtype.annotation.SharedType;
 import org.sharedtype.processor.context.Config;
 import org.sharedtype.processor.context.ContextMocks;
 import org.sharedtype.processor.context.ExecutableElementMock;
+import org.sharedtype.processor.context.RecordComponentMock;
 import org.sharedtype.processor.context.TypeElementMock;
 import org.sharedtype.processor.context.DeclaredTypeVariableElementMock;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,7 +22,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-final class TypeDefParserResolveComponentsTest {
+final class TypeDefParserForRecordTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
     private final TypeDefParserImpl parser = new TypeDefParserImpl(ctxMocks.getContext(), typeInfoParser);
@@ -33,12 +35,16 @@ final class TypeDefParserResolveComponentsTest {
     private final ExecutableElementMock method1 = ctxMocks.executable("value")
         .withElementKind(ElementKind.METHOD)
         .withReturnType(string.type());
+    private final RecordComponentMock<DeclaredType> recordComponent1 = ctxMocks
+        .recordComponent("value", string.type())
+        .withAccessor(method1.element());
     private final ExecutableElementMock method1get = ctxMocks.executable("getValue")
         .withElementKind(ElementKind.METHOD)
         .withReturnType(string.type());
     private final ExecutableElementMock method2 = ctxMocks.executable("getValue2")
         .withElementKind(ElementKind.METHOD)
-        .withReturnType(string.type());
+        .withReturnType(string.type())
+        .withAnnotation(SharedType.Accessor.class);
     private final TypeElement recordElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
         .withElementKind(ElementKind.RECORD)
         .withEnclosedElements(
@@ -46,6 +52,9 @@ final class TypeDefParserResolveComponentsTest {
             method1get.element(),
             method1.element(),
             method2.element()
+        )
+        .withRecordComponentElements(
+            recordComponent1.element()
         )
         .element();
 
@@ -56,12 +65,12 @@ final class TypeDefParserResolveComponentsTest {
     }
 
     @Test
-    void deduplicateFieldAndAccessor() {
+    void ignoreFieldsWhenAccessor() {
         var components = parser.resolveComponents(recordElement, config);
         assertThat(components).hasSize(2);
 
         var component1 = components.get(0);
-        assertThat(component1.a()).isEqualTo(field1.element());
+        assertThat(component1.a()).isEqualTo(method1.element());
         assertThat(component1.b()).isEqualTo("value");
 
         var component2 = components.get(1);
@@ -87,7 +96,7 @@ final class TypeDefParserResolveComponentsTest {
         var components = parser.resolveComponents(recordElement, config);
         assertThat(components).satisfiesExactly(
             component1 -> {
-                assertThat(component1.a()).isEqualTo(method1get.element());
+                assertThat(component1.a()).isEqualTo(method1.element());
                 assertThat(component1.b()).isEqualTo("value");
             },
             component2 -> {

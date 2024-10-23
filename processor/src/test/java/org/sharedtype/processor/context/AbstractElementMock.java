@@ -8,6 +8,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Fail.fail;
@@ -40,6 +41,11 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, B ex
         } else {
             fail("Not a DeclaredType: " + type);
         }
+        return (B)this;
+    }
+
+    public <A extends Annotation> B withAnnotation(Class<A> annotationClazz) {
+        when(element.getAnnotation(annotationClazz)).thenReturn(mock(annotationClazz));
         return (B)this;
     }
 

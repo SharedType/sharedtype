@@ -2,6 +2,7 @@ package org.sharedtype.processor.context;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.RecordComponentElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.DeclaredType;
@@ -41,6 +42,11 @@ public final class TypeElementMock extends AbstractElementMock<TypeElement, Decl
 
     public TypeElementMock withInterfaces(DeclaredType... interfaces) {
         when(element.getInterfaces()).then(invoc -> Arrays.asList(interfaces));
+        return this;
+    }
+
+    public TypeElementMock withRecordComponentElements(RecordComponentElement... recordComponentElements) {
+        when(element.getRecordComponents()).then(invoc -> Arrays.asList(recordComponentElements));
         return this;
     }
 
