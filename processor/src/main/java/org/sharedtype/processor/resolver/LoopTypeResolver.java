@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.domain.*;
 import org.sharedtype.processor.parser.TypeDefParser;
+import org.sharedtype.processor.support.annotation.SideEffect;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 @RequiredArgsConstructor(onConstructor_ = @Inject)
@@ -21,54 +23,73 @@ final class LoopTypeResolver implements TypeResolver {
 
     @Override
     public List<TypeDef> resolve(List<TypeDef> typeDefs) {
-        var resolvedDefs = new ArrayList<TypeDef>(typeDefs.size() * DEPENDENCY_COUNT_EXPANSION_FACTOR);
-        var processingDefs = new ArrayDeque<>(typeDefs);
+        var n = typeDefs.size() * DEPENDENCY_COUNT_EXPANSION_FACTOR;
+        var resolvedDefs = new ArrayList<TypeDef>(n);
+        var processingDefStack = new ArrayDeque<TypeDef>(n);
+        var processingInfoStack = new ArrayDeque<TypeInfo>(n);
+        processingDefStack.addAll(typeDefs);
 
-        while (!processingDefs.isEmpty()) {
-            var defInfo = processingDefs.pop();
+        while (!processingDefStack.isEmpty()) {
+            var defInfo = processingDefStack.pop();
             if (defInfo.resolved()) {
                 resolvedDefs.add(defInfo);
                 continue;
             }
 
-            processingDefs.push(defInfo);
+            processingDefStack.push(defInfo);
 
-            if (defInfo instanceof ClassDef classInfo) {
-                for (FieldComponentInfo fieldComponentInfo : classInfo.components()) {
+            if (defInfo instanceof ClassDef classDef) {
+                for (FieldComponentInfo fieldComponentInfo : classDef.components()) {
                     if (!fieldComponentInfo.resolved()) {
-                        var dependentDefs = tryRecursivelyResolve(fieldComponentInfo.type());
-                        dependentDefs.forEach(processingDefs::push);
+                        processingInfoStack.push(fieldComponentInfo.type());
+                    }
+                }
+                classDef.supertypes().forEach(processingDefStack::push);
+                for (TypeVariableInfo typeVariableInfo : classDef.typeVariables()) {
+                    if (!typeVariableInfo.resolved()) {
+                        processingInfoStack.push(typeVariableInfo);
                     }
                 }
             } else {
                 throw new SharedTypeInternalError("Unsupported type: " + defInfo.getClass());
             }
+
+            resolveTypeInfo(processingDefStack, processingInfoStack);
         }
 
         return resolvedDefs;
     }
 
-    private List<TypeDef> tryRecursivelyResolve(TypeInfo typeInfo) {
-        if (typeInfo instanceof ConcreteTypeInfo concreteTypeInfo) {
-            var defs = new ArrayList<TypeDef>();
-            if (!concreteTypeInfo.shallowResolved()) {
-                var typeElement = ctx.getProcessingEnv().getElementUtils().getTypeElement(concreteTypeInfo.qualifiedName());
-                var parsed = typeDefParser.parse(typeElement);
-                if (parsed != null) {
-                    concreteTypeInfo.setSimpleName(parsed.name());
-                    concreteTypeInfo.markShallowResolved();
-                    defs.add(parsed);
+    @SideEffect
+    private void resolveTypeInfo(Deque<TypeDef> processingDefStack, Deque<TypeInfo> processingInfoStack) {
+        while (!processingInfoStack.isEmpty()) {
+            TypeInfo typeInfo = processingInfoStack.pop();
+            if (typeInfo instanceof ConcreteTypeInfo concreteTypeInfo) {
+                if (!concreteTypeInfo.shallowResolved()) {
+                    var typeElement = ctx.getProcessingEnv().getElementUtils().getTypeElement(concreteTypeInfo.qualifiedName());
+                    var parsed = typeDefParser.parse(typeElement);
+                    if (parsed != null) {
+                        concreteTypeInfo.setSimpleName(parsed.name());
+                        concreteTypeInfo.markShallowResolved();
+                        processingDefStack.push(parsed);
+                    }
                 }
+                for (TypeInfo typeArg : concreteTypeInfo.typeArgs()) {
+                    if (!typeArg.resolved()) {
+                        processingInfoStack.push(typeArg);
+                    }
+                }
+            } else if (typeInfo instanceof ArrayTypeInfo arrayTypeInfo) {
+                if (!arrayTypeInfo.resolved()) {
+                    processingInfoStack.push(arrayTypeInfo.component());
+                }
+            } else if (typeInfo instanceof TypeVariableInfo typeVariableInfo) {
+                throw new UnsupportedOperationException("Type variable not supported yet: " + typeVariableInfo);
+            } else {
+                throw new SharedTypeInternalError(
+                    String.format("Only ConcreteTypeInfo needs to be resolved, but got typeInfo: %s with %s", typeInfo, typeInfo.getClass())
+                );
             }
-            for (TypeInfo typeArg : concreteTypeInfo.typeArgs()) {
-                defs.addAll(tryRecursivelyResolve(typeArg));
-            }
-            return defs;
-        } else if (typeInfo instanceof ArrayTypeInfo arrayTypeInfo) {
-            return tryRecursivelyResolve(arrayTypeInfo.component());
-        } else if (typeInfo instanceof TypeVariableInfo typeVariableInfo) {
-            throw new UnsupportedOperationException("Type variable not supported yet: " + typeVariableInfo);
         }
-        throw new SharedTypeInternalError(String.format("Only ConcreteTypeInfo needs to be resolved, but got: %s with class %s", typeInfo, typeInfo.getClass()));
     }
 }

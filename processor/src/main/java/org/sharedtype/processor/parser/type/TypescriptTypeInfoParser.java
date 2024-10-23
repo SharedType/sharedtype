@@ -115,6 +115,7 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
                 .typeArgs(parsedTypeArgs)
                 .resolved(resolved)
                 .build();
+            // TODO: cache typeInfo
         }
 
         while (arrayStack > 0) {
