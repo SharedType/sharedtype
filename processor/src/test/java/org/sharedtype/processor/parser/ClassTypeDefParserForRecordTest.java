@@ -5,11 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.sharedtype.annotation.SharedType;
 import org.sharedtype.processor.context.Config;
 import org.sharedtype.processor.context.ContextMocks;
+import org.sharedtype.processor.context.DeclaredTypeVariableElementMock;
 import org.sharedtype.processor.context.ExecutableElementMock;
 import org.sharedtype.processor.context.RecordComponentMock;
 import org.sharedtype.processor.context.TypeElementMock;
-import org.sharedtype.processor.context.DeclaredTypeVariableElementMock;
-import org.sharedtype.processor.domain.ClassDef;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.lang.model.element.ElementKind;
@@ -23,10 +22,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-final class TypeDefParserForRecordTest {
+final class ClassTypeDefParserForRecordTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
-    private final TypeDefParserImpl parser = new TypeDefParserImpl(ctxMocks.getContext(), typeInfoParser);
+    private final ClassTypeDefParser parser = new ClassTypeDefParser(ctxMocks.getContext(), typeInfoParser);
 
     private final Config config = mock(Config.class);
     private final TypeElementMock string = ctxMocks.typeElement("java.lang.String");
@@ -105,14 +104,5 @@ final class TypeDefParserForRecordTest {
                 assertThat(component2.b()).isEqualTo("value2");
             }
         );
-    }
-
-    @Test
-    void useCachedTypeDef() {
-        var typeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build();
-        when(ctxMocks.getTypeCache().getType("com.github.cuzfrog.Abc")).thenReturn(typeDef);
-
-        assertThat(parser.parse(recordElement)).isSameAs(typeDef);
-        verify(typeInfoParser, never()).parse(any());
     }
 }

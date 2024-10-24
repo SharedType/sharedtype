@@ -24,7 +24,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,31 +33,20 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Singleton
-final class TypeDefParserImpl implements TypeDefParser {
+final class ClassTypeDefParser implements TypeDefParser {
     private final Context ctx;
     private final Types types;
-    private final Elements elements;
     private final TypeInfoParser typeInfoParser;
 
     @Inject
-    TypeDefParserImpl(Context ctx, TypeInfoParser typeInfoParser) {
+    ClassTypeDefParser(Context ctx, TypeInfoParser typeInfoParser) {
         this.ctx = ctx;
         this.types = ctx.getProcessingEnv().getTypeUtils();
-        this.elements = ctx.getProcessingEnv().getElementUtils();
         this.typeInfoParser = typeInfoParser;
     }
 
-    @Override @Nullable
+    @Override
     public TypeDef parse(TypeElement typeElement) {
-        if (ctx.isTypeIgnored(typeElement)) {
-            return null;
-        }
-        String qualifiedName = typeElement.getQualifiedName().toString();
-        var cachedDef = ctx.getTypeCache().getType(qualifiedName);
-        if (cachedDef != null) {
-            return cachedDef;
-        }
-
         var config = new Config(typeElement); // TODO: validate typeElement's eligibility
 
         var builder = ClassDef.builder().qualifiedName(config.getQualifiedName()).name(config.getName());
@@ -66,16 +54,14 @@ final class TypeDefParserImpl implements TypeDefParser {
         builder.components(parseComponents(typeElement, config));
         builder.supertypes(parseSupertypes(typeElement));
 
-        var classDef = builder.build();
-        ctx.getTypeCache().saveType(config.getQualifiedName(), classDef);
-        return classDef;
+        return builder.build();
     }
 
     private List<TypeVariableInfo> parseTypeVariables(TypeElement typeElement) {
         var typeParameters = typeElement.getTypeParameters();
         return typeParameters.stream()
             .map(typeParameterElement -> TypeVariableInfo.builder().name(typeParameterElement.getSimpleName().toString()).build())
-            .toList();
+            .toList(); // TODO: type bounds
     }
 
     private List<TypeDef> parseSupertypes(TypeElement typeElement) {
@@ -90,7 +76,7 @@ final class TypeDefParserImpl implements TypeDefParser {
             var declaredType = (DeclaredType) interfaceType;
             supertypeElems.add((TypeElement) declaredType.asElement());
         }
-        return supertypeElems.stream().map(this::parse).filter(Objects::nonNull).toList();
+        return supertypeElems.stream().map(ctx.getTypeDefParser()::parse).filter(Objects::nonNull).toList();
     }
 
     private List<FieldComponentInfo> parseComponents(TypeElement typeElement, Config config) {
@@ -160,7 +146,7 @@ final class TypeDefParserImpl implements TypeDefParser {
         return res;
     }
 
-    private boolean isZeroArgNonstaticMethod(ExecutableElement componentElem) {
+    private static boolean isZeroArgNonstaticMethod(ExecutableElement componentElem) {
         if (componentElem.getKind() != ElementKind.METHOD || componentElem.getModifiers().contains(Modifier.STATIC)) {
             return false;
         }

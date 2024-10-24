@@ -1,6 +1,8 @@
 package org.sharedtype.processor.context;
 
 import lombok.Getter;
+import lombok.Setter;
+import org.sharedtype.processor.parser.TypeDefParser;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
@@ -21,6 +23,8 @@ public final class Context {
     private final Types types;
     private final Elements elements;
     private final Set<TypeMirror> arraylikeTypes;
+    @Getter @Setter
+    private TypeDefParser typeDefParser;
 
     public Context(ProcessingEnvironment processingEnv, Props props) {
         this.processingEnv = processingEnv;

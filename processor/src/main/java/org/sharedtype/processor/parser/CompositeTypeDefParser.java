@@ -19,11 +19,22 @@ final class CompositeTypeDefParser implements TypeDefParser {
 
     @Override
     public TypeDef parse(TypeElement typeElement) {
+        if (ctx.isTypeIgnored(typeElement)) {
+            return null;
+        }
+        String qualifiedName = typeElement.getQualifiedName().toString();
+        var cachedDef = ctx.getTypeCache().getType(qualifiedName);
+        if (cachedDef != null) {
+            return cachedDef;
+        }
         ctx.info("Processing: " + typeElement.getQualifiedName());
         var parser = parsers.get(typeElement.getKind());
         if (parser == null) {
             throw new SharedTypeInternalError(String.format("Unsupported element: %s, kind=%s", typeElement, typeElement.getKind()));
         }
-        return parser.parse(typeElement);
+
+        var typeDef = parser.parse(typeElement);
+        ctx.getTypeCache().saveType(qualifiedName, typeDef);
+        return typeDef;
     }
 }

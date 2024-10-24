@@ -2,7 +2,6 @@ package org.sharedtype.processor.parser;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
-import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.context.ContextMocks;
 import org.sharedtype.processor.context.TypeElementMock;
 import org.sharedtype.processor.domain.ClassDef;
@@ -17,10 +16,10 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-final class TypeDefParserForClassTest {
+final class ClassTypeDefParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
-    private final TypeDefParserImpl parser = new TypeDefParserImpl(ctxMocks.getContext(), typeInfoParser);
+    private final ClassTypeDefParser parser = new ClassTypeDefParser(ctxMocks.getContext(), typeInfoParser);
 
     private final TypeElementMock string = ctxMocks.typeElement("java.lang.String");
 
@@ -60,7 +59,8 @@ final class TypeDefParserForClassTest {
         when(typeInfoParser.parse(field1.type())).thenReturn(parsedField1Type);
         when(typeInfoParser.parse(field2.type())).thenReturn(parsedField2Type);
         when(typeInfoParser.parse(method2.type())).thenReturn(parsedMethod2Type);
-        InOrder inOrder = inOrder(typeInfoParser, ctxMocks.getContext().getTypeCache());
+        when(ctxMocks.getContext().getTypeDefParser()).thenReturn(parser);
+        InOrder inOrder = inOrder(typeInfoParser);
 
         var classDef = (ClassDef) parser.parse(element);
         assert classDef != null;
@@ -97,12 +97,8 @@ final class TypeDefParserForClassTest {
         var supertype3 = classDef.supertypes().get(2);
         assertThat(supertype3.qualifiedName()).isEqualTo("com.github.cuzfrog.InterfaceB");
 
-        assertThat(ctxMocks.getContext().getTypeCache().getName("com.github.cuzfrog.Abc")).isEqualTo("Abc");
-
-        inOrder.verify(ctxMocks.getContext().getTypeCache()).getType("com.github.cuzfrog.Abc");
         inOrder.verify(typeInfoParser).parse(field1.type());
         inOrder.verify(typeInfoParser).parse(field2.type());
         inOrder.verify(typeInfoParser).parse(method2.type());
-        inOrder.verify(ctxMocks.getContext().getTypeCache()).saveType("com.github.cuzfrog.Abc", classDef);
     }
 }

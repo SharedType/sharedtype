@@ -25,7 +25,7 @@ final class LoopTypeResolver implements TypeResolver {
     public List<TypeDef> resolve(List<TypeDef> typeDefs) {
         var n = typeDefs.size() * DEPENDENCY_COUNT_EXPANSION_FACTOR;
         var resolvedDefs = new ArrayList<TypeDef>(n);
-        var processingDefStack = new ArrayDeque<TypeDef>(n);
+        var processingDefStack = new ArrayDeque<TypeDef>(n); // TODO: pass metadata from ctx to better size these buffers
         var processingInfoStack = new ArrayDeque<TypeInfo>(n);
         processingDefStack.addAll(typeDefs);
 
