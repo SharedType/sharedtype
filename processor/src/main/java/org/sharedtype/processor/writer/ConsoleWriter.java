@@ -10,13 +10,13 @@ import java.util.List;
 
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 @Singleton
-final class TypescriptTypeWriter implements TypeWriter {
-  private final Context ctx;
+final class ConsoleWriter implements TypeWriter{
+    private final Context ctx;
 
-  @Override
-  public void write(List<TypeDef> typeDefs) {
-    // TODO 
-    typeDefs.forEach(d-> ctx.info("Write type: %s", d));
-  }
-
+    @Override
+    public void write(List<TypeDef> typeDefs) {
+        if (ctx.getProps().isConsoleWriterEnabled()) {
+            typeDefs.forEach(d-> ctx.info("Write type: %s%s", System.lineSeparator(), d));
+        }
+    }
 }

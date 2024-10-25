@@ -1,5 +1,7 @@
 package org.sharedtype.processor.domain;
 
-public sealed interface TypeInfo permits ArrayTypeInfo, ConcreteTypeInfo, TypeVariableInfo {
+import java.io.Serializable;
+
+public sealed interface TypeInfo extends Serializable permits ArrayTypeInfo, ConcreteTypeInfo, TypeVariableInfo {
     boolean resolved();
 }

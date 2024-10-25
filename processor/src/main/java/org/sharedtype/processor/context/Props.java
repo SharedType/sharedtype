@@ -11,6 +11,9 @@ import java.util.Set;
 public final class Props {
     private static final Class<? extends Annotation> DEFAULT_OPTIONAL_ANNO = javax.annotation.Nullable.class;
 
+    private final boolean consoleWriterEnabled = true;
+    private final boolean javaSerializationFileWriterEnabled = true;
+
     private final Class<? extends Annotation> optionalAnno = DEFAULT_OPTIONAL_ANNO;
     private final String javaObjectMapType = "any";
     private final Set<String> accessorGetterPrefixes = Set.of("get", "is");

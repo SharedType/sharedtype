@@ -1,8 +1,9 @@
 package org.sharedtype.processor.domain;
 
+import java.io.Serializable;
 import java.util.List;
 
-public sealed interface TypeDef permits ClassDef {
+public sealed interface TypeDef extends Serializable permits ClassDef {
     String qualifiedName();
 
     String name();

@@ -1,4 +1,6 @@
 package org.sharedtype.processor.domain;
 
-public sealed interface ComponentInfo permits FieldComponentInfo {
+import java.io.Serializable;
+
+public sealed interface ComponentInfo extends Serializable permits FieldComponentInfo {
 }
