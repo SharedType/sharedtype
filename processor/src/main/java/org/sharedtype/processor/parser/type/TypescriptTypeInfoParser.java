@@ -107,15 +107,18 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
         if (predefinedTypeInfo != null) {
             typeInfo = predefinedTypeInfo;
         } else {
-            var resolved = isTypeVar || ctx.getTypeCache().contains(qualifiedName);
-            var parsedTypeArgs = typeArgs.stream().map(this::parse).toList();
-            typeInfo = ConcreteTypeInfo.builder()
-                .qualifiedName(qualifiedName)
-                .simpleName(ctx.getTypeCache().getName(qualifiedName))
-                .typeArgs(parsedTypeArgs)
-                .resolved(resolved)
-                .build();
-            // TODO: cache typeInfo
+            typeInfo = ctx.getTypeCache().getTypeInfo(qualifiedName);
+            if (typeInfo == null) {
+                var resolved = isTypeVar || ctx.getTypeCache().contains(qualifiedName);
+                var parsedTypeArgs = typeArgs.stream().map(this::parse).toList();
+                typeInfo = ConcreteTypeInfo.builder()
+                    .qualifiedName(qualifiedName)
+                    .simpleName(ctx.getTypeCache().getName(qualifiedName))
+                    .typeArgs(parsedTypeArgs)
+                    .resolved(resolved)
+                    .build();
+                ctx.getTypeCache().saveTypeInfo(qualifiedName, typeInfo);
+            }
         }
 
         while (arrayStack > 0) {

@@ -1,6 +1,7 @@
 package org.sharedtype.processor.context;
 
 import org.sharedtype.processor.domain.TypeDef;
+import org.sharedtype.processor.domain.TypeInfo;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -9,29 +10,49 @@ import java.util.Map;
 public final class TypeCache {
     private final Map<String, Container> typeByQualifiedName = new HashMap<>();
 
-    public void saveName(String qualifiedName, String name) {
-        typeByQualifiedName.put(qualifiedName, new Container(name, null));
+    public void saveName(String qualifiedName, String simpleName) {
+        typeByQualifiedName.compute(qualifiedName, (k, v) -> {
+            var c = v == null ? new Container() : v;
+            c.simpleName = simpleName;
+            return c;
+        });
     }
-    public void saveType(String qualifiedName, TypeDef typeDef) {
-        typeByQualifiedName.put(qualifiedName, new Container(typeDef.name(), typeDef));
+    public void saveTypeDef(String qualifiedName, TypeDef typeDef) {
+        typeByQualifiedName.compute(qualifiedName, (k, v) -> {
+            var c = v == null ? new Container() : v;
+            c.simpleName = typeDef.name();
+            c.typeDef = typeDef;
+            return c;
+        });
+    }
+    public void saveTypeInfo(String qualifiedName, TypeInfo typeInfo) {
+        typeByQualifiedName.compute(qualifiedName, (k, v) -> {
+            var c = v == null ? new Container() : v;
+            c.typeInfo = typeInfo;
+            return c;
+        });
     }
 
     public String getName(String qualifiedName) {
         var container = typeByQualifiedName.get(qualifiedName);
         return container == null ? null : container.simpleName;
     }
-    public TypeDef getType(String qualifiedName) {
+    public TypeDef getTypeDef(String qualifiedName) {
         var container = typeByQualifiedName.get(qualifiedName);
         return container == null ? null : container.typeDef;
+    }
+    public TypeInfo getTypeInfo(String qualifiedName) {
+        var container = typeByQualifiedName.get(qualifiedName);
+        return container == null ? null : container.typeInfo;
     }
 
     public boolean contains(String qualifiedName) {
         return typeByQualifiedName.containsKey(qualifiedName);
     }
 
-    private record Container(
-        String simpleName,
-        @Nullable TypeDef typeDef
-    ) {
+    private static final class Container{
+        String simpleName;
+        @Nullable TypeDef typeDef;
+        @Nullable TypeInfo typeInfo;
     }
 }

@@ -11,6 +11,7 @@ import org.sharedtype.processor.domain.TypeVariableInfo;
 
 import javax.lang.model.type.TypeKind;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 class TypescriptTypeInfoParserTest {
@@ -208,5 +209,17 @@ class TypescriptTypeInfoParserTest {
             softly.assertThat(typeInfo.resolved()).isTrue();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
+    }
+
+    @Test
+    void reuseDeclaredTypeInfoFromCache() {
+        var type = ctxMocks.typeElement("com.github.cuzfrog.Abc").type();
+        var cachedTypeInfo = ConcreteTypeInfo.builder()
+            .qualifiedName("com.github.cuzfrog.Abc")
+            .resolved(false)
+            .build();
+        ctxMocks.getTypeCache().saveTypeInfo("com.github.cuzfrog.Abc", cachedTypeInfo);
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type);
+        assertThat(typeInfo).isSameAs(cachedTypeInfo);
     }
 }

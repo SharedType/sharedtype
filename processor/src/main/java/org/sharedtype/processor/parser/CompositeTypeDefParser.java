@@ -23,7 +23,7 @@ final class CompositeTypeDefParser implements TypeDefParser {
             return null;
         }
         String qualifiedName = typeElement.getQualifiedName().toString();
-        var cachedDef = ctx.getTypeCache().getType(qualifiedName);
+        var cachedDef = ctx.getTypeCache().getTypeDef(qualifiedName);
         if (cachedDef != null) {
             return cachedDef;
         }
@@ -34,7 +34,7 @@ final class CompositeTypeDefParser implements TypeDefParser {
         }
 
         var typeDef = parser.parse(typeElement);
-        ctx.getTypeCache().saveType(qualifiedName, typeDef);
+        ctx.getTypeCache().saveTypeDef(qualifiedName, typeDef);
         return typeDef;
     }
 }
