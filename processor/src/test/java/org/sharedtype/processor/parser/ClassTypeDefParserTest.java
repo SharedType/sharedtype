@@ -29,6 +29,9 @@ final class ClassTypeDefParserTest {
         var field2 = ctxMocks.declaredTypeVariable("field2", string.type()).withElementKind(ElementKind.FIELD);
         var method1 = ctxMocks.executable("method1").withElementKind(ElementKind.METHOD);
         var method2 = ctxMocks.executable("getValue").withElementKind(ElementKind.METHOD);
+        var supertype1 = ctxMocks.typeElement("com.github.cuzfrog.SuperClassA");
+        var supertype2 = ctxMocks.typeElement("com.github.cuzfrog.InterfaceA");
+        var supertype3 = ctxMocks.typeElement("com.github.cuzfrog.InterfaceB");
         var element = ctxMocks.typeElement("com.github.cuzfrog.Abc")
           .withEnclosedElements(
             field1.element(),
@@ -41,25 +44,26 @@ final class ClassTypeDefParserTest {
             ctxMocks.typeParameter("U").element()
           )
           .withSuperClass(
-            ctxMocks.typeElement("com.github.cuzfrog.SuperClassA")
-              .withEnclosedElements(
-                ctxMocks.primitiveVariable("a", TypeKind.INT).element()
-              )
-              .type()
+              supertype1.type()
           )
           .withInterfaces(
-            ctxMocks.typeElement("com.github.cuzfrog.InterfaceA").type(),
-            ctxMocks.typeElement("com.github.cuzfrog.InterfaceB").type()
+              supertype2.type(),
+              supertype3.type()
           )
           .element();
 
         var parsedField1Type = ConcreteTypeInfo.builder().qualifiedName("int").build();
         var parsedField2Type = ConcreteTypeInfo.builder().qualifiedName("java.lang.String").build();
         var parsedMethod2Type = ConcreteTypeInfo.builder().qualifiedName("int").build();
+        var parsedSupertype1 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.SuperClassA").build();
+        var parsedSupertype2 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.InterfaceA").build();
+        var parsedSupertype3 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.InterfaceB").build();
         when(typeInfoParser.parse(field1.type())).thenReturn(parsedField1Type);
         when(typeInfoParser.parse(field2.type())).thenReturn(parsedField2Type);
         when(typeInfoParser.parse(method2.type())).thenReturn(parsedMethod2Type);
-        when(ctxMocks.getContext().getTypeDefParser()).thenReturn(parser);
+        when(typeInfoParser.parse(supertype1.type())).thenReturn(parsedSupertype1);
+        when(typeInfoParser.parse(supertype2.type())).thenReturn(parsedSupertype2);
+        when(typeInfoParser.parse(supertype3.type())).thenReturn(parsedSupertype3);
         InOrder inOrder = inOrder(typeInfoParser);
 
         var classDef = (ClassDef) parser.parse(element);
@@ -86,19 +90,13 @@ final class ClassTypeDefParserTest {
         assertThat(typeVar2.getName()).isEqualTo("U");
 
         // supertypes
-        assertThat(classDef.supertypes()).hasSize(3);
-        var supertype1 = (ClassDef)classDef.supertypes().get(0);
-        assertThat(supertype1.qualifiedName()).isEqualTo("com.github.cuzfrog.SuperClassA");
-        assertThat(supertype1.components()).hasSize(1);
-        var supertype1Field = supertype1.components().get(0);
-        assertThat(supertype1Field.name()).isEqualTo("a");
-        var supertype2 = classDef.supertypes().get(1);
-        assertThat(supertype2.qualifiedName()).isEqualTo("com.github.cuzfrog.InterfaceA");
-        var supertype3 = classDef.supertypes().get(2);
-        assertThat(supertype3.qualifiedName()).isEqualTo("com.github.cuzfrog.InterfaceB");
+        assertThat(classDef.supertypes()).containsExactly(parsedSupertype1, parsedSupertype2, parsedSupertype3);
 
         inOrder.verify(typeInfoParser).parse(field1.type());
         inOrder.verify(typeInfoParser).parse(field2.type());
         inOrder.verify(typeInfoParser).parse(method2.type());
+        inOrder.verify(typeInfoParser).parse(supertype1.type());
+        inOrder.verify(typeInfoParser).parse(supertype2.type());
+        inOrder.verify(typeInfoParser).parse(supertype3.type());
     }
 }

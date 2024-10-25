@@ -29,31 +29,31 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, B ex
         when(element.asType()).thenReturn(type);
     }
 
-    public B withElementKind(ElementKind elementKind) {
+    public final B withElementKind(ElementKind elementKind) {
         when(element.getKind()).thenReturn(elementKind);
-        return (B)this;
+        return returnThis();
     }
 
-    public B withTypeArguments(TypeMirror... typeArgsArr) {
+    public final B withTypeArguments(TypeMirror... typeArgsArr) {
         var typeArgs = Arrays.asList(typeArgsArr);
         if (type instanceof DeclaredType declaredType) {
             when(declaredType.getTypeArguments()).thenAnswer(invoc -> typeArgs);
         } else {
             fail("Not a DeclaredType: " + type);
         }
-        return (B)this;
+        return returnThis();
     }
 
-    public <A extends Annotation> B withAnnotation(Class<A> annotationClazz) {
+    public final <A extends Annotation> B withAnnotation(Class<A> annotationClazz) {
         when(element.getAnnotation(annotationClazz)).thenReturn(mock(annotationClazz));
-        return (B)this;
+        return returnThis();
     }
 
-    public E element() {
+    public final E element() {
         return element;
     }
 
-    public T type() {
+    public final T type() {
         return type;
     }
 
@@ -67,5 +67,10 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, B ex
         var elementName = mock(Name.class);
         when(element.getSimpleName()).thenReturn(elementName);
         when(elementName.toString()).thenReturn(simpleName);
+    }
+
+    @SuppressWarnings("unchecked")
+    private B returnThis() {
+        return (B)this;
     }
 }

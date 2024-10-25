@@ -6,6 +6,7 @@ import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.domain.ClassDef;
 import org.sharedtype.processor.domain.FieldComponentInfo;
 import org.sharedtype.processor.domain.TypeDef;
+import org.sharedtype.processor.domain.TypeInfo;
 import org.sharedtype.processor.domain.TypeVariableInfo;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
 import org.sharedtype.processor.support.annotation.VisibleForTesting;
@@ -29,7 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -64,7 +64,7 @@ final class ClassTypeDefParser implements TypeDefParser {
             .toList(); // TODO: type bounds
     }
 
-    private List<TypeDef> parseSupertypes(TypeElement typeElement) {
+    private List<TypeInfo> parseSupertypes(TypeElement typeElement) {
         var supertypeElems = new ArrayList<TypeElement>();
         var superclass = typeElement.getSuperclass();
         if (superclass instanceof DeclaredType declaredType) {
@@ -76,7 +76,7 @@ final class ClassTypeDefParser implements TypeDefParser {
             var declaredType = (DeclaredType) interfaceType;
             supertypeElems.add((TypeElement) declaredType.asElement());
         }
-        return supertypeElems.stream().map(ctx.getTypeDefParser()::parse).filter(Objects::nonNull).toList();
+        return supertypeElems.stream().filter(t -> !ctx.isTypeIgnored(t)).map(TypeElement::asType).map(typeInfoParser::parse).toList();
     }
 
     private List<FieldComponentInfo> parseComponents(TypeElement typeElement, Config config) {

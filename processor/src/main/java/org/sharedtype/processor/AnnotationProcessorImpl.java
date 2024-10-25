@@ -41,7 +41,6 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
         ctx = new Context(processingEnv, new Props()); // TODO: check thread safety
         var component = DaggerComponents.builder().withContext(ctx).build();
         parser = component.parser();
-        ctx.setTypeDefParser(parser);
         resolver = component.resolver();
         writer = component.writer();
     }

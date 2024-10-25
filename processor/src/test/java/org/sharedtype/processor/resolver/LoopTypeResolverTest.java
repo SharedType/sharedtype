@@ -44,11 +44,9 @@ final class LoopTypeResolverTest {
                 TypeVariableInfo.builder().name("T").build()
             ))
             .supertypes(List.of(
-                ClassDef.builder()
-                    .qualifiedName("com.github.cuzfrog.SuperClassA").name("SuperClassA")
-                    .components(List.of(
-                        FieldComponentInfo.builder().name("a").type(aTypeInfo).build()
-                    ))
+                ConcreteTypeInfo.builder()
+                    .qualifiedName("com.github.cuzfrog.SuperClassA")
+                    .resolved(false)
                     .build()
             ))
             .build();
@@ -59,6 +57,13 @@ final class LoopTypeResolverTest {
         when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.A"))).thenReturn(aDef);
         var bDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.B").name("B").build();
         when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.B"))).thenReturn(bDef);
+        var superADef = ClassDef.builder()
+            .qualifiedName("com.github.cuzfrog.SuperClassA").name("SuperClassA")
+            .components(List.of(
+                FieldComponentInfo.builder().name("a").type(aTypeInfo).build()
+            ))
+            .build();
+        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.SuperClassA"))).thenReturn(superADef);
 
         var defs = resolver.resolve(List.of(typeDef));
         assertThat(defs).hasSize(5);

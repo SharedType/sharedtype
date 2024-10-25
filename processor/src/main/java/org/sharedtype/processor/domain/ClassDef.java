@@ -20,7 +20,7 @@ public final class ClassDef implements TypeDef {
     @Builder.Default
     private final List<TypeVariableInfo> typeVariables = Collections.emptyList();
     @Builder.Default
-    private final List<TypeDef> supertypes = Collections.emptyList(); // direct supertypes
+    private final List<TypeInfo> supertypes = Collections.emptyList(); // direct supertypes
 
     @Override
     public String qualifiedName() {
@@ -41,7 +41,7 @@ public final class ClassDef implements TypeDef {
         return typeVariables;
     }
 
-    public List<TypeDef> supertypes() {
+    public List<TypeInfo> supertypes() {
         return supertypes;
     }
 
@@ -58,7 +58,7 @@ public final class ClassDef implements TypeDef {
                 return false;
             }
         }
-        for (TypeDef supertype : supertypes) {
+        for (TypeInfo supertype : supertypes) {
             if (!supertype.resolved()) {
                 return false;
             }
@@ -83,6 +83,6 @@ public final class ClassDef implements TypeDef {
         if (supertypes.isEmpty()) {
             return "";
         }
-        return " extends " + String.join(" & ", supertypes.stream().map(t -> t.qualifiedName() + (t.resolved() ? "" : "?")).toList());
+        return " extends " + String.join(" & ", supertypes.stream().map(t -> t + (t.resolved() ? "" : "?")).toList());
     }
 }
