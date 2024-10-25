@@ -8,6 +8,7 @@ import org.sharedtype.processor.domain.ClassDef;
 import org.sharedtype.processor.domain.ConcreteTypeInfo;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
 
+import javax.annotation.Nullable;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.type.TypeKind;
 
@@ -26,7 +27,7 @@ final class ClassTypeDefParserTest {
     @Test
     void parseComplexClass() {
         var field1 = ctxMocks.primitiveVariable("field1", TypeKind.BOOLEAN);
-        var field2 = ctxMocks.declaredTypeVariable("field2", string.type()).withElementKind(ElementKind.FIELD);
+        var field2 = ctxMocks.declaredTypeVariable("field2", string.type()).withElementKind(ElementKind.FIELD).withAnnotation(Nullable.class);
         var method1 = ctxMocks.executable("method1").withElementKind(ElementKind.METHOD);
         var method2 = ctxMocks.executable("getValue").withElementKind(ElementKind.METHOD);
         var supertype1 = ctxMocks.typeElement("com.github.cuzfrog.SuperClassA");
@@ -75,12 +76,15 @@ final class ClassTypeDefParserTest {
         var field1Def = classDef.components().get(0);
         assertThat(field1Def.name()).isEqualTo("field1");
         assertThat(field1Def.type()).isEqualTo(parsedField1Type);
+        assertThat(field1Def.optional()).isFalse();
         var field2Def = classDef.components().get(1);
         assertThat(field2Def.name()).isEqualTo("field2");
         assertThat(field2Def.type()).isEqualTo(parsedField2Type);
+        assertThat(field2Def.optional()).isTrue();
         var method2Def = classDef.components().get(2);
         assertThat(method2Def.name()).isEqualTo("value");
         assertThat(method2Def.type()).isEqualTo(parsedMethod2Type);
+        assertThat(method2Def.optional()).isFalse();
 
         // type variables
         assertThat(classDef.typeVariables()).hasSize(2);

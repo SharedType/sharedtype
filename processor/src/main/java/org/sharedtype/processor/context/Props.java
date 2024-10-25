@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -15,6 +16,9 @@ public final class Props {
     private final Set<String> accessorGetterPrefixes = Set.of("get", "is");
     private final Set<String> arraylikeTypeQualifiedNames = Set.of(
         Iterable.class.getName()
+    );
+    private final Set<String> maplikeTypeQualifiedNames = Set.of(
+        Map.class.getName()
     );
     private final Set<String> ignoredTypeQualifiedNames = Set.of(
         Object.class.getName(),
