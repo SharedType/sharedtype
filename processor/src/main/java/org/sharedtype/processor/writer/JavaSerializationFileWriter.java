@@ -30,7 +30,7 @@ final class JavaSerializationFileWriter implements TypeWriter {
         if (ctx.getProps().isJavaSerializationFileWriterEnabled()) {
             try {
                 for (TypeDef typeDef : typeDefs) {
-                    var file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", typeDef.name() + ".ser");
+                    var file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", typeDef.simpleName() + ".ser");
                     try(var outputStream = file.openOutputStream();
                         var oos = new ObjectOutputStream(outputStream)) {
                         oos.writeObject(typeDef);

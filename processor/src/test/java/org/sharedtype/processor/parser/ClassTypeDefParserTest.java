@@ -69,7 +69,7 @@ final class ClassTypeDefParserTest {
 
         var classDef = (ClassDef) parser.parse(element);
         assert classDef != null;
-        assertThat(classDef.name()).isEqualTo("Abc");
+        assertThat(classDef.simpleName()).isEqualTo("Abc");
 
         // components
         assertThat(classDef.components()).hasSize(3);

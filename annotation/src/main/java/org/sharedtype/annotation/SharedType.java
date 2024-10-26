@@ -27,16 +27,17 @@ public @interface SharedType {
     /**
      * Includes fields, record components, accessors, or constants in a type.
      * <p>
-     *     To exclude a particular component, use {@link Ignore}.
+     * To exclude a particular component, use {@link Ignore}.
      * </p>
      * <br>
      * <p>
-     *     Fields and accessors duplicates resolution:
+     * Fields and accessors duplicates resolution:
      *     <ul>
      *         <li>In classes, fields and accessors effectively with the same name will be merged.</li>
      *         <li>In records, when accessors are included, records components are ignored.</li>
      *     </ul>
      * </p>
+     *
      * @see ComponentType
      */
     ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS};
@@ -60,6 +61,11 @@ public @interface SharedType {
     @Target({ElementType.METHOD, ElementType.FIELD, ElementType.RECORD_COMPONENT, ElementType.TYPE})
     @Retention(RetentionPolicy.SOURCE)
     @interface Ignore {
+    }
+
+    @Target({ElementType.METHOD, ElementType.FIELD})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface EnumValue {
     }
 
     enum ComponentType {

@@ -19,6 +19,7 @@ public final class Constants {
         TypeKind.SHORT, ConcreteTypeInfo.ofPredefined("short")
     );
 
+    public static final ConcreteTypeInfo STRING_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.String");
     public static final Map<String, ConcreteTypeInfo> PREDEFINED_OBJECT_TYPES = Map.ofEntries(
         Map.entry("java.lang.Boolean", ConcreteTypeInfo.ofPredefined("java.lang.Boolean")),
         Map.entry("java.lang.Byte", ConcreteTypeInfo.ofPredefined("java.lang.Byte")),
@@ -28,7 +29,7 @@ public final class Constants {
         Map.entry("java.lang.Integer", ConcreteTypeInfo.ofPredefined("java.lang.Integer")),
         Map.entry("java.lang.Long", ConcreteTypeInfo.ofPredefined("java.lang.Long")),
         Map.entry("java.lang.Short", ConcreteTypeInfo.ofPredefined("java.lang.Short")),
-        Map.entry("java.lang.String", ConcreteTypeInfo.ofPredefined("java.lang.String")),
+        Map.entry("java.lang.String", STRING_TYPE_INFO),
         Map.entry("java.lang.Void", ConcreteTypeInfo.ofPredefined("java.lang.Void")),
         Map.entry("java.lang.Object", ConcreteTypeInfo.ofPredefined("java.lang.Object")),
         Map.entry("java.lang.Class", ConcreteTypeInfo.ofPredefined("java.lang.Class")),

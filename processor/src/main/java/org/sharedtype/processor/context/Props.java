@@ -26,6 +26,7 @@ public final class Props {
     private final Set<String> ignoredTypeQualifiedNames = Set.of(
         Object.class.getName(),
         Record.class.getName(),
-        Serializable.class.getName()
+        Serializable.class.getName(),
+        Enum.class.getName()
     );
 }

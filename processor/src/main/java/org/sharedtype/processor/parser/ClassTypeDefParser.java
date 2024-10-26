@@ -47,9 +47,9 @@ final class ClassTypeDefParser implements TypeDefParser {
 
     @Override
     public TypeDef parse(TypeElement typeElement) {
-        var config = new Config(typeElement); // TODO: validate typeElement's eligibility
+        var config = new Config(typeElement);
 
-        var builder = ClassDef.builder().qualifiedName(config.getQualifiedName()).name(config.getName());
+        var builder = ClassDef.builder().qualifiedName(config.getQualifiedName()).simpleName(config.getName());
         builder.typeVariables(parseTypeVariables(typeElement));
         builder.components(parseComponents(typeElement, config));
         builder.supertypes(parseSupertypes(typeElement));

@@ -42,6 +42,8 @@ public record JavaRecord<T, K>(
     int[] intArray,
     Integer[] boxedIntArray,
 
+    EnumGalaxy enumGalaxy,
+
     String duplicateAccessor
 ) implements InterfaceA {
     @SharedType.Accessor

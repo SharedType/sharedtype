@@ -13,6 +13,7 @@ public record FieldComponentInfo(
         TypeInfo type
 ) implements ComponentInfo {
 
+    @Override
     public boolean resolved() {
         return type.resolved();
     }

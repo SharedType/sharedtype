@@ -3,10 +3,10 @@ package org.sharedtype.domain;
 import java.io.Serializable;
 import java.util.List;
 
-public sealed interface TypeDef extends Serializable permits ClassDef {
+public sealed interface TypeDef extends Serializable permits ClassDef, EnumDef {
     String qualifiedName();
 
-    String name();
+    String simpleName();
 
     List<? extends ComponentInfo> components();
 

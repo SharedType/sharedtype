@@ -28,7 +28,7 @@ final class LoopTypeResolverTest {
             .resolved(false)
             .build();
         var typeDef = ClassDef.builder()
-            .qualifiedName("com.github.cuzfrog.Abc").name("Abc")
+            .qualifiedName("com.github.cuzfrog.Abc").simpleName("Abc")
             .components(List.of(
                 FieldComponentInfo.builder().name("tuple").type(
                     ConcreteTypeInfo.builder()
@@ -55,14 +55,14 @@ final class LoopTypeResolverTest {
             ))
             .build();
 
-        var tupleDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Tuple").name("Tuple").build();
+        var tupleDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Tuple").simpleName("Tuple").build();
         when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.Tuple"))).thenReturn(tupleDef);
-        var aDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.A").name("A").build();
+        var aDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.A").simpleName("A").build();
         when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.A"))).thenReturn(aDef);
-        var bDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.B").name("B").build();
+        var bDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.B").simpleName("B").build();
         when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.B"))).thenReturn(bDef);
         var superADef = ClassDef.builder()
-            .qualifiedName("com.github.cuzfrog.SuperClassA").name("SuperClassA")
+            .qualifiedName("com.github.cuzfrog.SuperClassA").simpleName("SuperClassA")
             .components(List.of(
                 FieldComponentInfo.builder().name("a").type(aTypeInfo).build()
             ))
@@ -86,7 +86,7 @@ final class LoopTypeResolverTest {
         {
             var superclassA = (ClassDef) defs.get(3);
             assertThat(superclassA.qualifiedName()).isEqualTo("com.github.cuzfrog.SuperClassA");
-            assertThat(superclassA.name()).isEqualTo("SuperClassA");
+            assertThat(superclassA.simpleName()).isEqualTo("SuperClassA");
             assertThat(superclassA.components()).hasSize(1);
             FieldComponentInfo field = superclassA.components().get(0);
             assertThat(field.resolved()).isTrue();

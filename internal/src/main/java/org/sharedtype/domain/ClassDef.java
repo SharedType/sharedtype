@@ -11,10 +11,10 @@ import java.util.List;
  * Represents info captured from an interface, class, or record.
  */
 @Builder
-@EqualsAndHashCode(of = "name")
+@EqualsAndHashCode(of = "qualifiedName")
 public final class ClassDef implements TypeDef {
     private final String qualifiedName;
-    private final String name;
+    private final String simpleName;
     @Builder.Default
     private final List<FieldComponentInfo> components = Collections.emptyList();
     @Builder.Default
@@ -28,8 +28,8 @@ public final class ClassDef implements TypeDef {
     }
 
     @Override
-    public String name() {
-        return name;
+    public String simpleName() {
+        return simpleName;
     }
 
     @Override
@@ -69,7 +69,7 @@ public final class ClassDef implements TypeDef {
     @Override
     public String toString() {
         var rows = new ArrayList<String>(components.size()+2);
-        rows.add(String.format("%s%s%s {", name, typeVariablesToString(), supertypesToString()));
+        rows.add(String.format("%s%s%s {", simpleName, typeVariablesToString(), supertypesToString()));
         rows.addAll(components.stream().map(f -> String.format("  %s", f)).toList());
         rows.add("}");
         return String.join(System.lineSeparator(), rows);

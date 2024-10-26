@@ -19,6 +19,9 @@ public abstract class ParserModule {
     @Binds @IntoMap @ElementKindKey(ElementKind.INTERFACE)
     abstract TypeDefParser interfaceElementParser(ClassTypeDefParser classTypeDefParser);
 
+    @Binds @IntoMap @ElementKindKey(ElementKind.ENUM)
+    abstract TypeDefParser enumElementParser(EnumTypeDefParser enumTypeDefParser);
+
     @Binds
     abstract TypeDefParser bindTypeElementParser(CompositeTypeDefParser compositeTypeElementParser);
 }
