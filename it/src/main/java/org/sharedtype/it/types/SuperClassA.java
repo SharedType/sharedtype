@@ -1,5 +1,5 @@
 package org.sharedtype.it.types;
 
-public class SuperClassA {
+abstract class SuperClassA {
     private int a;
 }
