@@ -73,6 +73,9 @@
                         </path>
                     </annotationProcessorPaths>
                     <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <arg>-proc:only</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>

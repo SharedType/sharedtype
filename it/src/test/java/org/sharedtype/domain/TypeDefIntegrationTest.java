@@ -3,10 +3,8 @@ package org.sharedtype.domain;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.sharedtype.domain.TypeDefDeserializer.deserializeTypeDef;
 
 final class TypeDefIntegrationTest {
     @Test
@@ -72,12 +70,6 @@ final class TypeDefIntegrationTest {
     }
 
     @Test
-    void javaRecord() {
-        var javaRecord = deserializeTypeDef("JavaRecord.ser");
-        assertThat(javaRecord.qualifiedName()).isEqualTo("org.sharedtype.it.types.JavaRecord");
-    }
-
-    @Test
     void superClassA() {
         var superClassA = (ClassDef) deserializeTypeDef("SuperClassA.ser");
         SoftAssertions.assertSoftly(softly -> {
@@ -89,14 +81,5 @@ final class TypeDefIntegrationTest {
             softly.assertThat(component1type.simpleName()).isEqualTo("number");
             softly.assertThat(component1type.qualifiedName()).isEqualTo("int");
         });
-    }
-
-    private static TypeDef deserializeTypeDef(String serFilename) {
-        try (var is = TypeDefIntegrationTest.class.getClassLoader().getResourceAsStream(serFilename);
-             var ois = new ObjectInputStream(is)) {
-            return (TypeDef) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
