@@ -92,7 +92,7 @@ final class LoopTypeResolverTest {
             assertThat(field.resolved()).isTrue();
             assertThat(field.name()).isEqualTo("a");
             ConcreteTypeInfo fieldType = (ConcreteTypeInfo) field.type();
-            assertThat(fieldType.simpleName()).isEqualTo("A");
+            assertThat(fieldType.qualifiedName()).isEqualTo("com.github.cuzfrog.A");
         }
         {
             var abc = (ClassDef) defs.get(4);
@@ -101,17 +101,17 @@ final class LoopTypeResolverTest {
             assertThat(field.resolved()).isTrue();
             assertThat(field.name()).isEqualTo("tuple");
             ConcreteTypeInfo fieldType = (ConcreteTypeInfo) field.type();
-            assertThat(fieldType.simpleName()).isEqualTo("Tuple");
+            assertThat(fieldType.qualifiedName()).isEqualTo("com.github.cuzfrog.Tuple");
             assertThat(fieldType.typeArgs()).satisfiesExactly(
                 a -> {
                     assertThat(a.resolved()).isTrue();
-                    assertThat(((ConcreteTypeInfo) a).simpleName()).isEqualTo("A");
+                    assertThat(((ConcreteTypeInfo) a).qualifiedName()).isEqualTo("com.github.cuzfrog.A");
                 },
                 bArr -> {
                     assertThat(bArr.resolved()).isTrue();
                     ConcreteTypeInfo arrComp = (ConcreteTypeInfo) ((ArrayTypeInfo) bArr).component();
                     assertThat(arrComp.resolved()).isTrue();
-                    assertThat(arrComp.simpleName()).isEqualTo("B");
+                    assertThat(arrComp.qualifiedName()).isEqualTo("com.github.cuzfrog.B");
                 }
             );
         }

@@ -1,10 +1,11 @@
 package org.sharedtype.processor.parser.type;
 
-import org.sharedtype.processor.context.Context;
+import lombok.RequiredArgsConstructor;
 import org.sharedtype.domain.ArrayTypeInfo;
 import org.sharedtype.domain.ConcreteTypeInfo;
 import org.sharedtype.domain.TypeInfo;
 import org.sharedtype.domain.TypeVariableInfo;
+import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.inject.Inject;
@@ -17,47 +18,14 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
+import static org.sharedtype.domain.Constants.PRIMITIVES;
 import static org.sharedtype.processor.support.Preconditions.checkArgument;
 
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 @Singleton
-final class TypescriptTypeInfoParser implements TypeInfoParser {
-    private static final Map<TypeKind, ConcreteTypeInfo> PRIMITIVES = Map.of(
-        TypeKind.BOOLEAN, ConcreteTypeInfo.ofPredefined("boolean", "boolean"),
-        TypeKind.BYTE, ConcreteTypeInfo.ofPredefined("byte", "number"),
-        TypeKind.CHAR, ConcreteTypeInfo.ofPredefined("char", "string"),
-        TypeKind.DOUBLE, ConcreteTypeInfo.ofPredefined("double", "number"),
-        TypeKind.FLOAT, ConcreteTypeInfo.ofPredefined("float", "number"),
-        TypeKind.INT, ConcreteTypeInfo.ofPredefined("int", "number"),
-        TypeKind.LONG, ConcreteTypeInfo.ofPredefined("long", "number"),
-        TypeKind.SHORT, ConcreteTypeInfo.ofPredefined("short", "number")
-    );
-    private static final Map<String, ConcreteTypeInfo> PREDEFINED_OBJECT_TYPES = Map.of(
-        "java.lang.Boolean", ConcreteTypeInfo.ofPredefined("java.lang.Boolean", "boolean"),
-        "java.lang.Byte", ConcreteTypeInfo.ofPredefined("java.lang.Byte", "number"),
-        "java.lang.Character", ConcreteTypeInfo.ofPredefined("java.lang.Character", "string"),
-        "java.lang.Double", ConcreteTypeInfo.ofPredefined("java.lang.Double", "number"),
-        "java.lang.Float", ConcreteTypeInfo.ofPredefined("java.lang.Float", "number"),
-        "java.lang.Integer", ConcreteTypeInfo.ofPredefined("java.lang.Integer", "number"),
-        "java.lang.Long", ConcreteTypeInfo.ofPredefined("java.lang.Long", "number"),
-        "java.lang.Short", ConcreteTypeInfo.ofPredefined("java.lang.Short", "number"),
-        "java.lang.String", ConcreteTypeInfo.ofPredefined("java.lang.String", "string"),
-        "java.lang.Void", ConcreteTypeInfo.ofPredefined("java.lang.Void", "never")
-    );
-
-    private static final String OBJECT_NAME = Object.class.getName();
+final class TypeInfoParserImpl implements TypeInfoParser {
     private final Context ctx;
-    private final Map<String, ConcreteTypeInfo> predefinedObjectTypes;
-
-    @Inject
-    TypescriptTypeInfoParser(Context ctx) {
-        this.ctx = ctx;
-        this.predefinedObjectTypes = new HashMap<>(PREDEFINED_OBJECT_TYPES);
-        predefinedObjectTypes.put(OBJECT_NAME, ConcreteTypeInfo.ofPredefined(OBJECT_NAME, ctx.getProps().getJavaObjectMapType()));
-        predefinedObjectTypes.forEach((qualifiedName, typeInfo) -> ctx.getTypeCache().saveName(qualifiedName, typeInfo.simpleName()));
-    }
 
     @Override
     public TypeInfo parse(TypeMirror typeMirror) {
@@ -102,23 +70,16 @@ final class TypescriptTypeInfoParser implements TypeInfoParser {
             }
         }
 
-        TypeInfo typeInfo;
-        var predefinedTypeInfo = predefinedObjectTypes.get(qualifiedName);
-        if (predefinedTypeInfo != null) {
-            typeInfo = predefinedTypeInfo;
-        } else {
-            typeInfo = ctx.getTypeCache().getTypeInfo(qualifiedName);
-            if (typeInfo == null) {
-                var resolved = isTypeVar || ctx.getTypeCache().contains(qualifiedName);
-                var parsedTypeArgs = typeArgs.stream().map(this::parse).toList();
-                typeInfo = ConcreteTypeInfo.builder()
-                    .qualifiedName(qualifiedName)
-                    .simpleName(ctx.getTypeCache().getName(qualifiedName))
-                    .typeArgs(parsedTypeArgs)
-                    .resolved(resolved)
-                    .build();
-                ctx.getTypeCache().saveTypeInfo(qualifiedName, typeInfo);
-            }
+        TypeInfo typeInfo = ctx.getTypeCache().getTypeInfo(qualifiedName);
+        if (typeInfo == null) {
+            var resolved = isTypeVar || ctx.getTypeCache().contains(qualifiedName);
+            var parsedTypeArgs = typeArgs.stream().map(this::parse).toList();
+            typeInfo = ConcreteTypeInfo.builder()
+                .qualifiedName(qualifiedName)
+                .typeArgs(parsedTypeArgs)
+                .resolved(resolved)
+                .build();
+            ctx.getTypeCache().saveTypeInfo(qualifiedName, typeInfo);
         }
 
         while (arrayStack > 0) {

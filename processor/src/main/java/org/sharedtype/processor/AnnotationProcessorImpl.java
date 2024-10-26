@@ -22,7 +22,7 @@ import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static org.sharedtype.processor.context.Constants.ANNOTATION_QUALIFIED_NAME;
+import static org.sharedtype.domain.Constants.ANNOTATION_QUALIFIED_NAME;
 import static org.sharedtype.processor.support.Preconditions.checkArgument;
 
 @SupportedAnnotationTypes("org.sharedtype.annotation.SharedType")

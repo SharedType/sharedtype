@@ -1,5 +1,6 @@
 package org.sharedtype.processor.resolver;
 
+import lombok.RequiredArgsConstructor;
 import org.sharedtype.domain.ArrayTypeInfo;
 import org.sharedtype.domain.ClassDef;
 import org.sharedtype.domain.ConcreteTypeInfo;
@@ -19,17 +20,12 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 @Singleton
 final class LoopTypeResolver implements TypeResolver {
     private static final int DEPENDENCY_COUNT_EXPANSION_FACTOR = 2; // TODO: find a proper number
     private final Context ctx;
     private final TypeDefParser typeDefParser;
-
-    @Inject
-    LoopTypeResolver(Context ctx, TypeDefParser typeDefParser) {
-        this.ctx = ctx;
-        this.typeDefParser = typeDefParser;
-    }
 
     @Override
     public List<TypeDef> resolve(List<TypeDef> typeDefs) {
@@ -83,7 +79,6 @@ final class LoopTypeResolver implements TypeResolver {
                     var typeElement = ctx.getProcessingEnv().getElementUtils().getTypeElement(concreteTypeInfo.qualifiedName());
                     var parsed = typeDefParser.parse(typeElement);
                     if (parsed != null) {
-                        concreteTypeInfo.setSimpleName(parsed.name());
                         concreteTypeInfo.markShallowResolved();
                         processingDefStack.push(parsed);
                     }

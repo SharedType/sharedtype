@@ -7,20 +7,18 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.sharedtype.domain.Constants.PREDEFINED_OBJECT_TYPES;
+
 public final class TypeCache {
     private final Map<String, Container> typeByQualifiedName = new HashMap<>();
 
-    public void saveName(String qualifiedName, String simpleName) {
-        typeByQualifiedName.compute(qualifiedName, (k, v) -> {
-            var c = v == null ? new Container() : v;
-            c.simpleName = simpleName;
-            return c;
-        });
+    TypeCache() {
+        PREDEFINED_OBJECT_TYPES.forEach(this::saveTypeInfo);
     }
+
     public void saveTypeDef(String qualifiedName, TypeDef typeDef) {
         typeByQualifiedName.compute(qualifiedName, (k, v) -> {
             var c = v == null ? new Container() : v;
-            c.simpleName = typeDef.name();
             c.typeDef = typeDef;
             return c;
         });
@@ -33,10 +31,6 @@ public final class TypeCache {
         });
     }
 
-    public String getName(String qualifiedName) {
-        var container = typeByQualifiedName.get(qualifiedName);
-        return container == null ? null : container.simpleName;
-    }
     public TypeDef getTypeDef(String qualifiedName) {
         var container = typeByQualifiedName.get(qualifiedName);
         return container == null ? null : container.typeDef;
@@ -51,7 +45,6 @@ public final class TypeCache {
     }
 
     private static final class Container{
-        String simpleName;
         @Nullable TypeDef typeDef;
         @Nullable TypeInfo typeInfo;
     }

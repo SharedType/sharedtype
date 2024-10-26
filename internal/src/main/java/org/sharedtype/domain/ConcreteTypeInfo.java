@@ -2,9 +2,7 @@ package org.sharedtype.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,15 +10,13 @@ import java.util.List;
 @Builder
 public final class ConcreteTypeInfo implements TypeInfo {
     private final String qualifiedName;
-    @Setter
-    private String simpleName;
     @Builder.Default
     private final List<? extends TypeInfo> typeArgs = Collections.emptyList();
     @Builder.Default
     private boolean resolved = true;
 
-    public static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
-        return ConcreteTypeInfo.builder().qualifiedName(qualifiedName).simpleName(simpleName).build();
+    static ConcreteTypeInfo ofPredefined(String qualifiedName) {
+        return ConcreteTypeInfo.builder().qualifiedName(qualifiedName).build();
     }
 
     @Override
@@ -38,15 +34,6 @@ public final class ConcreteTypeInfo implements TypeInfo {
 
     public String qualifiedName() {
         return qualifiedName;
-    }
-
-    /**
-     * A simple name stands for the type name used in output source code.
-     * @return null when type not resolved or has no simple name, e.g. array type.
-     */
-    @Nullable
-    public String simpleName() {
-        return simpleName;
     }
 
     public List<? extends TypeInfo> typeArgs() {

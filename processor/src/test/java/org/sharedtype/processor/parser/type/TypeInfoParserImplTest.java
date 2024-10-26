@@ -14,27 +14,27 @@ import javax.lang.model.type.TypeKind;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-class TypescriptTypeInfoParserTest {
+class TypeInfoParserImplTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final TypescriptTypeInfoParser parser = new TypescriptTypeInfoParser(ctxMocks.getContext());
+    private final TypeInfoParserImpl parser = new TypeInfoParserImpl(ctxMocks.getContext());
 
     @ParameterizedTest
     @CsvSource({
-      "BYTE, number",
-      "CHAR, string",
-      "DOUBLE, number",
-      "FLOAT, number",
-      "INT, number",
-      "LONG, number",
-      "SHORT, number",
-      "BOOLEAN, boolean"
+      "BYTE, byte",
+      "CHAR, char",
+      "DOUBLE, double",
+      "FLOAT, float",
+      "INT, int",
+      "LONG, long",
+      "SHORT, short",
+      "BOOLEAN, boolean",
     })
-    void parsePrimitives(TypeKind typeKind, String expectedSimpleName) {
+    void parsePrimitives(TypeKind typeKind, String expectedName) {
         var type = ctxMocks.primitiveVariable("field1", typeKind).type();
 
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(typeInfo.simpleName()).isEqualTo(expectedSimpleName);
+            softly.assertThat(typeInfo.qualifiedName()).isEqualTo(expectedName);
             softly.assertThat(typeInfo.resolved()).isTrue();
         });
 
@@ -42,34 +42,33 @@ class TypescriptTypeInfoParserTest {
         var arrayTypeInfo = (ArrayTypeInfo) parser.parse(arrayType);
         SoftAssertions.assertSoftly(softly -> {
             var componentTypeInfo = (ConcreteTypeInfo) arrayTypeInfo.component();
-            softly.assertThat(componentTypeInfo.simpleName()).isEqualTo(expectedSimpleName);
+            softly.assertThat(componentTypeInfo.qualifiedName()).isEqualTo(expectedName);
             softly.assertThat(componentTypeInfo.resolved()).isTrue();
         });
     }
 
     @ParameterizedTest
     @CsvSource({
-      "java.lang.Boolean, boolean",
-      "java.lang.Byte, number",
-      "java.lang.Character, string",
-      "java.lang.Double, number",
-      "java.lang.Float, number",
-      "java.lang.Integer, number",
-      "java.lang.Long, number",
-      "java.lang.Short, number",
-      "java.lang.String, string",
-      "java.lang.Void, never",
-      "java.lang.Object, any"
+      "java.lang.Boolean",
+      "java.lang.Byte",
+      "java.lang.Character",
+      "java.lang.Double",
+      "java.lang.Float",
+      "java.lang.Integer",
+      "java.lang.Long",
+      "java.lang.Short",
+      "java.lang.String",
+      "java.lang.Void",
+      "java.lang.Object"
     })
-    void parsePredefinedObject(String objectName, String expectedSimpleName) {
-        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement(objectName).type())
+    void parsePredefinedObject(String qualifiedName) {
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement(qualifiedName).type())
           .withTypeKind(TypeKind.DECLARED)
           .type();
 
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(typeInfo.qualifiedName()).isEqualTo(objectName);
-            softly.assertThat(typeInfo.simpleName()).isEqualTo(expectedSimpleName);
+            softly.assertThat(typeInfo.qualifiedName()).isEqualTo(qualifiedName);
             softly.assertThat(typeInfo.resolved()).isTrue();
         });
 
@@ -77,7 +76,6 @@ class TypescriptTypeInfoParserTest {
         var arrayTypeInfo = (ArrayTypeInfo) parser.parse(arrayType);
         SoftAssertions.assertSoftly(softly -> {
             var componentTypeInfo = (ConcreteTypeInfo) arrayTypeInfo.component();
-            softly.assertThat(componentTypeInfo.simpleName()).isEqualTo(expectedSimpleName);
             softly.assertThat(componentTypeInfo.resolved()).isTrue();
         });
     }
@@ -94,7 +92,6 @@ class TypescriptTypeInfoParserTest {
         var typeInfo = (ConcreteTypeInfo) arrayTypeInfo.component();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
-            softly.assertThat(typeInfo.simpleName()).isEqualTo("string");
             softly.assertThat(typeInfo.resolved()).isTrue();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
@@ -121,7 +118,6 @@ class TypescriptTypeInfoParserTest {
         var typeInfo = (ConcreteTypeInfo) nestedArrayTypeInfo.component();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
-            softly.assertThat(typeInfo.simpleName()).isEqualTo("string");
             softly.assertThat(typeInfo.resolved()).isTrue();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
@@ -136,7 +132,6 @@ class TypescriptTypeInfoParserTest {
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
-            softly.assertThat(typeInfo.simpleName()).isNull();
             softly.assertThat(typeInfo.resolved()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
@@ -155,18 +150,15 @@ class TypescriptTypeInfoParserTest {
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Tuple");
-            softly.assertThat(typeInfo.simpleName()).isNull();
             softly.assertThat(typeInfo.resolved()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).map(t -> (ConcreteTypeInfo) t).satisfiesExactly(
               typeArg -> {
                   softly.assertThat(typeArg.qualifiedName()).isEqualTo("java.lang.String");
-                  softly.assertThat(typeArg.simpleName()).isEqualTo("string");
                   softly.assertThat(typeArg.resolved()).isTrue();
                   softly.assertThat(typeArg.typeArgs()).isEmpty();
               },
               typeArg -> {
                   softly.assertThat(typeArg.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
-                  softly.assertThat(typeArg.simpleName()).isNull();
                   softly.assertThat(typeArg.resolved()).isFalse();
                   softly.assertThat(typeArg.typeArgs()).isEmpty();
               }
@@ -186,7 +178,6 @@ class TypescriptTypeInfoParserTest {
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Container");
-            softly.assertThat(typeInfo.simpleName()).isNull();
             softly.assertThat(typeInfo.resolved()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).map(t -> (TypeVariableInfo) t).satisfiesExactly(
               typeArg -> {
@@ -205,7 +196,6 @@ class TypescriptTypeInfoParserTest {
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
-            softly.assertThat(typeInfo.simpleName()).isEqualTo("string");
             softly.assertThat(typeInfo.resolved()).isTrue();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });

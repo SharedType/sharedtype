@@ -5,5 +5,5 @@ import dagger.Module;
 
 @Module
 public abstract class TypeParserModule {
-    @Binds abstract TypeInfoParser bindTypeMapper(TypescriptTypeInfoParser typescriptTypeMapper);
+    @Binds abstract TypeInfoParser bindTypeMapper(TypeInfoParserImpl typescriptTypeMapper);
 }
