@@ -3,6 +3,8 @@ package org.sharedtype.processor.resolver;
 import org.sharedtype.domain.ArrayTypeInfo;
 import org.sharedtype.domain.ClassDef;
 import org.sharedtype.domain.ConcreteTypeInfo;
+import org.sharedtype.domain.EnumDef;
+import org.sharedtype.domain.EnumValueInfo;
 import org.sharedtype.domain.FieldComponentInfo;
 import org.sharedtype.domain.TypeVariableInfo;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.sharedtype.domain.Constants.STRING_TYPE_INFO;
 
 final class LoopTypeResolverTest {
     private final ContextMocks ctxMocks = new ContextMocks();
@@ -115,6 +118,22 @@ final class LoopTypeResolverTest {
                 }
             );
         }
+    }
+
+    @Test
+    void resolveSimpleEnum() {
+        var typeDef = EnumDef.builder()
+            .qualifiedName("com.github.cuzfrog.EnumA").simpleName("EnumA")
+            .enumValueInfos(List.of(
+                new EnumValueInfo(STRING_TYPE_INFO, "Value1"),
+                new EnumValueInfo(STRING_TYPE_INFO, "Value2")
+            ))
+            .build();
+
+        var defs = resolver.resolve(List.of(typeDef));
+        assertThat(defs).hasSize(1);
+        var enumA = (EnumDef) defs.get(0);
+        assertThat(enumA).isSameAs(typeDef);
     }
 
     private TypeElement mockElementByName(String qualifiedName) {

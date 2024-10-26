@@ -31,6 +31,14 @@ public final class EnumDef implements TypeDef {
 
     @Override
     public boolean resolved() {
-        return false;
+        return enumValueInfos.stream().allMatch(EnumValueInfo::resolved);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s[%s]",
+            qualifiedName,
+            enumValueInfos.isEmpty() ? "" : String.join(",", enumValueInfos.stream().map(EnumValueInfo::toString).toList())
+        );
     }
 }

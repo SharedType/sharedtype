@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.sharedtype.domain.ArrayTypeInfo;
 import org.sharedtype.domain.ClassDef;
 import org.sharedtype.domain.ConcreteTypeInfo;
+import org.sharedtype.domain.EnumDef;
+import org.sharedtype.domain.EnumValueInfo;
 import org.sharedtype.domain.FieldComponentInfo;
 import org.sharedtype.domain.TypeDef;
 import org.sharedtype.domain.TypeInfo;
@@ -58,6 +60,12 @@ final class LoopTypeResolver implements TypeResolver {
                 for (TypeVariableInfo typeVariableInfo : classDef.typeVariables()) {
                     if (!typeVariableInfo.resolved()) {
                         processingInfoStack.push(typeVariableInfo);
+                    }
+                }
+            } else if (typeDef instanceof EnumDef enumDef) {
+                for (EnumValueInfo component : enumDef.components()) {
+                    if (!component.resolved()) {
+                        processingInfoStack.push(component.type());
                     }
                 }
             } else {
