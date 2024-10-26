@@ -15,7 +15,6 @@ final class JavaRecordIntegrationTest {
         var duplicateAccessorField = classDef.components().get(0);
         assertThat(duplicateAccessorField.name()).isEqualTo("duplicateAccessor");
         var typeInfo = (ConcreteTypeInfo)duplicateAccessorField.type();
-        assertThat(typeInfo.simpleName()).isEqualTo("string");
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
     }
 
@@ -24,7 +23,6 @@ final class JavaRecordIntegrationTest {
         var stringField = classDef.components().get(1);
         assertThat(stringField.name()).isEqualTo("string");
         var typeInfo = (ConcreteTypeInfo)stringField.type();
-        assertThat(typeInfo.simpleName()).isEqualTo("string");
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
     }
 }

@@ -39,13 +39,12 @@ final class TypeDefIntegrationTest {
             softly.assertThat(component1.name()).isEqualTo("b");
             softly.assertThat(component1.type().resolved()).isTrue();
             var component1type = (ConcreteTypeInfo) component1.type();
-            softly.assertThat(component1type.simpleName()).isEqualTo("DependencyClassB");
+            softly.assertThat(component1type.qualifiedName()).isEqualTo("org.sharedtype.it.types.DependencyClassB");
 
             softly.assertThat(classA.typeVariables()).isEmpty();
             softly.assertThat(classA.supertypes()).hasSize(1);
             var supertype1 = (ConcreteTypeInfo)classA.supertypes().get(0);
             softly.assertThat(supertype1.resolved()).isTrue();
-            softly.assertThat(supertype1.simpleName()).isEqualTo("SuperClassA");
             softly.assertThat(supertype1.qualifiedName()).isEqualTo("org.sharedtype.it.types.SuperClassA");
             softly.assertThat(classA.resolved()).isTrue();
         });
@@ -78,7 +77,6 @@ final class TypeDefIntegrationTest {
             var component1 = superClassA.components().get(0);
             softly.assertThat(component1.name()).isEqualTo("a");
             var component1type = (ConcreteTypeInfo) component1.type();
-            softly.assertThat(component1type.simpleName()).isEqualTo("number");
             softly.assertThat(component1type.qualifiedName()).isEqualTo("int");
         });
     }
