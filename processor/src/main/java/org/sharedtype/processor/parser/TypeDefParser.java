@@ -1,6 +1,6 @@
 package org.sharedtype.processor.parser;
 
-import org.sharedtype.processor.domain.TypeDef;
+import org.sharedtype.domain.TypeDef;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.TypeElement;

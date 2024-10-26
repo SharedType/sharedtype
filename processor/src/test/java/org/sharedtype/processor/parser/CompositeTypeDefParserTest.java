@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.sharedtype.processor.context.ContextMocks;
-import org.sharedtype.processor.domain.ClassDef;
+import org.sharedtype.domain.ClassDef;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;

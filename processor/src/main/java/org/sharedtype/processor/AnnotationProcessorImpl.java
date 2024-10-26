@@ -3,7 +3,7 @@ package org.sharedtype.processor;
 import com.google.auto.service.AutoService;
 import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.context.Props;
-import org.sharedtype.processor.domain.TypeDef;
+import org.sharedtype.domain.TypeDef;
 import org.sharedtype.processor.parser.TypeDefParser;
 import org.sharedtype.processor.resolver.TypeResolver;
 import org.sharedtype.processor.support.annotation.VisibleForTesting;

@@ -1,7 +1,7 @@
 package org.sharedtype.processor.context;
 
-import org.sharedtype.processor.domain.TypeDef;
-import org.sharedtype.processor.domain.TypeInfo;
+import org.sharedtype.domain.TypeDef;
+import org.sharedtype.domain.TypeInfo;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;

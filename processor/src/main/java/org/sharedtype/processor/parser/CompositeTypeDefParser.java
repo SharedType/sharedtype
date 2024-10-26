@@ -2,7 +2,7 @@ package org.sharedtype.processor.parser;
 
 import lombok.RequiredArgsConstructor;
 import org.sharedtype.processor.context.Context;
-import org.sharedtype.processor.domain.TypeDef;
+import org.sharedtype.domain.TypeDef;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.inject.Inject;

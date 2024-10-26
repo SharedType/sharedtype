@@ -32,6 +32,7 @@
 
     <modules>
         <module>annotation</module>
+        <module>internal</module>
         <module>processor</module>
         <module>it</module>
     </modules>
@@ -52,6 +53,11 @@
             <dependency>
                 <groupId>org.sharedtype</groupId>
                 <artifactId>sharedtype</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sharedtype</groupId>
+                <artifactId>sharedtype-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

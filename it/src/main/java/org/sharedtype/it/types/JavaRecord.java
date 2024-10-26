@@ -1,4 +1,4 @@
-package com.github.sharedtype.types;
+package org.sharedtype.it.types;
 
 import org.sharedtype.annotation.SharedType;
 

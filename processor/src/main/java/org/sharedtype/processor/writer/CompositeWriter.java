@@ -1,7 +1,7 @@
 package org.sharedtype.processor.writer;
 
 import lombok.RequiredArgsConstructor;
-import org.sharedtype.processor.domain.TypeDef;
+import org.sharedtype.domain.TypeDef;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

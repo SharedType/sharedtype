@@ -1,8 +1,12 @@
 package org.sharedtype.processor.resolver;
 
+import org.sharedtype.domain.ArrayTypeInfo;
+import org.sharedtype.domain.ClassDef;
+import org.sharedtype.domain.ConcreteTypeInfo;
+import org.sharedtype.domain.FieldComponentInfo;
+import org.sharedtype.domain.TypeVariableInfo;
 import org.junit.jupiter.api.Test;
 import org.sharedtype.processor.context.ContextMocks;
-import org.sharedtype.processor.domain.*;
 import org.sharedtype.processor.parser.TypeDefParser;
 
 import javax.lang.model.element.TypeElement;

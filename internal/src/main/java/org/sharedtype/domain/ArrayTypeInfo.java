@@ -1,4 +1,4 @@
-package org.sharedtype.processor.domain;
+package org.sharedtype.domain;
 
 public record ArrayTypeInfo(TypeInfo component) implements TypeInfo {
     @Override

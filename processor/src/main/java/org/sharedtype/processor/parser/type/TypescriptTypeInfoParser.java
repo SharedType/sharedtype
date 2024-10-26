@@ -1,10 +1,10 @@
 package org.sharedtype.processor.parser.type;
 
 import org.sharedtype.processor.context.Context;
-import org.sharedtype.processor.domain.ArrayTypeInfo;
-import org.sharedtype.processor.domain.ConcreteTypeInfo;
-import org.sharedtype.processor.domain.TypeInfo;
-import org.sharedtype.processor.domain.TypeVariableInfo;
+import org.sharedtype.domain.ArrayTypeInfo;
+import org.sharedtype.domain.ConcreteTypeInfo;
+import org.sharedtype.domain.TypeInfo;
+import org.sharedtype.domain.TypeVariableInfo;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.inject.Inject;

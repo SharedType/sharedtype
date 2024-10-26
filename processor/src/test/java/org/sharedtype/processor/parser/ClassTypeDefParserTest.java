@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.sharedtype.processor.context.ContextMocks;
 import org.sharedtype.processor.context.TypeElementMock;
-import org.sharedtype.processor.domain.ClassDef;
-import org.sharedtype.processor.domain.ConcreteTypeInfo;
+import org.sharedtype.domain.ClassDef;
+import org.sharedtype.domain.ConcreteTypeInfo;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.annotation.Nullable;

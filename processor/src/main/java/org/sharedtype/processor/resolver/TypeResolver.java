@@ -3,7 +3,7 @@ package org.sharedtype.processor.resolver;
 import java.util.List;
 
 import dagger.Module;
-import org.sharedtype.processor.domain.TypeDef;
+import org.sharedtype.domain.TypeDef;
 
 @Module
 public interface TypeResolver {

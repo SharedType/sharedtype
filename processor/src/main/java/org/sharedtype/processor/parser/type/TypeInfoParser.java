@@ -1,7 +1,7 @@
 package org.sharedtype.processor.parser.type;
 
 import org.sharedtype.annotation.SharedType;
-import org.sharedtype.processor.domain.TypeInfo;
+import org.sharedtype.domain.TypeInfo;
 
 import javax.lang.model.type.TypeMirror;
 

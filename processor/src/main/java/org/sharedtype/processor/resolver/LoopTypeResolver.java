@@ -1,8 +1,13 @@
 package org.sharedtype.processor.resolver;
 
-import lombok.RequiredArgsConstructor;
+import org.sharedtype.domain.ArrayTypeInfo;
+import org.sharedtype.domain.ClassDef;
+import org.sharedtype.domain.ConcreteTypeInfo;
+import org.sharedtype.domain.FieldComponentInfo;
+import org.sharedtype.domain.TypeDef;
+import org.sharedtype.domain.TypeInfo;
+import org.sharedtype.domain.TypeVariableInfo;
 import org.sharedtype.processor.context.Context;
-import org.sharedtype.processor.domain.*;
 import org.sharedtype.processor.parser.TypeDefParser;
 import org.sharedtype.processor.support.annotation.SideEffect;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
@@ -14,12 +19,17 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-@RequiredArgsConstructor(onConstructor_ = @Inject)
 @Singleton
 final class LoopTypeResolver implements TypeResolver {
     private static final int DEPENDENCY_COUNT_EXPANSION_FACTOR = 2; // TODO: find a proper number
     private final Context ctx;
     private final TypeDefParser typeDefParser;
+
+    @Inject
+    LoopTypeResolver(Context ctx, TypeDefParser typeDefParser) {
+        this.ctx = ctx;
+        this.typeDefParser = typeDefParser;
+    }
 
     @Override
     public List<TypeDef> resolve(List<TypeDef> typeDefs) {
@@ -30,15 +40,15 @@ final class LoopTypeResolver implements TypeResolver {
         processingDefStack.addAll(typeDefs);
 
         while (!processingDefStack.isEmpty()) {
-            var defInfo = processingDefStack.pop();
-            if (defInfo.resolved()) {
-                resolvedDefs.add(defInfo);
+            var typeDef = processingDefStack.pop();
+            if (typeDef.resolved()) {
+                resolvedDefs.add(typeDef);
                 continue;
             }
 
-            processingDefStack.push(defInfo);
+            processingDefStack.push(typeDef);
 
-            if (defInfo instanceof ClassDef classDef) {
+            if (typeDef instanceof ClassDef classDef) {
                 for (FieldComponentInfo fieldComponentInfo : classDef.components()) {
                     if (!fieldComponentInfo.resolved()) {
                         processingInfoStack.push(fieldComponentInfo.type());
@@ -55,7 +65,7 @@ final class LoopTypeResolver implements TypeResolver {
                     }
                 }
             } else {
-                throw new SharedTypeInternalError("Unsupported type: " + defInfo.getClass());
+                throw new SharedTypeInternalError("Unsupported type: " + typeDef.getClass());
             }
 
             resolveTypeInfo(processingDefStack, processingInfoStack);

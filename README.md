@@ -12,22 +12,7 @@ SharedType uses Java annotation processing + templating. Here's a speed comparis
 
 ## Doc
 
-## Development
-
-Setup Java env vars (>= Java17 for development):
-```bash
-. setenv
-```
-Optionally mount tmpfs to save your disk by:
-```bash
-`./mount-tmpfs.sh`
-```
-
-Debug annotation processor by run maven build:
-```bash
-./mvnd <your args goes here>
-```
-Then attach your debugger on it.
+[Development Guide](./misc/Development.md)
 
 ## Authors
 Cause Chung (cuzfrog@gmail.com)

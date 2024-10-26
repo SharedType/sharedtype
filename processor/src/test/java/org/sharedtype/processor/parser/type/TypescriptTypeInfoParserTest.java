@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.sharedtype.processor.context.ContextMocks;
-import org.sharedtype.processor.domain.ArrayTypeInfo;
-import org.sharedtype.processor.domain.ConcreteTypeInfo;
-import org.sharedtype.processor.domain.TypeVariableInfo;
+import org.sharedtype.domain.ArrayTypeInfo;
+import org.sharedtype.domain.ConcreteTypeInfo;
+import org.sharedtype.domain.TypeVariableInfo;
 
 import javax.lang.model.type.TypeKind;
 

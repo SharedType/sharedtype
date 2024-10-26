@@ -1,4 +1,4 @@
-package org.sharedtype.processor.domain;
+package org.sharedtype.domain;
 
 import java.io.Serializable;
 import java.util.List;

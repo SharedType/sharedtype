@@ -1,7 +1,6 @@
 package org.sharedtype.processor.context;
 
 import lombok.Getter;
-import org.sharedtype.processor.domain.TypeDef;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.type.DeclaredType;
@@ -11,7 +10,6 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @Getter
