@@ -30,7 +30,11 @@ public final class Constants {
         Map.entry("java.lang.Short", ConcreteTypeInfo.ofPredefined("java.lang.Short")),
         Map.entry("java.lang.String", ConcreteTypeInfo.ofPredefined("java.lang.String")),
         Map.entry("java.lang.Void", ConcreteTypeInfo.ofPredefined("java.lang.Void")),
-        Map.entry("java.lang.Object", ConcreteTypeInfo.ofPredefined("java.lang.Object"))
+        Map.entry("java.lang.Object", ConcreteTypeInfo.ofPredefined("java.lang.Object")),
+        Map.entry("java.lang.Class", ConcreteTypeInfo.ofPredefined("java.lang.Class")),
+        Map.entry("java.lang.Enum", ConcreteTypeInfo.ofPredefined("java.lang.Enum")),
+        Map.entry("java.util.Optional", ConcreteTypeInfo.ofPredefined("java.util.Optional")),
+        Map.entry("java.util.Map", ConcreteTypeInfo.ofPredefined("java.util.Map")) // TODO: Map support
     );
 
     private Constants() {

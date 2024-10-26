@@ -24,25 +24,26 @@ public record JavaRecord<T, K>(
     Double boxedDouble,
     boolean primitiveBoolean,
     Boolean boxedBoolean,
-    String primitiveString,
-    String boxedString,
+    char primitiveChar,
+    Character boxedChar,
+
     Object object,
     Void aVoid,
 
-    DependencyClassA a,// cyclic a ->b ->c ->a
+    DependencyClassA cyclicDependency,// cyclic a ->b ->c ->a
 
     List<Container<String>> containerStringList,
     List<Collection<Container<String>>> containerStringListCollection,
+
     List<T> genericList,
     Set<T> genericSet,
     List<Set<T>> genericListSet,
     Map<K, T> genericMap,
-    Integer[] integerArray,
+    int[] intArray,
+    Integer[] boxedIntArray,
 
     String duplicateAccessor
-) implements
-
-    InterfaceA {
+) implements InterfaceA {
     @SharedType.Accessor
     String getDuplicateAccessor() {
         return duplicateAccessor;
