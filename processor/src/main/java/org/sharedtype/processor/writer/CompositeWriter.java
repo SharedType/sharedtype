@@ -5,6 +5,7 @@ import org.sharedtype.domain.TypeDef;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ final class CompositeWriter implements TypeWriter{
     private final Set<TypeWriter> writers;
 
     @Override
-    public void write(List<TypeDef> typeDefs) {
+    public void write(List<TypeDef> typeDefs) throws IOException {
         for (TypeWriter writer : writers) {
             writer.write(typeDefs);
         }

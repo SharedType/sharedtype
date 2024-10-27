@@ -19,6 +19,7 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -76,6 +77,10 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
             }
         }
         var resolvedDefs = resolver.resolve(discoveredDefs);
-        writer.write(resolvedDefs);
+        try {
+            writer.write(resolvedDefs);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to write to file,", e);
+        }
     }
 }

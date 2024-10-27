@@ -2,13 +2,19 @@ package org.sharedtype.processor.writer;
 
 import org.sharedtype.domain.ConcreteTypeInfo;
 import org.sharedtype.domain.Constants;
+import org.sharedtype.domain.EnumDef;
 import org.sharedtype.domain.TypeDef;
 import org.sharedtype.processor.context.Context;
+import org.sharedtype.processor.support.utils.Tuple;
 import org.sharedtype.processor.writer.render.Template;
 import org.sharedtype.processor.writer.render.TemplateRenderer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.tools.StandardLocation;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +61,55 @@ final class TypescriptTypeFileWriter implements TypeWriter {
     }
 
     @Override
-    public void write(List<TypeDef> typeDefs) {
-        // TODO
+    public void write(List<TypeDef> typeDefs) throws IOException {
+        List<Tuple<Template, Object>> data = new ArrayList<>(typeDefs.size());
+        for (TypeDef typeDef : typeDefs) {
+            if (typeDef instanceof EnumDef enumDef) {
+                data.add(Tuple.of(
+                    Template.TEMPLATE_ENUM_UNION,
+                    new Model.EnumUnion(enumDef.simpleName(), enumDef.components().stream().map(v -> v.value().toString()).toList())
+                ));
+            }
+        }
+
+        var file = ctx.getProcessingEnv().getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", "types.d.ts");
+        try (var outputStream = file.openOutputStream();
+             var writer = new OutputStreamWriter(outputStream)) {
+            renderer.render(writer, data);
+        }
+    }
+
+    static final class Model {
+        record Interface(
+            String name,
+            List<String> supertypes,
+            List<Property> properties
+        ) {
+        }
+
+        record Property(
+            String name,
+            Type type,
+            char lineEnding,
+            boolean optional
+        ) {
+        }
+
+        record Type(
+            String name,
+            boolean unionNull,
+            boolean unionUndefined
+        ) {
+        }
+
+        record EnumUnion(
+            String name,
+            List<String> values
+        ) {
+            @SuppressWarnings("unused")
+            String valuesExpr() {
+                return String.join(" | ", values);
+            }
+        }
     }
 }
