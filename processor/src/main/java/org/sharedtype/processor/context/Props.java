@@ -11,6 +11,8 @@ import java.util.Set;
 public final class Props {
     private static final Class<? extends Annotation> DEFAULT_OPTIONAL_ANNO = javax.annotation.Nullable.class;
 
+    private static final Set<Language> DEFAULT_EMITTED_LANGUAGES = Set.of(Language.TYPESCRIPT);
+
     private final boolean consoleWriterEnabled = true;
     private final boolean javaSerializationFileWriterEnabled = true;
 

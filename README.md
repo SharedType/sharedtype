@@ -4,7 +4,8 @@
 A lightweight, fast, flexible solution to share Java types and constants in Typescript.
 
 ## Why?
-SharedType uses Java annotation processing + templating. Here's a speed comparison:
+SharedType is lightweight and fast. The only source code dependency is `@SharedType` annotation.
+Here's a speed comparison:
 
 ## Alternatives
 
