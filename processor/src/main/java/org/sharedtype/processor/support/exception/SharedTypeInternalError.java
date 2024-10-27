@@ -12,6 +12,6 @@ public final class SharedTypeInternalError extends RuntimeException {
     }
 
     private static String format(String message) {
-        return String.format("%s (this is an implementation error, please post an issue at %s)", message, RepositoryInfo.PROJECT_REPO_URL);
+        return String.format("%s (this could be an implementation error, please post an issue at %s/issues)", message, RepositoryInfo.PROJECT_REPO_URL);
     }
 }

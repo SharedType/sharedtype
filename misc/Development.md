@@ -7,7 +7,7 @@ Setup Java env vars (>= Java17 for development):
 ```
 Optionally mount tmpfs to save your disk by:
 ```bash
-`./mount-tmpfs.sh`
+./mount-tmpfs.sh
 ```
 
 ## Debug

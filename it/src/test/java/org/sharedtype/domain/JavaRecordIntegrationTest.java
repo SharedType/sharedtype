@@ -267,6 +267,6 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void fieldsSize() {
-        assertThat(classDef.components().size()).isEqualTo(29);
+        assertThat(classDef.components().size()).isEqualTo(31);
     }
 }

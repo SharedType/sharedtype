@@ -1,5 +1,6 @@
 package org.sharedtype.processor.context;
 
+import com.sun.source.util.Trees;
 import lombok.Getter;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -20,6 +21,7 @@ public final class ContextMocks {
     private final ProcessingEnvironment processingEnv = mock(ProcessingEnvironment.class);
     private final Types types = mock(Types.class);
     private final Elements elements = mock(Elements.class);
+    private final Trees trees = mock(Trees.class);
     private final Context context = mock(Context.class);
 
     public ContextMocks(Props props) {
@@ -29,6 +31,7 @@ public final class ContextMocks {
         when(processingEnv.getElementUtils()).thenReturn(elements);
         when(processingEnv.getTypeUtils()).thenReturn(types);
         when(context.getTypeCache()).thenReturn(typeCache);
+        when(context.getTrees()).thenReturn(trees);
     }
 
     public ContextMocks() {
@@ -59,7 +62,19 @@ public final class ContextMocks {
         return new ExecutableElementMock(name, context, types);
     }
 
-    public ArrayTypeBuilder array(TypeMirror componentType) {
-        return new ArrayTypeBuilder(componentType);
+    public ArrayTypeMock array(TypeMirror componentType) {
+        return new ArrayTypeMock(componentType);
+    }
+
+    public VariableTreeMock variableTree() {
+        return new VariableTreeMock(context);
+    }
+
+    public NewClassTreeMock newClassTree() {
+        return new NewClassTreeMock(context);
+    }
+
+    public LiteralTreeMock literalTree(Object value) {
+        return new LiteralTreeMock(value, context);
     }
 }

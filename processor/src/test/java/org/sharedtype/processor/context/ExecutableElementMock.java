@@ -1,11 +1,16 @@
 package org.sharedtype.processor.context;
 
+import com.sun.source.tree.Tree;
+
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
+
+import java.util.Arrays;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -23,6 +28,11 @@ public final class ExecutableElementMock extends AbstractElementMock<ExecutableE
     public ExecutableElementMock withReturnType(TypeMirror returnType) {
         when(element.getReturnType()).thenReturn(returnType);
         when(type.getReturnType()).thenReturn(returnType);
+        return this;
+    }
+
+    public ExecutableElementMock withParameters(VariableElement... parameters) {
+        when(element.getParameters()).then(invoc -> Arrays.asList(parameters));
         return this;
     }
 }

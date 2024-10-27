@@ -1,5 +1,6 @@
 package org.sharedtype.processor.context;
 
+import com.sun.source.util.Trees;
 import lombok.Getter;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -20,6 +21,8 @@ public final class Context {
     private final Props props;
     private final Types types;
     private final Elements elements;
+    @Getter
+    private final Trees trees;
     private final Set<TypeMirror> arraylikeTypes;
 
     public Context(ProcessingEnvironment processingEnv, Props props) {
@@ -27,6 +30,7 @@ public final class Context {
         this.props = props;
         types = processingEnv.getTypeUtils();
         elements = processingEnv.getElementUtils();
+        trees = Trees.instance(processingEnv);
         arraylikeTypes = props.getArraylikeTypeQualifiedNames().stream()
                 .map(qualifiedName -> types.erasure(elements.getTypeElement(qualifiedName).asType()))
                 .collect(Collectors.toUnmodifiableSet());

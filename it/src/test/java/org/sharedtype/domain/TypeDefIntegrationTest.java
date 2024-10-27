@@ -3,7 +3,7 @@ package org.sharedtype.domain;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.sharedtype.domain.TypeDefDeserializer.deserializeTypeDef;
 
 final class TypeDefIntegrationTest {
@@ -60,6 +60,45 @@ final class TypeDefIntegrationTest {
     void dependencyClassC() {
         var classC = (ClassDef) deserializeTypeDef("DependencyClassC.ser");
         assertThat(classC.simpleName()).isEqualTo("DependencyClassC");
+    }
+
+    @Test
+    void enumGalaxy() {
+        var enumGalaxy = (EnumDef) deserializeTypeDef("EnumGalaxy.ser");
+        assertThat(enumGalaxy.simpleName()).isEqualTo("EnumGalaxy");
+        assertThat(enumGalaxy.qualifiedName()).isEqualTo("org.sharedtype.it.types.EnumGalaxy");
+        assertThat(enumGalaxy.components()).hasSize(3).allMatch(constant -> {
+            var typeInfo = (ConcreteTypeInfo)constant.type();
+            return typeInfo.qualifiedName().equals("java.lang.String");
+        });
+        var constant1 = enumGalaxy.components().get(0);
+        assertThat(constant1.value()).isEqualTo("MilkyWay");
+
+        var constant2 = enumGalaxy.components().get(1);
+        assertThat(constant2.value()).isEqualTo("Andromeda");
+
+        var constant3 = enumGalaxy.components().get(2);
+        assertThat(constant3.value()).isEqualTo("Triangulum");
+    }
+
+    @Test
+    void enumSize() {
+        var enumSize = (EnumDef) deserializeTypeDef("EnumSize.ser");
+        assertThat(enumSize.simpleName()).isEqualTo("EnumSize");
+        assertThat(enumSize.qualifiedName()).isEqualTo("org.sharedtype.it.types.EnumSize");
+        assertThat(enumSize.components()).hasSize(3).allMatch(constant -> {
+            var typeInfo = (ConcreteTypeInfo)constant.type();
+            return typeInfo.qualifiedName().equals("int");
+        });
+
+        var constant1 = enumSize.components().get(0);
+        assertThat(constant1.value()).isEqualTo(1);
+
+        var constant2 = enumSize.components().get(1);
+        assertThat(constant2.value()).isEqualTo(2);
+
+        var constant3 = enumSize.components().get(2);
+        assertThat(constant3.value()).isEqualTo(3);
     }
 
     @Test

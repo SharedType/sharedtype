@@ -63,7 +63,16 @@ public @interface SharedType {
     @interface Ignore {
     }
 
-    @Target({ElementType.METHOD, ElementType.FIELD})
+    /**
+     * Mark enum value. By default, enum value is the enum constant name.
+     * <br>
+     * When placed on:
+     * <ul>
+     *     <li>Constructor parameter - the literal value served to this parameter of enum constants will be used.</li>
+     *     <li>Field - the constructor parameter with the same name and type will be used as if constructor parameter is annotated.</li>
+     * </ul>
+     */
+    @Target({ElementType.FIELD, ElementType.PARAMETER})
     @Retention(RetentionPolicy.SOURCE)
     @interface EnumValue {
     }

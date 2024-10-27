@@ -7,10 +7,10 @@ import javax.lang.model.type.TypeMirror;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public final class ArrayTypeBuilder {
+public final class ArrayTypeMock {
     private final ArrayType type;
 
-    ArrayTypeBuilder(TypeMirror componentType) {
+    ArrayTypeMock(TypeMirror componentType) {
         type = mock(ArrayType.class);
         when(type.getComponentType()).thenReturn(componentType);
         when(type.getKind()).thenReturn(TypeKind.ARRAY);

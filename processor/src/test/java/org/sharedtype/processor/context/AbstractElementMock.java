@@ -15,7 +15,7 @@ import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-abstract class AbstractElementMock<E extends Element, T extends TypeMirror, B extends AbstractElementMock<E, T, B>> {
+abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M extends AbstractElementMock<E, T, M>> {
     final E element;
     final T type;
     final Context ctx;
@@ -29,12 +29,12 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, B ex
         when(element.asType()).thenReturn(type);
     }
 
-    public final B withElementKind(ElementKind elementKind) {
+    public final M withElementKind(ElementKind elementKind) {
         when(element.getKind()).thenReturn(elementKind);
         return returnThis();
     }
 
-    public final B withTypeArguments(TypeMirror... typeArgsArr) {
+    public final M withTypeArguments(TypeMirror... typeArgsArr) {
         var typeArgs = Arrays.asList(typeArgsArr);
         if (type instanceof DeclaredType declaredType) {
             when(declaredType.getTypeArguments()).thenAnswer(invoc -> typeArgs);
@@ -44,7 +44,7 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, B ex
         return returnThis();
     }
 
-    public final <A extends Annotation> B withAnnotation(Class<A> annotationClazz) {
+    public final <A extends Annotation> M withAnnotation(Class<A> annotationClazz) {
         when(element.getAnnotation(annotationClazz)).thenReturn(mock(annotationClazz));
         return returnThis();
     }
@@ -70,7 +70,7 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, B ex
     }
 
     @SuppressWarnings("unchecked")
-    private B returnThis() {
-        return (B)this;
+    private M returnThis() {
+        return (M)this;
     }
 }

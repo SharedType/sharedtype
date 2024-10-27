@@ -43,6 +43,7 @@ public record JavaRecord<T, K>(
     Integer[] boxedIntArray,
 
     EnumGalaxy enumGalaxy,
+    EnumSize enumSize,
 
     String duplicateAccessor
 ) implements InterfaceA {

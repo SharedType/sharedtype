@@ -5,6 +5,8 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Types;
 
+import java.util.function.Consumer;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +18,11 @@ public final class DeclaredTypeVariableElementMock extends AbstractElementMock<V
 
     public DeclaredTypeVariableElementMock withTypeKind(TypeKind typeKind) {
         when(type.getKind()).thenReturn(typeKind);
+        return this;
+    }
+
+    public DeclaredTypeVariableElementMock ofTree(VariableTreeMock tree) {
+        tree.fromElement(element);
         return this;
     }
 }
