@@ -84,9 +84,13 @@ final class EnumTypeDefParser implements TypeDefParser {
         var init = tree.getInitializer();
         if (init instanceof NewClassTree newClassTree) {
             try {
-                var arg = newClassTree.getArguments().get(ctorArgIdx);
-                if (arg instanceof LiteralTree argLiteralTree) {
+                var argTree = newClassTree.getArguments().get(ctorArgIdx);
+                if (argTree instanceof LiteralTree argLiteralTree) {
                     return argLiteralTree.getValue();
+                } else {
+                    ctx.error("Unsupported argument: %s in %s, argIndex: %s. Only literals are supported as enum value."
+                        , argTree, tree, ctorArgIdx);
+                    return null;
                 }
             } catch (IndexOutOfBoundsException e) {
                 throw new SharedTypeInternalError(String.format(

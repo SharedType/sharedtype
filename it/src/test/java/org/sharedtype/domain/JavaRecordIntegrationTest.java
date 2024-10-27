@@ -248,7 +248,7 @@ final class JavaRecordIntegrationTest {
     }
 
     @Test
-    void intArray() {
+    void intArrayField() {
         var integerArrayField = classDef.components().get(27);
         assertThat(integerArrayField.name()).isEqualTo("intArray");
         var arrayTypeInfo = (ArrayTypeInfo)integerArrayField.type();
@@ -257,12 +257,28 @@ final class JavaRecordIntegrationTest {
     }
 
     @Test
-    void boxedIntArray() {
+    void boxedIntArrayField() {
         var boxedIntArrayField = classDef.components().get(28);
         assertThat(boxedIntArrayField.name()).isEqualTo("boxedIntArray");
         var arrayTypeInfo = (ArrayTypeInfo)boxedIntArrayField.type();
         var typeInfo = (ConcreteTypeInfo)arrayTypeInfo.component();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Integer");
+    }
+
+    @Test
+    void enumGalaxyField() {
+        var enumGalaxyField = classDef.components().get(29);
+        assertThat(enumGalaxyField.name()).isEqualTo("enumGalaxy");
+        var typeInfo = (ConcreteTypeInfo)enumGalaxyField.type();
+        assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.types.EnumGalaxy");
+    }
+
+    @Test
+    void enumSizeField() {
+        var enumSizeField = classDef.components().get(30);
+        assertThat(enumSizeField.name()).isEqualTo("enumSize");
+        var typeInfo = (ConcreteTypeInfo)enumSizeField.type();
+        assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.types.EnumSize");
     }
 
     @Test

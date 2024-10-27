@@ -77,4 +77,8 @@ public final class ContextMocks {
     public LiteralTreeMock literalTree(Object value) {
         return new LiteralTreeMock(value, context);
     }
+
+    public IdentifierTreeMock identifierTree(String name) {
+        return new IdentifierTreeMock(name, context);
+    }
 }

@@ -10,6 +10,8 @@ Optionally mount tmpfs to save your disk by:
 ./mount-tmpfs.sh
 ```
 
+If you encounter compilation problems with your IDE, delegate compilation to maven.
+
 ## Debug
 Debug annotation processor by run maven build:
 ```bash

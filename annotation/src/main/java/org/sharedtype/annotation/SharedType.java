@@ -64,13 +64,47 @@ public @interface SharedType {
     }
 
     /**
-     * Mark enum value. By default, enum value is the enum constant name.
+     * Mark enum value. By default, enum value is the enum constant name. The enum value must be literals (e.g. 1, "a", true) in enum constant expressions.
      * <br>
+     * <p>
      * When placed on:
-     * <ul>
-     *     <li>Constructor parameter - the literal value served to this parameter of enum constants will be used.</li>
-     *     <li>Field - the constructor parameter with the same name and type will be used as if constructor parameter is annotated.</li>
-     * </ul>
+     *  <ul>
+     *      <li>Constructor parameter - the literal value served to this parameter from enum constant expressions will be used.</li>
+     *      <li>Field - the constructor parameter with the same name and type will be used as if constructor parameter is annotated.</li>
+     *  </ul>
+     * </p>
+     * <br>
+     * <p>
+     * Below are some valid examples:
+     * </p>
+     * <pre>
+     * {@code
+     * enum Enum {
+     *   A(1), B(2);
+     *
+     *   @SharedType.EnumValue
+     *   private final int value;
+     *
+     *   Enum(int value) {
+     *     this.value = value;
+     *   }
+     * }
+     * }
+     * </pre>
+     * is equivalent to:
+     * <pre>
+     * {@code
+     * enum Enum {
+     *   A(1), B(2);
+     *
+     *   private final int value;
+     *
+     *   Enum(@SharedType.EnumValue int value) {
+     *     this.value = value;
+     *   }
+     * }
+     * }
+     * </pre>
      */
     @Target({ElementType.FIELD, ElementType.PARAMETER})
     @Retention(RetentionPolicy.SOURCE)

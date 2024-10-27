@@ -234,4 +234,31 @@ final class EnumTypeDefParserTest {
         verify(ctxMocks.getContext()).error(msgCaptor.capture(), any(Object[].class));
         assertThat(msgCaptor.getValue()).contains("Lombok");
     }
+
+    @Test
+    void failWhenEnumValueTypeIsNotLiteral() {
+        var enumB = ctxMocks.typeElement("com.github.cuzfrog.EnumB").withElementKind(ElementKind.ENUM);
+        enumType.withEnclosedElements(
+            ctxMocks.executable("EnumA").withElementKind(ElementKind.CONSTRUCTOR)
+                .withParameters(
+                    ctxMocks.declaredTypeVariable("field1", enumB.type()).withAnnotation(SharedType.EnumValue.class).element()
+                )
+                .element(),
+            ctxMocks.declaredTypeVariable("Value1", enumType.type())
+                .withElementKind(ElementKind.ENUM_CONSTANT)
+                .ofTree(
+                    ctxMocks.variableTree().withInitializer(
+                        ctxMocks.newClassTree().withArguments(
+                            ctxMocks.identifierTree("FOO")
+                        )
+                    )
+                )
+                .element(),
+            ctxMocks.declaredTypeVariable("field1", enumB.type()).element()
+        );
+
+        parser.parse(enumType.element());
+        verify(ctxMocks.getContext()).error(msgCaptor.capture(), any(Object[].class));
+        assertThat(msgCaptor.getValue()).contains("Only literals are supported");
+    }
 }
