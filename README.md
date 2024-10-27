@@ -13,7 +13,7 @@ SharedType uses Java annotation processing + templating. Here's a speed comparis
 
 ## Doc
 
-[Development Guide](./misc/Development.md)
+[Development Guide](doc/Development.md)
 
 ## Authors
 Cause Chung (cuzfrog@gmail.com)

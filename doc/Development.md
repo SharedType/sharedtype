@@ -12,6 +12,11 @@ Optionally mount tmpfs to save your disk by:
 
 If you encounter compilation problems with your IDE, delegate compilation to maven.
 
+## Style check
+```bash
+./mvnw editorconfig:check
+```
+
 ## Debug
 Debug annotation processor by run maven build:
 ```bash

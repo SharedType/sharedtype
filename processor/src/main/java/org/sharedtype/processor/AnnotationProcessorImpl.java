@@ -35,7 +35,7 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
     private TypeResolver resolver;
     private TypeWriter writer;
 
-    @Override 
+    @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         ctx = new Context(processingEnv, new Props()); // TODO: check thread safety
