@@ -1,3 +1,4 @@
+[![CI](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml/badge.svg)](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml)
 # SharedType - TypeScript type emitter for Java
 
 A lightweight, fast, flexible solution to share Java types and constants in Typescript.
