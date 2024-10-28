@@ -14,7 +14,6 @@ import org.sharedtype.processor.writer.render.TemplateRenderer;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.lang.model.util.Elements;
-import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -88,7 +87,7 @@ final class TypescriptTypeFileWriter implements TypeWriter {
             }
         }
 
-        var file = ctx.getProcessingEnv().getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", "types.d.ts");
+        var file = ctx.createSourceOutput(ctx.getProps().getTypescriptOutputFileName());
         try (var outputStream = file.openOutputStream();
              var writer = new OutputStreamWriter(outputStream)) {
             renderer.render(writer, data);

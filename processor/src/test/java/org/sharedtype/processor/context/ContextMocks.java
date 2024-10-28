@@ -3,7 +3,6 @@ package org.sharedtype.processor.context;
 import com.sun.source.util.Trees;
 import lombok.Getter;
 
-import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
@@ -22,7 +21,6 @@ public final class ContextMocks {
     private final ProcessingEnvironment processingEnv = mock(ProcessingEnvironment.class);
     private final Types types = mock(Types.class);
     private final Elements elements = mock(Elements.class);
-    private final Filer filer = mock(Filer.class);
     private final Trees trees = mock(Trees.class);
     private final Context context = mock(Context.class);
 
@@ -32,7 +30,6 @@ public final class ContextMocks {
         when(context.getProcessingEnv()).thenReturn(processingEnv);
         when(processingEnv.getElementUtils()).thenReturn(elements);
         when(processingEnv.getTypeUtils()).thenReturn(types);
-        when(processingEnv.getFiler()).thenReturn(filer);
         when(context.getTypeCache()).thenReturn(typeCache);
         when(context.getTrees()).thenReturn(trees);
     }

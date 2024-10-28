@@ -9,6 +9,9 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
+import javax.tools.FileObject;
+import javax.tools.StandardLocation;
+import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -58,6 +61,10 @@ public final class Context {
 
     public boolean isTypeIgnored(TypeElement typeElement) {
         return props.getIgnoredTypeQualifiedNames().contains(typeElement.getQualifiedName().toString());
+    }
+
+    public FileObject createSourceOutput(String filename) throws IOException {
+        return processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", filename);
     }
 
     private void log(Diagnostic.Kind level, String message, Object... objects) {

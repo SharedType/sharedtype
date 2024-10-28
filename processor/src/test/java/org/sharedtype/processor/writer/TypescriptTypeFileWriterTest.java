@@ -15,7 +15,6 @@ import org.sharedtype.processor.writer.render.Template;
 import org.sharedtype.processor.writer.render.TemplateRenderer;
 
 import javax.tools.FileObject;
-import javax.tools.StandardLocation;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Writer;
@@ -46,7 +45,7 @@ final class TypescriptTypeFileWriterTest {
 
     @Test
     void writeEnumUnion() throws IOException {
-        when(ctxMocks.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", "types.d.ts")).thenReturn(fileObject);
+        when(ctxMocks.getContext().createSourceOutput("types.d.ts")).thenReturn(fileObject);
 
         var outputStream = new ByteArrayOutputStream(256);
         when(fileObject.openOutputStream()).thenReturn(outputStream);
