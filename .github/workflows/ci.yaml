@@ -6,6 +6,7 @@ on:
   pull_request:
     branches:
       - master
+
 jobs:
   style_check:
     runs-on: ubuntu-20.04
@@ -15,11 +16,14 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: style_check_maven
       - name: Check Format
         run: ./mvnw editorconfig:check
 
   build_and_test:
-    needs: [ style_check ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,9 +34,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: manual-maven
-          restore-keys: |
-            manual-maven
+          key: build_and_test_maven
       - name: Build
         run: ./mvnw compile -e
       - name: Test
@@ -55,6 +57,9 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: generated-sources
+          path: it/target/generated-sources/
+      - name: Display downloaded artifact
+        run: ls -lhR it/target/generated-sources
       - name: Test Typescript
         working-directory: client-test/typescript
         run: |
