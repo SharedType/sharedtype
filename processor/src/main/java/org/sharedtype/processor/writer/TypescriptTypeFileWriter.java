@@ -3,14 +3,17 @@ package org.sharedtype.processor.writer;
 import org.sharedtype.domain.ConcreteTypeInfo;
 import org.sharedtype.domain.Constants;
 import org.sharedtype.domain.EnumDef;
+import org.sharedtype.domain.EnumValueInfo;
 import org.sharedtype.domain.TypeDef;
 import org.sharedtype.processor.context.Context;
+import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 import org.sharedtype.processor.support.utils.Tuple;
 import org.sharedtype.processor.writer.render.Template;
 import org.sharedtype.processor.writer.render.TemplateRenderer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.lang.model.util.Elements;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -45,12 +48,14 @@ final class TypescriptTypeFileWriter implements TypeWriter {
     );
 
     private final Context ctx;
+    private final Elements elements;
     private final Map<ConcreteTypeInfo, String> typeNameMappings;
     private final TemplateRenderer renderer;
 
     @Inject
     TypescriptTypeFileWriter(Context ctx, TemplateRenderer renderer) {
         this.ctx = ctx;
+        elements = ctx.getProcessingEnv().getElementUtils();
         this.renderer = renderer;
         typeNameMappings = new HashMap<>(TYPE_NAME_MAPPINGS);
         typeNameMappings.put(Constants.OBJECT_TYPE_INFO, ctx.getProps().getJavaObjectMapType());
@@ -65,9 +70,20 @@ final class TypescriptTypeFileWriter implements TypeWriter {
         List<Tuple<Template, Object>> data = new ArrayList<>(typeDefs.size());
         for (TypeDef typeDef : typeDefs) {
             if (typeDef instanceof EnumDef enumDef) {
+                List<String> values = new ArrayList<>(enumDef.components().size());
+                for (EnumValueInfo component : enumDef.components()) {
+                    try {
+                        String result = elements.getConstantExpression(component.value());
+                        values.add(result);
+                    } catch (IllegalArgumentException e) {
+                        throw new SharedTypeInternalError(String.format(
+                            "Failed to get constant expression for enum value: %s of type %s in enum: %s", component.value(), component.type(), enumDef), e);
+                    }
+                }
+
                 data.add(Tuple.of(
                     Template.TEMPLATE_ENUM_UNION,
-                    new Model.EnumUnion(enumDef.simpleName(), enumDef.components().stream().map(v -> v.value().toString()).toList())
+                    new Model.EnumUnion(enumDef.simpleName(), values)
                 ));
             }
         }

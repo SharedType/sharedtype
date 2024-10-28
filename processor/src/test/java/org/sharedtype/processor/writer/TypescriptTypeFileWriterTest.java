@@ -18,17 +18,16 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.sharedtype.domain.Constants.INT_TYPE_INFO;
 import static org.sharedtype.domain.Constants.STRING_TYPE_INFO;
 
 @ExtendWith(MockitoExtension.class)
@@ -62,9 +61,12 @@ final class TypescriptTypeFileWriterTest {
             .qualifiedName("com.github.cuzfrog.EnumA")
             .enumValueInfos(List.of(
                 new EnumValueInfo(STRING_TYPE_INFO, "Value1"),
-                new EnumValueInfo(STRING_TYPE_INFO, "Value2")
+                new EnumValueInfo(INT_TYPE_INFO, 123)
             ))
             .build();
+        when(ctxMocks.getElements().getConstantExpression("Value1")).thenReturn("\"Value1\"");
+        when(ctxMocks.getElements().getConstantExpression(123)).thenReturn("123");
+
         writer.write(List.of(enumDef));
 
         verify(renderer).render(any(), renderDataCaptor.capture());
@@ -75,6 +77,10 @@ final class TypescriptTypeFileWriterTest {
         assertThat(data).hasSize(1);
         var model = (TypescriptTypeFileWriter.Model.EnumUnion) data.get(0).b();
         assertThat(model.name()).isEqualTo("EnumA");
-        assertThat(model.values()).containsExactly("Value1", "Value2");
+        assertThat(model.values()).containsExactly("\"Value1\"", "123");
+
+        when(ctxMocks.getElements().getConstantExpression(123)).thenThrow(IllegalArgumentException.class);
+        assertThatThrownBy(() -> writer.write(List.of(enumDef)))
+            .hasMessageContaining("Failed to get constant expression for enum value: 123 of type int in enum");
     }
 }
