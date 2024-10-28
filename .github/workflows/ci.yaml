@@ -37,9 +37,32 @@ jobs:
         run: ./mvnw compile -e
       - name: Test
         run: ./mvnw test -e
+      - uses: actions/upload-artifact@v4
+        with:
+          name: generated-sources
+          path: |
+            it/target/generated-sources/*
+          if-no-files-found: error
+
+  client_test:
+    needs: [build_and_test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/download-artifact@v4
+        with:
+          name: generated-sources
+      - name: Test Typescript
+        working-directory: client-test/typescript
+        run: |
+          npm i
+          npm run test
 
   clean-artifact:
-    needs: [ build_and_test ]
+    needs: [ client_test ]
     runs-on: ubuntu-latest
     if: always()
     steps:

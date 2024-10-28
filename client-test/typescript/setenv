@@ -1,12 +1,5 @@
 #!/bin/bash
 
-env=$1
-if [ -z "$env" ];then
-  env="local"
-fi
-
-
 export PATH=$NODE20_HOME/bin:./node_modules/.bin:$PATH
-export ENV=$env
 echo Node:"$(node -v)"
-echo "Env=$ENV"
+
