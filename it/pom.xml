@@ -16,6 +16,8 @@
         <dependency>
             <groupId>org.sharedtype</groupId>
             <artifactId>sharedtype</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -74,6 +76,9 @@
                         </path>
                     </annotationProcessorPaths>
                     <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <arg>${sharedtype.compilerArg}</arg> <!-- supplied from cmd "-Dsharedtype.compilerArg=-proc:only" -->
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>

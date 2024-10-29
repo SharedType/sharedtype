@@ -1,19 +1,21 @@
 [![CI](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml/badge.svg)](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml)
-# SharedType - TypeScript type emitter for Java
+# SharedType - Sharing Java Types made easy
 
-A lightweight, fast, flexible solution to share Java types and constants in Typescript.
-
-## Why?
-SharedType is lightweight and fast. The only source code dependency is `@SharedType` annotation.
-Here's a speed comparison:
+* Only client source dependency is `@SharedType`.
+* SharedType annotation processor jar is ~100KB, only 3 dependencies: jsr305 annotations, dagger2 annotations, mustache.
+* Parsing takes milliseconds. See [Performance](doc/Performance.md).
+* Put `@SharedType` and there you go.
+* Global + class level options.
+* (Not Implemented) Compile time resolvable values. E.g. constant literals.
+* Generics and complex type structures.
+* (Only TS Implemented) Multiple target schemas, extendable.
 
 ## Alternatives
-
 * [bsorrentino/java2typescript](https://github.com/bsorrentino/java2typescript)
 * [vojtechhabarta/typescript-generator](https://github.com/vojtechhabarta/typescript-generator)
 
-## Doc
-
+## Documentation
+[User Guide](doc/Usage.md)
 [Development Guide](doc/Development.md)
 
 ## Authors

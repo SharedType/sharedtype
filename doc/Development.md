@@ -31,3 +31,4 @@ Then attach your debugger on it.
 
 ## Coding Style Guide
 1. since annotation processing is one shot execution, JIT is not likely to optimize the code. So please try to avoid long calling stacks like Stream chains.
+2. no dependencies without strong justification.
