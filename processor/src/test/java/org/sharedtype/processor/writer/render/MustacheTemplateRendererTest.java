@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.sharedtype.processor.context.Language;
+import org.sharedtype.processor.context.OutputTarget;
 import org.sharedtype.processor.support.utils.Tuple;
 
 import java.io.Writer;
@@ -26,7 +26,7 @@ final class MustacheTemplateRendererTest {
 
     private @Mock Mustache compiledMustache;
     private @Mock Writer writer;
-    private final Template template = new Template(Language.GO, "test");
+    private final Template template = new Template(OutputTarget.GO, "test");
 
     @BeforeEach
     void setUp() {

@@ -2,20 +2,20 @@ package org.sharedtype.processor.writer.render;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.sharedtype.processor.context.Language;
+import org.sharedtype.processor.context.OutputTarget;
 
 
 @Getter(AccessLevel.PACKAGE)
 public final class Template {
-    public static final Template TEMPLATE_INTERFACE = new Template(Language.TYPESCRIPT, "interface");
-    public static final Template TEMPLATE_ENUM_UNION = new Template(Language.TYPESCRIPT, "enum-union");
+    public static final Template TEMPLATE_INTERFACE = new Template(OutputTarget.TYPESCRIPT, "interface");
+    public static final Template TEMPLATE_ENUM_UNION = new Template(OutputTarget.TYPESCRIPT, "enum-union");
 
-    private final Language language;
+    private final OutputTarget outputTarget;
     private final String resourcePath;
 
-    Template(Language language, String resourceName) {
-        this.language = language;
-        this.resourcePath = String.format("templates/%s/%s.mustache", language.name().toLowerCase(), resourceName);
+    Template(OutputTarget outputTarget, String resourceName) {
+        this.outputTarget = outputTarget;
+        this.resourcePath = String.format("templates/%s/%s.mustache", outputTarget.name().toLowerCase(), resourceName);
     }
 
     @Override

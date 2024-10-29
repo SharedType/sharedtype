@@ -66,7 +66,7 @@ final class TypescriptTypeFileWriter implements TypeWriter {
         interfacePropertyDelimiter = ctx.getProps().getTypescript().getInterfacePropertyDelimiter();
 
         typeNameMappings = new HashMap<>(PREDEFINED_TYPE_NAME_MAPPINGS);
-        typeNameMappings.put(Constants.OBJECT_TYPE_INFO, ctx.getProps().getJavaObjectMapType());
+        typeNameMappings.put(Constants.OBJECT_TYPE_INFO, ctx.getProps().getTypescript().getJavaObjectMapType());
         renderer.loadTemplates(
             Template.TEMPLATE_INTERFACE,
             Template.TEMPLATE_ENUM_UNION

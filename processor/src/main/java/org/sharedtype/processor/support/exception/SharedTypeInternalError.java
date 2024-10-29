@@ -2,7 +2,7 @@ package org.sharedtype.processor.support.exception;
 
 import org.sharedtype.processor.support.github.RepositoryInfo;
 
-public final class SharedTypeInternalError extends RuntimeException {
+public final class SharedTypeInternalError extends Error {
     public SharedTypeInternalError(String message) {
         super(format(message));
     }

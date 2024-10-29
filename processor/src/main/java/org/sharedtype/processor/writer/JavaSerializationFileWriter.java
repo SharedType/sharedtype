@@ -2,6 +2,7 @@ package org.sharedtype.processor.writer;
 
 import org.sharedtype.processor.context.Context;
 import org.sharedtype.domain.TypeDef;
+import org.sharedtype.processor.context.OutputTarget;
 
 import javax.annotation.processing.Filer;
 import javax.inject.Inject;
@@ -27,7 +28,7 @@ final class JavaSerializationFileWriter implements TypeWriter {
 
     @Override
     public void write(List<TypeDef> typeDefs) {
-        if (ctx.getProps().isJavaSerializationFileWriterEnabled()) {
+        if (ctx.getProps().getTargets().contains(OutputTarget.JAVA_SERIALIZATION)) {
             try {
                 for (TypeDef typeDef : typeDefs) {
                     var file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", typeDef.simpleName() + ".ser");

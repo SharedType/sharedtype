@@ -35,7 +35,7 @@ public final class ContextMocks {
     }
 
     public ContextMocks() {
-        this(new Props());
+        this(PropsFactory.loadProps(null));
     }
 
     public TypeElementMock typeElement(String qualifiedName) {
