@@ -5,6 +5,8 @@ import org.sharedtype.processor.support.exception.SharedTypeException;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -15,10 +17,10 @@ import java.util.Set;
 public final class PropsFactory {
     private static final String DEFAULT_PROPERTIES_FILE = "sharedtype-default.properties";
 
-    public static Props loadProps(@Nullable String userPropertiesFile) { // TODO: allow path out of classpath by passing Path
+    public static Props loadProps(@Nullable Path userPropertiesFile) {
         var classLoader = PropsFactory.class.getClassLoader();
         try (InputStream defaultPropsInputstream = classLoader.getResourceAsStream(DEFAULT_PROPERTIES_FILE);
-             InputStream userPropsInputstream = userPropertiesFile == null ? null : classLoader.getResourceAsStream(userPropertiesFile)) {
+             InputStream userPropsInputstream = userPropertiesFile == null || Files.notExists(userPropertiesFile) ? null : Files.newInputStream(userPropertiesFile)) {
             var properties = new Properties();
             properties.load(defaultPropsInputstream);
             if (userPropsInputstream != null) {

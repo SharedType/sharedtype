@@ -69,7 +69,14 @@ export interface User {
 ### Configurations
 
 #### Global options
-Provide the file `sharedtype.properties` in resource directory.
+By default, the file `sharedtype.properties` on current cmd path will be picked up.
+You can customize the path by config `maven-compiler-plugin`:
+```xml
+<compilerArgs>
+    <arg>-Asharedtype.propsFile=${your.properties.path}</arg>
+</compilerArgs>
+```
+
 See [Default Properties](../processor/src/main/resources/sharedtype-default.properties) for details.
 
 #### Per annotation options

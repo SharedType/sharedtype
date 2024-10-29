@@ -12,6 +12,11 @@
     <artifactId>sharedtype-it</artifactId>
     <name>SharedType Integration Test</name>
 
+    <properties>
+        <sharedtype.compilerArg/>
+        <sharedtype.propsFile>it/sharedtype.properties</sharedtype.propsFile>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.sharedtype</groupId>
@@ -78,6 +83,7 @@
                     <showWarnings>true</showWarnings>
                     <compilerArgs>
                         <arg>${sharedtype.compilerArg}</arg> <!-- supplied from cmd "-Dsharedtype.compilerArg=-proc:only" -->
+                        <arg>-Asharedtype.propsFile=${sharedtype.propsFile}</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

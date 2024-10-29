@@ -4,15 +4,17 @@ import org.junit.jupiter.api.Test;
 import org.sharedtype.processor.support.exception.SharedTypeException;
 
 import javax.annotation.Nullable;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 final class PropsFactoryTest {
-
     @Test
     void loadUserProps() {
-        var props = PropsFactory.loadProps("test-sharedtype-user.properties");
+        var props = PropsFactory.loadProps(resolveResource("test-sharedtype-user.properties"));
         assertThat(props.getTargets()).containsExactly(OutputTarget.TYPESCRIPT, OutputTarget.CONSOLE);
         assertThat(props.getOptionalAnno()).isEqualTo(Override.class);
         assertThat(props.getTypescript().getJavaObjectMapType()).isEqualTo("unknown");
@@ -20,7 +22,7 @@ final class PropsFactoryTest {
 
     @Test
     void loadDefaultProps() {
-        var props = PropsFactory.loadProps("not-exist.properties");
+        var props = PropsFactory.loadProps(Paths.get("not-exist"));
         assertThat(props.getTargets()).containsExactly(OutputTarget.TYPESCRIPT);
         assertThat(props.getOptionalAnno()).isEqualTo(Nullable.class);
         assertThat(props.getAccessorGetterPrefixes()).containsExactly("get", "is");
@@ -30,7 +32,7 @@ final class PropsFactoryTest {
             "java.lang.Object",
             "java.lang.Enum",
             "java.io.Serializable",
-            "java.util.Record"
+            "java.lang.Record"
         );
 
         var typescriptProps = props.getTypescript();
@@ -41,7 +43,15 @@ final class PropsFactoryTest {
 
     @Test
     void wrongTarget() {
-        assertThatThrownBy(() -> PropsFactory.loadProps("test-sharedtype-wrong-target.properties"))
+        assertThatThrownBy(() -> PropsFactory.loadProps(resolveResource("test-sharedtype-wrong-target.properties")))
             .isInstanceOf(SharedTypeException.class);
+    }
+
+    private static Path resolveResource(String resource) {
+        try {
+            return Paths.get(PropsFactoryTest.class.getClassLoader().getResource(resource).toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

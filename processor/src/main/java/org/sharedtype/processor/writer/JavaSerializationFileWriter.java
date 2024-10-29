@@ -28,7 +28,7 @@ final class JavaSerializationFileWriter implements TypeWriter {
 
     @Override
     public void write(List<TypeDef> typeDefs) {
-        if (ctx.getProps().getTargets().contains(OutputTarget.JAVA_SERIALIZATION)) {
+        if (ctx.getProps().getTargets().contains(OutputTarget.JAVA_SERIALIZED)) {
             try {
                 for (TypeDef typeDef : typeDefs) {
                     var file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", typeDef.simpleName() + ".ser");
