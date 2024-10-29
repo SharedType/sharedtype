@@ -58,8 +58,8 @@ public final class Constants {
         Map.entry("java.lang.Object", OBJECT_TYPE_INFO),
         Map.entry("java.lang.Class", CLASS_TYPE_INFO),
         Map.entry("java.lang.Enum", ENUM_TYPE_INFO),
-        Map.entry("java.util.Optional", OPTIONAL_TYPE_INFO),
-        Map.entry("java.util.Map", MAP_TYPE_INFO) // TODO: Map support
+        Map.entry("java.util.Optional", OPTIONAL_TYPE_INFO)
+//        Map.entry("java.util.Map", MAP_TYPE_INFO) // TODO: Map support
     );
 
     private Constants() {
