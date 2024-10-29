@@ -49,6 +49,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
     private TypeInfo parseDeclared(DeclaredType declaredType) {
         var typeElement = (TypeElement) declaredType.asElement();
         var qualifiedName = typeElement.getQualifiedName().toString();
+        var simpleName = typeElement.getSimpleName().toString();
         var typeArgs = declaredType.getTypeArguments();
 
         int arrayStack = 0;
@@ -61,10 +62,12 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             if (currentType instanceof DeclaredType argDeclaredType) {
                 var element = (TypeElement) argDeclaredType.asElement();
                 qualifiedName = element.getQualifiedName().toString();
+                simpleName = element.getSimpleName().toString();
                 typeArgs = argDeclaredType.getTypeArguments();
             } else if (currentType instanceof TypeVariable argTypeVariable) {
                 var typeVarInfo = parseTypeVariable(argTypeVariable);
                 qualifiedName = typeVarInfo.getName();
+                simpleName = typeVarInfo.getName();
                 typeArgs = Collections.emptyList();
                 isTypeVar = true;
             }
@@ -76,6 +79,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             var parsedTypeArgs = typeArgs.stream().map(this::parse).toList();
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
+                .simpleName(simpleName)
                 .typeArgs(parsedTypeArgs)
                 .resolved(resolved)
                 .build();

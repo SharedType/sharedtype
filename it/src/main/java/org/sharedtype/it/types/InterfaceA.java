@@ -1,4 +1,4 @@
 package org.sharedtype.it.types;
 
-public interface InterfaceA {
+public interface InterfaceA<T> {
 }

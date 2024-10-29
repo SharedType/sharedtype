@@ -1,5 +1,5 @@
-export interface {{name}} {{#supertypes}}extends {{supertypes}}{{/supertypes}}{
+export interface {{name}}{{{typeParametersExpr}}} {{{supertypesExpr}}}{
     {{#properties}}
-    {{name}}{{#optional}}?{{/optional}}: {{type}}{{lineEnding}}
+    {{name}}{{#optional}}?{{/optional}}: {{{type}}}{{propDelimiter}}
     {{/properties}}
 }

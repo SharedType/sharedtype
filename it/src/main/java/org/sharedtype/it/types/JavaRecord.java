@@ -46,7 +46,7 @@ public record JavaRecord<T, K>(
     EnumSize enumSize,
 
     String duplicateAccessor
-) implements InterfaceA {
+) implements InterfaceA<T> {
     @SharedType.Accessor
     String getDuplicateAccessor() {
         return duplicateAccessor;

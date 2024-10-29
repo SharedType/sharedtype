@@ -35,6 +35,7 @@ class TypeInfoParserImplTest {
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo(expectedName);
+            softly.assertThat(typeInfo.simpleName()).isEqualTo(expectedName);
             softly.assertThat(typeInfo.resolved()).isTrue();
         });
 
@@ -69,6 +70,7 @@ class TypeInfoParserImplTest {
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo(qualifiedName);
+            softly.assertThat(typeInfo.simpleName()).isEqualTo(qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1));
             softly.assertThat(typeInfo.resolved()).isTrue();
         });
 
@@ -92,6 +94,7 @@ class TypeInfoParserImplTest {
         var typeInfo = (ConcreteTypeInfo) arrayTypeInfo.component();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
+            softly.assertThat(typeInfo.simpleName()).isEqualTo("String");
             softly.assertThat(typeInfo.resolved()).isTrue();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
@@ -118,6 +121,7 @@ class TypeInfoParserImplTest {
         var typeInfo = (ConcreteTypeInfo) nestedArrayTypeInfo.component();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
+            softly.assertThat(typeInfo.simpleName()).isEqualTo("String");
             softly.assertThat(typeInfo.resolved()).isTrue();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
@@ -132,6 +136,7 @@ class TypeInfoParserImplTest {
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
+            softly.assertThat(typeInfo.simpleName()).isEqualTo("Abc");
             softly.assertThat(typeInfo.resolved()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
@@ -154,11 +159,13 @@ class TypeInfoParserImplTest {
             softly.assertThat(typeInfo.typeArgs()).map(t -> (ConcreteTypeInfo) t).satisfiesExactly(
               typeArg -> {
                   softly.assertThat(typeArg.qualifiedName()).isEqualTo("java.lang.String");
+                  softly.assertThat(typeArg.simpleName()).isEqualTo("String");
                   softly.assertThat(typeArg.resolved()).isTrue();
                   softly.assertThat(typeArg.typeArgs()).isEmpty();
               },
               typeArg -> {
                   softly.assertThat(typeArg.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
+                  softly.assertThat(typeArg.simpleName()).isEqualTo("Abc");
                   softly.assertThat(typeArg.resolved()).isFalse();
                   softly.assertThat(typeArg.typeArgs()).isEmpty();
               }

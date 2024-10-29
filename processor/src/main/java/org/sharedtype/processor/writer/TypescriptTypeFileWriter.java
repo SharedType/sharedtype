@@ -1,11 +1,17 @@
 package org.sharedtype.processor.writer;
 
+import org.sharedtype.domain.ArrayTypeInfo;
+import org.sharedtype.domain.ClassDef;
 import org.sharedtype.domain.ConcreteTypeInfo;
 import org.sharedtype.domain.Constants;
 import org.sharedtype.domain.EnumDef;
 import org.sharedtype.domain.EnumValueInfo;
+import org.sharedtype.domain.FieldComponentInfo;
 import org.sharedtype.domain.TypeDef;
+import org.sharedtype.domain.TypeInfo;
+import org.sharedtype.domain.TypeVariableInfo;
 import org.sharedtype.processor.context.Context;
+import org.sharedtype.processor.support.annotation.SideEffect;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 import org.sharedtype.processor.support.utils.Tuple;
 import org.sharedtype.processor.writer.render.Template;
@@ -23,7 +29,7 @@ import java.util.Map;
 
 @Singleton
 final class TypescriptTypeFileWriter implements TypeWriter {
-    private static final Map<ConcreteTypeInfo, String> TYPE_NAME_MAPPINGS = Map.ofEntries(
+    private static final Map<ConcreteTypeInfo, String> PREDEFINED_TYPE_NAME_MAPPINGS = Map.ofEntries(
         Map.entry(Constants.BOOLEAN_TYPE_INFO, "boolean"),
         Map.entry(Constants.BYTE_TYPE_INFO, "number"),
         Map.entry(Constants.CHAR_TYPE_INFO, "string"),
@@ -50,13 +56,16 @@ final class TypescriptTypeFileWriter implements TypeWriter {
     private final Elements elements;
     private final Map<ConcreteTypeInfo, String> typeNameMappings;
     private final TemplateRenderer renderer;
+    private final char interfacePropertyDelimiter;
 
     @Inject
     TypescriptTypeFileWriter(Context ctx, TemplateRenderer renderer) {
         this.ctx = ctx;
         elements = ctx.getProcessingEnv().getElementUtils();
         this.renderer = renderer;
-        typeNameMappings = new HashMap<>(TYPE_NAME_MAPPINGS);
+        interfacePropertyDelimiter = ctx.getProps().getTypescript().getInterfacePropertyDelimiter();
+
+        typeNameMappings = new HashMap<>(PREDEFINED_TYPE_NAME_MAPPINGS);
         typeNameMappings.put(Constants.OBJECT_TYPE_INFO, ctx.getProps().getJavaObjectMapType());
         renderer.loadTemplates(
             Template.TEMPLATE_INTERFACE,
@@ -79,52 +88,101 @@ final class TypescriptTypeFileWriter implements TypeWriter {
                             "Failed to get constant expression for enum value: %s of type %s in enum: %s", component.value(), component.type(), enumDef), e);
                     }
                 }
-
-                data.add(Tuple.of(
-                    Template.TEMPLATE_ENUM_UNION,
-                    new Model.EnumUnion(enumDef.simpleName(), values)
-                ));
+                data.add(Tuple.of(Template.TEMPLATE_ENUM_UNION, new EnumUnionExpr(enumDef.simpleName(), values)));
+            } else if (typeDef instanceof ClassDef classDef) {
+                var value = new InterfaceExpr(
+                    classDef.simpleName(),
+                    classDef.typeVariables().stream().map(this::toTypeExpr).toList(),
+                    classDef.supertypes().stream().map(this::toTypeExpr).toList(),
+                    classDef.components().stream().map(this::toPropertyExpr).toList()
+                );
+                data.add(Tuple.of(Template.TEMPLATE_INTERFACE, value));
             }
         }
 
-        var file = ctx.createSourceOutput(ctx.getProps().getTypescriptOutputFileName());
+        var file = ctx.createSourceOutput(ctx.getProps().getTypescript().getOutputFileName());
         try (var outputStream = file.openOutputStream();
              var writer = new OutputStreamWriter(outputStream)) {
             renderer.render(writer, data);
         }
     }
 
-    static final class Model {
-        record Interface(
-            String name,
-            List<String> supertypes,
-            List<Property> properties
-        ) {
-        }
+    private PropertyExpr toPropertyExpr(FieldComponentInfo field) {
+        return new PropertyExpr(
+            field.name(),
+            toTypeExpr(field.type()),
+            interfacePropertyDelimiter,
+            field.optional(),
+            false,
+            false // TODO: more options
+        );
+    }
 
-        record Property(
-            String name,
-            Type type,
-            char lineEnding,
-            boolean optional
-        ) {
-        }
+    private String toTypeExpr(TypeInfo typeInfo) {
+        var typeExprBuilder = new StringBuilder();
+        buildTypeExprRecursively(typeInfo, typeExprBuilder);
+        return typeExprBuilder.toString();
+    }
 
-        record Type(
-            String name,
-            boolean unionNull,
-            boolean unionUndefined
-        ) {
-        }
-
-        record EnumUnion(
-            String name,
-            List<String> values
-        ) {
-            @SuppressWarnings("unused")
-            String valuesExpr() {
-                return String.join(" | ", values);
+    private void buildTypeExprRecursively(TypeInfo typeInfo, @SideEffect StringBuilder nameBuilder) { // TODO: abstract up
+        if (typeInfo instanceof ConcreteTypeInfo concreteTypeInfo) {
+            nameBuilder.append(typeNameMappings.getOrDefault(concreteTypeInfo, concreteTypeInfo.simpleName()));
+            if (!concreteTypeInfo.typeArgs().isEmpty()) {
+                nameBuilder.append("<");
+                for (TypeInfo typeArg : concreteTypeInfo.typeArgs()) {
+                    buildTypeExprRecursively(typeArg, nameBuilder);
+                    nameBuilder.append(", ");
+                }
+                nameBuilder.setLength(nameBuilder.length() - 2);
+                nameBuilder.append(">");
             }
+        } else if (typeInfo instanceof TypeVariableInfo typeVariableInfo) {
+            nameBuilder.append(typeVariableInfo.getName());
+        } else if (typeInfo instanceof ArrayTypeInfo arrayTypeInfo) {
+            buildTypeExprRecursively(arrayTypeInfo.component(), nameBuilder);
+            nameBuilder.append("[]");
+        }
+    }
+
+    @SuppressWarnings("unused")
+    record InterfaceExpr(
+        String name,
+        List<String> typeParameters,
+        List<String> supertypes,
+        List<PropertyExpr> properties
+    ) {
+        String typeParametersExpr() {
+            if (typeParameters.isEmpty()) {
+                return null;
+            }
+            return String.format("<%s>", String.join(", ", typeParameters));
+        }
+
+        String supertypesExpr() {
+            if (supertypes.isEmpty()) {
+                return null;
+            }
+            return String.format("extends %s ", String.join(", ", supertypes));
+        }
+    }
+
+    record PropertyExpr(
+        String name,
+        String type,
+        char propDelimiter,
+        boolean optional,
+        boolean unionNull,
+        boolean unionUndefined
+    ) {
+    }
+
+    record EnumUnionExpr(
+        String name,
+        List<String> values
+    ) {
+        @SuppressWarnings("unused")
+        String valuesExpr() {
+            return String.join(" | ", values);
         }
     }
 }

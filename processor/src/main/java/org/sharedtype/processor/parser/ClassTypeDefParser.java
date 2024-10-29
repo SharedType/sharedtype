@@ -1,13 +1,13 @@
 package org.sharedtype.processor.parser;
 
 import org.sharedtype.annotation.SharedType;
-import org.sharedtype.processor.context.Config;
-import org.sharedtype.processor.context.Context;
 import org.sharedtype.domain.ClassDef;
 import org.sharedtype.domain.FieldComponentInfo;
 import org.sharedtype.domain.TypeDef;
 import org.sharedtype.domain.TypeInfo;
 import org.sharedtype.domain.TypeVariableInfo;
+import org.sharedtype.processor.context.Config;
+import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
 import org.sharedtype.processor.support.annotation.VisibleForTesting;
 import org.sharedtype.processor.support.utils.Tuple;
@@ -76,7 +76,14 @@ final class ClassTypeDefParser implements TypeDefParser {
             var declaredType = (DeclaredType) interfaceType;
             supertypeElems.add((TypeElement) declaredType.asElement());
         }
-        return supertypeElems.stream().filter(t -> !ctx.isTypeIgnored(t)).map(TypeElement::asType).map(typeInfoParser::parse).toList();
+
+        List<TypeInfo> res = new ArrayList<>(supertypeElems.size());
+        for (TypeElement supertypeElem : supertypeElems) {
+            if (!ctx.isTypeIgnored(supertypeElem)) {
+                res.add(typeInfoParser.parse(supertypeElem.asType()));
+            }
+        }
+        return res;
     }
 
     private List<FieldComponentInfo> parseComponents(TypeElement typeElement, Config config) {

@@ -8,30 +8,30 @@ import java.util.Map;
 public final class Constants {
     public static final String ANNOTATION_QUALIFIED_NAME = SharedType.class.getName();
 
-    public static final ConcreteTypeInfo BOOLEAN_TYPE_INFO = ConcreteTypeInfo.ofPredefined("boolean");
-    public static final ConcreteTypeInfo BYTE_TYPE_INFO = ConcreteTypeInfo.ofPredefined("byte");
-    public static final ConcreteTypeInfo CHAR_TYPE_INFO = ConcreteTypeInfo.ofPredefined("char");
-    public static final ConcreteTypeInfo DOUBLE_TYPE_INFO = ConcreteTypeInfo.ofPredefined("double");
-    public static final ConcreteTypeInfo FLOAT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("float");
-    public static final ConcreteTypeInfo INT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("int");
-    public static final ConcreteTypeInfo LONG_TYPE_INFO = ConcreteTypeInfo.ofPredefined("long");
-    public static final ConcreteTypeInfo SHORT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("short");
+    public static final ConcreteTypeInfo BOOLEAN_TYPE_INFO = ConcreteTypeInfo.ofPredefined("boolean", "boolean");
+    public static final ConcreteTypeInfo BYTE_TYPE_INFO = ConcreteTypeInfo.ofPredefined("byte", "byte");
+    public static final ConcreteTypeInfo CHAR_TYPE_INFO = ConcreteTypeInfo.ofPredefined("char", "char");
+    public static final ConcreteTypeInfo DOUBLE_TYPE_INFO = ConcreteTypeInfo.ofPredefined("double", "double");
+    public static final ConcreteTypeInfo FLOAT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("float", "float");
+    public static final ConcreteTypeInfo INT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("int", "int");
+    public static final ConcreteTypeInfo LONG_TYPE_INFO = ConcreteTypeInfo.ofPredefined("long", "long");
+    public static final ConcreteTypeInfo SHORT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("short", "short");
 
-    public static final ConcreteTypeInfo BOXED_BOOLEAN_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Boolean");
-    public static final ConcreteTypeInfo BOXED_BYTE_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Byte");
-    public static final ConcreteTypeInfo BOXED_CHAR_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Character");
-    public static final ConcreteTypeInfo BOXED_DOUBLE_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Double");
-    public static final ConcreteTypeInfo BOXED_FLOAT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Float");
-    public static final ConcreteTypeInfo BOXED_INT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Integer");
-    public static final ConcreteTypeInfo BOXED_LONG_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Long");
-    public static final ConcreteTypeInfo BOXED_SHORT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Short");
-    public static final ConcreteTypeInfo STRING_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.String");
-    public static final ConcreteTypeInfo VOID_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Void");
-    public static final ConcreteTypeInfo OBJECT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Object");
-    public static final ConcreteTypeInfo CLASS_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Class");
-    public static final ConcreteTypeInfo ENUM_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Enum");
-    public static final ConcreteTypeInfo OPTIONAL_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.util.Optional");
-    public static final ConcreteTypeInfo MAP_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.util.Map");
+    public static final ConcreteTypeInfo BOXED_BOOLEAN_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Boolean", "Boolean");
+    public static final ConcreteTypeInfo BOXED_BYTE_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Byte", "Byte");
+    public static final ConcreteTypeInfo BOXED_CHAR_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Character", "Character");
+    public static final ConcreteTypeInfo BOXED_DOUBLE_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Double", "Double");
+    public static final ConcreteTypeInfo BOXED_FLOAT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Float", "Float");
+    public static final ConcreteTypeInfo BOXED_INT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Integer", "Integer");
+    public static final ConcreteTypeInfo BOXED_LONG_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Long", "Long");
+    public static final ConcreteTypeInfo BOXED_SHORT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Short", "Short");
+    public static final ConcreteTypeInfo STRING_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.String", "String");
+    public static final ConcreteTypeInfo VOID_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Void", "Void");
+    public static final ConcreteTypeInfo OBJECT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Object", "Object");
+    public static final ConcreteTypeInfo CLASS_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Class", "Class");
+    public static final ConcreteTypeInfo ENUM_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Enum", "Enum");
+    public static final ConcreteTypeInfo OPTIONAL_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.util.Optional", "Optional");
+    public static final ConcreteTypeInfo MAP_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.util.Map", "Map");
 
     public static final Map<TypeKind, ConcreteTypeInfo> PRIMITIVES = Map.of(
         TypeKind.BOOLEAN, BOOLEAN_TYPE_INFO,

@@ -10,13 +10,14 @@ import java.util.List;
 @Builder
 public final class ConcreteTypeInfo implements TypeInfo {
     private final String qualifiedName;
+    private final String simpleName;
     @Builder.Default
     private final List<? extends TypeInfo> typeArgs = Collections.emptyList();
     @Builder.Default
     private boolean resolved = true;
 
-    static ConcreteTypeInfo ofPredefined(String qualifiedName) {
-        return ConcreteTypeInfo.builder().qualifiedName(qualifiedName).build();
+    static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
+        return ConcreteTypeInfo.builder().qualifiedName(qualifiedName).simpleName(simpleName).build();
     }
 
     @Override
@@ -34,6 +35,10 @@ public final class ConcreteTypeInfo implements TypeInfo {
 
     public String qualifiedName() {
         return qualifiedName;
+    }
+
+    public String simpleName() {
+        return simpleName;
     }
 
     public List<? extends TypeInfo> typeArgs() {
