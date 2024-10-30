@@ -26,9 +26,9 @@ final class MustacheTemplateRenderer implements TemplateRenderer {
     @Override
     public void render(Writer writer, List<Tuple<Template, Object>> data) {
         for (Tuple<Template, Object> tuple : data) {
-            var template = tuple.a();
-            var values = tuple.b();
-            var mustache = compiledTemplates.get(template);
+            Template template = tuple.a();
+            Object values = tuple.b();
+            Mustache mustache = compiledTemplates.get(template);
             if (mustache == null) {
                 throw new SharedTypeInternalError(String.format("Template not found: '%s'", template));
             }

@@ -15,6 +15,7 @@ import org.sharedtype.processor.parser.TypeDefParser;
 import org.sharedtype.processor.support.annotation.SideEffect;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 
+import javax.lang.model.element.TypeElement;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -28,14 +29,14 @@ final class LoopTypeResolver implements TypeResolver {
 
     @Override
     public List<TypeDef> resolve(List<TypeDef> typeDefs) {
-        var n = typeDefs.size() * DEPENDENCY_COUNT_EXPANSION_FACTOR;
-        var resolvedDefs = new ArrayList<TypeDef>(n);
-        var processingDefStack = new ArrayDeque<TypeDef>(n); // TODO: pass metadata from ctx to better size these buffers
-        var processingInfoStack = new ArrayDeque<TypeInfo>(n);
+        int n = typeDefs.size() * DEPENDENCY_COUNT_EXPANSION_FACTOR;
+        List<TypeDef> resolvedDefs = new ArrayList<>(n);
+        Deque<TypeDef> processingDefStack = new ArrayDeque<>(n); // TODO: pass metadata from ctx to better size these buffers
+        Deque<TypeInfo> processingInfoStack = new ArrayDeque<>(n);
         processingDefStack.addAll(typeDefs);
 
         while (!processingDefStack.isEmpty()) {
-            var typeDef = processingDefStack.pop();
+            TypeDef typeDef = processingDefStack.pop();
             if (typeDef.resolved()) {
                 resolvedDefs.add(typeDef);
                 continue;
@@ -43,7 +44,8 @@ final class LoopTypeResolver implements TypeResolver {
 
             processingDefStack.push(typeDef);
 
-            if (typeDef instanceof ClassDef classDef) {
+            if (typeDef instanceof ClassDef) {
+                ClassDef classDef = (ClassDef) typeDef;
                 for (FieldComponentInfo fieldComponentInfo : classDef.components()) {
                     if (!fieldComponentInfo.resolved()) {
                         processingInfoStack.push(fieldComponentInfo.type());
@@ -59,7 +61,8 @@ final class LoopTypeResolver implements TypeResolver {
                         processingInfoStack.push(typeVariableInfo);
                     }
                 }
-            } else if (typeDef instanceof EnumDef enumDef) {
+            } else if (typeDef instanceof EnumDef) {
+                EnumDef enumDef = (EnumDef) typeDef;
                 for (EnumValueInfo component : enumDef.components()) {
                     if (!component.resolved()) {
                         processingInfoStack.push(component.type());
@@ -79,10 +82,11 @@ final class LoopTypeResolver implements TypeResolver {
     private void resolveTypeInfo(Deque<TypeDef> processingDefStack, Deque<TypeInfo> processingInfoStack) {
         while (!processingInfoStack.isEmpty()) {
             TypeInfo typeInfo = processingInfoStack.pop();
-            if (typeInfo instanceof ConcreteTypeInfo concreteTypeInfo) {
+            if (typeInfo instanceof ConcreteTypeInfo) {
+                ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
                 if (!concreteTypeInfo.shallowResolved()) {
-                    var typeElement = ctx.getProcessingEnv().getElementUtils().getTypeElement(concreteTypeInfo.qualifiedName());
-                    var parsed = typeDefParser.parse(typeElement);
+                    TypeElement typeElement = ctx.getProcessingEnv().getElementUtils().getTypeElement(concreteTypeInfo.qualifiedName());
+                    TypeDef parsed = typeDefParser.parse(typeElement);
                     if (parsed != null) {
                         concreteTypeInfo.markShallowResolved();
                         processingDefStack.push(parsed);
@@ -93,11 +97,13 @@ final class LoopTypeResolver implements TypeResolver {
                         processingInfoStack.push(typeArg);
                     }
                 }
-            } else if (typeInfo instanceof ArrayTypeInfo arrayTypeInfo) {
+            } else if (typeInfo instanceof ArrayTypeInfo) {
+                ArrayTypeInfo arrayTypeInfo = (ArrayTypeInfo) typeInfo;
                 if (!arrayTypeInfo.resolved()) {
                     processingInfoStack.push(arrayTypeInfo.component());
                 }
-            } else if (typeInfo instanceof TypeVariableInfo typeVariableInfo) {
+            } else if (typeInfo instanceof TypeVariableInfo) {
+                TypeVariableInfo typeVariableInfo = (TypeVariableInfo) typeInfo;
                 throw new UnsupportedOperationException("Type variable not supported yet: " + typeVariableInfo);
             } else {
                 throw new SharedTypeInternalError(

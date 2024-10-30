@@ -16,6 +16,8 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.sharedtype.domain.Constants.PRIMITIVES;
 import static org.sharedtype.processor.support.Preconditions.checkArgument;
@@ -26,7 +28,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
 
     @Override
     public TypeInfo parse(TypeMirror typeMirror) {
-        var typeKind = typeMirror.getKind();
+        TypeKind typeKind = typeMirror.getKind();
 
         // TODO: use enumMap
         if (typeKind.isPrimitive()) {
@@ -44,10 +46,10 @@ final class TypeInfoParserImpl implements TypeInfoParser {
     }
 
     private TypeInfo parseDeclared(DeclaredType declaredType) {
-        var typeElement = (TypeElement) declaredType.asElement();
-        var qualifiedName = typeElement.getQualifiedName().toString();
-        var simpleName = typeElement.getSimpleName().toString();
-        var typeArgs = declaredType.getTypeArguments();
+        TypeElement typeElement = (TypeElement) declaredType.asElement();
+        String qualifiedName = typeElement.getQualifiedName().toString();
+        String simpleName = typeElement.getSimpleName().toString();
+        List<? extends TypeMirror> typeArgs = declaredType.getTypeArguments();
 
         int arrayStack = 0;
         boolean isTypeVar = false;
@@ -56,13 +58,15 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             checkArgument(typeArgs.size() == 1, "Array type must have exactly one type argument, but got: %s, type: %s", typeArgs.size(), currentType);
             arrayStack++;
             currentType = typeArgs.get(0);
-            if (currentType instanceof DeclaredType argDeclaredType) {
-                var element = (TypeElement) argDeclaredType.asElement();
+            if (currentType instanceof DeclaredType) {
+                DeclaredType argDeclaredType = (DeclaredType) currentType;
+                TypeElement element = (TypeElement) argDeclaredType.asElement();
                 qualifiedName = element.getQualifiedName().toString();
                 simpleName = element.getSimpleName().toString();
                 typeArgs = argDeclaredType.getTypeArguments();
-            } else if (currentType instanceof TypeVariable argTypeVariable) {
-                var typeVarInfo = parseTypeVariable(argTypeVariable);
+            } else if (currentType instanceof TypeVariable) {
+                TypeVariable argTypeVariable = (TypeVariable) currentType;
+                TypeVariableInfo typeVarInfo = parseTypeVariable(argTypeVariable);
                 qualifiedName = typeVarInfo.getName();
                 simpleName = typeVarInfo.getName();
                 typeArgs = Collections.emptyList();
@@ -72,8 +76,8 @@ final class TypeInfoParserImpl implements TypeInfoParser {
 
         TypeInfo typeInfo = ctx.getTypeCache().getTypeInfo(qualifiedName);
         if (typeInfo == null) {
-            var resolved = isTypeVar || ctx.getTypeCache().contains(qualifiedName);
-            var parsedTypeArgs = typeArgs.stream().map(this::parse).toList();
+            boolean resolved = isTypeVar || ctx.getTypeCache().contains(qualifiedName);
+            List<TypeInfo> parsedTypeArgs = typeArgs.stream().map(this::parse).collect(Collectors.toList());
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)

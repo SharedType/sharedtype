@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 public final class IdentifierTreeMock extends ExpressionTreeMock<IdentifierTree, IdentifierTreeMock> {
     IdentifierTreeMock(String name, Context ctx) {
         super(mock(IdentifierTree.class, String.format("Tree(%s)", name)), ctx);
-        var elementName = mock(Name.class);
+        Name elementName = mock(Name.class);
         when(tree.getName()).thenReturn(elementName);
         when(elementName.toString()).thenReturn(name);
     }

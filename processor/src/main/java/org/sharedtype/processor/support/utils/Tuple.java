@@ -1,8 +1,22 @@
 package org.sharedtype.processor.support.utils;
 
-public record Tuple<A, B>(A a, B b) {
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public final class Tuple<A, B> {
+    private final A a;
+    private final B b;
+
     public static <A, B> Tuple<A, B> of(A a, B b) {
         return new Tuple<>(a, b);
+    }
+
+    public A a() {
+        return a;
+    }
+
+    public B b() {
+        return b;
     }
 
     @Override

@@ -18,25 +18,25 @@ public final class TypeCache {
 
     public void saveTypeDef(String qualifiedName, TypeDef typeDef) {
         typeByQualifiedName.compute(qualifiedName, (k, v) -> {
-            var c = v == null ? new Container() : v;
+            Container c = v == null ? new Container() : v;
             c.typeDef = typeDef;
             return c;
         });
     }
     public void saveTypeInfo(String qualifiedName, TypeInfo typeInfo) {
         typeByQualifiedName.compute(qualifiedName, (k, v) -> {
-            var c = v == null ? new Container() : v;
+            Container c = v == null ? new Container() : v;
             c.typeInfo = typeInfo;
             return c;
         });
     }
 
     public TypeDef getTypeDef(String qualifiedName) {
-        var container = typeByQualifiedName.get(qualifiedName);
+        Container container = typeByQualifiedName.get(qualifiedName);
         return container == null ? null : container.typeDef;
     }
     public TypeInfo getTypeInfo(String qualifiedName) {
-        var container = typeByQualifiedName.get(qualifiedName);
+        Container container = typeByQualifiedName.get(qualifiedName);
         return container == null ? null : container.typeInfo;
     }
 

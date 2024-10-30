@@ -18,10 +18,10 @@ public final class PropsFactory {
     private static final String DEFAULT_PROPERTIES_FILE = "sharedtype-default.properties";
 
     public static Props loadProps(@Nullable Path userPropertiesFile) {
-        var classLoader = PropsFactory.class.getClassLoader();
+        ClassLoader classLoader = PropsFactory.class.getClassLoader();
         try (InputStream defaultPropsInputstream = classLoader.getResourceAsStream(DEFAULT_PROPERTIES_FILE);
              InputStream userPropsInputstream = userPropertiesFile == null || Files.notExists(userPropertiesFile) ? null : Files.newInputStream(userPropertiesFile)) {
-            var properties = new Properties();
+            Properties properties = new Properties();
             properties.load(defaultPropsInputstream);
             if (userPropsInputstream != null) {
                 properties.load(userPropsInputstream);
@@ -54,10 +54,10 @@ public final class PropsFactory {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static <T> Set<T> parseSet(String value, Class<T> type) {
-        var arr = value.split(",");
-        var set = new LinkedHashSet<T>(arr.length);
+        String[] arr = value.split(",");
+        Set<T> set = new LinkedHashSet<>(arr.length);
         for (String s : arr) {
-            var trimmed = s.trim();
+            String trimmed = s.trim();
             if (!trimmed.isEmpty()) {
                 if (type.equals(String.class)) {
                     set.add((T) trimmed);

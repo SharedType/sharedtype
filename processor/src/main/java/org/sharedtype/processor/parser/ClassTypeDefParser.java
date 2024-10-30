@@ -20,6 +20,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.RecordComponentElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
@@ -43,9 +44,9 @@ final class ClassTypeDefParser implements TypeDefParser {
 
     @Override
     public TypeDef parse(TypeElement typeElement) {
-        var config = new Config(typeElement);
+        Config config = new Config(typeElement);
 
-        var builder = ClassDef.builder().qualifiedName(config.getQualifiedName()).simpleName(config.getName());
+        ClassDef.ClassDefBuilder builder = ClassDef.builder().qualifiedName(config.getQualifiedName()).simpleName(config.getName());
         builder.typeVariables(parseTypeVariables(typeElement));
         builder.components(parseComponents(typeElement, config));
         builder.supertypes(parseSupertypes(typeElement));
@@ -54,22 +55,23 @@ final class ClassTypeDefParser implements TypeDefParser {
     }
 
     private List<TypeVariableInfo> parseTypeVariables(TypeElement typeElement) {
-        var typeParameters = typeElement.getTypeParameters();
+        List<? extends TypeParameterElement> typeParameters = typeElement.getTypeParameters();
         return typeParameters.stream()
             .map(typeParameterElement -> TypeVariableInfo.builder().name(typeParameterElement.getSimpleName().toString()).build())
-            .toList(); // TODO: type bounds
+            .collect(Collectors.toList()); // TODO: type bounds
     }
 
     private List<TypeInfo> parseSupertypes(TypeElement typeElement) {
-        var supertypeElems = new ArrayList<TypeElement>();
-        var superclass = typeElement.getSuperclass();
-        if (superclass instanceof DeclaredType declaredType) {
+        List<TypeElement> supertypeElems = new ArrayList<>();
+        TypeMirror superclass = typeElement.getSuperclass();
+        if (superclass instanceof DeclaredType) {
+            DeclaredType declaredType = (DeclaredType) superclass;
             supertypeElems.add((TypeElement) declaredType.asElement());
         }
 
-        var interfaceTypes = typeElement.getInterfaces();
+        List<? extends TypeMirror> interfaceTypes = typeElement.getInterfaces();
         for (TypeMirror interfaceType : interfaceTypes) {
-            var declaredType = (DeclaredType) interfaceType;
+            DeclaredType declaredType = (DeclaredType) interfaceType;
             supertypeElems.add((TypeElement) declaredType.asElement());
         }
 
@@ -83,12 +85,12 @@ final class ClassTypeDefParser implements TypeDefParser {
     }
 
     private List<FieldComponentInfo> parseComponents(TypeElement typeElement, Config config) {
-        var componentElems = resolveComponents(typeElement, config);
+        List<Tuple<Element, String>> componentElems = resolveComponents(typeElement, config);
 
-        var fields = new ArrayList<FieldComponentInfo>(componentElems.size());
-        for (var tuple : componentElems) {
-            var element = tuple.a();
-            var fieldInfo = FieldComponentInfo.builder()
+        List<FieldComponentInfo> fields = new ArrayList<FieldComponentInfo>(componentElems.size());
+        for (Tuple<Element, String> tuple : componentElems) {
+            Element element = tuple.a();
+            FieldComponentInfo fieldInfo = FieldComponentInfo.builder()
                 .name(tuple.b())
                 .modifiers(element.getModifiers())
                 .optional(element.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
@@ -101,22 +103,22 @@ final class ClassTypeDefParser implements TypeDefParser {
 
     @VisibleForTesting
     List<Tuple<Element, String>> resolveComponents(TypeElement typeElement, Config config) {
-        var isRecord = typeElement.getKind() == ElementKind.RECORD;
-        var enclosedElements = typeElement.getEnclosedElements();
-        var recordAccessors = typeElement.getRecordComponents().stream().map(RecordComponentElement::getAccessor).collect(Collectors.toUnmodifiableSet());
+        boolean isRecord = typeElement.getKind() == ElementKind.RECORD;
+        List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
+        List<ExecutableElement> recordAccessors = typeElement.getRecordComponents().stream().map(RecordComponentElement::getAccessor).collect(Collectors.toList());
 
-        var res = new ArrayList<Tuple<Element, String>>(enclosedElements.size());
-        var namesOfTypes = new NamesOfTypes(enclosedElements.size());
-        var includeAccessors = config.includes(SharedType.ComponentType.ACCESSORS);
-        var includeFields = config.includes(SharedType.ComponentType.FIELDS) && !(isRecord && includeAccessors);
+        List<Tuple<Element, String>> res = new ArrayList<>(enclosedElements.size());
+        NamesOfTypes namesOfTypes = new NamesOfTypes(enclosedElements.size());
+        boolean includeAccessors = config.includes(SharedType.ComponentType.ACCESSORS);
+        boolean includeFields = config.includes(SharedType.ComponentType.FIELDS) && !(isRecord && includeAccessors);
 
         for (Element enclosedElement : enclosedElements) {
             if (config.isComponentIgnored(enclosedElement)) {
                 continue;
             }
 
-            var type = enclosedElement.asType();
-            var name = enclosedElement.getSimpleName().toString();
+            TypeMirror type = enclosedElement.asType();
+            String name = enclosedElement.getSimpleName().toString();
 
             if (includeFields && enclosedElement.getKind() == ElementKind.FIELD && enclosedElement instanceof VariableElement variableElem) {
                 if (namesOfTypes.contains(name, type)) {
@@ -131,11 +133,11 @@ final class ClassTypeDefParser implements TypeDefParser {
                 if (!explicitAccessor && isRecord && !recordAccessors.contains(methodElem)) {
                     continue;
                 }
-                var baseName = getAccessorBaseName(name, isRecord);
+                String baseName = getAccessorBaseName(name, isRecord);
                 if (baseName == null) {
                     continue;
                 }
-                var returnType = methodElem.getReturnType();
+                TypeMirror returnType = methodElem.getReturnType();
                 if (namesOfTypes.contains(baseName, returnType)) {
                     continue;
                 }
@@ -177,7 +179,7 @@ final class ClassTypeDefParser implements TypeDefParser {
         }
 
         boolean contains(String name, TypeMirror componentType) {
-            var type = namesOfTypes.get(name);
+            TypeMirror type = namesOfTypes.get(name);
             if (type == null) {
                 return false;
             }

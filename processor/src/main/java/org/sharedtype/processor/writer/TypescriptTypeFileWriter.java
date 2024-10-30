@@ -1,5 +1,7 @@
 package org.sharedtype.processor.writer;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.sharedtype.domain.ArrayTypeInfo;
 import org.sharedtype.domain.ClassDef;
 import org.sharedtype.domain.ConcreteTypeInfo;
@@ -18,36 +20,45 @@ import org.sharedtype.processor.writer.render.Template;
 import org.sharedtype.processor.writer.render.TemplateRenderer;
 
 import javax.lang.model.util.Elements;
+import javax.tools.FileObject;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 final class TypescriptTypeFileWriter implements TypeWriter {
-    private static final Map<ConcreteTypeInfo, String> PREDEFINED_TYPE_NAME_MAPPINGS = Map.ofEntries(
-        Map.entry(Constants.BOOLEAN_TYPE_INFO, "boolean"),
-        Map.entry(Constants.BYTE_TYPE_INFO, "number"),
-        Map.entry(Constants.CHAR_TYPE_INFO, "string"),
-        Map.entry(Constants.DOUBLE_TYPE_INFO, "number"),
-        Map.entry(Constants.FLOAT_TYPE_INFO, "number"),
-        Map.entry(Constants.INT_TYPE_INFO, "number"),
-        Map.entry(Constants.LONG_TYPE_INFO, "number"),
-        Map.entry(Constants.SHORT_TYPE_INFO, "number"),
+    private static final Map<ConcreteTypeInfo, String> PREDEFINED_TYPE_NAME_MAPPINGS;
+    static {
+        Map<ConcreteTypeInfo, String> tempMap = new HashMap<>(20);
+        tempMap.put(Constants.BOOLEAN_TYPE_INFO, "boolean");
+        tempMap.put(Constants.BYTE_TYPE_INFO, "number");
+        tempMap.put(Constants.CHAR_TYPE_INFO, "string");
+        tempMap.put(Constants.DOUBLE_TYPE_INFO, "number");
+        tempMap.put(Constants.FLOAT_TYPE_INFO, "number");
+        tempMap.put(Constants.INT_TYPE_INFO, "number");
+        tempMap.put(Constants.LONG_TYPE_INFO, "number");
+        tempMap.put(Constants.SHORT_TYPE_INFO, "number");
 
-        Map.entry(Constants.BOXED_BOOLEAN_TYPE_INFO, "boolean"),
-        Map.entry(Constants.BOXED_BYTE_TYPE_INFO, "number"),
-        Map.entry(Constants.BOXED_CHAR_TYPE_INFO, "string"),
-        Map.entry(Constants.BOXED_DOUBLE_TYPE_INFO, "number"),
-        Map.entry(Constants.BOXED_FLOAT_TYPE_INFO, "number"),
-        Map.entry(Constants.BOXED_INT_TYPE_INFO, "number"),
-        Map.entry(Constants.BOXED_LONG_TYPE_INFO, "number"),
-        Map.entry(Constants.BOXED_SHORT_TYPE_INFO, "number"),
+        tempMap.put(Constants.BOXED_BOOLEAN_TYPE_INFO, "boolean");
+        tempMap.put(Constants.BOXED_BYTE_TYPE_INFO, "number");
+        tempMap.put(Constants.BOXED_CHAR_TYPE_INFO, "string");
+        tempMap.put(Constants.BOXED_DOUBLE_TYPE_INFO, "number");
+        tempMap.put(Constants.BOXED_FLOAT_TYPE_INFO, "number");
+        tempMap.put(Constants.BOXED_INT_TYPE_INFO, "number");
+        tempMap.put(Constants.BOXED_LONG_TYPE_INFO, "number");
+        tempMap.put(Constants.BOXED_SHORT_TYPE_INFO, "number");
 
-        Map.entry(Constants.STRING_TYPE_INFO, "string"),
-        Map.entry(Constants.VOID_TYPE_INFO, "never")
-    );
+        tempMap.put(Constants.STRING_TYPE_INFO, "string");
+        tempMap.put(Constants.VOID_TYPE_INFO, "never");
+
+        PREDEFINED_TYPE_NAME_MAPPINGS = Collections.unmodifiableMap(tempMap);
+    }
 
     private final Context ctx;
     private final Elements elements;
@@ -73,7 +84,8 @@ final class TypescriptTypeFileWriter implements TypeWriter {
     public void write(List<TypeDef> typeDefs) throws IOException {
         List<Tuple<Template, Object>> data = new ArrayList<>(typeDefs.size());
         for (TypeDef typeDef : typeDefs) {
-            if (typeDef instanceof EnumDef enumDef) {
+            if (typeDef instanceof EnumDef) {
+                EnumDef enumDef = (EnumDef) typeDef;
                 List<String> values = new ArrayList<>(enumDef.components().size());
                 for (EnumValueInfo component : enumDef.components()) {
                     try {
@@ -85,20 +97,21 @@ final class TypescriptTypeFileWriter implements TypeWriter {
                     }
                 }
                 data.add(Tuple.of(Template.TEMPLATE_ENUM_UNION, new EnumUnionExpr(enumDef.simpleName(), values)));
-            } else if (typeDef instanceof ClassDef classDef) {
-                var value = new InterfaceExpr(
+            } else if (typeDef instanceof ClassDef) {
+                ClassDef classDef = (ClassDef) typeDef;
+                InterfaceExpr value = new InterfaceExpr(
                     classDef.simpleName(),
-                    classDef.typeVariables().stream().map(this::toTypeExpr).toList(),
-                    classDef.supertypes().stream().map(this::toTypeExpr).toList(),
-                    classDef.components().stream().map(this::toPropertyExpr).toList()
+                    classDef.typeVariables().stream().map(this::toTypeExpr).collect(Collectors.toList()),
+                    classDef.supertypes().stream().map(this::toTypeExpr).collect(Collectors.toList()),
+                    classDef.components().stream().map(this::toPropertyExpr).collect(Collectors.toList())
                 );
                 data.add(Tuple.of(Template.TEMPLATE_INTERFACE, value));
             }
         }
 
-        var file = ctx.createSourceOutput(ctx.getProps().getTypescript().getOutputFileName());
-        try (var outputStream = file.openOutputStream();
-             var writer = new OutputStreamWriter(outputStream)) {
+        FileObject file = ctx.createSourceOutput(ctx.getProps().getTypescript().getOutputFileName());
+        try (OutputStream outputStream = file.openOutputStream();
+             Writer writer = new OutputStreamWriter(outputStream)) {
             renderer.render(writer, data);
         }
     }
@@ -115,13 +128,14 @@ final class TypescriptTypeFileWriter implements TypeWriter {
     }
 
     private String toTypeExpr(TypeInfo typeInfo) {
-        var typeExprBuilder = new StringBuilder();
+        StringBuilder typeExprBuilder = new StringBuilder();
         buildTypeExprRecursively(typeInfo, typeExprBuilder);
         return typeExprBuilder.toString();
     }
 
     private void buildTypeExprRecursively(TypeInfo typeInfo, @SideEffect StringBuilder nameBuilder) { // TODO: abstract up
-        if (typeInfo instanceof ConcreteTypeInfo concreteTypeInfo) {
+        if (typeInfo instanceof ConcreteTypeInfo) {
+            ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
             nameBuilder.append(typeNameMappings.getOrDefault(concreteTypeInfo, concreteTypeInfo.simpleName()));
             if (!concreteTypeInfo.typeArgs().isEmpty()) {
                 nameBuilder.append("<");
@@ -132,21 +146,24 @@ final class TypescriptTypeFileWriter implements TypeWriter {
                 nameBuilder.setLength(nameBuilder.length() - 2);
                 nameBuilder.append(">");
             }
-        } else if (typeInfo instanceof TypeVariableInfo typeVariableInfo) {
+        } else if (typeInfo instanceof TypeVariableInfo) {
+            TypeVariableInfo typeVariableInfo = (TypeVariableInfo) typeInfo;
             nameBuilder.append(typeVariableInfo.getName());
-        } else if (typeInfo instanceof ArrayTypeInfo arrayTypeInfo) {
+        } else if (typeInfo instanceof ArrayTypeInfo) {
+            ArrayTypeInfo arrayTypeInfo = (ArrayTypeInfo) typeInfo;
             buildTypeExprRecursively(arrayTypeInfo.component(), nameBuilder);
             nameBuilder.append("[]");
         }
     }
 
+    @RequiredArgsConstructor
     @SuppressWarnings("unused")
-    record InterfaceExpr(
-        String name,
-        List<String> typeParameters,
-        List<String> supertypes,
-        List<PropertyExpr> properties
-    ) {
+    static final class InterfaceExpr{
+        final String name;
+        final List<String> typeParameters;
+        final List<String> supertypes;
+        final List<PropertyExpr> properties;
+
         String typeParametersExpr() {
             if (typeParameters.isEmpty()) {
                 return null;
@@ -162,20 +179,21 @@ final class TypescriptTypeFileWriter implements TypeWriter {
         }
     }
 
-    record PropertyExpr(
-        String name,
-        String type,
-        char propDelimiter,
-        boolean optional,
-        boolean unionNull,
-        boolean unionUndefined
-    ) {
+    @RequiredArgsConstructor
+    static final class PropertyExpr{
+        final String name;
+        final String type;
+        final char propDelimiter;
+        final boolean optional;
+        final boolean unionNull;
+        final boolean unionUndefined;
     }
 
-    record EnumUnionExpr(
-        String name,
-        List<String> values
-    ) {
+    @RequiredArgsConstructor
+    static final class EnumUnionExpr {
+        final String name;
+        final List<String> values;
+
         @SuppressWarnings("unused")
         String valuesExpr() {
             return String.join(" | ", values);

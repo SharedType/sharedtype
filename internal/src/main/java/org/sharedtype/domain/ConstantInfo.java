@@ -1,5 +1,5 @@
 package org.sharedtype.domain;
 
-public record ConstantInfo() {
+public final class ConstantInfo {
 
 }

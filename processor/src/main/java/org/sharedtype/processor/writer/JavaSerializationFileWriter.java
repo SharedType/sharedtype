@@ -4,9 +4,11 @@ import org.sharedtype.domain.TypeDef;
 import org.sharedtype.processor.context.Context;
 
 import javax.annotation.processing.Filer;
+import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -23,9 +25,9 @@ final class JavaSerializationFileWriter implements TypeWriter {
     public void write(List<TypeDef> typeDefs) {
         try {
             for (TypeDef typeDef : typeDefs) {
-                var file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", typeDef.simpleName() + ".ser");
-                try(var outputStream = file.openOutputStream();
-                    var oos = new ObjectOutputStream(outputStream)) {
+                FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", typeDef.simpleName() + ".ser");
+                try(OutputStream outputStream = file.openOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {
                     oos.writeObject(typeDef);
                 }
             }

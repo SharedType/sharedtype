@@ -11,6 +11,8 @@ import org.sharedtype.processor.context.OutputTarget;
 import org.sharedtype.processor.support.utils.Tuple;
 
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,13 +40,13 @@ final class MustacheTemplateRendererTest {
         when(mf.compile("templates/go/test.mustache")).thenReturn(compiledMustache);
         renderer.loadTemplates(template);
 
-        renderer.render(writer, List.of(Tuple.of(template, new HashMap<>())));
+        renderer.render(writer, Collections.singletonList(Tuple.of(template, new HashMap<>())));
         verify(compiledMustache).execute(writer, new HashMap<>());
     }
 
     @Test
     void errorIfTemplateNotLoaded() {
-        assertThatThrownBy(() -> renderer.render(writer, List.of(Tuple.of(template, new HashMap<>()))))
+        assertThatThrownBy(() -> renderer.render(writer, Collections.singletonList(Tuple.of(template, new HashMap<>()))))
             .hasMessageContaining("Template not found");
     }
 }

@@ -23,6 +23,8 @@ import javax.tools.FileObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,15 +57,15 @@ final class TypescriptTypeFileWriterTest {
     @Test
     void writeEnumUnion() throws IOException {
         doAnswer(invoc -> {
-            var writer = invoc.getArgument(0, Writer.class);
+            Writer writer = invoc.getArgument(0);
             writer.write("some-value");
             return null;
         }).when(renderer).render(any(), any());
 
-        var enumDef = EnumDef.builder()
+        EnumDef enumDef = EnumDef.builder()
             .simpleName("EnumA")
             .qualifiedName("com.github.cuzfrog.EnumA")
-            .enumValueInfos(List.of(
+            .enumValueInfos(Arrays.asList(
                 new EnumValueInfo(STRING_TYPE_INFO, "Value1"),
                 new EnumValueInfo(INT_TYPE_INFO, 123)
             ))
@@ -71,42 +73,42 @@ final class TypescriptTypeFileWriterTest {
         when(ctxMocks.getElements().getConstantExpression("Value1")).thenReturn("\"Value1\"");
         when(ctxMocks.getElements().getConstantExpression(123)).thenReturn("123");
 
-        writer.write(List.of(enumDef));
+        writer.write(Collections.singletonList(enumDef));
 
         verify(renderer).render(any(), renderDataCaptor.capture());
 
         assertThat(outputStream.toString()).isEqualTo("some-value");
 
-        var data = renderDataCaptor.getValue();
+        List<Tuple<Template, Object>> data = renderDataCaptor.getValue();
         assertThat(data).hasSize(1);
         assertThat(data.get(0).a()).isEqualTo(Template.TEMPLATE_ENUM_UNION);
-        var model = (TypescriptTypeFileWriter.EnumUnionExpr) data.get(0).b();
-        assertThat(model.name()).isEqualTo("EnumA");
-        assertThat(model.values()).containsExactly("\"Value1\"", "123");
+        TypescriptTypeFileWriter.EnumUnionExpr model = (TypescriptTypeFileWriter.EnumUnionExpr) data.get(0).b();
+        assertThat(model.name).isEqualTo("EnumA");
+        assertThat(model.values).containsExactly("\"Value1\"", "123");
 
         when(ctxMocks.getElements().getConstantExpression(123)).thenThrow(IllegalArgumentException.class);
-        assertThatThrownBy(() -> writer.write(List.of(enumDef)))
+        assertThatThrownBy(() -> writer.write(Collections.singletonList(enumDef)))
             .hasMessageContaining("Failed to get constant expression for enum value: 123 of type int in enum");
     }
 
     @Test
     void writeInterface() throws IOException {
         when(ctxMocks.getContext().createSourceOutput("types.d.ts")).thenReturn(fileObject);
-        var classDef = ClassDef.builder()
+        ClassDef classDef = ClassDef.builder()
             .qualifiedName("com.github.cuzfrog.ClassA")
             .simpleName("ClassA")
-            .typeVariables(List.of(
+            .typeVariables(Arrays.asList(
                 TypeVariableInfo.builder().name("T").build(),
                 TypeVariableInfo.builder().name("U").build()
             ))
-            .supertypes(List.of(
+            .supertypes(Collections.singletonList(
                 ConcreteTypeInfo.builder()
                     .qualifiedName("com.github.cuzfrog.SuperClassA")
                     .simpleName("SuperClassA")
-                    .typeArgs(List.of(TypeVariableInfo.builder().name("U").build()))
+                    .typeArgs(Collections.singletonList(TypeVariableInfo.builder().name("U").build()))
                     .build()
             ))
-            .components(List.of(
+            .components(Arrays.asList(
                 FieldComponentInfo.builder().name("field1").type(INT_TYPE_INFO).optional(true).build(),
                 FieldComponentInfo.builder().name("field2").type(STRING_TYPE_INFO).optional(false).build(),
                 FieldComponentInfo.builder().name("field3")
@@ -116,7 +118,7 @@ final class TypescriptTypeFileWriterTest {
                                 ConcreteTypeInfo.builder()
                                     .qualifiedName("com.github.cuzfrog.Container")
                                     .simpleName("Container")
-                                    .typeArgs(List.of(TypeVariableInfo.builder().name("T").build()))
+                                    .typeArgs(Collections.singletonList(TypeVariableInfo.builder().name("T").build()))
                                     .build()
                             )
                         )
@@ -128,34 +130,34 @@ final class TypescriptTypeFileWriterTest {
             ))
             .build();
 
-        writer.write(List.of(classDef));
+        writer.write(Collections.singletonList(classDef));
         verify(renderer).render(any(), renderDataCaptor.capture());
-        var data = renderDataCaptor.getValue();
+        List<Tuple<Template, Object>> data = renderDataCaptor.getValue();
         assertThat(data).hasSize(1);
         assertThat(data.get(0).a()).isEqualTo(Template.TEMPLATE_INTERFACE);
-        var model = (TypescriptTypeFileWriter.InterfaceExpr) data.get(0).b();
-        assertThat(model.name()).isEqualTo("ClassA");
-        assertThat(model.typeParameters()).containsExactly("T", "U");
-        assertThat(model.supertypes()).containsExactly("SuperClassA<U>");
-        assertThat(model.properties()).hasSize(4);
-        var prop1 = model.properties().get(0);
-        assertThat(prop1.name()).isEqualTo("field1");
-        assertThat(prop1.type()).isEqualTo("number");
-        assertThat(prop1.optional()).isTrue();
+        TypescriptTypeFileWriter.InterfaceExpr model = (TypescriptTypeFileWriter.InterfaceExpr) data.get(0).b();
+        assertThat(model.name).isEqualTo("ClassA");
+        assertThat(model.typeParameters).containsExactly("T", "U");
+        assertThat(model.supertypes).containsExactly("SuperClassA<U>");
+        assertThat(model.properties).hasSize(4);
+        TypescriptTypeFileWriter.PropertyExpr prop1 = model.properties.get(0);
+        assertThat(prop1.name).isEqualTo("field1");
+        assertThat(prop1.type).isEqualTo("number");
+        assertThat(prop1.optional).isTrue();
 
-        var prop2 = model.properties().get(1);
-        assertThat(prop2.name()).isEqualTo("field2");
-        assertThat(prop2.type()).isEqualTo("string");
-        assertThat(prop2.optional()).isFalse();
+        TypescriptTypeFileWriter.PropertyExpr prop2 = model.properties.get(1);
+        assertThat(prop2.name).isEqualTo("field2");
+        assertThat(prop2.type).isEqualTo("string");
+        assertThat(prop2.optional).isFalse();
 
-        var prop3 = model.properties().get(2);
-        assertThat(prop3.name()).isEqualTo("field3");
-        assertThat(prop3.type()).isEqualTo("Container<T>[][]");
-        assertThat(prop3.optional()).isFalse();
+        TypescriptTypeFileWriter.PropertyExpr prop3 = model.properties.get(2);
+        assertThat(prop3.name).isEqualTo("field3");
+        assertThat(prop3.type).isEqualTo("Container<T>[][]");
+        assertThat(prop3.optional).isFalse();
 
-        var prop4 = model.properties().get(3);
-        assertThat(prop4.name()).isEqualTo("field4");
-        assertThat(prop4.type()).isEqualTo("T[]");
-        assertThat(prop4.optional()).isFalse();
+        TypescriptTypeFileWriter.PropertyExpr prop4 = model.properties.get(3);
+        assertThat(prop4.name).isEqualTo("field4");
+        assertThat(prop4.type).isEqualTo("T[]");
+        assertThat(prop4.optional).isFalse();
     }
 }

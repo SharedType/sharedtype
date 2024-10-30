@@ -6,12 +6,22 @@ import javax.lang.model.element.Modifier;
 import java.util.Set;
 
 @Builder
-public record FieldComponentInfo(
-        String name,
-        Set<Modifier> modifiers,
-        boolean optional,
-        TypeInfo type
-) implements ComponentInfo {
+public final class FieldComponentInfo implements ComponentInfo {
+    private final String name;
+    private final Set<Modifier> modifiers;
+    private final boolean optional;
+    private final TypeInfo type;
+
+    public String name() {
+        return name;
+    }
+    public boolean optional() {
+        return optional;
+    }
+
+    public TypeInfo type() {
+        return type;
+    }
 
     @Override
     public boolean resolved() {

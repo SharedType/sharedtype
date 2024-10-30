@@ -10,6 +10,7 @@ import javax.lang.model.util.Types;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.mock;
@@ -35,8 +36,9 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
     }
 
     public final M withTypeArguments(TypeMirror... typeArgsArr) {
-        var typeArgs = Arrays.asList(typeArgsArr);
-        if (type instanceof DeclaredType declaredType) {
+        List<? extends TypeMirror> typeArgs = Arrays.asList(typeArgsArr);
+        if (type instanceof DeclaredType) {
+            DeclaredType declaredType = (DeclaredType) type;
             when(declaredType.getTypeArguments()).thenAnswer(invoc -> typeArgs);
         } else {
             fail("Not a DeclaredType: " + type);
@@ -58,13 +60,13 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
     }
 
     static void setQualifiedName(TypeElement typeElement, String qualifiedName) {
-        var typeElementName = mock(Name.class);
+        Name typeElementName = mock(Name.class);
         when(typeElement.getQualifiedName()).thenReturn(typeElementName);
         when(typeElementName.toString()).thenReturn(qualifiedName);
     }
 
     static void setSimpleName(Element element, String simpleName) {
-        var elementName = mock(Name.class);
+        Name elementName = mock(Name.class);
         when(element.getSimpleName()).thenReturn(elementName);
         when(elementName.toString()).thenReturn(simpleName);
     }

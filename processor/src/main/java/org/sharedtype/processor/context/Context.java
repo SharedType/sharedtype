@@ -36,7 +36,7 @@ public final class Context {
         trees = Trees.instance(processingEnv);
         arraylikeTypes = props.getArraylikeTypeQualifiedNames().stream()
                 .map(qualifiedName -> types.erasure(elements.getTypeElement(qualifiedName).asType()))
-                .collect(Collectors.toUnmodifiableSet());
+                .collect(Collectors.toSet());
     }
 
     // TODO: optimize by remove varargs

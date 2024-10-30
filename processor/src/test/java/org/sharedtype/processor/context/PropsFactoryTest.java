@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 final class PropsFactoryTest {
     @Test
     void loadUserProps() {
-        var props = PropsFactory.loadProps(resolveResource("test-sharedtype-user.properties"));
+        Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-user.properties"));
         assertThat(props.getTargets()).containsExactly(OutputTarget.TYPESCRIPT, OutputTarget.CONSOLE);
         assertThat(props.getOptionalAnno()).isEqualTo(Override.class);
         assertThat(props.getTypescript().getJavaObjectMapType()).isEqualTo("unknown");
@@ -22,7 +22,7 @@ final class PropsFactoryTest {
 
     @Test
     void loadDefaultProps() {
-        var props = PropsFactory.loadProps(Paths.get("not-exist"));
+        Props props = PropsFactory.loadProps(Paths.get("not-exist"));
         assertThat(props.getTargets()).containsExactly(OutputTarget.TYPESCRIPT);
         assertThat(props.getOptionalAnno()).isEqualTo(Nullable.class);
         assertThat(props.getAccessorGetterPrefixes()).containsExactly("get", "is");
@@ -35,7 +35,7 @@ final class PropsFactoryTest {
             "java.lang.Record"
         );
 
-        var typescriptProps = props.getTypescript();
+        Props.Typescript typescriptProps = props.getTypescript();
         assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.d.ts");
         assertThat(typescriptProps.getInterfacePropertyDelimiter()).isEqualTo(';');
         assertThat(typescriptProps.getJavaObjectMapType()).isEqualTo("any");
