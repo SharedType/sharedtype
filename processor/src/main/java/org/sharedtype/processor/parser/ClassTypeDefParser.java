@@ -14,8 +14,6 @@ import org.sharedtype.processor.support.utils.Tuple;
 import org.sharedtype.processor.support.utils.Utils;
 
 import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -32,13 +30,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Singleton
 final class ClassTypeDefParser implements TypeDefParser {
     private final Context ctx;
     private final Types types;
     private final TypeInfoParser typeInfoParser;
 
-    @Inject
     ClassTypeDefParser(Context ctx, TypeInfoParser typeInfoParser) {
         this.ctx = ctx;
         this.types = ctx.getProcessingEnv().getTypeUtils();

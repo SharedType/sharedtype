@@ -2,6 +2,7 @@ package org.sharedtype.processor.parser.type;
 
 import org.sharedtype.annotation.SharedType;
 import org.sharedtype.domain.TypeInfo;
+import org.sharedtype.processor.context.Context;
 
 import javax.lang.model.type.TypeMirror;
 
@@ -17,4 +18,7 @@ public interface TypeInfoParser {
      */
     TypeInfo parse(TypeMirror typeMirror);
 
+    static TypeInfoParser create(Context ctx) {
+        return new TypeInfoParserImpl(ctx);
+    }
 }

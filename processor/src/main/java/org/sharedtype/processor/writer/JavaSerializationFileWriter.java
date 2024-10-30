@@ -4,8 +4,6 @@ import org.sharedtype.domain.TypeDef;
 import org.sharedtype.processor.context.Context;
 
 import javax.annotation.processing.Filer;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -14,11 +12,9 @@ import java.util.List;
 /**
  * For internal usage, where integration tests deserialize the generated files back to objects.
  */
-@Singleton
 final class JavaSerializationFileWriter implements TypeWriter {
     private final Filer filer;
 
-    @Inject
     JavaSerializationFileWriter(Context ctx) {
         this.filer = ctx.getProcessingEnv().getFiler();
     }

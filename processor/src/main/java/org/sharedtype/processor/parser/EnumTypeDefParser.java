@@ -1,6 +1,8 @@
 package org.sharedtype.processor.parser;
 
-import com.sun.source.tree.*;
+import com.sun.source.tree.LiteralTree;
+import com.sun.source.tree.NewClassTree;
+import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import org.sharedtype.annotation.SharedType;
 import org.sharedtype.domain.EnumDef;
@@ -11,16 +13,18 @@ import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 
-import javax.inject.Inject;
-import javax.lang.model.element.*;
-
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static org.sharedtype.domain.Constants.STRING_TYPE_INFO;
 
-@RequiredArgsConstructor(onConstructor_ = {@Inject})
+@RequiredArgsConstructor
 final class EnumTypeDefParser implements TypeDefParser {
     private final Context ctx;
     private final TypeInfoParser typeInfoParser;

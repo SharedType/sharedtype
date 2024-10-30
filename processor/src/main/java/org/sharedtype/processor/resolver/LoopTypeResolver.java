@@ -15,15 +15,12 @@ import org.sharedtype.processor.parser.TypeDefParser;
 import org.sharedtype.processor.support.annotation.SideEffect;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-@RequiredArgsConstructor(onConstructor_ = {@Inject})
-@Singleton
+@RequiredArgsConstructor
 final class LoopTypeResolver implements TypeResolver {
     private static final int DEPENDENCY_COUNT_EXPANSION_FACTOR = 2; // TODO: find a proper number
     private final Context ctx;

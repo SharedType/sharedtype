@@ -2,25 +2,19 @@ package org.sharedtype.processor.writer.render;
 
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+import lombok.RequiredArgsConstructor;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 import org.sharedtype.processor.support.utils.Tuple;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Singleton
+@RequiredArgsConstructor
 final class MustacheTemplateRenderer implements TemplateRenderer {
     private final MustacheFactory mf;
     private final Map<Template, Mustache> compiledTemplates = new HashMap<>();
-
-    @Inject
-    MustacheTemplateRenderer(MustacheFactory mf) {
-        this.mf = mf;
-    }
 
     @Override
     public void loadTemplates(Template... templates) {

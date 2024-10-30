@@ -45,9 +45,8 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
         super.init(processingEnv);
         String configFile = processingEnv.getOptions().getOrDefault("sharedtype.propsFile", DEFAULT_USER_PROPERTIES_FILE);
         ctx = new Context(processingEnv, PropsFactory.loadProps(Paths.get(configFile)));
-        var component = DaggerComponents.builder().withContext(ctx).build();
-        parser = component.parser();
-        resolver = component.resolver();
+        parser = TypeDefParser.create(ctx);
+        resolver = TypeResolver.create(ctx, parser);
         writer = TypeWriter.create(ctx);
     }
 

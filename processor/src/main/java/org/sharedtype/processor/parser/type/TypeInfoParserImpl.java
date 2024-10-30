@@ -8,8 +8,6 @@ import org.sharedtype.domain.TypeVariableInfo;
 import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
@@ -22,8 +20,7 @@ import java.util.Collections;
 import static org.sharedtype.domain.Constants.PRIMITIVES;
 import static org.sharedtype.processor.support.Preconditions.checkArgument;
 
-@RequiredArgsConstructor(onConstructor_ = {@Inject})
-@Singleton
+@RequiredArgsConstructor
 final class TypeInfoParserImpl implements TypeInfoParser {
     private final Context ctx;
 

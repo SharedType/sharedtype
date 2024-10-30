@@ -2,7 +2,7 @@
 # SharedType - Sharing Java Types made easy
 
 * Only client source dependency is `@SharedType`.
-* SharedType annotation processor jar is ~100KB, only 3 dependencies: jsr305 annotations, dagger2 annotations, mustache.
+* SharedType annotation processor jar is <100KB, only 2 small dependencies: jsr305 annotations and mustache.
 * Parsing takes milliseconds. See [Performance](doc/Performance.md).
 * Put `@SharedType` and there you go.
 * Global + class level options.

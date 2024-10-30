@@ -3,14 +3,11 @@ package org.sharedtype.processor.writer;
 import lombok.RequiredArgsConstructor;
 import org.sharedtype.domain.TypeDef;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-@RequiredArgsConstructor(onConstructor_ = {@Inject})
-@Singleton
+@RequiredArgsConstructor
 final class CompositeWriter implements TypeWriter{
     private final Set<TypeWriter> writers;
 
