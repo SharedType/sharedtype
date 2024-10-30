@@ -48,7 +48,7 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
         var component = DaggerComponents.builder().withContext(ctx).build();
         parser = component.parser();
         resolver = component.resolver();
-        writer = component.writer();
+        writer = TypeWriter.create(ctx);
     }
 
     @Override
