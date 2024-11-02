@@ -9,14 +9,13 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>sharedtype-it</artifactId>
-    <name>SharedType Integration Test</name>
+    <artifactId>sharedtype-it-parent</artifactId>
+    <name>SharedType Integration Test Parent</name>
+    <packaging>pom</packaging>
 
     <properties>
         <sharedtype.compilerArg/>
         <sharedtype.propsFile>it/sharedtype.properties</sharedtype.propsFile>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -33,7 +32,8 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>sharedtype-internal</artifactId>
+            <artifactId>sharedtype-it-shared</artifactId>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -81,6 +81,10 @@ final class EnumTypeDefParser implements TypeDefParser {
                 if (value != null) {
                     res.add(new EnumValueInfo(valueTypeInfo, value));
                 }
+            } else if (tree == null) {
+                ctx.error("Literal value cannot be parsed from enum constant: %s, because source tree from the element is null." +
+                    " This could mean at the time of the annotation processing, the source tree was not available." +
+                    " Is this class from a dependency jar/compiled class file? Please refer to the documentation for more information.", enumConstant);
             } else {
                 throw new SharedTypeInternalError(String.format("Unsupported tree, kind: %s, tree: %s, element: %s", tree.getKind(), tree, enumConstant));
             }

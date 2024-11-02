@@ -81,3 +81,8 @@ See [Default Properties](../processor/src/main/resources/sharedtype-default.prop
 
 #### Per annotation options
 See Javadoc on [@SharedType](../annotation/src/main/java/org/sharedtype/annotation/SharedType.java) for details.
+
+### Limitations
+* Current design only retain `@SharedType` on source level. That means they are not visible if it is in a dependency jar during its dependent's compilation.
+You have to execute the annotation processing on the same classpath with source code.
+For multiple module builds, a workaround is to execute on every module.

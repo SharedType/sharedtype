@@ -16,7 +16,9 @@ function mountTmpfs() {
   echo "tmpfs mounted at $1 of size $2"
 }
 
-mountTmpfs "$DIR/annotation/target" 128M
-mountTmpfs "$DIR/processor/target" 256M
-mountTmpfs "$DIR/it/target" 256M
+mountTmpfs "$DIR/annotation/target" 32M
+mountTmpfs "$DIR/processor/target" 64M
+mountTmpfs "$DIR/it/shared/target" 32M
+mountTmpfs "$DIR/it/java17/target" 64M
+mountTmpfs "$DIR/it/java8/target" 64M
 mountTmpfs "$MAVEN_REPO_DIR" 64M

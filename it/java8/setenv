@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export JAVA_HOME=$JAVA8_HOME
+export PATH=$JAVA_HOME/bin:$PATH
+
+java -version
+alias mvnw="../../mvnw"
+echo "alias mvnw is point to ../../mvnw"

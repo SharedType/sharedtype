@@ -107,7 +107,7 @@ public @interface SharedType {
      * </pre>
      */
     @Target({ElementType.FIELD, ElementType.PARAMETER})
-    @Retention(RetentionPolicy.SOURCE)
+    @Retention(RetentionPolicy.CLASS)
     @interface EnumValue {
     }
 
