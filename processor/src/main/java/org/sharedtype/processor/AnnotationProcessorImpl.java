@@ -16,7 +16,6 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -30,7 +29,6 @@ import static org.sharedtype.domain.Constants.ANNOTATION_QUALIFIED_NAME;
 import static org.sharedtype.processor.support.Preconditions.checkArgument;
 
 @SupportedAnnotationTypes("org.sharedtype.annotation.SharedType")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedOptions({"sharedtype.propsFile"})
 @AutoService(Processor.class)
 public final class AnnotationProcessorImpl extends AbstractProcessor {
@@ -40,6 +38,11 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
     private TypeDefParser parser;
     private TypeResolver resolver;
     private TypeWriter writer;
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latest();
+    }
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {

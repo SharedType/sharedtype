@@ -1,6 +1,7 @@
 [![CI](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml/badge.svg)](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml)
 # SharedType - Sharing Java Types made easy
 
+* Client Java version >= 8.
 * Only client source dependency is `@SharedType`.
 * SharedType annotation processor jar is <100KB, only 2 small dependencies: jsr305 annotations and mustache.
 * Parsing takes milliseconds. See [Performance](doc/Performance.md).

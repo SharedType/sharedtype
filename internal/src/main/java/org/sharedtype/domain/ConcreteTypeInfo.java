@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(of = "qualifiedName")
 @Builder
@@ -49,7 +50,7 @@ public final class ConcreteTypeInfo implements TypeInfo {
     public String toString() {
         return String.format("%s%s%s",
                 qualifiedName,
-                typeArgs.isEmpty() ? "" : "<" + String.join(",", typeArgs.stream().map(TypeInfo::toString).toList()) + ">",
+                typeArgs.isEmpty() ? "" : "<" + typeArgs.stream().map(TypeInfo::toString).collect(Collectors.joining(",")) + ">",
                 resolved ? "" : "?"
         );
     }

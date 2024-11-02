@@ -10,8 +10,6 @@ Optionally mount tmpfs to save your disk by:
 ./mount-tmpfs.sh
 ```
 
-If you encounter compilation problems with your IDE, delegate compilation to maven.
-
 ## Style check
 ```bash
 ./mvnw editorconfig:check
@@ -24,11 +22,15 @@ Debug annotation processor by run maven build:
 ```
 Then attach your debugger on it.
 
-## Run Integration test
+## Run test
+If you encounter compilation problems with your IDE, delegate compilation to maven.
+Before run test, run `./mvnw clean install -DskipTests` to build dependency classes.
+
+#### E.g. run integration test:
 ```bash
 ./mvnw clean install -DskipTests -q && ./mvnw test -pl it
 ```
 
 ## Coding Style Guide
-1. since annotation processing is one shot execution, JIT is not likely to optimize the code. So please try to avoid long calling stacks like Stream chains.
+1. since annotation processing is one shot execution, JIT is not likely to optimize the code. So prefer plain loop than long calling stacks like Stream chains.
 2. no dependencies without strong justification.

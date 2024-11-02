@@ -29,16 +29,8 @@ final class JavaRecordIntegrationTest {
     }
 
     @Test
-    void duplicateAccessorField() {
-        var duplicateAccessorField = classDef.components().get(0);
-        assertThat(duplicateAccessorField.name()).isEqualTo("duplicateAccessor");
-        var typeInfo = (ConcreteTypeInfo)duplicateAccessorField.type();
-        assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
-    }
-
-    @Test
     void stringField() {
-        var stringField = classDef.components().get(1);
+        var stringField = classDef.components().get(0);
         assertThat(stringField.name()).isEqualTo("string");
         var typeInfo = (ConcreteTypeInfo)stringField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
@@ -46,7 +38,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void primitiveByteField() {
-        var primitiveByteField = classDef.components().get(2);
+        var primitiveByteField = classDef.components().get(1);
         assertThat(primitiveByteField.name()).isEqualTo("primitiveByte");
         var typeInfo = (ConcreteTypeInfo)primitiveByteField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("byte");
@@ -54,7 +46,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void boxedByteField() {
-        var boxedByteField = classDef.components().get(3);
+        var boxedByteField = classDef.components().get(2);
         assertThat(boxedByteField.name()).isEqualTo("boxedByte");
         var typeInfo = (ConcreteTypeInfo)boxedByteField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Byte");
@@ -62,7 +54,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void primitiveShortField() {
-        var primitiveShortField = classDef.components().get(4);
+        var primitiveShortField = classDef.components().get(3);
         assertThat(primitiveShortField.name()).isEqualTo("primitiveShort");
         var typeInfo = (ConcreteTypeInfo)primitiveShortField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("short");
@@ -70,7 +62,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void boxedShortField() {
-        var boxedShortField = classDef.components().get(5);
+        var boxedShortField = classDef.components().get(4);
         assertThat(boxedShortField.name()).isEqualTo("boxedShort");
         var typeInfo = (ConcreteTypeInfo)boxedShortField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Short");
@@ -78,7 +70,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void primitiveIntField() {
-        var primitiveIntField = classDef.components().get(6);
+        var primitiveIntField = classDef.components().get(5);
         assertThat(primitiveIntField.name()).isEqualTo("primitiveInt");
         var typeInfo = (ConcreteTypeInfo)primitiveIntField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("int");
@@ -86,7 +78,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void boxedIntField() {
-        var boxedIntField = classDef.components().get(7);
+        var boxedIntField = classDef.components().get(6);
         assertThat(boxedIntField.name()).isEqualTo("boxedInt");
         var typeInfo = (ConcreteTypeInfo)boxedIntField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Integer");
@@ -94,7 +86,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void primitiveLongField() {
-        var primitiveLongField = classDef.components().get(8);
+        var primitiveLongField = classDef.components().get(7);
         assertThat(primitiveLongField.name()).isEqualTo("primitiveLong");
         var typeInfo = (ConcreteTypeInfo)primitiveLongField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("long");
@@ -102,7 +94,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void boxedLongField() {
-        var boxedLongField = classDef.components().get(9);
+        var boxedLongField = classDef.components().get(8);
         assertThat(boxedLongField.name()).isEqualTo("boxedLong");
         var typeInfo = (ConcreteTypeInfo)boxedLongField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Long");
@@ -110,7 +102,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void primitiveFloatField() {
-        var primitiveFloatField = classDef.components().get(10);
+        var primitiveFloatField = classDef.components().get(9);
         assertThat(primitiveFloatField.name()).isEqualTo("primitiveFloat");
         var typeInfo = (ConcreteTypeInfo)primitiveFloatField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("float");
@@ -118,7 +110,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void boxedFloatField() {
-        var boxedFloatField = classDef.components().get(11);
+        var boxedFloatField = classDef.components().get(10);
         assertThat(boxedFloatField.name()).isEqualTo("boxedFloat");
         var typeInfo = (ConcreteTypeInfo)boxedFloatField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Float");
@@ -126,7 +118,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void primitiveDoubleField() {
-        var primitiveDoubleField = classDef.components().get(12);
+        var primitiveDoubleField = classDef.components().get(11);
         assertThat(primitiveDoubleField.name()).isEqualTo("primitiveDouble");
         var typeInfo = (ConcreteTypeInfo)primitiveDoubleField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("double");
@@ -134,7 +126,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void boxedDoubleField() {
-        var boxedDoubleField = classDef.components().get(13);
+        var boxedDoubleField = classDef.components().get(12);
         assertThat(boxedDoubleField.name()).isEqualTo("boxedDouble");
         var typeInfo = (ConcreteTypeInfo)boxedDoubleField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Double");
@@ -142,7 +134,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void primitiveBooleanField() {
-        var primitiveBooleanField = classDef.components().get(14);
+        var primitiveBooleanField = classDef.components().get(13);
         assertThat(primitiveBooleanField.name()).isEqualTo("primitiveBoolean");
         var typeInfo = (ConcreteTypeInfo)primitiveBooleanField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("boolean");
@@ -150,7 +142,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void boxedBooleanField() {
-        var boxedBooleanField = classDef.components().get(15);
+        var boxedBooleanField = classDef.components().get(14);
         assertThat(boxedBooleanField.name()).isEqualTo("boxedBoolean");
         var typeInfo = (ConcreteTypeInfo)boxedBooleanField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Boolean");
@@ -158,7 +150,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void primitiveCharField() {
-        var primitiveCharField = classDef.components().get(16);
+        var primitiveCharField = classDef.components().get(15);
         assertThat(primitiveCharField.name()).isEqualTo("primitiveChar");
         var typeInfo = (ConcreteTypeInfo)primitiveCharField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("char");
@@ -166,7 +158,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void boxedCharField() {
-        var boxedCharField = classDef.components().get(17);
+        var boxedCharField = classDef.components().get(16);
         assertThat(boxedCharField.name()).isEqualTo("boxedChar");
         var typeInfo = (ConcreteTypeInfo)boxedCharField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Character");
@@ -174,7 +166,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void objectField() {
-        var objectField = classDef.components().get(18);
+        var objectField = classDef.components().get(17);
         assertThat(objectField.name()).isEqualTo("object");
         var typeInfo = (ConcreteTypeInfo)objectField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Object");
@@ -182,7 +174,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void aVoidField() {
-        var aVoidField = classDef.components().get(19);
+        var aVoidField = classDef.components().get(18);
         assertThat(aVoidField.name()).isEqualTo("aVoid");
         var typeInfo = (ConcreteTypeInfo)aVoidField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Void");
@@ -190,7 +182,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void cyclicDependencyField() {
-        var cyclicDependencyField = classDef.components().get(20);
+        var cyclicDependencyField = classDef.components().get(19);
         assertThat(cyclicDependencyField.name()).isEqualTo("cyclicDependency");
         var typeInfo = (ConcreteTypeInfo)cyclicDependencyField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.types.DependencyClassA");
@@ -198,7 +190,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void containerStringListField() {
-        var containerStringListField = classDef.components().get(21);
+        var containerStringListField = classDef.components().get(20);
         assertThat(containerStringListField.name()).isEqualTo("containerStringList");
         var arrayTypeInfo = (ArrayTypeInfo)containerStringListField.type();
         var typeInfo = (ConcreteTypeInfo)arrayTypeInfo.component();
@@ -209,7 +201,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void containerStringListCollectionField() {
-        var containerStringListCollectionField = classDef.components().get(22);
+        var containerStringListCollectionField = classDef.components().get(21);
         assertThat(containerStringListCollectionField.name()).isEqualTo("containerStringListCollection");
         var arrayTypeInfo = (ArrayTypeInfo)containerStringListCollectionField.type();
         var nestedArrayTypeInfo = (ArrayTypeInfo)arrayTypeInfo.component();
@@ -221,7 +213,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void genericListField() {
-        var genericListField = classDef.components().get(23);
+        var genericListField = classDef.components().get(22);
         assertThat(genericListField.name()).isEqualTo("genericList");
         var arrayTypeInfo = (ArrayTypeInfo)genericListField.type();
         var typeInfo = (ConcreteTypeInfo)arrayTypeInfo.component();
@@ -230,7 +222,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void genericSetField() {
-        var genericSetField = classDef.components().get(24);
+        var genericSetField = classDef.components().get(23);
         assertThat(genericSetField.name()).isEqualTo("genericSet");
         var arrayTypeInfo = (ArrayTypeInfo)genericSetField.type();
         var typeInfo = (ConcreteTypeInfo)arrayTypeInfo.component();
@@ -239,7 +231,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void genericListSetField() {
-        var genericListSetField = classDef.components().get(25);
+        var genericListSetField = classDef.components().get(24);
         assertThat(genericListSetField.name()).isEqualTo("genericListSet");
         var arrayTypeInfo = (ArrayTypeInfo)genericListSetField.type();
         var nestedArrayTypeInfo = (ArrayTypeInfo)arrayTypeInfo.component();
@@ -248,8 +240,13 @@ final class JavaRecordIntegrationTest {
     }
 
     @Test
+    void genericMapField() {
+        // TODO
+    }
+
+    @Test
     void intArrayField() {
-        var integerArrayField = classDef.components().get(27);
+        var integerArrayField = classDef.components().get(26);
         assertThat(integerArrayField.name()).isEqualTo("intArray");
         var arrayTypeInfo = (ArrayTypeInfo)integerArrayField.type();
         var typeInfo = (ConcreteTypeInfo)arrayTypeInfo.component();
@@ -258,7 +255,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void boxedIntArrayField() {
-        var boxedIntArrayField = classDef.components().get(28);
+        var boxedIntArrayField = classDef.components().get(27);
         assertThat(boxedIntArrayField.name()).isEqualTo("boxedIntArray");
         var arrayTypeInfo = (ArrayTypeInfo)boxedIntArrayField.type();
         var typeInfo = (ConcreteTypeInfo)arrayTypeInfo.component();
@@ -267,7 +264,7 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void enumGalaxyField() {
-        var enumGalaxyField = classDef.components().get(29);
+        var enumGalaxyField = classDef.components().get(28);
         assertThat(enumGalaxyField.name()).isEqualTo("enumGalaxy");
         var typeInfo = (ConcreteTypeInfo)enumGalaxyField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.types.EnumGalaxy");
@@ -275,10 +272,18 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void enumSizeField() {
-        var enumSizeField = classDef.components().get(30);
+        var enumSizeField = classDef.components().get(29);
         assertThat(enumSizeField.name()).isEqualTo("enumSize");
         var typeInfo = (ConcreteTypeInfo)enumSizeField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.types.EnumSize");
+    }
+
+    @Test
+    void duplicateAccessorField() {
+        var duplicateAccessorField = classDef.components().get(30);
+        assertThat(duplicateAccessorField.name()).isEqualTo("duplicateAccessor");
+        var typeInfo = (ConcreteTypeInfo)duplicateAccessorField.type();
+        assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
     }
 
     @Test

@@ -45,14 +45,17 @@ public record JavaRecord<T, K>(
     EnumGalaxy enumGalaxy,
     EnumSize enumSize,
 
-    String duplicateAccessor
+    String duplicateAccessor,
+    @SharedType.Ignore String explicitlyIgnored
 ) implements InterfaceA<T> {
+    static final int STATIC_FIELD = 888;
+
     @SharedType.Accessor
     String getDuplicateAccessor() {
         return duplicateAccessor;
     }
 
-    String getShouldNotBeIncluded() {
+    String shouldNotBeIncluded() {
         return null;
     }
 }

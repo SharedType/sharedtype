@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents info captured from an interface, class, or record.
@@ -68,21 +69,21 @@ public final class ClassDef implements TypeDef {
 
     @Override
     public String toString() {
-        var rows = new ArrayList<String>(components.size()+2);
+        List<String> rows = new ArrayList<>(components.size()+2);
         rows.add(String.format("%s%s%s {", simpleName, typeVariablesToString(), supertypesToString()));
-        rows.addAll(components.stream().map(f -> String.format("  %s", f)).toList());
+        rows.addAll(components.stream().map(f -> String.format("  %s", f)).collect(Collectors.toList()));
         rows.add("}");
         return String.join(System.lineSeparator(), rows);
     }
 
     private String typeVariablesToString() {
-        return typeVariables.isEmpty() ? "" : "<" + String.join(",", typeVariables.stream().map(TypeVariableInfo::toString).toList()) + ">";
+        return typeVariables.isEmpty() ? "" : "<" + String.join(",", typeVariables.stream().map(TypeVariableInfo::toString).collect(Collectors.toList())) + ">";
     }
 
     private String supertypesToString() {
         if (supertypes.isEmpty()) {
             return "";
         }
-        return " extends " + String.join(" & ", supertypes.stream().map(t -> t + (t.resolved() ? "" : "?")).toList());
+        return " extends " + String.join(" & ", supertypes.stream().map(t -> t + (t.resolved() ? "" : "?")).collect(Collectors.toList()));
     }
 }

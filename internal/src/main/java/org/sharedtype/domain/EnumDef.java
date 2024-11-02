@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(of = "qualifiedName")
 @Builder
@@ -38,7 +39,7 @@ public final class EnumDef implements TypeDef {
     public String toString() {
         return String.format("%s[%s]",
             qualifiedName,
-            enumValueInfos.isEmpty() ? "" : String.join(",", enumValueInfos.stream().map(EnumValueInfo::toString).toList())
+            enumValueInfos.isEmpty() ? "" : String.join(",", enumValueInfos.stream().map(EnumValueInfo::toString).collect(Collectors.toList()))
         );
     }
 }

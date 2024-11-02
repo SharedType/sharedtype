@@ -65,12 +65,12 @@ final class ClassTypeDefParserForRecordTest {
     }
 
     @Test
-    void ignoreFieldsWhenAccessor() {
+    void resolveFieldsAndAccessors() {
         var components = parser.resolveComponents(recordElement, config);
         assertThat(components).hasSize(2);
 
         var component1 = components.get(0);
-        assertThat(component1.a()).isEqualTo(method1.element());
+        assertThat(component1.a()).isEqualTo(field1.element());
         assertThat(component1.b()).isEqualTo("value");
 
         var component2 = components.get(1);
@@ -81,27 +81,27 @@ final class ClassTypeDefParserForRecordTest {
     }
 
     @Test
-    void resolveField() {
+    void resolveFields() {
         when(config.includes(SharedType.ComponentType.ACCESSORS)).thenReturn(false);
         var components = parser.resolveComponents(recordElement, config);
         assertThat(components).satisfiesExactly(component -> {
-            assertThat(component.a()).isEqualTo(field1.element());
-            assertThat(component.b()).isEqualTo("value");
+            assertThat(component.a()).describedAs("element").isEqualTo(field1.element());
+            assertThat(component.b()).describedAs("name").isEqualTo("value");
         });
     }
 
     @Test
-    void resolveAccessor() {
+    void resolveAccessors() {
         when(config.includes(SharedType.ComponentType.FIELDS)).thenReturn(false);
         var components = parser.resolveComponents(recordElement, config);
         assertThat(components).satisfiesExactly(
             component1 -> {
-                assertThat(component1.a()).isEqualTo(method1.element());
-                assertThat(component1.b()).isEqualTo("value");
+                assertThat(component1.a()).describedAs("element").isEqualTo(method1get.element());
+                assertThat(component1.b()).describedAs("name").isEqualTo("value");
             },
             component2 -> {
-                assertThat(component2.a()).isEqualTo(method2.element());
-                assertThat(component2.b()).isEqualTo("value2");
+                assertThat(component2.a()).describedAs("element").isEqualTo(method2.element());
+                assertThat(component2.b()).describedAs("name").isEqualTo("value2");
             }
         );
     }

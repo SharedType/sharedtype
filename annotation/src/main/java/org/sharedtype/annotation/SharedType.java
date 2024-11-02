@@ -58,7 +58,7 @@ public @interface SharedType {
      * unless the field or accessor is also ignored.
      * </p>
      */
-    @Target({ElementType.METHOD, ElementType.FIELD, ElementType.RECORD_COMPONENT, ElementType.TYPE})
+    @Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE})
     @Retention(RetentionPolicy.SOURCE)
     @interface Ignore {
     }
@@ -115,17 +115,17 @@ public @interface SharedType {
         /**
          * Represents:
          * <ul>
-         *     <li>Class fields.</li>
-         *     <li>Record components</li>
+         *     <li>Class instance fields.</li>
+         *     <li>Record components.</li>
          * </ul>
          */
         FIELDS,
         /**
-         * Represents:
+         * Represents 0 argument non-static methods:
          * <ul>
-         *     <li>In a class or enum, methods starting with a getter prefix and 0 arguments. By default, prefixes include 'get' or 'is'.</li>
-         *     <li>In a record, only components' accessors.</li>
-         *     <li>Methods annotated with {@link Accessor} in both class and records</li>
+         *     <li>with name same as its instance field. Or fluent getter. This includes record's component accessor.</li>
+         *     <li>starting with a getter prefix. By default, prefixes include 'get' or 'is', which can be configured via global properties.</li>
+         *     <li>annotated with {@link Accessor}.</li>
          * </ul>
          */
         ACCESSORS,

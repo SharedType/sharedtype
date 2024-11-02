@@ -18,7 +18,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.RecordComponentElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 final class ClassTypeDefParser implements TypeDefParser {
@@ -87,7 +87,7 @@ final class ClassTypeDefParser implements TypeDefParser {
     private List<FieldComponentInfo> parseComponents(TypeElement typeElement, Config config) {
         List<Tuple<Element, String>> componentElems = resolveComponents(typeElement, config);
 
-        List<FieldComponentInfo> fields = new ArrayList<FieldComponentInfo>(componentElems.size());
+        List<FieldComponentInfo> fields = new ArrayList<>(componentElems.size());
         for (Tuple<Element, String> tuple : componentElems) {
             Element element = tuple.a();
             FieldComponentInfo fieldInfo = FieldComponentInfo.builder()
@@ -103,14 +103,16 @@ final class ClassTypeDefParser implements TypeDefParser {
 
     @VisibleForTesting
     List<Tuple<Element, String>> resolveComponents(TypeElement typeElement, Config config) {
-        boolean isRecord = typeElement.getKind() == ElementKind.RECORD;
         List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
-        List<ExecutableElement> recordAccessors = typeElement.getRecordComponents().stream().map(RecordComponentElement::getAccessor).collect(Collectors.toList());
-
         List<Tuple<Element, String>> res = new ArrayList<>(enclosedElements.size());
-        NamesOfTypes namesOfTypes = new NamesOfTypes(enclosedElements.size());
+        NamesOfTypes uniqueNamesOfTypes = new NamesOfTypes(enclosedElements.size());
         boolean includeAccessors = config.includes(SharedType.ComponentType.ACCESSORS);
-        boolean includeFields = config.includes(SharedType.ComponentType.FIELDS) && !(isRecord && includeAccessors);
+        boolean includeFields = config.includes(SharedType.ComponentType.FIELDS);
+
+        Set<String> instanceFieldNames = enclosedElements.stream()
+            .filter(e -> e.getKind() == ElementKind.FIELD && !e.getModifiers().contains(Modifier.STATIC))
+            .map(e -> e.getSimpleName().toString())
+            .collect(Collectors.toSet());
 
         for (Element enclosedElement : enclosedElements) {
             if (config.isComponentIgnored(enclosedElement)) {
@@ -120,29 +122,34 @@ final class ClassTypeDefParser implements TypeDefParser {
             TypeMirror type = enclosedElement.asType();
             String name = enclosedElement.getSimpleName().toString();
 
-            if (includeFields && enclosedElement.getKind() == ElementKind.FIELD && enclosedElement instanceof VariableElement variableElem) {
-                if (namesOfTypes.contains(name, type)) {
+            if (includeFields && enclosedElement.getKind() == ElementKind.FIELD && enclosedElement instanceof VariableElement) {
+                VariableElement variableElem = (VariableElement) enclosedElement;
+                if (uniqueNamesOfTypes.contains(name, type) || !instanceFieldNames.contains(name)) {
                     continue;
                 }
                 res.add(Tuple.of(variableElem, name));
-                namesOfTypes.add(name, type);
+                uniqueNamesOfTypes.add(name, type);
             }
 
-            if (includeAccessors && enclosedElement instanceof ExecutableElement methodElem && isZeroArgNonstaticMethod(methodElem)) {
+            if (includeAccessors && enclosedElement instanceof ExecutableElement) {
+                ExecutableElement methodElem = (ExecutableElement) enclosedElement;
                 boolean explicitAccessor = methodElem.getAnnotation(SharedType.Accessor.class) != null;
-                if (!explicitAccessor && isRecord && !recordAccessors.contains(methodElem)) {
+                if (!isZeroArgNonstaticMethod(methodElem)) {
+                    if (explicitAccessor) {
+                        ctx.warning("Method '%s' annotated with @SharedType.Accessor is not a zero-arg nonstatic method.", methodElem);
+                    }
                     continue;
                 }
-                String baseName = getAccessorBaseName(name, isRecord);
+                String baseName = getAccessorBaseName(name, instanceFieldNames.contains(name), explicitAccessor);
                 if (baseName == null) {
                     continue;
                 }
                 TypeMirror returnType = methodElem.getReturnType();
-                if (namesOfTypes.contains(baseName, returnType)) {
+                if (uniqueNamesOfTypes.contains(baseName, returnType)) {
                     continue;
                 }
                 res.add(Tuple.of(methodElem, baseName));
-                namesOfTypes.add(baseName, returnType);
+                uniqueNamesOfTypes.add(baseName, returnType);
             }
 
             // TODO: CONSTANTS
@@ -159,13 +166,16 @@ final class ClassTypeDefParser implements TypeDefParser {
     }
 
     @Nullable
-    private String getAccessorBaseName(String name, boolean isRecord) {
+    private String getAccessorBaseName(String name, boolean isFluentGetter, boolean isExplicitAccessor) {
+        if (isFluentGetter) {
+            return name;
+        }
         for (String accessorGetterPrefix : ctx.getProps().getAccessorGetterPrefixes()) {
             if (name.startsWith(accessorGetterPrefix)) {
                 return Utils.substringAndUncapitalize(name, accessorGetterPrefix.length());
             }
         }
-        if (isRecord) {
+        if (isExplicitAccessor) {
             return name;
         }
         return null;
