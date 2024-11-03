@@ -27,8 +27,10 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 final class TypescriptTypeFileWriter implements TypeWriter {
@@ -82,7 +84,15 @@ final class TypescriptTypeFileWriter implements TypeWriter {
     @Override
     public void write(List<TypeDef> typeDefs) throws IOException {
         List<Tuple<Template, Object>> data = new ArrayList<>(typeDefs.size());
+        Map<String, TypeDef> simpleNames = new HashMap<>(typeDefs.size());
         for (TypeDef typeDef : typeDefs) {
+            TypeDef duplicate = simpleNames.get(typeDef.simpleName());
+            if (duplicate != null) {
+                ctx.error("Duplicate names found: %s and %s, which is not allowed in output typescript code." +
+                    " You may use @SharedType(name=\"...\") to rename a type.", typeDef.qualifiedName(), duplicate.qualifiedName());
+                return;
+            }
+            simpleNames.put(typeDef.simpleName(), typeDef);
             if (typeDef instanceof EnumDef) {
                 EnumDef enumDef = (EnumDef) typeDef;
                 List<String> values = new ArrayList<>(enumDef.components().size());
@@ -108,7 +118,7 @@ final class TypescriptTypeFileWriter implements TypeWriter {
             }
         }
 
-        FileObject file = ctx.createSourceOutput(ctx.getProps().getTypescript().getOutputFileName());
+        FileObject file = ctx.createSourceOutput(ctx.getProps().getTypescript().getOutputFileName()); // TODO: abstract up
         try (OutputStream outputStream = file.openOutputStream();
              Writer writer = new OutputStreamWriter(outputStream)) {
             renderer.render(writer, data);

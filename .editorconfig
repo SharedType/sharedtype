@@ -15,3 +15,6 @@ ij_java_imports_layout = *,|,javax.**,java.**,|,$*
 
 [*.yaml]
 indent_size = 2
+
+[*.ts]
+ij_javascript_enforce_trailing_comma = whenmultiline

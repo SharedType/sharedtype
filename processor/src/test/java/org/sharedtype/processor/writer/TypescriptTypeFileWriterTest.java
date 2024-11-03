@@ -7,6 +7,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.sharedtype.domain.ArrayTypeInfo;
 import org.sharedtype.domain.ClassDef;
 import org.sharedtype.domain.ConcreteTypeInfo;
@@ -31,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.sharedtype.domain.Constants.INT_TYPE_INFO;
@@ -159,5 +162,17 @@ final class TypescriptTypeFileWriterTest {
         assertThat(prop4.name).isEqualTo("field4");
         assertThat(prop4.type).isEqualTo("T[]");
         assertThat(prop4.optional).isFalse();
+    }
+
+    @MockitoSettings(strictness = Strictness.LENIENT)
+    @Test
+    void failOnDuplicateSimpleName() throws Exception {
+        writer.write(List.of(
+            ClassDef.builder().qualifiedName("com.github.cuzfrog.ClassA").simpleName("ClassA").build(),
+            ClassDef.builder().qualifiedName("com.github.cuzfrog.another.ClassA").simpleName("ClassA").build()
+        ));
+
+        verify(ctxMocks.getContext()).error(any(), any(Object[].class));
+        verify(renderer, never()).render(any(), any());
     }
 }
