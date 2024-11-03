@@ -11,7 +11,7 @@ import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class JavaRecordIntegrationTest {
-    private final ClassDef classDef = (ClassDef)deserializeTypeDef("JavaRecord.ser");
+    private final ClassDef classDef = (ClassDef)deserializeTypeDef("org.sharedtype.it.java17.JavaRecord.ser");
 
     @Test
     void typeVariables() {

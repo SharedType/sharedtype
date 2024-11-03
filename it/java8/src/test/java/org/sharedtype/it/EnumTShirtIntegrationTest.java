@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
 
 final class EnumTShirtIntegrationTest {
-    private final EnumDef enumDef = (EnumDef) deserializeTypeDef("EnumTShirt.ser");
+    private final EnumDef enumDef = (EnumDef) deserializeTypeDef("org.sharedtype.it.java8.EnumTShirt.ser");
 
     @Test
     void parseEnumTShirt() {

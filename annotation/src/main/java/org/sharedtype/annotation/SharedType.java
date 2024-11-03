@@ -7,9 +7,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * <p>Share a type. <a href="https://github.com/cuzfrog/SharedType">Website</a></p>
+ * <br>
  * <b>Inner class:</b>
  * <p>
  * Declared inner and nested types will not be included by default, unless they are referenced by other types.
+ * Non-static inner classes are not supported, see documentation for details.
  *     TODO: doc for nested types
  * </p>
  *
@@ -20,7 +23,17 @@ import java.lang.annotation.Target;
 @Documented
 public @interface SharedType {
     /**
-     * The name of the emitted type. If not specified, the simple name of the annotated type will be used.
+     * <p>
+     *     The name of the emitted type. If not specified, the simple name of the annotated type will be used.
+     *     This may be used to help avoid conflicting names in target output.
+     * </p>
+     * <br>
+     * <p>
+     *     How possibly conflicting names are resolved:
+     *     <ul>
+     *         <li>Typescript: simple name of a class is used as type name. Duplicate names are not allowed.</li>
+     *     </ul>
+     * </p>
      */
     String name() default "";
 

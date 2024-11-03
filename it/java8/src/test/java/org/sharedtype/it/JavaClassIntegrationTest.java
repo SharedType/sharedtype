@@ -10,7 +10,7 @@ import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class JavaClassIntegrationTest {
-    private final ClassDef classDef = (ClassDef)deserializeTypeDef("JavaClass.ser");
+    private final ClassDef classDef = (ClassDef)deserializeTypeDef("org.sharedtype.it.java8.JavaClass.ser");
 
     @Test
     void parseFields() {

@@ -14,7 +14,7 @@ import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
 final class TypeDefIntegrationTest {
     @Test
     void container() {
-        ClassDef container = (ClassDef) deserializeTypeDef("Container.ser");
+        ClassDef container = (ClassDef) deserializeTypeDef("org.sharedtype.it.java8.Container.ser");
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(container.simpleName()).isEqualTo("Container");
             softly.assertThat(container.qualifiedName()).isEqualTo("org.sharedtype.it.java8.Container");
@@ -33,7 +33,7 @@ final class TypeDefIntegrationTest {
 
     @Test
     void dependencyClassA() {
-        ClassDef classA = (ClassDef) deserializeTypeDef("DependencyClassA.ser");
+        ClassDef classA = (ClassDef) deserializeTypeDef("org.sharedtype.it.java8.DependencyClassA.ser");
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(classA.simpleName()).isEqualTo("DependencyClassA");
             softly.assertThat(classA.qualifiedName()).isEqualTo("org.sharedtype.it.java8.DependencyClassA");
@@ -57,19 +57,19 @@ final class TypeDefIntegrationTest {
 
     @Test
     void dependencyClassB() {
-        ClassDef classB = (ClassDef) deserializeTypeDef("DependencyClassB.ser");
+        ClassDef classB = (ClassDef) deserializeTypeDef("org.sharedtype.it.java8.DependencyClassB.ser");
         assertThat(classB.simpleName()).isEqualTo("DependencyClassB");
     }
 
     @Test
     void dependencyClassC() {
-        ClassDef classC = (ClassDef) deserializeTypeDef("DependencyClassC.ser");
+        ClassDef classC = (ClassDef) deserializeTypeDef("org.sharedtype.it.java8.DependencyClassC.ser");
         assertThat(classC.simpleName()).isEqualTo("DependencyClassC");
     }
 
     @Test
     void enumGalaxy() {
-        EnumDef enumGalaxy = (EnumDef) deserializeTypeDef("EnumGalaxy.ser");
+        EnumDef enumGalaxy = (EnumDef) deserializeTypeDef("org.sharedtype.it.java8.EnumGalaxy.ser");
         assertThat(enumGalaxy.simpleName()).isEqualTo("EnumGalaxy");
         assertThat(enumGalaxy.qualifiedName()).isEqualTo("org.sharedtype.it.java8.EnumGalaxy");
         assertThat(enumGalaxy.components()).hasSize(3).allMatch(constant -> {
@@ -88,7 +88,7 @@ final class TypeDefIntegrationTest {
 
     @Test
     void enumSize() {
-        EnumDef enumSize = (EnumDef) deserializeTypeDef("EnumSize.ser");
+        EnumDef enumSize = (EnumDef) deserializeTypeDef("org.sharedtype.it.java8.EnumSize.ser");
         assertThat(enumSize.simpleName()).isEqualTo("EnumSize");
         assertThat(enumSize.qualifiedName()).isEqualTo("org.sharedtype.it.java8.EnumSize");
         assertThat(enumSize.components()).hasSize(3).allMatch(constant -> {
@@ -108,13 +108,13 @@ final class TypeDefIntegrationTest {
 
     @Test
     void interfaceA() {
-        ClassDef interfaceA = (ClassDef) deserializeTypeDef("InterfaceA.ser");
+        ClassDef interfaceA = (ClassDef) deserializeTypeDef("org.sharedtype.it.java8.InterfaceA.ser");
         assertThat(interfaceA.simpleName()).isEqualTo("InterfaceA");
     }
 
     @Test
     void superClassA() {
-        ClassDef superClassA = (ClassDef) deserializeTypeDef("SuperClassA.ser");
+        ClassDef superClassA = (ClassDef) deserializeTypeDef("org.sharedtype.it.java8.SuperClassA.ser");
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(superClassA.simpleName()).isEqualTo("SuperClassA");
             softly.assertThat(superClassA.components()).hasSize(1);

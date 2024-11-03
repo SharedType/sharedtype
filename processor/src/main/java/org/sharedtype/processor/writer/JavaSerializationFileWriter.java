@@ -25,7 +25,7 @@ final class JavaSerializationFileWriter implements TypeWriter {
     public void write(List<TypeDef> typeDefs) {
         try {
             for (TypeDef typeDef : typeDefs) {
-                FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", typeDef.simpleName() + ".ser");
+                FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", typeDef.qualifiedName() + ".ser");
                 try(OutputStream outputStream = file.openOutputStream();
                     ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {
                     oos.writeObject(typeDef);

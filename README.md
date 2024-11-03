@@ -16,8 +16,8 @@
 * [vojtechhabarta/typescript-generator](https://github.com/vojtechhabarta/typescript-generator)
 
 ## Documentation
-[User Guide](doc/Usage.md)
-[Development Guide](doc/Development.md)
+* [User Guide](doc/Usage.md)
+* [Development Guide](doc/Development.md)
 
 ## Authors
 Cause Chung (cuzfrog@gmail.com)

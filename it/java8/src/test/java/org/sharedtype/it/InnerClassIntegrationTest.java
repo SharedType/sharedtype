@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
 
 final class InnerClassIntegrationTest {
-    private final ClassDef classDef = (ClassDef)deserializeTypeDef("InnerClass.ser");
+    private final ClassDef classDef = (ClassDef)deserializeTypeDef("org.sharedtype.it.java8.JavaClass.InnerClass.ser");
 
     @Test
     void parseInnerClass() {

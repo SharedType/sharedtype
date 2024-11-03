@@ -9,9 +9,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
 
 final class EnumValueIntegrationTest {
+    private final EnumDef enumSize = (EnumDef) deserializeTypeDef("org.sharedtype.it.java8.EnumSize.ser");
+
     @Test
     void enumSize() {
-        EnumDef enumSize = (EnumDef) deserializeTypeDef("EnumSize.ser");
         assertThat(enumSize.simpleName()).isEqualTo("EnumSize");
         assertThat(enumSize.qualifiedName()).isEqualTo("org.sharedtype.it.java8.EnumSize");
         assertThat(enumSize.components()).hasSize(3).allMatch(constant -> {
