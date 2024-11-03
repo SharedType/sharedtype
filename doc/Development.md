@@ -39,10 +39,10 @@ Before run test in IDE/individual module, run `./mvnw clean install -DskipTests`
 ```
 
 #### Verify JDK8 compatibility locally
-Setup `JAVA8_HOME` to point to your Java8 installation. Go into Java8 integration test in `it/java8`.
+Setup `JAVA8_HOME` to point to your Java8 installation.
 ```bash
-. setenv
-mvnw clean install
+. setenv 8
+./mvnw verify -pl it/java8
 ```
 
 #### Run client tests locally

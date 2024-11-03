@@ -1,6 +1,23 @@
 #!/bin/bash
+version=$1
 
-export JAVA_HOME=$JAVA17_HOME
+if [ -z "$version" ];then
+  version="17"
+  echo "No version provided, use default jdk$version"
+fi
+
+if [[ "$version" == "17" ]];then
+  export JAVA_HOME=$JAVA17_HOME
+elif [[ "$version" == "8" ]];then
+  export JAVA_HOME=$JAVA8_HOME
+elif [[ "$version" == "11" ]];then
+  export JAVA_HOME=$JAVA11_HOME
+elif [[ "$version" == "21" ]];then
+  export JAVA_HOME=$JAVA21_HOME
+else
+  echo "Unsupported version $version"
+  return
+fi
+
 export PATH=$JAVA_HOME/bin:$PATH
-
 java -version
