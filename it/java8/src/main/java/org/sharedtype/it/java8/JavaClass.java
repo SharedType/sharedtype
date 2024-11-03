@@ -6,4 +6,9 @@ import org.sharedtype.annotation.SharedType;
 class JavaClass {
     private String string;
     private EnumSize size;
+
+    @SharedType
+    static class InnerClass {
+        private int value;
+    }
 }

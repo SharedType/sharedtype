@@ -33,7 +33,7 @@ final class ClassTypeDefParserTest {
         var supertype1 = ctxMocks.typeElement("com.github.cuzfrog.SuperClassA");
         var supertype2 = ctxMocks.typeElement("com.github.cuzfrog.InterfaceA");
         var supertype3 = ctxMocks.typeElement("com.github.cuzfrog.InterfaceB");
-        var element = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+        var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc")
           .withEnclosedElements(
             field1.element(),
             field2.element(),
@@ -67,7 +67,7 @@ final class ClassTypeDefParserTest {
         when(typeInfoParser.parse(supertype3.type())).thenReturn(parsedSupertype3);
         InOrder inOrder = inOrder(typeInfoParser);
 
-        var classDef = (ClassDef) parser.parse(element);
+        var classDef = (ClassDef) parser.parse(clazz);
         assert classDef != null;
         assertThat(classDef.simpleName()).isEqualTo("Abc");
 

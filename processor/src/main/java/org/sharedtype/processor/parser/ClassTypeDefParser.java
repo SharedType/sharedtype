@@ -18,6 +18,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
@@ -44,6 +45,9 @@ final class ClassTypeDefParser implements TypeDefParser {
 
     @Override
     public TypeDef parse(TypeElement typeElement) {
+        if (!isValidClassTypeElement(typeElement)) {
+            return null;
+        }
         Config config = new Config(typeElement);
 
         ClassDef.ClassDefBuilder builder = ClassDef.builder().qualifiedName(config.getQualifiedName()).simpleName(config.getName());
@@ -52,6 +56,16 @@ final class ClassTypeDefParser implements TypeDefParser {
         builder.supertypes(parseSupertypes(typeElement));
 
         return builder.build();
+    }
+
+    private boolean isValidClassTypeElement(TypeElement typeElement) {
+        if (typeElement.getNestingKind() != NestingKind.TOP_LEVEL && !typeElement.getModifiers().contains(Modifier.STATIC)) {
+            ctx.error("Class %s is not static." +
+                " Instance class may refer to its enclosing class's generic type without the type declaration on its own," +
+                " which could break the generated code. Later version of SharedType may loosen this limitation.", typeElement);
+            return false;
+        }
+        return true;
     }
 
     private List<TypeVariableInfo> parseTypeVariables(TypeElement typeElement) {

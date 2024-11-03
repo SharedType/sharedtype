@@ -12,7 +12,7 @@ import org.sharedtype.processor.context.TypeElementMock;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.NestingKind;
 import javax.lang.model.type.DeclaredType;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +45,7 @@ final class ClassTypeDefParserForRecordTest {
         .withElementKind(ElementKind.METHOD)
         .withReturnType(string.type())
         .withAnnotation(SharedType.Accessor.class);
-    private final TypeElement recordElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+    private final TypeElementMock recordElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
         .withElementKind(ElementKind.RECORD)
         .withEnclosedElements(
             field1.element(),
@@ -55,8 +55,7 @@ final class ClassTypeDefParserForRecordTest {
         )
         .withRecordComponentElements(
             recordComponent1.element()
-        )
-        .element();
+        );
 
     @BeforeEach
     void setUp() {
@@ -66,7 +65,7 @@ final class ClassTypeDefParserForRecordTest {
 
     @Test
     void resolveFieldsAndAccessors() {
-        var components = parser.resolveComponents(recordElement, config);
+        var components = parser.resolveComponents(recordElement.element(), config);
         assertThat(components).hasSize(2);
 
         var component1 = components.get(0);
@@ -83,7 +82,7 @@ final class ClassTypeDefParserForRecordTest {
     @Test
     void resolveFields() {
         when(config.includes(SharedType.ComponentType.ACCESSORS)).thenReturn(false);
-        var components = parser.resolveComponents(recordElement, config);
+        var components = parser.resolveComponents(recordElement.element(), config);
         assertThat(components).satisfiesExactly(component -> {
             assertThat(component.a()).describedAs("element").isEqualTo(field1.element());
             assertThat(component.b()).describedAs("name").isEqualTo("value");
@@ -93,7 +92,7 @@ final class ClassTypeDefParserForRecordTest {
     @Test
     void resolveAccessors() {
         when(config.includes(SharedType.ComponentType.FIELDS)).thenReturn(false);
-        var components = parser.resolveComponents(recordElement, config);
+        var components = parser.resolveComponents(recordElement.element(), config);
         assertThat(components).satisfiesExactly(
             component1 -> {
                 assertThat(component1.a()).describedAs("element").isEqualTo(method1get.element());
@@ -104,5 +103,13 @@ final class ClassTypeDefParserForRecordTest {
                 assertThat(component2.b()).describedAs("name").isEqualTo("value2");
             }
         );
+    }
+
+    @Test
+    void nonStaticInnerClassIsInvalid() {
+        var typeDef = parser.parse(recordElement.withModifiers().withNestingKind(NestingKind.MEMBER).element());
+        assertThat(typeDef).isNull();
+
+        verify(ctxMocks.getContext()).error(any(), any(Object[].class));
     }
 }
