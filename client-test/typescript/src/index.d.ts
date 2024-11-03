@@ -1,1 +1,1 @@
-export type * from "../../../it/target/generated-sources/types.d.ts";
+export type * from "../../../it/java17/target/generated-sources/types.d.ts";

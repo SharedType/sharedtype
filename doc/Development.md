@@ -28,16 +28,9 @@ Then attach your debugger on it.
 If you encounter compilation problems with your IDE, delegate compilation to maven.
 Before run test in IDE/individual module, run `./mvnw clean install -DskipTests` to build dependency classes.
 
-#### E.g. run integration test:
+#### E.g. run integration test locally:
 ```bash
 ./mvnw clean install -DskipTests -q && ./mvnw test -pl it/java17 -pl it/java8
-```
-
-#### Verify JDK8 compatibility
-Setup `JAVA8_HOME` to point to your Java8 installation. Go into Java8 integration test in `it/java8`.
-```bash
-. setenv
-mvnw clean install
 ```
 
 #### Run local verification with all java tests
@@ -45,7 +38,14 @@ mvnw clean install
 ./mvnw verify
 ```
 
-#### Run client tests
+#### Verify JDK8 compatibility locally
+Setup `JAVA8_HOME` to point to your Java8 installation. Go into Java8 integration test in `it/java8`.
+```bash
+. setenv
+mvnw clean install
+```
+
+#### Run client tests locally
 Client tests are run in target languages in respective dir inside `./client-test`. They do basic type checking.
 * Typescript. `. setenv && npm i && npm run test`
 

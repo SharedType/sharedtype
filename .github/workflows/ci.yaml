@@ -23,7 +23,7 @@ jobs:
       - name: Check Format
         run: ./mvnw editorconfig:check
 
-  build_and_test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,20 +34,78 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: build_and_test_maven
+          key: build_maven
       - name: Build
-        run: ./mvnw compile -e
-      - name: Test
-        run: ./mvnw test -e
+        run: ./mvnw install -DskipTests -e
       - uses: actions/upload-artifact@v4
         with:
           name: generated-sources
           path: |
-            it/target/generated-sources/*
+            it/java17/target/generated-sources/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jars
+          path: |
+              ~/.m2/repository/org/sharedtype
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: classes
+          path: |
+            annotations/target/classes
+            processor/target/classes
+            internal/target/classes
+            it/shared/target/classes
+            it/java17/target/classes
+            it/java8/target/classes
           if-no-files-found: error
 
+  test_new_java:
+    needs: [build]
+    runs-on: ubuntu-latest
+    matrix:
+      java: [ 17, 21 ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: classes # should not be included in cache
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: build_maven
+      - name: Test
+        run: ./mvnw test -e
+
+  test_old_java:
+    needs: [build]
+    runs-on: ubuntu-latest
+    matrix:
+      java: [ 8, 11 ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: jars
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: build_maven
+      - name: Test
+        run: ../../mvnw test -e
+        working-directory: it/java8
+
   client_test:
-    needs: [build_and_test]
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -57,9 +115,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: generated-sources
-          path: it/target/generated-sources/
       - name: Display downloaded artifact
-        run: ls -lhR it/target/generated-sources
+        run: ls -lhR it/java17/target/generated-sources
       - name: Test Typescript
         working-directory: client-test/typescript
         run: |
@@ -67,7 +124,7 @@ jobs:
           npm run test
 
   clean-artifact:
-    needs: [ client_test ]
+    needs: [ test_new_java, test_old_java, client_test ]
     runs-on: ubuntu-latest
     if: always()
     steps:
