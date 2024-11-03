@@ -64,8 +64,9 @@ jobs:
   test_new_java:
     needs: [build]
     runs-on: ubuntu-latest
-    matrix:
-      java: [ 17, 21 ]
+    strategy:
+      matrix:
+        java: [ 17, 21 ]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -85,8 +86,9 @@ jobs:
   test_old_java:
     needs: [build]
     runs-on: ubuntu-latest
-    matrix:
-      java: [ 8, 11 ]
+    strategy:
+      matrix:
+        java: [ 8, 11 ]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
