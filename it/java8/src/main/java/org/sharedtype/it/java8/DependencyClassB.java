@@ -1,10 +1,10 @@
-package org.sharedtype.it.types;
+package org.sharedtype.it.java8;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-final class DependencyClassB {
+public final class DependencyClassB {
     private DependencyClassC c;
 }

@@ -1,7 +1,7 @@
 # Development Guide
 
 ## Setup
-Linux is recommended. If you use Windows, you can use WSL with a remotely connected IDE. Windows 11 supports GUI app inside WSL.
+**Linux is assumed**. If you use Windows, you can use WSL with a remotely connected IDE. Windows 11 supports GUI app inside WSL.
 
 Setup Java env vars (>= Java17 for development), configure `JAVA17_HOME` to point to your Java installation:
 ```bash

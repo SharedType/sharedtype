@@ -1,4 +1,4 @@
-package org.sharedtype.it.types;
+package org.sharedtype.it.java8;
 
 import lombok.RequiredArgsConstructor;
 import org.sharedtype.annotation.SharedType;

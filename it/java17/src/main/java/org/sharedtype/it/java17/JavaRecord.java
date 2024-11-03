@@ -1,6 +1,11 @@
-package org.sharedtype.it.types;
+package org.sharedtype.it.java17;
 
 import org.sharedtype.annotation.SharedType;
+import org.sharedtype.it.java8.Container;
+import org.sharedtype.it.java8.DependencyClassA;
+import org.sharedtype.it.java8.EnumGalaxy;
+import org.sharedtype.it.java8.EnumSize;
+import org.sharedtype.it.java8.InterfaceA;
 
 import java.util.Collection;
 import java.util.List;

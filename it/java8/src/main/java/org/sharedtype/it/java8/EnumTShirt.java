@@ -1,16 +1,14 @@
-package org.sharedtype.it.types;
+package org.sharedtype.it.java8;
 
 import lombok.Getter;
 import org.sharedtype.annotation.SharedType;
 
-import static org.sharedtype.it.types.EnumSize.*;
-
 @SharedType
 @Getter
-enum EnumTShirt {
-    S(SMALL, "S"),
-    M(MEDIUM, "M"),
-    L(LARGE, "L"),
+public enum EnumTShirt {
+    S(EnumSize.SMALL, "S"),
+    M(EnumSize.MEDIUM, "M"),
+    L(EnumSize.LARGE, "L"),
     ;
 
     private final EnumSize size;

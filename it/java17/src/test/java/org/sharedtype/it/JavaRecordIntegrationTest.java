@@ -1,10 +1,13 @@
-package org.sharedtype.domain;
+package org.sharedtype.it;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.sharedtype.domain.ArrayTypeInfo;
+import org.sharedtype.domain.ClassDef;
+import org.sharedtype.domain.ConcreteTypeInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.sharedtype.domain.TypeDefDeserializer.deserializeTypeDef;
+import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class JavaRecordIntegrationTest {
@@ -25,7 +28,7 @@ final class JavaRecordIntegrationTest {
         assertThat(superTypes).hasSize(1);
         var supertypeInfo = (ConcreteTypeInfo)superTypes.get(0);
         assertThat(supertypeInfo.resolved()).isTrue();
-        assertThat(supertypeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.types.InterfaceA");
+        assertThat(supertypeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.java8.InterfaceA");
     }
 
     @Test
@@ -185,7 +188,7 @@ final class JavaRecordIntegrationTest {
         var cyclicDependencyField = classDef.components().get(19);
         assertThat(cyclicDependencyField.name()).isEqualTo("cyclicDependency");
         var typeInfo = (ConcreteTypeInfo)cyclicDependencyField.type();
-        assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.types.DependencyClassA");
+        assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.java8.DependencyClassA");
     }
 
     @Test
@@ -194,7 +197,7 @@ final class JavaRecordIntegrationTest {
         assertThat(containerStringListField.name()).isEqualTo("containerStringList");
         var arrayTypeInfo = (ArrayTypeInfo)containerStringListField.type();
         var typeInfo = (ConcreteTypeInfo)arrayTypeInfo.component();
-        assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.types.Container");
+        assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.java8.Container");
         var typeArgInfo = (ConcreteTypeInfo)typeInfo.typeArgs().get(0);
         assertThat(typeArgInfo.qualifiedName()).isEqualTo("java.lang.String");
     }
@@ -206,7 +209,7 @@ final class JavaRecordIntegrationTest {
         var arrayTypeInfo = (ArrayTypeInfo)containerStringListCollectionField.type();
         var nestedArrayTypeInfo = (ArrayTypeInfo)arrayTypeInfo.component();
         var typeInfo = (ConcreteTypeInfo)nestedArrayTypeInfo.component();
-        assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.types.Container");
+        assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.java8.Container");
         var typeArgInfo = (ConcreteTypeInfo)typeInfo.typeArgs().get(0);
         assertThat(typeArgInfo.qualifiedName()).isEqualTo("java.lang.String");
     }
@@ -267,7 +270,7 @@ final class JavaRecordIntegrationTest {
         var enumGalaxyField = classDef.components().get(28);
         assertThat(enumGalaxyField.name()).isEqualTo("enumGalaxy");
         var typeInfo = (ConcreteTypeInfo)enumGalaxyField.type();
-        assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.types.EnumGalaxy");
+        assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.java8.EnumGalaxy");
     }
 
     @Test
@@ -275,7 +278,7 @@ final class JavaRecordIntegrationTest {
         var enumSizeField = classDef.components().get(29);
         assertThat(enumSizeField.name()).isEqualTo("enumSize");
         var typeInfo = (ConcreteTypeInfo)enumSizeField.type();
-        assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.types.EnumSize");
+        assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.java8.EnumSize");
     }
 
     @Test

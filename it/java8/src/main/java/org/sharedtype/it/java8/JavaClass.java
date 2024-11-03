@@ -1,4 +1,4 @@
-package org.sharedtype.it.types;
+package org.sharedtype.it.java8;
 
 import org.sharedtype.annotation.SharedType;
 

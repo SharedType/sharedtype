@@ -1,4 +1,6 @@
-package org.sharedtype.domain;
+package org.sharedtype.it;
+
+import org.sharedtype.domain.TypeDef;
 
 import java.io.IOException;
 import java.io.InputStream;

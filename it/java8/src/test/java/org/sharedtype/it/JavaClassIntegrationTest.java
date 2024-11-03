@@ -1,10 +1,12 @@
-package org.sharedtype.domain;
+package org.sharedtype.it;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.sharedtype.domain.ClassDef;
+import org.sharedtype.domain.ConcreteTypeInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.sharedtype.domain.TypeDefDeserializer.deserializeTypeDef;
+import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class JavaClassIntegrationTest {
@@ -21,7 +23,7 @@ final class JavaClassIntegrationTest {
             size -> {
                 assertThat(size.name()).isEqualTo("size");
                 ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)size.type();
-                assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.types.EnumSize");
+                assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.java8.EnumSize");
             }
         );
     }

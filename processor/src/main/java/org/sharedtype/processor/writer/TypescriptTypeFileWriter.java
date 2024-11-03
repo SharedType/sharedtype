@@ -1,6 +1,5 @@
 package org.sharedtype.processor.writer;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.sharedtype.domain.ArrayTypeInfo;
 import org.sharedtype.domain.ClassDef;
