@@ -7,6 +7,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Represents an enum.
+ *
+ * @author Cause Chung
+ */
 @EqualsAndHashCode(of = "qualifiedName")
 @Builder
 public final class EnumDef implements TypeDef {

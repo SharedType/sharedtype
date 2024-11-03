@@ -7,6 +7,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a primitive type or object type that requires its target representation,
+ * and is not recognized as an array-like type.
+ * Like {@link java.lang.String} in typescript as "string", int in typescript as "number".
+ *
+ * @see ArrayTypeInfo
+ * @author Cause Chung
+ */
 @EqualsAndHashCode(of = "qualifiedName")
 @Builder
 public final class ConcreteTypeInfo implements TypeInfo {

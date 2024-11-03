@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Represents info captured from an interface, class, or record.
+ * Represents structural info captured from an interface, class, or record.
+ *
+ * @author Cause Chung
  */
 @Builder
 @EqualsAndHashCode(of = "qualifiedName")
@@ -77,13 +79,13 @@ public final class ClassDef implements TypeDef {
     }
 
     private String typeVariablesToString() {
-        return typeVariables.isEmpty() ? "" : "<" + String.join(",", typeVariables.stream().map(TypeVariableInfo::toString).collect(Collectors.toList())) + ">";
+        return typeVariables.isEmpty() ? "" : "<" + typeVariables.stream().map(TypeVariableInfo::toString).collect(Collectors.joining(",")) + ">";
     }
 
     private String supertypesToString() {
         if (supertypes.isEmpty()) {
             return "";
         }
-        return " extends " + String.join(" & ", supertypes.stream().map(t -> t + (t.resolved() ? "" : "?")).collect(Collectors.toList()));
+        return " extends " + supertypes.stream().map(t -> t + (t.resolved() ? "" : "?")).collect(Collectors.joining(" & "));
     }
 }

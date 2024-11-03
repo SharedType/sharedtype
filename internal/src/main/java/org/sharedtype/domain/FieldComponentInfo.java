@@ -5,6 +5,11 @@ import lombok.Builder;
 import javax.lang.model.element.Modifier;
 import java.util.Set;
 
+/**
+ * Represents a field or accessor.
+ *
+ * @author Cause Chung
+ */
 @Builder
 public final class FieldComponentInfo implements ComponentInfo {
     private final String name;

@@ -6,6 +6,9 @@ import javax.lang.model.type.TypeKind;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Cause Chung
+ */
 public final class Constants {
     public static final String ANNOTATION_QUALIFIED_NAME = SharedType.class.getName();
 
