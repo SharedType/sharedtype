@@ -19,11 +19,11 @@ public interface TypeDefParser {
 
     static TypeDefParser create(Context ctx) {
         TypeInfoParser typeInfoParser = TypeInfoParser.create(ctx);
-        Map<ElementKind, TypeDefParser> parsers = new HashMap<>(4);
-        parsers.put(ElementKind.CLASS, new ClassTypeDefParser(ctx, typeInfoParser));
-        parsers.put(ElementKind.INTERFACE, new ClassTypeDefParser(ctx, typeInfoParser));
-        parsers.put(ElementKind.ENUM, new EnumTypeDefParser(ctx, typeInfoParser));
-        parsers.put(ElementKind.RECORD, new ClassTypeDefParser(ctx, typeInfoParser));
+        Map<String, TypeDefParser> parsers = new HashMap<>(4);
+        parsers.put(ElementKind.CLASS.name(), new ClassTypeDefParser(ctx, typeInfoParser));
+        parsers.put(ElementKind.INTERFACE.name(), new ClassTypeDefParser(ctx, typeInfoParser));
+        parsers.put(ElementKind.ENUM.name(), new EnumTypeDefParser(ctx, typeInfoParser));
+        parsers.put("RECORD", new ClassTypeDefParser(ctx, typeInfoParser));
         return new CompositeTypeDefParser(ctx, parsers);
     }
 }

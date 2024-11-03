@@ -38,8 +38,8 @@ final class CompositeTypeDefParserTest {
         parser = new CompositeTypeDefParser(
             ctxMocks.getContext(),
             Map.of(
-                ElementKind.RECORD, delegate1,
-                ElementKind.ENUM, delegate2
+                ElementKind.RECORD.name(), delegate1,
+                ElementKind.ENUM.name(), delegate2
         ));
         when(ctxMocks.getTypeCache().getTypeDef("com.github.cuzfrog.Abc")).thenReturn(null);
     }
