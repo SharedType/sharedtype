@@ -8,6 +8,10 @@ import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 import javax.lang.model.element.TypeElement;
 import java.util.Map;
 
+/**
+ *
+ * @author Cause Chung
+ */
 @RequiredArgsConstructor
 final class CompositeTypeDefParser implements TypeDefParser {
     private final Context ctx;

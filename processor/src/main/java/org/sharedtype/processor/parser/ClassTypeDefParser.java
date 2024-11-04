@@ -32,6 +32,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ *
+ * @author Cause Chung
+ */
 final class ClassTypeDefParser implements TypeDefParser {
     private final Context ctx;
     private final Types types;

@@ -12,6 +12,8 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
+ * Global properties loader.
+ *
  * @author Cause Chung
  */
 public final class PropsFactory {

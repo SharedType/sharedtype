@@ -22,6 +22,10 @@ import java.util.stream.Collectors;
 import static org.sharedtype.domain.Constants.PRIMITIVES;
 import static org.sharedtype.processor.support.Preconditions.checkArgument;
 
+/**
+ *
+ * @author Cause Chung
+ */
 @RequiredArgsConstructor
 final class TypeInfoParserImpl implements TypeInfoParser {
     private final Context ctx;

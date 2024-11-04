@@ -7,6 +7,11 @@ import lombok.Getter;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
+/**
+ * Global properties.
+ *
+ * @author Cause Chung
+ */
 @Builder(access = AccessLevel.PACKAGE)
 @Getter
 public final class Props {

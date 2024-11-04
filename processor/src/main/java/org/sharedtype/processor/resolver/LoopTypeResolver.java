@@ -21,6 +21,10 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+/**
+ *
+ * @author Cause Chung
+ */
 @RequiredArgsConstructor
 final class LoopTypeResolver implements TypeResolver {
     private static final int DEPENDENCY_COUNT_EXPANSION_FACTOR = 2; // TODO: find a proper number

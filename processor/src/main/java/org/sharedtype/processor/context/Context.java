@@ -15,6 +15,11 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Annotation processing context state and utils.
+ *
+ * @author Cause Chung
+ */
 public final class Context {
     @Getter
     private final TypeCache typeCache = new TypeCache();

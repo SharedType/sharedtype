@@ -14,6 +14,7 @@ import lombok.Getter;
 @Builder
 public final class TypeVariableInfo implements TypeInfo {
     private final String name;
+    // TODO: support generic bounds
 
     @Override
     public boolean resolved() {

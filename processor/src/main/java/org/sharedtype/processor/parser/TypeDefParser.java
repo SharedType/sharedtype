@@ -10,9 +10,18 @@ import javax.lang.model.element.TypeElement;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Parse type structural information.
+ *
+ * @see TypeDef
+ * @see TypeInfoParser
+ * @author Cause Chung
+ */
 public interface TypeDefParser {
     /**
-     * @return null if the typeElement is ignored.
+     * Parse structural information.
+     *
+     * @return null if the typeElement is ignored or invalid.
      */
     @Nullable
     TypeDef parse(TypeElement typeElement);

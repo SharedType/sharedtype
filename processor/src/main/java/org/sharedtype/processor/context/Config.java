@@ -11,6 +11,11 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 
+/**
+ * Config wrappers.
+ *
+ * @author Cause Chung
+ */
 public final class Config {
   private final SharedType anno;
   @Getter

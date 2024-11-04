@@ -27,6 +27,11 @@ import java.util.List;
 
 import static org.sharedtype.domain.Constants.STRING_TYPE_INFO;
 
+/**
+ * Literal values are parsed via {@link Tree} API. It has limitations, see the documentation for more details.
+ *
+ * @author Cause Chung
+ */
 @RequiredArgsConstructor
 final class EnumTypeDefParser implements TypeDefParser {
     private final Context ctx;
