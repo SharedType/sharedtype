@@ -133,7 +133,7 @@ final class ClassTypeDefParser implements TypeDefParser {
             .collect(Collectors.toSet());
 
         for (Element enclosedElement : enclosedElements) {
-            if (config.isComponentIgnored(enclosedElement)) {
+            if (enclosedElement.getAnnotation(SharedType.Ignore.class) != null) {
                 continue;
             }
 

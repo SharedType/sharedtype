@@ -1,19 +1,18 @@
 package org.sharedtype.it;
 
+import lombok.val;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.sharedtype.domain.ClassDef;
 import org.sharedtype.domain.ConcreteTypeInfo;
+import org.sharedtype.domain.TypeVariableInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class JavaClassIntegrationTest {
-    private final ClassDef classDef = (ClassDef)deserializeTypeDef("org.sharedtype.it.java8.JavaClass.ser");
-
     @Test
-    void parseFields() {
+    void javaClass() {
+        ClassDef classDef = (ClassDef)deserializeTypeDef("org.sharedtype.it.java8.JavaClass.ser");
         assertThat(classDef.components()).satisfiesExactly(
             string -> {
                 assertThat(string.name()).isEqualTo("string");
@@ -24,6 +23,80 @@ final class JavaClassIntegrationTest {
                 assertThat(size.name()).isEqualTo("size");
                 ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)size.type();
                 assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.java8.EnumSize");
+            }
+        );
+
+        assertThat(classDef.supertypes()).hasSize(1);
+        ConcreteTypeInfo superType = (ConcreteTypeInfo)classDef.supertypes().get(0);
+        assertThat(superType.qualifiedName()).isEqualTo("org.sharedtype.it.java8.SuperClassA");
+    }
+
+    @Test
+    void anotherJavaClassShouldBeRenamed() {
+        ClassDef classDef = (ClassDef)deserializeTypeDef("org.sharedtype.it.java8.other.JavaClass.ser");
+        assertThat(classDef.simpleName()).isEqualTo("AnotherJavaClass");
+        assertThat(classDef.components()).satisfiesExactly(
+            value -> {
+                assertThat(value.name()).isEqualTo("value");
+                ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)value.type();
+                assertThat(typeInfo.qualifiedName()).isEqualTo("int");
+            }
+        );
+    }
+
+    @Test
+    void superClassA() {
+        ClassDef classDef = (ClassDef) deserializeTypeDef("org.sharedtype.it.java8.SuperClassA.ser");
+        assertThat(classDef.simpleName()).isEqualTo("SuperClassA");
+
+        assertThat(classDef.supertypes()).hasSize(1);
+        ConcreteTypeInfo superType = (ConcreteTypeInfo)classDef.supertypes().get(0);
+        assertThat(superType.qualifiedName()).isEqualTo("org.sharedtype.it.java8.InterfaceA");
+
+        assertThat(classDef.typeVariables()).isEmpty();
+        assertThat(classDef.components()).hasSize(2);
+
+        val component1 = classDef.components().get(0);
+        assertThat(component1.name()).isEqualTo("a");
+        ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)component1.type();
+        assertThat(typeInfo.qualifiedName()).isEqualTo("int");
+
+        val component2 = classDef.components().get(1);
+        assertThat(component2.name()).isEqualTo("value");
+        typeInfo = (ConcreteTypeInfo)component2.type();
+        assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Integer");
+    }
+
+    @Test
+    void interfaceA() {
+        ClassDef classDef = (ClassDef)deserializeTypeDef("org.sharedtype.it.java8.InterfaceA.ser");
+        assertThat(classDef.simpleName()).isEqualTo("InterfaceA");
+        assertThat(classDef.qualifiedName()).isEqualTo("org.sharedtype.it.java8.InterfaceA");
+        assertThat(classDef.components()).satisfiesExactly(
+            value -> {
+                assertThat(value.name()).isEqualTo("value");
+                TypeVariableInfo typeInfo = (TypeVariableInfo)value.type();
+                assertThat(typeInfo.name()).isEqualTo("T");
+            }
+        );
+    }
+
+    @Test
+    void shouldNotGenerateIgnoredTypes() {
+        assertThat(TypeDefDeserializer.doesResourceExist("org.sharedtype.it.java8.IgnoredInterfaceB.ser")).isFalse();
+        assertThat(TypeDefDeserializer.doesResourceExist("org.sharedtype.it.java8.IgnoredSuperClassB.ser")).isFalse();
+    }
+
+    @Test
+    void innerClass() {
+        ClassDef classDef = (ClassDef)deserializeTypeDef("org.sharedtype.it.java8.JavaClass.InnerClass.ser");
+        assertThat(classDef.simpleName()).isEqualTo("InnerClass");
+        assertThat(classDef.qualifiedName()).isEqualTo("org.sharedtype.it.java8.JavaClass.InnerClass");
+        assertThat(classDef.components()).satisfiesExactly(
+            value -> {
+                assertThat(value.name()).isEqualTo("value");
+                val fieldTypeInfo = (ConcreteTypeInfo)value.type();
+                assertThat(fieldTypeInfo.qualifiedName()).isEqualTo("int");
             }
         );
     }

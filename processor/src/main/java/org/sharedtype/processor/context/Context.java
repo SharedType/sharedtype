@@ -2,6 +2,7 @@ package org.sharedtype.processor.context;
 
 import com.sun.source.util.Trees;
 import lombok.Getter;
+import org.sharedtype.annotation.SharedType;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
@@ -65,7 +66,8 @@ public final class Context {
     }
 
     public boolean isTypeIgnored(TypeElement typeElement) {
-        return props.getIgnoredTypeQualifiedNames().contains(typeElement.getQualifiedName().toString());
+        boolean ignored = typeElement.getAnnotation(SharedType.Ignore.class) != null;
+        return ignored || props.getIgnoredTypeQualifiedNames().contains(typeElement.getQualifiedName().toString());
     }
 
     public FileObject createSourceOutput(String filename) throws IOException {

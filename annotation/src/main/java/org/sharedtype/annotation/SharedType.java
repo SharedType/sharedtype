@@ -46,7 +46,7 @@ public @interface SharedType {
     /**
      * <p>
      * The name of the emitted type. If not specified, the simple name of the annotated type will be used.
-     * This may be used to help avoid conflicting names in target output.
+     * This may be used to help avoid conflicting names in target code.
      * </p>
      * <br>
      * <p>
@@ -59,26 +59,25 @@ public @interface SharedType {
     String name() default "";
 
     /**
-     * Includes fields, record components, accessors, or constants in a type.
      * <p>
-     * To exclude a particular component, use {@link Ignore}.
+     * Configure whether to include fields, record components, accessors, or constants in a type.
+     * All included by default.
      * </p>
      * <p>
-     * Fields and accessors duplicates resolution:
-     *     <ul>
-     *         <li>In classes, fields and accessors effectively with the same name will be merged.</li>
-     *         <li>Same for record.</li>
-     *     </ul>
+     * To exclude a particular component, use {@link Ignore}.
+     * Fields and accessors effectively with the same name will be merged.
      * </p>
      *
      * @see ComponentType#FIELDS
      * @see ComponentType#ACCESSORS
      * @see ComponentType#CONSTANTS
      */
-    ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS};
+    ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS, ComponentType.CONSTANTS};
 
     /**
-     * Mark a method as an accessor regardless of its name. This annotation will be ignored if {@link #includes()} does not include {@link ComponentType#ACCESSORS}.
+     * Mark a method as an accessor regardless of its name.
+     * Getter prefixes are configured in global properties.
+     * This annotation will be ignored if {@link #includes()} does not include {@link ComponentType#ACCESSORS}.
      */
     @Target({ElementType.METHOD})
     @Retention(RetentionPolicy.SOURCE)
@@ -86,9 +85,9 @@ public @interface SharedType {
     }
 
     /**
-     * Exclude fields, record components, accessors in a type. Or ignore a dependent type, e.g. a supertype.
+     * Exclude fields, record components, accessors in a type, or a dependency type, e.g. a supertype.
      * <p>
-     * <b>When placed on type:</b> a subtype of this type will not include inherited members from this type.
+     * <b>When placed on a type:</b> a subtype of this type will not extend this type in target code.
      * But if this type is referenced directly as type of a field or return type of an accessor, an error will be reported,
      * unless the field or accessor is also ignored.
      * </p>

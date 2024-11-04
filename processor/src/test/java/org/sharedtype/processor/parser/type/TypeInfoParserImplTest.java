@@ -188,7 +188,7 @@ class TypeInfoParserImplTest {
             softly.assertThat(typeInfo.resolved()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).map(t -> (TypeVariableInfo) t).satisfiesExactly(
               typeArg -> {
-                  softly.assertThat(typeArg.getName()).isEqualTo("T");
+                  softly.assertThat(typeArg.name()).isEqualTo("T");
                   softly.assertThat(typeArg.resolved()).isTrue();
               }
             );

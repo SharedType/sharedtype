@@ -159,7 +159,7 @@ final class TypescriptTypeFileWriter implements TypeWriter {
             }
         } else if (typeInfo instanceof TypeVariableInfo) {
             TypeVariableInfo typeVariableInfo = (TypeVariableInfo) typeInfo;
-            nameBuilder.append(typeVariableInfo.getName());
+            nameBuilder.append(typeVariableInfo.name());
         } else if (typeInfo instanceof ArrayTypeInfo) {
             ArrayTypeInfo arrayTypeInfo = (ArrayTypeInfo) typeInfo;
             buildTypeExprRecursively(arrayTypeInfo.component(), nameBuilder);

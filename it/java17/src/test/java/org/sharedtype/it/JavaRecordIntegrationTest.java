@@ -5,6 +5,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.sharedtype.domain.ArrayTypeInfo;
 import org.sharedtype.domain.ClassDef;
 import org.sharedtype.domain.ConcreteTypeInfo;
+import org.sharedtype.domain.TypeVariableInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
@@ -18,8 +19,8 @@ final class JavaRecordIntegrationTest {
         var typeParameters = classDef.typeVariables();
         assertThat(typeParameters).hasSize(2);
 
-        assertThat(typeParameters.get(0).getName()).isEqualTo("T");
-        assertThat(typeParameters.get(1).getName()).isEqualTo("K");
+        assertThat(typeParameters.get(0).name()).isEqualTo("T");
+        assertThat(typeParameters.get(1).name()).isEqualTo("K");
     }
 
     @Test
@@ -290,7 +291,15 @@ final class JavaRecordIntegrationTest {
     }
 
     @Test
+    void implementedMethodGetValueFromInterface() {
+        var method = classDef.components().get(31);
+        assertThat(method.name()).isEqualTo("value");
+        var typeInfo = (TypeVariableInfo)method.type();
+        assertThat(typeInfo.name()).isEqualTo("T");
+    }
+
+    @Test
     void fieldsSize() {
-        assertThat(classDef.components().size()).isEqualTo(31);
+        assertThat(classDef.components().size()).isEqualTo(32);
     }
 }

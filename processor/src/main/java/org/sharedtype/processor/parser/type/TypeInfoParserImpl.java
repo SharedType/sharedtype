@@ -71,8 +71,8 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             } else if (currentType instanceof TypeVariable) {
                 TypeVariable argTypeVariable = (TypeVariable) currentType;
                 TypeVariableInfo typeVarInfo = parseTypeVariable(argTypeVariable);
-                qualifiedName = typeVarInfo.getName();
-                simpleName = typeVarInfo.getName();
+                qualifiedName = typeVarInfo.name();
+                simpleName = typeVarInfo.name();
                 typeArgs = Collections.emptyList();
                 isTypeVar = true;
             }

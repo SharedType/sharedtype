@@ -89,9 +89,9 @@ final class ClassTypeDefParserTest {
         // type variables
         assertThat(classDef.typeVariables()).hasSize(2);
         var typeVar1 = classDef.typeVariables().get(0);
-        assertThat(typeVar1.getName()).isEqualTo("T");
+        assertThat(typeVar1.name()).isEqualTo("T");
         var typeVar2 = classDef.typeVariables().get(1);
-        assertThat(typeVar2.getName()).isEqualTo("U");
+        assertThat(typeVar2.name()).isEqualTo("U");
 
         // supertypes
         assertThat(classDef.supertypes()).containsExactly(parsedSupertype1, parsedSupertype2, parsedSupertype3);

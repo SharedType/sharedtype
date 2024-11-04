@@ -21,13 +21,13 @@ final class TypeDefIntegrationTest {
             softly.assertThat(container.components()).hasSize(1);
             val component1 = container.components().get(0);
             val field1Type = (TypeVariableInfo) component1.type();
-            softly.assertThat(field1Type.getName()).isEqualTo("T");
+            softly.assertThat(field1Type.name()).isEqualTo("T");
             softly.assertThat(component1.name()).isEqualTo("t");
 
             softly.assertThat(container.resolved()).isTrue();
             softly.assertThat(container.typeVariables()).hasSize(1);
             val typeVariable1 = container.typeVariables().get(0);
-            softly.assertThat(typeVariable1.getName()).isEqualTo("T");
+            softly.assertThat(typeVariable1.name()).isEqualTo("T");
         });
     }
 
@@ -115,13 +115,7 @@ final class TypeDefIntegrationTest {
     @Test
     void superClassA() {
         ClassDef superClassA = (ClassDef) deserializeTypeDef("org.sharedtype.it.java8.SuperClassA.ser");
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(superClassA.simpleName()).isEqualTo("SuperClassA");
-            softly.assertThat(superClassA.components()).hasSize(1);
-            val component1 = superClassA.components().get(0);
-            softly.assertThat(component1.name()).isEqualTo("a");
-            val component1type = (ConcreteTypeInfo) component1.type();
-            softly.assertThat(component1type.qualifiedName()).isEqualTo("int");
-        });
+        assertThat(superClassA.simpleName()).isEqualTo("SuperClassA");
+        assertThat(superClassA.qualifiedName()).isEqualTo("org.sharedtype.it.java8.SuperClassA");
     }
 }

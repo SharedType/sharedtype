@@ -63,4 +63,9 @@ public record JavaRecord<T, K>(
     String shouldNotBeIncluded() {
         return null;
     }
+
+    @Override
+    public T getValue() {
+        return null;
+    }
 }
