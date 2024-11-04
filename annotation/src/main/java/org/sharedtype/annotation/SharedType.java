@@ -7,14 +7,35 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p>Share a type. <a href="https://github.com/cuzfrog/SharedType">Website</a></p>
- * <br>
- * <b>Inner class:</b>
+ * <p>Mark a class, record, enum, or interface for target code generation.</p>
+ *
  * <p>
- * Declared inner and nested types will not be included by default, unless they are referenced by other types.
- * Non-static inner classes are not supported, see documentation for details.
- *     TODO: doc for nested types
+ * <b>Annotation Processing:</b><br>
+ * This annotation is retained only in source code.
+ * That means it is not visible if source code is not directly participating in annotation processing.
+ * E.g. if it is in a dependency jar in a project with multi-module build.
+ * <br>
+ * <br>
+ * When used together with <b>Lombok</b>, the processing order matters.
+ * If processed before Lombok, SharedType will see only the original source code.
+ * E.g. if getters are handled by Lombok @Getter, SharedType will not see the getter method.
+ * It's recommended to execute SharedType before Lombok, since Lombok does not provide extra info to SharedType.
+ * Also you may only want a fast execution of SharedType with "-proc:only" without other annotation processors.
  * </p>
+ *
+ * <p>
+ * <b>Configurations:</b><br>
+ * Properties on class level (via this annotation) will take precedence over global properties.
+ * Properties that only apply to global level will not be present on class level.
+ * </p>
+ *
+ * <p>
+ * <b>Inner class:</b><br>
+ * Declared inner and nested types will not be included by default, unless they are referenced by other types.
+ * Non-static inner classes are not supported.
+ * </p>
+ *
+ * <p>See documentation for details. <a href="https://github.com/cuzfrog/SharedType">SharedType Website</a></p></p>
  *
  * @author Cause Chung
  */
@@ -24,12 +45,12 @@ import java.lang.annotation.Target;
 public @interface SharedType {
     /**
      * <p>
-     *     The name of the emitted type. If not specified, the simple name of the annotated type will be used.
-     *     This may be used to help avoid conflicting names in target output.
+     * The name of the emitted type. If not specified, the simple name of the annotated type will be used.
+     * This may be used to help avoid conflicting names in target output.
      * </p>
      * <br>
      * <p>
-     *     How possibly conflicting names are resolved:
+     * How conflicting names are resolved:
      *     <ul>
      *         <li>Typescript: simple name of a class is used as type name. Duplicate names are not allowed.</li>
      *     </ul>
@@ -42,16 +63,17 @@ public @interface SharedType {
      * <p>
      * To exclude a particular component, use {@link Ignore}.
      * </p>
-     * <br>
      * <p>
      * Fields and accessors duplicates resolution:
      *     <ul>
      *         <li>In classes, fields and accessors effectively with the same name will be merged.</li>
-     *         <li>In records, when accessors are included, records components are ignored.</li>
+     *         <li>Same for record.</li>
      *     </ul>
      * </p>
      *
-     * @see ComponentType
+     * @see ComponentType#FIELDS
+     * @see ComponentType#ACCESSORS
+     * @see ComponentType#CONSTANTS
      */
     ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS};
 

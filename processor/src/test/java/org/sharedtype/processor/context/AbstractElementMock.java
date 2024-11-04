@@ -37,8 +37,7 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
 
     public final M withTypeArguments(TypeMirror... typeArgsArr) {
         List<? extends TypeMirror> typeArgs = Arrays.asList(typeArgsArr);
-        if (type instanceof DeclaredType) {
-            DeclaredType declaredType = (DeclaredType) type;
+        if (type instanceof DeclaredType declaredType) {
             when(declaredType.getTypeArguments()).thenAnswer(invoc -> typeArgs);
         } else {
             fail("Not a DeclaredType: " + type);
