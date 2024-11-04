@@ -105,17 +105,4 @@ final class TypeDefIntegrationTest {
         val constant3 = enumSize.components().get(2);
         assertThat(constant3.value()).isEqualTo(3);
     }
-
-    @Test
-    void interfaceA() {
-        ClassDef interfaceA = (ClassDef) deserializeTypeDef("org.sharedtype.it.java8.InterfaceA.ser");
-        assertThat(interfaceA.simpleName()).isEqualTo("InterfaceA");
-    }
-
-    @Test
-    void superClassA() {
-        ClassDef superClassA = (ClassDef) deserializeTypeDef("org.sharedtype.it.java8.SuperClassA.ser");
-        assertThat(superClassA.simpleName()).isEqualTo("SuperClassA");
-        assertThat(superClassA.qualifiedName()).isEqualTo("org.sharedtype.it.java8.SuperClassA");
-    }
 }

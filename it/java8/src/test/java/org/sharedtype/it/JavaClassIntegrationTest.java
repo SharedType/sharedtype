@@ -23,6 +23,11 @@ final class JavaClassIntegrationTest {
                 assertThat(size.name()).isEqualTo("size");
                 ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)size.type();
                 assertThat(typeInfo.qualifiedName()).isEqualTo("org.sharedtype.it.java8.EnumSize");
+            },
+            notIgnoredImplementedMethod -> {
+                assertThat(notIgnoredImplementedMethod.name()).isEqualTo("notIgnoredImplementedMethod");
+                ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)notIgnoredImplementedMethod.type();
+                assertThat(typeInfo.qualifiedName()).isEqualTo("int");
             }
         );
 
@@ -54,7 +59,7 @@ final class JavaClassIntegrationTest {
         assertThat(superType.qualifiedName()).isEqualTo("org.sharedtype.it.java8.InterfaceA");
 
         assertThat(classDef.typeVariables()).isEmpty();
-        assertThat(classDef.components()).hasSize(2);
+        assertThat(classDef.components()).hasSize(3);
 
         val component1 = classDef.components().get(0);
         assertThat(component1.name()).isEqualTo("a");
@@ -65,6 +70,11 @@ final class JavaClassIntegrationTest {
         assertThat(component2.name()).isEqualTo("value");
         typeInfo = (ConcreteTypeInfo)component2.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Integer");
+
+        val component3 = classDef.components().get(2);
+        assertThat(component3.name()).isEqualTo("notIgnoredImplementedMethod");
+        typeInfo = (ConcreteTypeInfo)component3.type();
+        assertThat(typeInfo.qualifiedName()).isEqualTo("int");
     }
 
     @Test

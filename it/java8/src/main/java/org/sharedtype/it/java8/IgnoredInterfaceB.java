@@ -8,5 +8,5 @@ interface IgnoredInterfaceB {
         return false;
     }
 
-    // TODO: add method, and check implemented method in subtype is not ignored
+    int getNotIgnoredImplementedMethod();
 }

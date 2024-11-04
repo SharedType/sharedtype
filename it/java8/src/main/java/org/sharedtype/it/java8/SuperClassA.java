@@ -7,4 +7,9 @@ public abstract class SuperClassA extends IgnoredSuperClassB implements Interfac
     public Integer getValue() {
         return a;
     }
+
+    @Override
+    public int getNotIgnoredImplementedMethod() {
+        return 0;
+    }
 }
