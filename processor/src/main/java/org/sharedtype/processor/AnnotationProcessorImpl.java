@@ -40,10 +40,10 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
     private static final String PROPS_FILE_OPTION_NAME = "sharedtype.propsFile";
     private static final String DEFAULT_USER_PROPS_FILE = "sharedtype.properties";
     private static final boolean ANNOTATION_CONSUMED = true;
-    private Context ctx;
-    private TypeDefParser parser;
-    private TypeResolver resolver;
-    private TypeWriter writer;
+    Context ctx;
+    TypeDefParser parser;
+    TypeResolver resolver;
+    TypeWriter writer;
 
     @Override
     public SourceVersion getSupportedSourceVersion() {
@@ -85,7 +85,7 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
                 if (typeDef != null) {
                     discoveredDefs.add(typeDef);
                 } else {
-                    ctx.warning("Type '%s' is ignored, but annotated with '%s'.", typeElement.getQualifiedName(), ANNOTATION_QUALIFIED_NAME);
+                    ctx.warning("Type '%s' is ignored or invalid, but annotated with '%s'.", typeElement.getQualifiedName().toString(), ANNOTATION_QUALIFIED_NAME);
                 }
             } else {
                 throw new UnsupportedOperationException("Unsupported element: " + element);
