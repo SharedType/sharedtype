@@ -1,5 +1,8 @@
 package org.sharedtype.processor.support.utils;
 
+/**
+ * @author Cause Chung
+ */
 public final class Utils {
 
     private Utils() {

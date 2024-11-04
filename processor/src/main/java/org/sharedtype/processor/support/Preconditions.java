@@ -4,6 +4,10 @@ import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import java.util.Collection;
 
+/**
+ *
+ * @author Cause Chung
+ */
 // TODO: remove varargs to improve performance
 public final class Preconditions {
     private Preconditions() {

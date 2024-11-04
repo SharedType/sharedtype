@@ -6,6 +6,10 @@ import org.sharedtype.processor.context.Context;
 
 import java.util.List;
 
+/**
+ *
+ * @author Cause Chung
+ */
 @RequiredArgsConstructor
 final class ConsoleWriter implements TypeWriter{
     private final Context ctx;

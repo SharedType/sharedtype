@@ -2,6 +2,11 @@ package org.sharedtype.processor.support.exception;
 
 import org.sharedtype.processor.support.github.RepositoryInfo;
 
+/**
+ * Indicate an error.
+ *
+ * @author Cause Chung
+ */
 public final class SharedTypeInternalError extends Error {
     public SharedTypeInternalError(String message) {
         super(format(message));

@@ -27,12 +27,14 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ *
+ * @author Cause Chung
+ */
 final class TypescriptTypeFileWriter implements TypeWriter {
     private static final Map<ConcreteTypeInfo, String> PREDEFINED_TYPE_NAME_MAPPINGS;
     static {
@@ -189,6 +191,7 @@ final class TypescriptTypeFileWriter implements TypeWriter {
     }
 
     @RequiredArgsConstructor
+    @SuppressWarnings("unused")
     static final class PropertyExpr{
         final String name;
         final String type;

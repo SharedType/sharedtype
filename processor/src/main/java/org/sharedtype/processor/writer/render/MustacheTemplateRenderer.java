@@ -11,6 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implementation via on <a href="https://github.com/spullara/mustache.java">Mustache</a>.
+ *
+ * @author Cause Chung
+ */
 @RequiredArgsConstructor
 final class MustacheTemplateRenderer implements TemplateRenderer {
     private final MustacheFactory mf;

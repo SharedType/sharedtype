@@ -7,6 +7,7 @@ import org.sharedtype.processor.context.PropsFactory;
 import org.sharedtype.processor.parser.TypeDefParser;
 import org.sharedtype.processor.resolver.TypeResolver;
 import org.sharedtype.processor.support.annotation.VisibleForTesting;
+import org.sharedtype.processor.support.exception.SharedTypeException;
 import org.sharedtype.processor.support.exception.SharedTypeInternalError;
 import org.sharedtype.processor.writer.TypeWriter;
 
@@ -28,11 +29,16 @@ import java.util.Set;
 import static org.sharedtype.domain.Constants.ANNOTATION_QUALIFIED_NAME;
 import static org.sharedtype.processor.support.Preconditions.checkArgument;
 
+/**
+ *
+ * @author Cause Chung
+ */
 @SupportedAnnotationTypes("org.sharedtype.annotation.SharedType")
 @SupportedOptions({"sharedtype.propsFile"})
 @AutoService(Processor.class)
 public final class AnnotationProcessorImpl extends AbstractProcessor {
-    private static final String DEFAULT_USER_PROPERTIES_FILE = "sharedtype.properties";
+    private static final String PROPS_FILE_OPTION_NAME = "sharedtype.propsFile";
+    private static final String DEFAULT_USER_PROPS_FILE = "sharedtype.properties";
     private static final boolean ANNOTATION_CONSUMED = true;
     private Context ctx;
     private TypeDefParser parser;
@@ -47,7 +53,7 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        String configFile = processingEnv.getOptions().getOrDefault("sharedtype.propsFile", DEFAULT_USER_PROPERTIES_FILE);
+        String configFile = processingEnv.getOptions().getOrDefault(PROPS_FILE_OPTION_NAME, DEFAULT_USER_PROPS_FILE);
         ctx = new Context(processingEnv, PropsFactory.loadProps(Paths.get(configFile)));
         parser = TypeDefParser.create(ctx);
         resolver = TypeResolver.create(ctx, parser);
@@ -89,7 +95,7 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
         try {
             writer.write(resolvedDefs);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to write to file,", e);
+            throw new SharedTypeException("Failed to write,", e);
         }
     }
 }

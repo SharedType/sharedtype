@@ -22,6 +22,7 @@ import java.util.Deque;
 import java.util.List;
 
 /**
+ * Implementation that uses stacks to traverse the type graph.
  *
  * @author Cause Chung
  */

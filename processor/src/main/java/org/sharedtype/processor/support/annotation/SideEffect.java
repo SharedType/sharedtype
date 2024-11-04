@@ -7,6 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  * Indicate side effect performed by a method or on a parameter.
+ *
+ * @author Cause Chung
  */
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.SOURCE)

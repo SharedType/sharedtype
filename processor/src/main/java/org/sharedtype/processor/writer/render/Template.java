@@ -1,10 +1,16 @@
 package org.sharedtype.processor.writer.render;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.sharedtype.processor.context.OutputTarget;
 
-
+/**
+ * Represents a template used by {@link TemplateRenderer}.
+ *
+ * @author Cause Chung
+ */
+@EqualsAndHashCode
 @Getter(AccessLevel.PACKAGE)
 public final class Template {
     public static final Template TEMPLATE_INTERFACE = new Template(OutputTarget.TYPESCRIPT, "interface");

@@ -2,6 +2,7 @@ package org.sharedtype.processor.writer;
 
 import org.sharedtype.domain.TypeDef;
 import org.sharedtype.processor.context.Context;
+import org.sharedtype.processor.support.exception.SharedTypeException;
 
 import javax.annotation.processing.Filer;
 import javax.tools.FileObject;
@@ -13,6 +14,8 @@ import java.util.List;
 
 /**
  * For internal usage, where integration tests deserialize the generated files back to objects.
+ *
+ * @author Cause Chung
  */
 final class JavaSerializationFileWriter implements TypeWriter {
     private final Filer filer;
@@ -32,7 +35,7 @@ final class JavaSerializationFileWriter implements TypeWriter {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Failed to write to file,", e);
+            throw new SharedTypeException("Failed to write to file,", e);
         }
     }
 }
