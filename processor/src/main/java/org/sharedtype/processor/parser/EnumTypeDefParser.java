@@ -92,7 +92,8 @@ final class EnumTypeDefParser implements TypeDefParser {
                     " Is this class from a dependency jar/compiled class file? Please refer to the documentation for more information.",
                     enumConstant, enumTypeElement);
             } else {
-                throw new SharedTypeInternalError(String.format("Unsupported tree, kind: %s, tree: %s, element: %s", tree.getKind(), tree, enumConstant));
+                throw new SharedTypeInternalError(String.format(
+                    "Unsupported tree during parsing enum %s, kind: %s, tree: %s, element: %s", enumTypeElement, tree.getKind(), tree, enumConstant));
             }
         }
         return res;
@@ -114,10 +115,10 @@ final class EnumTypeDefParser implements TypeDefParser {
                 }
             } catch (IndexOutOfBoundsException e) {
                 throw new SharedTypeInternalError(String.format(
-                    "Initializer has incorrect number of arguments: %s in tree: %s, argIndex: %s", init, tree, ctorArgIdx));
+                    "Initializer in enum %s has incorrect number of arguments: %s in tree: %s, argIndex: %s", enumTypeElement, init, tree, ctorArgIdx));
             }
         }
-        throw new SharedTypeInternalError(String.format("Unsupported initializer: %s in tree: %s", init, tree));
+        throw new SharedTypeInternalError(String.format("Unsupported initializer in enum %s: %s in tree: %s", enumTypeElement, init, tree));
     }
 
     @RequiredArgsConstructor

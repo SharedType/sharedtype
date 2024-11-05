@@ -78,7 +78,7 @@ final class LoopTypeResolver implements TypeResolver {
                     }
                 }
             } else {
-                throw new SharedTypeInternalError("Unsupported type: " + typeDef.getClass());
+                throw new SharedTypeInternalError("Unsupported TypeDef type: " + typeDef.getClass());
             }
 
             resolveTypeInfo(processingDefStack, processingInfoStack);
@@ -113,11 +113,10 @@ final class LoopTypeResolver implements TypeResolver {
                 }
             } else if (typeInfo instanceof TypeVariableInfo) {
                 TypeVariableInfo typeVariableInfo = (TypeVariableInfo) typeInfo;
-                throw new UnsupportedOperationException("Type variable not supported yet: " + typeVariableInfo);
+                throw new SharedTypeInternalError("TypeVariableInfo is not supported yet: " + typeVariableInfo);
             } else {
-                throw new SharedTypeInternalError(
-                    String.format("Only ConcreteTypeInfo needs to be resolved, but got typeInfo: %s with %s", typeInfo, typeInfo.getClass())
-                );
+                throw new SharedTypeInternalError(String.format(
+                    "Only ConcreteTypeInfo needs to be resolved, but got: %s of %s", typeInfo, typeInfo.getClass()));
             }
         }
     }

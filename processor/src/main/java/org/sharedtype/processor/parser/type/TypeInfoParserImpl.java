@@ -46,7 +46,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
         } else if (typeKind == TypeKind.EXECUTABLE) {
             return parse(((ExecutableType) typeMirror).getReturnType());
         }
-        throw new SharedTypeInternalError(String.format("Unsupported field type, element: %s, typeKind: %s", typeMirror, typeKind)); // TODO: context info
+        throw new SharedTypeInternalError(String.format("Unsupported type: %s, typeKind: %s", typeMirror, typeKind));
     }
 
     private TypeInfo parseDeclared(DeclaredType declaredType) {

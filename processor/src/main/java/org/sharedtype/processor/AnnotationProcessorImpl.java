@@ -66,7 +66,7 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
             return ANNOTATION_CONSUMED;
         }
         if (annotations.size() > 1) {
-            throw new SharedTypeInternalError(String.format("Only '%s' is expected.", ANNOTATION_QUALIFIED_NAME));
+            throw new SharedTypeInternalError(String.format("Only annotation %s is expected.", ANNOTATION_QUALIFIED_NAME));
         }
         TypeElement annotation = annotations.iterator().next();
         checkArgument(annotation.getQualifiedName().contentEquals(ANNOTATION_QUALIFIED_NAME), "Wrong anno: %s", annotation);
@@ -88,7 +88,7 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
                     ctx.warning("Type '%s' is ignored or invalid, but annotated with '%s'.", typeElement.getQualifiedName().toString(), ANNOTATION_QUALIFIED_NAME);
                 }
             } else {
-                throw new UnsupportedOperationException("Unsupported element: " + element);
+                throw new SharedTypeInternalError(String.format("Unsupported element: %s of kind %s", element, element.getKind()));
             }
         }
         List<TypeDef> resolvedDefs = resolver.resolve(discoveredDefs);
