@@ -46,12 +46,7 @@ Setup annotation processing:
 Annotate on a class:
 ```java
 @SharedType
-record User(
-    String name,
-    int age,
-    String email
-) {
-}
+record User(String name, int age, String email) {}
 ```
 
 Execute annotation processing:
