@@ -42,8 +42,10 @@ jobs:
         with:
           name: generated-sources
           path: |
-            it/java17/target/generated-sources
+            ./it/java8/target/generated-sources
+            ./it/java17/target/generated-sources
           if-no-files-found: error
+          retention-days: 3
       - name: Upload jars
         uses: actions/upload-artifact@v4
         with:
@@ -51,6 +53,7 @@ jobs:
           path: |
               ~/.m2/repository/org/sharedtype
           if-no-files-found: error
+          retention-days: 3
       - name: Remove jars from cache
         run: rm -rf ~/.m2/repository/org/sharedtype
 
@@ -90,20 +93,20 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: generated-sources
-          path: it/java17/target/generated-sources
-      - name: Display downloaded artifact
-        run: ls -lhR it/java17/target/generated-sources
+          path: ./it/
+#      - name: Display downloaded artifact
+#        run: ls -lhR ./it/
       - name: Test Typescript
         working-directory: client-test/typescript
         run: |
           npm i
           npm run test
 
-  clean-artifact:
-    needs: [ jdk_compatibility_test, client_test ]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - uses: geekyeggo/delete-artifact@v5
-        with:
-          name: dist
+#  clean-artifact:
+#    needs: [ jdk_compatibility_test, client_test ]
+#    runs-on: ubuntu-latest
+#    if: always()
+#    steps:
+#      - uses: geekyeggo/delete-artifact@v5
+#        with:
+#          name: dist
