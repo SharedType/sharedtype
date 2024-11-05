@@ -26,6 +26,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,9 +148,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 }
                 res.add(Tuple.of(variableElem, name));
                 uniqueNamesOfTypes.add(name, type);
-            }
-
-            if (includeAccessors && enclosedElement instanceof ExecutableElement) {
+            } else if (includeAccessors && enclosedElement instanceof ExecutableElement) {
                 ExecutableElement methodElem = (ExecutableElement) enclosedElement;
                 boolean explicitAccessor = methodElem.getAnnotation(SharedType.Accessor.class) != null;
                 if (!isZeroArgNonstaticMethod(methodElem)) {
@@ -171,6 +170,11 @@ final class ClassTypeDefParser implements TypeDefParser {
             }
 
             // TODO: CONSTANTS
+
+            if (uniqueNamesOfTypes.ignoredType != null) {
+                ctx.error("%s.%s references to explicitly ignored type %s.",typeElement, name, uniqueNamesOfTypes.ignoredType);
+                return Collections.emptyList();
+            }
         }
 
         return res;
@@ -201,6 +205,7 @@ final class ClassTypeDefParser implements TypeDefParser {
 
     private final class NamesOfTypes {
         private final Map<String, TypeMirror> namesOfTypes;
+        private TypeMirror ignoredType;
 
         NamesOfTypes(int size) {
             this.namesOfTypes = new HashMap<>(size);
@@ -219,6 +224,10 @@ final class ClassTypeDefParser implements TypeDefParser {
 
         void add(String name, TypeMirror componentType) {
             namesOfTypes.put(name, componentType);
+            Element element = types.asElement(componentType);
+            if (element != null && element.getAnnotation(SharedType.Ignore.class) != null) {
+                ignoredType = componentType;
+            }
         }
     }
 }

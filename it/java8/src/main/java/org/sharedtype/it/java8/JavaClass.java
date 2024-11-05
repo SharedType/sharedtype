@@ -6,10 +6,12 @@ import org.sharedtype.annotation.SharedType;
 class JavaClass extends SuperClassA {
     private String string;
     private EnumSize size;
+//    private IgnoredInterfaceB b; // compilation failure
+    private @SharedType.Ignore IgnoredInterfaceB ignoredB;
 
     @Override
     public int getNotIgnoredImplementedMethod() {
-        return 0;
+        return 1;
     }
 
     @SharedType

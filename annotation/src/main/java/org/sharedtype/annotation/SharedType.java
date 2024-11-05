@@ -88,7 +88,7 @@ public @interface SharedType {
      * Exclude fields, record components, accessors in a type, or a dependency type, e.g. a supertype.
      * <p>
      * <b>When placed on a type:</b> a subtype of this type will not extend this type in target code.
-     * But if this type is referenced directly as type of a field or return type of an accessor, an error will be reported,
+     * But if this type is referenced directly as type of a field or return type of an accessor, a compilation error will be reported,
      * unless the field or accessor is also ignored.
      * </p>
      */
