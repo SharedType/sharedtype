@@ -8,10 +8,15 @@ import org.sharedtype.processor.context.ContextMocks;
 import org.sharedtype.domain.ArrayTypeInfo;
 import org.sharedtype.domain.ConcreteTypeInfo;
 import org.sharedtype.domain.TypeVariableInfo;
+import org.sharedtype.support.annotation.Issue;
 
 import javax.lang.model.type.TypeKind;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class TypeInfoParserImplTest {
@@ -215,8 +220,23 @@ class TypeInfoParserImplTest {
             .qualifiedName("com.github.cuzfrog.Abc")
             .resolved(false)
             .build();
-        ctxMocks.getTypeCache().saveTypeInfo("com.github.cuzfrog.Abc", cachedTypeInfo);
+        ctxMocks.getTypeStore().saveTypeInfo("com.github.cuzfrog.Abc", cachedTypeInfo);
         var typeInfo = (ConcreteTypeInfo) parser.parse(type);
         assertThat(typeInfo).isSameAs(cachedTypeInfo);
+    }
+
+    @Test @Issue(44)
+    void shouldNotCacheTypeInfoIfIsGeneric() {
+        var type = ctxMocks.typeElement("com.github.cuzfrog.Container")
+            .withTypeArguments(ctxMocks.typeElement("java.lang.Integer").type()).type();
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type);
+        assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Container");
+        assertThat(typeInfo.typeArgs()).hasSize(1);
+        var typeArg = (ConcreteTypeInfo)typeInfo.typeArgs().get(0);
+        assertThat(typeArg.qualifiedName()).isEqualTo("java.lang.Integer");
+
+        verify(ctxMocks.getTypeStore(), never()).getTypeInfo("com.github.cuzfrog.Container");
+        verify(ctxMocks.getTypeStore(), never()).saveTypeInfo(eq("com.github.cuzfrog.Container"), any());
+        verify(ctxMocks.getTypeStore()).getTypeInfo("java.lang.Integer");
     }
 }

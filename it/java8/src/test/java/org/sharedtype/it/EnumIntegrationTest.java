@@ -6,7 +6,7 @@ import org.sharedtype.domain.EnumDef;
 import org.sharedtype.domain.EnumValueInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
+import static org.sharedtype.it.support.TypeDefDeserializer.deserializeTypeDef;
 
 final class EnumIntegrationTest {
     @Test

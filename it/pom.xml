@@ -32,8 +32,7 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>sharedtype-it-shared</artifactId>
-            <version>${project.version}</version>
+            <artifactId>sharedtype-internal</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

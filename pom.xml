@@ -35,7 +35,6 @@
         <module>internal</module>
         <module>processor</module>
         <module>it</module>
-        <module>it/shared</module>
         <module>it/java8</module>
         <module>it/java17</module>
     </modules>

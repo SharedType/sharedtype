@@ -6,7 +6,7 @@ import org.sharedtype.domain.ConcreteTypeInfo;
 import org.sharedtype.domain.TypeInfo;
 import org.sharedtype.domain.TypeVariableInfo;
 import org.sharedtype.processor.context.Context;
-import org.sharedtype.processor.support.exception.SharedTypeInternalError;
+import org.sharedtype.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.sharedtype.domain.Constants.PRIMITIVES;
-import static org.sharedtype.processor.support.Preconditions.checkArgument;
+import static org.sharedtype.support.Preconditions.checkArgument;
 
 /**
  *
@@ -77,10 +77,22 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                 isTypeVar = true;
             }
         }
+        /* This check should be enough since array types have been stripped off.
+         *
+         * Generic type with different reified type arguments have different literal representations.
+         * E.g. List<String> and List<Integer> are different types.
+         * In target code this could be e.g. interface A extends List<String> {} and interface B extends List<Integer> {}.
+         * So generic types are not easy to compare in terms of caching. Current implementation does not cache generic types.
+         */
+        boolean isGeneric = !typeArgs.isEmpty();
 
-        TypeInfo typeInfo = ctx.getTypeCache().getTypeInfo(qualifiedName);
+        TypeInfo typeInfo = null;
+        if (!isGeneric) {
+            typeInfo = ctx.getTypeStore().getTypeInfo(qualifiedName);
+        }
+
         if (typeInfo == null) {
-            boolean resolved = isTypeVar || ctx.getTypeCache().contains(qualifiedName);
+            boolean resolved = isTypeVar || ctx.getTypeStore().contains(qualifiedName);
             List<TypeInfo> parsedTypeArgs = typeArgs.stream().map(this::parse).collect(Collectors.toList());
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
@@ -88,7 +100,10 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                 .typeArgs(parsedTypeArgs)
                 .resolved(resolved)
                 .build();
-            ctx.getTypeCache().saveTypeInfo(qualifiedName, typeInfo);
+
+            if (!isGeneric) {
+                ctx.getTypeStore().saveTypeInfo(qualifiedName, typeInfo);
+            }
         }
 
         while (arrayStack > 0) {

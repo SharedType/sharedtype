@@ -1,4 +1,4 @@
-package org.sharedtype.processor.support.utils;
+package org.sharedtype.support.utils;
 
 /**
  * @author Cause Chung

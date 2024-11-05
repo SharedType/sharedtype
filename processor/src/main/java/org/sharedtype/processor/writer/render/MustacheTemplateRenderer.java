@@ -3,8 +3,8 @@ package org.sharedtype.processor.writer.render;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import lombok.RequiredArgsConstructor;
-import org.sharedtype.processor.support.exception.SharedTypeInternalError;
-import org.sharedtype.processor.support.utils.Tuple;
+import org.sharedtype.support.exception.SharedTypeInternalError;
+import org.sharedtype.support.utils.Tuple;
 
 import java.io.Writer;
 import java.util.HashMap;

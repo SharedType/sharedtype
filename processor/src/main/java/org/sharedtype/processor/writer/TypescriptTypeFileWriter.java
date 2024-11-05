@@ -12,9 +12,9 @@ import org.sharedtype.domain.TypeDef;
 import org.sharedtype.domain.TypeInfo;
 import org.sharedtype.domain.TypeVariableInfo;
 import org.sharedtype.processor.context.Context;
-import org.sharedtype.processor.support.annotation.SideEffect;
-import org.sharedtype.processor.support.exception.SharedTypeInternalError;
-import org.sharedtype.processor.support.utils.Tuple;
+import org.sharedtype.support.annotation.SideEffect;
+import org.sharedtype.support.exception.SharedTypeInternalError;
+import org.sharedtype.support.utils.Tuple;
 import org.sharedtype.processor.writer.render.Template;
 import org.sharedtype.processor.writer.render.TemplateRenderer;
 

@@ -10,18 +10,21 @@ import java.util.Map;
 import static org.sharedtype.domain.Constants.PREDEFINED_OBJECT_TYPES;
 
 /**
- * Cache type information during annotation processing.
+ * Store and cache type information during annotation processing.
  * <br>
  * A same type can be referenced at multiple places. Once resolved, it should be cached.
- * By design, a type should be represented by only one instance of {@link TypeDef} or {@link TypeInfo}.
+ * By design, a type should be represented by only one instance.
+ * Note that generic types with different type arguments are different types.
  *
+ * @see org.sharedtype.domain.TypeVariableInfo
+ * @see org.sharedtype.processor.parser.type.TypeInfoParser
  * @see Context
  * @author Cause Chung
  */
-public final class TypeCache {
+public final class TypeStore {
     private final Map<String, Container> typeByQualifiedName = new HashMap<>();
 
-    TypeCache() {
+    TypeStore() {
         PREDEFINED_OBJECT_TYPES.forEach(this::saveTypeInfo);
     }
 
@@ -32,6 +35,9 @@ public final class TypeCache {
             return c;
         });
     }
+    /**
+     * Can only cache non-generic type.
+     */
     public void saveTypeInfo(String qualifiedName, TypeInfo typeInfo) {
         typeByQualifiedName.compute(qualifiedName, (k, v) -> {
             Container c = v == null ? new Container() : v;

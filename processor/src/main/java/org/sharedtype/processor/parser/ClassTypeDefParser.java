@@ -9,9 +9,9 @@ import org.sharedtype.domain.TypeVariableInfo;
 import org.sharedtype.processor.context.Config;
 import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
-import org.sharedtype.processor.support.annotation.VisibleForTesting;
-import org.sharedtype.processor.support.utils.Tuple;
-import org.sharedtype.processor.support.utils.Utils;
+import org.sharedtype.support.annotation.VisibleForTesting;
+import org.sharedtype.support.utils.Tuple;
+import org.sharedtype.support.utils.Utils;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
@@ -81,23 +81,21 @@ final class ClassTypeDefParser implements TypeDefParser {
     }
 
     private List<TypeInfo> parseSupertypes(TypeElement typeElement) {
-        List<TypeElement> supertypeElems = new ArrayList<>();
+        List<DeclaredType> supertypes = new ArrayList<>();
         TypeMirror superclass = typeElement.getSuperclass();
-        if (superclass instanceof DeclaredType) {
-            DeclaredType declaredType = (DeclaredType) superclass;
-            supertypeElems.add((TypeElement) declaredType.asElement());
+        if (superclass instanceof DeclaredType) { // superclass can be NoType.
+            supertypes.add((DeclaredType) superclass);
         }
 
         List<? extends TypeMirror> interfaceTypes = typeElement.getInterfaces();
         for (TypeMirror interfaceType : interfaceTypes) {
-            DeclaredType declaredType = (DeclaredType) interfaceType;
-            supertypeElems.add((TypeElement) declaredType.asElement());
+            supertypes.add((DeclaredType) interfaceType);
         }
 
-        List<TypeInfo> res = new ArrayList<>(supertypeElems.size());
-        for (TypeElement supertypeElem : supertypeElems) {
-            if (!ctx.isTypeIgnored(supertypeElem)) {
-                res.add(typeInfoParser.parse(supertypeElem.asType()));
+        List<TypeInfo> res = new ArrayList<>(supertypes.size());
+        for (DeclaredType supertype : supertypes) {
+            if (!ctx.isTypeIgnored((TypeElement) supertype.asElement())) {
+                res.add(typeInfoParser.parse(supertype));
             }
         }
         return res;
@@ -124,7 +122,7 @@ final class ClassTypeDefParser implements TypeDefParser {
     List<Tuple<Element, String>> resolveComponents(TypeElement typeElement, Config config) {
         List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
         List<Tuple<Element, String>> res = new ArrayList<>(enclosedElements.size());
-        NamesOfTypes uniqueNamesOfTypes = new NamesOfTypes(enclosedElements.size());
+        NamesOfTypes uniqueNamesOfTypes = new NamesOfTypes(enclosedElements.size(), typeElement);
         boolean includeAccessors = config.includes(SharedType.ComponentType.ACCESSORS);
         boolean includeFields = config.includes(SharedType.ComponentType.FIELDS);
 
@@ -204,10 +202,12 @@ final class ClassTypeDefParser implements TypeDefParser {
     }
 
     private final class NamesOfTypes {
+        private final TypeElement contextType;
         private final Map<String, TypeMirror> namesOfTypes;
         private TypeMirror ignoredType;
 
-        NamesOfTypes(int size) {
+        NamesOfTypes(int size, TypeElement contextType) {
+            this.contextType = contextType;
             this.namesOfTypes = new HashMap<>(size);
         }
 
@@ -217,7 +217,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 return false;
             }
             if (!types.isSameType(type, componentType)) {
-                ctx.error("Components with same name '%s' have different types '%s' and '%s'", name, type, componentType);
+                ctx.error("Type %s has components with same name '%s' that have different types '%s' and '%s'", contextType, name, type, componentType);
             }
             return true;
         }

@@ -1,6 +1,6 @@
 package org.sharedtype.processor.context;
 
-import org.sharedtype.processor.support.exception.SharedTypeException;
+import org.sharedtype.support.exception.SharedTypeException;
 
 import javax.annotation.Nullable;
 import java.io.InputStream;

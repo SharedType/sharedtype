@@ -11,6 +11,7 @@ import org.sharedtype.processor.context.ExecutableElementMock;
 import org.sharedtype.processor.context.RecordComponentMock;
 import org.sharedtype.processor.context.TypeElementMock;
 import org.sharedtype.processor.parser.type.TypeInfoParser;
+import org.sharedtype.support.annotation.Issue;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.NestingKind;
@@ -117,7 +118,7 @@ final class ClassTypeDefParserForRecordTest {
         verify(ctxMocks.getContext()).error(any(), any(Object[].class));
     }
 
-    @Test
+    @Test @Issue(43)
     void reportErrorWhenFieldTypeIsIgnoredType() {
         verify(ctxMocks.getContext()).getProcessingEnv();
 
@@ -134,7 +135,7 @@ final class ClassTypeDefParserForRecordTest {
         assertThat(msgCaptor.getValue()).contains("references to explicitly ignored type");
     }
 
-    @Test
+    @Test @Issue(43)
     void reportErrorWhenMethodReturnTypeIsIgnoredType() {
         var ignoredTypeMock = ctxMocks.typeElement("com.github.cuzfrog.IgnoredClass")
             .withAnnotation(SharedType.Ignore.class);

@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 
 @Getter
 public final class ContextMocks {
-    private final TypeCache typeCache = spy(new TypeCache());
+    private final TypeStore typeStore = spy(new TypeStore());
     private final Props props;
     private final ProcessingEnvironment processingEnv = mock(ProcessingEnvironment.class);
     private final Types types = mock(Types.class);
@@ -30,7 +30,7 @@ public final class ContextMocks {
         when(context.getProcessingEnv()).thenReturn(processingEnv);
         when(processingEnv.getElementUtils()).thenReturn(elements);
         when(processingEnv.getTypeUtils()).thenReturn(types);
-        when(context.getTypeCache()).thenReturn(typeCache);
+        when(context.getTypeStore()).thenReturn(typeStore);
         when(context.getTrees()).thenReturn(trees);
     }
 

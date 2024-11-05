@@ -6,9 +6,9 @@ import org.sharedtype.processor.context.Context;
 import org.sharedtype.processor.context.PropsFactory;
 import org.sharedtype.processor.parser.TypeDefParser;
 import org.sharedtype.processor.resolver.TypeResolver;
-import org.sharedtype.processor.support.annotation.VisibleForTesting;
-import org.sharedtype.processor.support.exception.SharedTypeException;
-import org.sharedtype.processor.support.exception.SharedTypeInternalError;
+import org.sharedtype.support.annotation.VisibleForTesting;
+import org.sharedtype.support.exception.SharedTypeException;
+import org.sharedtype.support.exception.SharedTypeInternalError;
 import org.sharedtype.processor.writer.TypeWriter;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.sharedtype.domain.Constants.ANNOTATION_QUALIFIED_NAME;
-import static org.sharedtype.processor.support.Preconditions.checkArgument;
+import static org.sharedtype.support.Preconditions.checkArgument;
 
 /**
  *

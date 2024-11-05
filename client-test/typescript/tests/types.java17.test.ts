@@ -1,4 +1,4 @@
-import type {DependencyClassA, DependencyClassB, DependencyClassC, EnumGalaxy, EnumSize, EnumTShirt, JavaRecord, AnotherJavaClass} from "../src/index.js";
+import type {DependencyClassA, DependencyClassB, DependencyClassC, EnumGalaxy, EnumSize, EnumTShirt, JavaRecord, AnotherJavaClass} from "../src/index.java17.js";
 
 export const list1: EnumGalaxy[] = ["Andromeda", "MilkyWay", "Triangulum"];
 export const record1: Record<EnumTShirt, number> = {
@@ -16,7 +16,9 @@ export const dependencyClassB: DependencyClassB = {
 
 export const dependencyClassA: DependencyClassA = {
     a: 0,
-    b: dependencyClassB
+    b: dependencyClassB,
+    notIgnoredImplementedMethod: 0,
+    value: 0,
 };
 dependencyClassC.a = dependencyClassA
 
@@ -50,6 +52,7 @@ export const obj: Omit<JavaRecord<string, number>, "aVoid" | "genericMap"> = {
     primitiveLong: 0,
     primitiveShort: 0,
     string: "",
+    value: "",
 };
 
 export const anotherJavaClass: AnotherJavaClass = {

@@ -1,7 +1,7 @@
 package org.sharedtype.processor.writer.render;
 
 import com.github.mustachejava.DefaultMustacheFactory;
-import org.sharedtype.processor.support.utils.Tuple;
+import org.sharedtype.support.utils.Tuple;
 
 import java.io.Writer;
 import java.util.List;

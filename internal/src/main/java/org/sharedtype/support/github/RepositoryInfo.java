@@ -1,4 +1,4 @@
-package org.sharedtype.processor.support.github;
+package org.sharedtype.support.github;
 
 /**
  * @author Cause Chung

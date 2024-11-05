@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @see ArrayTypeInfo
  * @author Cause Chung
  */
-@EqualsAndHashCode(of = "qualifiedName")
+@EqualsAndHashCode(of = {"qualifiedName", "typeArgs"})
 @Builder
 public final class ConcreteTypeInfo implements TypeInfo {
     private final String qualifiedName;

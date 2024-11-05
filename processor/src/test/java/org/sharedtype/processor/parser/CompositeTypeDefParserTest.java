@@ -41,7 +41,7 @@ final class CompositeTypeDefParserTest {
                 ElementKind.RECORD.name(), delegate1,
                 ElementKind.ENUM.name(), delegate2
         ));
-        when(ctxMocks.getTypeCache().getTypeDef("com.github.cuzfrog.Abc")).thenReturn(null);
+        when(ctxMocks.getTypeStore().getTypeDef("com.github.cuzfrog.Abc")).thenReturn(null);
     }
 
     @Test
@@ -50,7 +50,7 @@ final class CompositeTypeDefParserTest {
         when(delegate2.parse(typeElement)).thenReturn(classDef);
         when(typeElement.getKind()).thenReturn(ElementKind.RECORD);
 
-        var inOrder = Mockito.inOrder(delegate1, delegate2, ctxMocks.getContext().getTypeCache());
+        var inOrder = Mockito.inOrder(delegate1, delegate2, ctxMocks.getContext().getTypeStore());
 
         var typeDef = parser.parse(typeElement);
         verify(delegate1).parse(typeElement);
@@ -64,13 +64,13 @@ final class CompositeTypeDefParserTest {
         when(typeElement.getKind()).thenReturn(ElementKind.CONSTRUCTOR);
         assertThatThrownBy(() -> parser.parse(typeElement));
 
-        inOrder.verify(ctxMocks.getContext().getTypeCache()).saveTypeDef("com.github.cuzfrog.Abc", classDef);
+        inOrder.verify(ctxMocks.getContext().getTypeStore()).saveTypeDef("com.github.cuzfrog.Abc", classDef);
     }
 
     @Test
     void useCachedTypeDef() {
         var typeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build();
-        when(ctxMocks.getTypeCache().getTypeDef("com.github.cuzfrog.Abc")).thenReturn(typeDef);
+        when(ctxMocks.getTypeStore().getTypeDef("com.github.cuzfrog.Abc")).thenReturn(typeDef);
 
         assertThat(parser.parse(typeElement)).isSameAs(typeDef);
         verify(delegate1, never()).parse(any());

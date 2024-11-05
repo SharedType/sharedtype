@@ -62,3 +62,4 @@ Then attach your debugger on it.
 1. since annotation processing is one shot execution, JIT is not likely to optimize the code. So prefer plain loop than long calling stacks like Stream chains.
 2. no adding dependencies without strong justification.
 3. Lombok is used in this project, but do not abuse. Only use it to replace unavoidable boilerplate code, and not to increase the bytecode size.
+Do not use compile time heavy annotation like `lombok.val`.

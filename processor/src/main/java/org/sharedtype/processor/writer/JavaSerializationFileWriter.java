@@ -2,7 +2,7 @@ package org.sharedtype.processor.writer;
 
 import org.sharedtype.domain.TypeDef;
 import org.sharedtype.processor.context.Context;
-import org.sharedtype.processor.support.exception.SharedTypeException;
+import org.sharedtype.support.exception.SharedTypeException;
 
 import javax.annotation.processing.Filer;
 import javax.tools.FileObject;

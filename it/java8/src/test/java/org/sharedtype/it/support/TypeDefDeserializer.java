@@ -1,4 +1,4 @@
-package org.sharedtype.it;
+package org.sharedtype.it.support;
 
 import org.sharedtype.domain.TypeDef;
 
@@ -8,11 +8,11 @@ import java.io.ObjectInputStream;
 
 import static java.util.Objects.requireNonNull;
 
-final class TypeDefDeserializer {
+public final class TypeDefDeserializer {
     private static final ClassLoader classLoader = TypeDefDeserializer.class.getClassLoader();
     private TypeDefDeserializer() {}
 
-    static TypeDef deserializeTypeDef(String serFilename) {
+    public static TypeDef deserializeTypeDef(String serFilename) {
         try (InputStream is = classLoader.getResourceAsStream(serFilename);
              ObjectInputStream ois = new ObjectInputStream(requireNonNull(is, "Cannot find " + serFilename))) {
             return (TypeDef) ois.readObject();
@@ -21,7 +21,7 @@ final class TypeDefDeserializer {
         }
     }
 
-    static boolean doesResourceExist(String serFilename) {
+    public static boolean doesResourceExist(String serFilename) {
         return classLoader.getResource(serFilename) != null;
     }
 }

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  */
 public final class Context {
     @Getter
-    private final TypeCache typeCache = new TypeCache();
+    private final TypeStore typeStore = new TypeStore();
     @Getter
     private final ProcessingEnvironment processingEnv;
     @Getter

@@ -140,6 +140,14 @@ final class LoopTypeResolverTest {
         assertThat(enumA).isSameAs(typeDef);
     }
 
+    @Test
+    void deduplicateTypeDef() {
+        ClassDef classDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.ClassA").build();
+        List<TypeDef> defs = resolver.resolve(List.of(classDef, classDef));
+        assertThat(defs).hasSize(1);
+        assertThat(defs.get(0)).isSameAs(classDef);
+    }
+
     private TypeElement mockElementByName(String qualifiedName) {
         TypeElement typeElement = ctxMocks.typeElement(qualifiedName).element();
         when(ctxMocks.getElements().getTypeElement(qualifiedName)).thenReturn(typeElement);

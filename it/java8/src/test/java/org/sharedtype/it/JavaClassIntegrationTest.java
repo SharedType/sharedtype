@@ -1,13 +1,14 @@
 package org.sharedtype.it;
 
-import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.sharedtype.domain.ClassDef;
 import org.sharedtype.domain.ConcreteTypeInfo;
+import org.sharedtype.domain.FieldComponentInfo;
 import org.sharedtype.domain.TypeVariableInfo;
+import org.sharedtype.it.support.TypeDefDeserializer;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
+import static org.sharedtype.it.support.TypeDefDeserializer.deserializeTypeDef;
 
 final class JavaClassIntegrationTest {
     @Test
@@ -61,17 +62,17 @@ final class JavaClassIntegrationTest {
         assertThat(classDef.typeVariables()).isEmpty();
         assertThat(classDef.components()).hasSize(3);
 
-        val component1 = classDef.components().get(0);
+        FieldComponentInfo component1 = classDef.components().get(0);
         assertThat(component1.name()).isEqualTo("a");
         ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)component1.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("int");
 
-        val component2 = classDef.components().get(1);
+        FieldComponentInfo component2 = classDef.components().get(1);
         assertThat(component2.name()).isEqualTo("value");
         typeInfo = (ConcreteTypeInfo)component2.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Integer");
 
-        val component3 = classDef.components().get(2);
+        FieldComponentInfo component3 = classDef.components().get(2);
         assertThat(component3.name()).isEqualTo("notIgnoredImplementedMethod");
         typeInfo = (ConcreteTypeInfo)component3.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("int");
@@ -105,7 +106,7 @@ final class JavaClassIntegrationTest {
         assertThat(classDef.components()).satisfiesExactly(
             value -> {
                 assertThat(value.name()).isEqualTo("value");
-                val fieldTypeInfo = (ConcreteTypeInfo)value.type();
+                ConcreteTypeInfo fieldTypeInfo = (ConcreteTypeInfo)value.type();
                 assertThat(fieldTypeInfo.qualifiedName()).isEqualTo("int");
             }
         );

@@ -8,7 +8,7 @@ import org.sharedtype.domain.ConcreteTypeInfo;
 import org.sharedtype.domain.TypeVariableInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.sharedtype.it.TypeDefDeserializer.deserializeTypeDef;
+import static org.sharedtype.it.support.TypeDefDeserializer.deserializeTypeDef;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class JavaRecordIntegrationTest {
