@@ -35,9 +35,23 @@ import java.lang.annotation.Target;
  * Non-static inner classes are not supported.
  * </p>
  *
- * <p>See documentation for details. <a href="https://github.com/cuzfrog/SharedType">SharedType Website</a></p></p>
+ * <p>
+ * <b>Generics:</b><br>
+ * Generics are supported. But it's also limited to target schema's capacity.
+ * </p>
+ *
+ * <p>
+ * <b>Collections:</b><br>
+ * Iterables and arrays are treated as arrays. Map is mapped to:
+ * <ul>
+ *     <li>Typescript: {@code [key: string]: T} where {@code T} can be a reified type.</li>
+ * </ul>
+ * </p>
+ *
+ * <p><a href="https://github.com/cuzfrog/SharedType">SharedType Website</a></p></p>
  *
  * @author Cause Chung
+ * @implNote generics type bounds are not supported yet, Map is not supported yet.
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target({java.lang.annotation.ElementType.TYPE})
@@ -99,7 +113,6 @@ public @interface SharedType {
 
     /**
      * Mark enum value. By default, enum value is the enum constant name. The enum value must be literals (e.g. 1, "a", true) in enum constant expressions.
-     * <br>
      * <p>
      * When placed on:
      *  <ul>
@@ -107,7 +120,6 @@ public @interface SharedType {
      *      <li>Field - the constructor parameter with the same name and type will be used as if constructor parameter is annotated.</li>
      *  </ul>
      * </p>
-     * <br>
      * <p>
      * Below are some valid examples:
      * </p>
@@ -155,10 +167,10 @@ public @interface SharedType {
          */
         FIELDS,
         /**
-         * Represents 0 argument non-static methods:
+         * Represents 0 argument non-static methods that:
          * <ul>
-         *     <li>with name same as its instance field. Or fluent getter. This includes record's component accessor.</li>
-         *     <li>starting with a getter prefix. By default, prefixes include 'get' or 'is', which can be configured via global properties.</li>
+         *     <li>have names same as respective instance fields, aka, fluent getter. This includes record's component accessor.</li>
+         *     <li>start with a getter prefix. By default, prefixes include 'get' or 'is', which can be configured via global properties.</li>
          *     <li>annotated with {@link Accessor}.</li>
          * </ul>
          */
@@ -169,6 +181,8 @@ public @interface SharedType {
          *     <li>Class/record static fields with static values.</li>
          * </ul>
          * Fields with values that cannot be resolved at compile time will not be included. A corresponding warning will be given.
+         *
+         * @implNote not implement yet.
          */
         CONSTANTS,
     }
