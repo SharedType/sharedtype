@@ -46,9 +46,8 @@ import java.lang.annotation.Target;
  * <ul>
  *     <li>Typescript: {@code [key: string]: T} where {@code T} can be a reified type.</li>
  * </ul>
- * </p>
  *
- * <p><a href="https://github.com/cuzfrog/SharedType">SharedType Website</a></p></p>
+ * <p><a href="https://github.com/cuzfrog/SharedType">SharedType Website</a></p>
  *
  * @author Cause Chung
  * @implNote generics type bounds are not supported yet, Map is not supported yet.
@@ -65,10 +64,9 @@ public @interface SharedType {
      * <br>
      * <p>
      * How conflicting names are resolved:
-     *     <ul>
-     *         <li>Typescript: simple name of a class is used as type name. Duplicate names are not allowed.</li>
-     *     </ul>
-     * </p>
+     * <ul>
+     *     <li>Typescript: simple name of a class is used as type name. Duplicate names are not allowed.</li>
+     * </ul>
      */
     String name() default "";
 
@@ -119,7 +117,6 @@ public @interface SharedType {
      *      <li>Constructor parameter - the literal value served to this parameter from enum constant expressions will be used.</li>
      *      <li>Field - the constructor parameter with the same name and type will be used as if constructor parameter is annotated.</li>
      *  </ul>
-     * </p>
      * <p>
      * Below are some valid examples:
      * </p>

@@ -48,7 +48,6 @@
         <junit-jupiter.version>5.10.2</junit-jupiter.version>
         <lombok.version>1.18.34</lombok.version>
         <auto-service.version>1.1.1</auto-service.version>
-        <dagger.version>2.52</dagger.version>
         <mockito.version>5.14.1</mockito.version>
     </properties>
 
@@ -62,11 +61,6 @@
             <dependency>
                 <groupId>org.sharedtype</groupId>
                 <artifactId>sharedtype-internal</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.sharedtype</groupId>
-                <artifactId>sharedtype-ap</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -98,17 +92,6 @@
                 <version>${auto-service.version}</version>
                 <scope>provided</scope>
                 <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>com.google.dagger</groupId>
-                <artifactId>dagger</artifactId>
-                <version>${dagger.version}</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>com.google.dagger</groupId>
-                <artifactId>dagger-compiler</artifactId>
-                <version>${dagger.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -169,6 +152,14 @@
                     <version>3.3.1</version>
                 </plugin>
                 <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.11.1</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.0</version>
                 </plugin>
@@ -182,7 +173,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.1.3</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
@@ -202,7 +193,36 @@
                     <artifactId>editorconfig-maven-plugin</artifactId>
                     <version>0.1.3</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.simplify4u.plugins</groupId>
+                    <artifactId>sign-maven-plugin</artifactId>
+                    <version>1.1.0</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <createChecksum>true</createChecksum>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

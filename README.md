@@ -32,7 +32,7 @@ struct User {
 And more.
 
 ## Features
-* Java8 full support. No hassles.
+* Java8 support. No hassles.
 * Client source dependency is only `@SharedType`. Nothing gets into bytecode/runtime.
 * SharedType AP jars <100KB, only 2 small dependencies: jsr305 annotations and mustache. Download less.
 * Parsing takes milliseconds with `-proc:only`. Implemented with performance in head.
