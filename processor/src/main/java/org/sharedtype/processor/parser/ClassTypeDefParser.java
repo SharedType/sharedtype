@@ -65,7 +65,7 @@ final class ClassTypeDefParser implements TypeDefParser {
 
     private boolean isValidClassTypeElement(TypeElement typeElement) {
         if (typeElement.getNestingKind() != NestingKind.TOP_LEVEL && !typeElement.getModifiers().contains(Modifier.STATIC)) {
-            ctx.error("Class %s is not static." +
+            ctx.error("Class %s is not static, non-static inner class is not supported." +
                 " Instance class may refer to its enclosing class's generic type without the type declaration on its own," +
                 " which could break the generated code. Later version of SharedType may loosen this limitation.", typeElement);
             return false;
@@ -151,7 +151,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 boolean explicitAccessor = methodElem.getAnnotation(SharedType.Accessor.class) != null;
                 if (!isZeroArgNonstaticMethod(methodElem)) {
                     if (explicitAccessor) {
-                        ctx.warning("Method '%s' annotated with @SharedType.Accessor is not a zero-arg nonstatic method.", methodElem);
+                        ctx.warning("%s.%s annotated with @SharedType.Accessor is not a zero-arg nonstatic method.", typeElement, methodElem);
                     }
                     continue;
                 }
@@ -170,7 +170,8 @@ final class ClassTypeDefParser implements TypeDefParser {
             // TODO: CONSTANTS
 
             if (uniqueNamesOfTypes.ignoredType != null) {
-                ctx.error("%s.%s references to explicitly ignored type %s.",typeElement, name, uniqueNamesOfTypes.ignoredType);
+                ctx.error("%s.%s references to explicitly ignored type %s, which is not allowed." +
+                    " Either remove the ignored type, or add @SharedType.Ignore to the field or accessor.",typeElement, name, uniqueNamesOfTypes.ignoredType);
                 return Collections.emptyList();
             }
         }
@@ -217,7 +218,8 @@ final class ClassTypeDefParser implements TypeDefParser {
                 return false;
             }
             if (!types.isSameType(type, componentType)) {
-                ctx.error("Type %s has components with same name '%s' that have different types '%s' and '%s'", contextType, name, type, componentType);
+                ctx.error("Type %s has conflicting components with same name '%s', because they have different types %s and %s, they cannot be merged.",
+                    contextType, name, type, componentType);
             }
             return true;
         }
