@@ -11,7 +11,7 @@ Menu:
 Add sharedtype dependency, the annotation `@SharedType` is only used at compile time on source code:
 ```xml
 <dependency>
-    <groupId>org.sharedtype</groupId>
+    <groupId>io.github.cuzfrog.sharedtype</groupId>
     <artifactId>sharedtype</artifactId>
     <version>${sharedtype.version}</version>
     <scope>provided</scope>
@@ -27,7 +27,7 @@ Setup annotation processing:
     <configuration>
         <annotationProcessorPaths>
             <path>
-                <groupId>org.sharedtype</groupId>
+                <groupId>io.github.cuzfrog.sharedtype</groupId>
                 <artifactId>sharedtype-ap</artifactId>
                 <version>${project.version}</version>
             </path>

@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.sharedtype</groupId>
+    <groupId>io.github.cuzfrog.sharedtype</groupId>
     <artifactId>sharedtype-parent</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -54,12 +54,12 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.sharedtype</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>sharedtype</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.sharedtype</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>sharedtype-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -194,9 +194,9 @@
                     <version>0.1.3</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.simplify4u.plugins</groupId>
-                    <artifactId>sign-maven-plugin</artifactId>
-                    <version>1.1.0</version>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>0.6.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -220,6 +220,34 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <tags>
+                                <tag>
+                                    <name>implNote</name>
+                                    <head>Implementation Note:</head>
+                                </tag>
+                            </tags>
+                            <excludePackageNames>io.github.cuzfrog.sharedtype.it.*</excludePackageNames>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <checksums>required</checksums>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
