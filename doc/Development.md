@@ -65,3 +65,6 @@ Then attach your debugger on it.
 2. no adding dependencies without strong justification.
 3. Lombok is used in this project, but do not abuse. Only use it to replace unavoidable boilerplate code, and not to increase the bytecode size.
 Do not use compile time heavy annotation like `lombok.val`.
+
+## Release
+Release is via Sonatype [Central Portal](https://central.sonatype.org/register/central-portal/). Snapshot release is not supported.
