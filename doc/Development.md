@@ -33,20 +33,20 @@ Before run test in IDE/individual module, run `./mvnw clean install -DskipTests`
 ```bash
 ./mvnw clean install -DskipTests -q && ./mvnw test -pl it/java17 -pl it/java8
 ```
-#### Run local verification with all java tests
+#### Run local verification with all java tests:
 ```bash
 ./mvnw verify
 ```
-#### Verify JDK8 compatibility locally
+#### Verify JDK8 compatibility locally:
 Setup `JAVA8_HOME` to point to your Java8 installation. Open a new terminal and run:
 ```bash
 . setenv 8
 ./mvnw verify -pl it/java8
 ```
-#### Run client tests locally
+#### Run client tests locally:
 Client tests are run in target languages in respective dir inside `./client-test`. They do basic type checking.
 * Typescript. `. setenv && npm i && npm run test`
-#### Misc
+#### Misc:
 Style check:
 ```bash
 ./mvnw editorconfig:check
@@ -56,7 +56,6 @@ Debug annotation processor by run maven build:
 ./mvnd <your args goes here>
 ```
 Then attach your debugger on it.
-
 
 ## Coding Style Guide
 1. since annotation processing is one shot execution, JIT is not likely to optimize the code. So prefer plain loop than long calling stacks like Stream chains.
