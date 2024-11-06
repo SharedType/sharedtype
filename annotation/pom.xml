@@ -12,4 +12,7 @@
     <artifactId>sharedtype</artifactId>
 
     <name>SharedType Annotations</name>
+    <description>
+        SharedType is an annotation processor to generate type information from Java source code into different target languages or schemas.
+    </description>
 </project>

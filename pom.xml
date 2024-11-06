@@ -30,15 +30,6 @@
         </license>
     </licenses>
 
-    <modules>
-        <module>annotation</module>
-        <module>internal</module>
-        <module>processor</module>
-        <module>it</module>
-        <module>it/java8</module>
-        <module>it/java17</module>
-    </modules>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
@@ -204,10 +195,26 @@
 
     <profiles>
         <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>annotation</module>
+                <module>internal</module>
+                <module>processor</module>
+                <module>it</module>
+                <module>it/java8</module>
+                <module>it/java17</module>
+            </modules>
+        </profile>
+        <profile>
             <id>release</id>
-            <properties>
-                <createChecksum>true</createChecksum>
-            </properties>
+            <modules>
+                <module>annotation</module>
+                <module>internal</module>
+                <module>processor</module>
+            </modules>
             <build>
                 <plugins>
                     <plugin>
@@ -238,7 +245,8 @@
                                     <head>Implementation Note:</head>
                                 </tag>
                             </tags>
-                            <excludePackageNames>io.github.cuzfrog.sharedtype.it.*</excludePackageNames>
+<!--                            <excludePackageNames>io.github.cuzfrog.sharedtype.it.*</excludePackageNames>-->
+                            <doclint>all,-missing</doclint>
                         </configuration>
                     </plugin>
                     <plugin>

@@ -12,6 +12,7 @@
     <artifactId>sharedtype-ap</artifactId>
 
     <name>SharedType Annotation Processor</name>
+    <description>SharedType Annotation Processor implementation.</description>
 
     <dependencies>
         <dependency>

@@ -15,7 +15,7 @@
 
     <properties>
         <sharedtype.compilerArg/>
-        <sharedtype.propsFile>it/sharedtype.properties</sharedtype.propsFile>
+        <sharedtype.propsFile>${project.basedir}/sharedtype.properties</sharedtype.propsFile>
     </properties>
 
     <dependencies>

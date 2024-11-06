@@ -12,6 +12,7 @@
     <artifactId>sharedtype-internal</artifactId>
 
     <name>SharedType Internal</name>
+    <description>SharedType internal types and utils.</description>
 
     <dependencies>
         <dependency>
