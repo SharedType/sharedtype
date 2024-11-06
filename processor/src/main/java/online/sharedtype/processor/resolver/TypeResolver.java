@@ -1,8 +1,8 @@
 package online.sharedtype.processor.resolver;
 
 import online.sharedtype.SharedType;
-import online.sharedtype.domain.TypeDef;
-import online.sharedtype.domain.TypeInfo;
+import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.parser.TypeDefParser;
 

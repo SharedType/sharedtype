@@ -1,4 +1,4 @@
-package online.sharedtype.domain;
+package online.sharedtype.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(of = "qualifiedName")
 @Builder
 public final class EnumDef implements TypeDef {
+    private static final long serialVersionUID = 9158463705652816935L;
     private final String qualifiedName;
     private final String simpleName;
     @Builder.Default

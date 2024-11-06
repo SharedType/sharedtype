@@ -1,4 +1,4 @@
-package online.sharedtype.domain;
+package online.sharedtype.processor.domain;
 
 import org.junit.jupiter.api.Test;
 

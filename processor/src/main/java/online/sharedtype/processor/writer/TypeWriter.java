@@ -1,6 +1,6 @@
 package online.sharedtype.processor.writer;
 
-import online.sharedtype.domain.TypeDef;
+import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.OutputTarget;
 import online.sharedtype.processor.writer.render.TemplateRenderer;

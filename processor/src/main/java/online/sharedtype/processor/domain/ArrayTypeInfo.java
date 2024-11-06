@@ -1,4 +1,4 @@
-package online.sharedtype.domain;
+package online.sharedtype.processor.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public final class ArrayTypeInfo implements TypeInfo {
+    private static final long serialVersionUID = -6969192495547169811L;
     private final TypeInfo component;
 
     public TypeInfo component() {

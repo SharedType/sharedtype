@@ -1,7 +1,7 @@
 package online.sharedtype.processor.parser;
 
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.domain.TypeDef;
+import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.support.exception.SharedTypeInternalError;
 

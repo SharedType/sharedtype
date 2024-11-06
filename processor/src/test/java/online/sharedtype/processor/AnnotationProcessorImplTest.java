@@ -1,7 +1,7 @@
 package online.sharedtype.processor;
 
-import online.sharedtype.domain.ClassDef;
-import online.sharedtype.domain.Constants;
+import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.context.ContextMocks;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

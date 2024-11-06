@@ -1,9 +1,9 @@
 package online.sharedtype.it;
 
-import online.sharedtype.domain.ClassDef;
-import online.sharedtype.domain.ConcreteTypeInfo;
-import online.sharedtype.domain.FieldComponentInfo;
-import online.sharedtype.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.FieldComponentInfo;
+import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.it.support.TypeDefDeserializer;
 import org.junit.jupiter.api.Test;
 

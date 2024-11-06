@@ -1,4 +1,4 @@
-package online.sharedtype.domain;
+package online.sharedtype.processor.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,7 @@ import online.sharedtype.SharedType;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public final class EnumValueInfo implements ComponentInfo {
+    private static final long serialVersionUID = 1117324458104635595L;
     private final TypeInfo type;
     private final Object value;
 

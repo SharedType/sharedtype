@@ -1,4 +1,4 @@
-package online.sharedtype.domain;
+package online.sharedtype.processor.domain;
 
 import lombok.Builder;
 
@@ -12,6 +12,7 @@ import java.util.Set;
  */
 @Builder
 public final class FieldComponentInfo implements ComponentInfo {
+    private static final long serialVersionUID = -155863067131290289L;
     private final String name;
     private final Set<Modifier> modifiers;
     private final boolean optional;

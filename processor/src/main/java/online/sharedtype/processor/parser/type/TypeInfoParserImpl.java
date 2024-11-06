@@ -1,10 +1,10 @@
 package online.sharedtype.processor.parser.type;
 
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.domain.ArrayTypeInfo;
-import online.sharedtype.domain.ConcreteTypeInfo;
-import online.sharedtype.domain.TypeInfo;
-import online.sharedtype.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.ArrayTypeInfo;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.support.exception.SharedTypeInternalError;
 
@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static online.sharedtype.domain.Constants.PRIMITIVES;
+import static online.sharedtype.processor.domain.Constants.PRIMITIVES;
 import static online.sharedtype.support.Preconditions.checkArgument;
 
 /**

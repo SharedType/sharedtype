@@ -9,13 +9,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import online.sharedtype.domain.ArrayTypeInfo;
-import online.sharedtype.domain.ClassDef;
-import online.sharedtype.domain.ConcreteTypeInfo;
-import online.sharedtype.domain.EnumDef;
-import online.sharedtype.domain.EnumValueInfo;
-import online.sharedtype.domain.FieldComponentInfo;
-import online.sharedtype.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.ArrayTypeInfo;
+import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.EnumDef;
+import online.sharedtype.processor.domain.EnumValueInfo;
+import online.sharedtype.processor.domain.FieldComponentInfo;
+import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.support.utils.Tuple;
 import online.sharedtype.processor.writer.render.Template;
@@ -36,8 +36,8 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static online.sharedtype.domain.Constants.INT_TYPE_INFO;
-import static online.sharedtype.domain.Constants.STRING_TYPE_INFO;
+import static online.sharedtype.processor.domain.Constants.INT_TYPE_INFO;
+import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 
 @ExtendWith(MockitoExtension.class)
 final class TypescriptTypeFileWriterTest {

@@ -2,7 +2,7 @@ package online.sharedtype.processor.parser.type;
 
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.parser.TypeDefParser;
-import online.sharedtype.domain.TypeInfo;
+import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.context.Context;
 
 import javax.lang.model.type.TypeMirror;

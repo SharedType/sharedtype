@@ -1,4 +1,4 @@
-package online.sharedtype.domain;
+package online.sharedtype.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(of = {"qualifiedName", "typeArgs"})
 @Builder
 public final class ConcreteTypeInfo implements TypeInfo {
+    private static final long serialVersionUID = 6912267731376244613L;
     private final String qualifiedName;
     private final String simpleName;
     @Builder.Default

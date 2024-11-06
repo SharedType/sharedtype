@@ -1,15 +1,15 @@
 package online.sharedtype.processor.context;
 
-import online.sharedtype.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
-import online.sharedtype.domain.TypeDef;
-import online.sharedtype.domain.TypeInfo;
+import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.TypeInfo;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static online.sharedtype.domain.Constants.PREDEFINED_OBJECT_TYPES;
+import static online.sharedtype.processor.domain.Constants.PREDEFINED_OBJECT_TYPES;
 
 /**
  * Store and cache type information during annotation processing.

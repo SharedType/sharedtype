@@ -1,4 +1,4 @@
-package online.sharedtype.domain;
+package online.sharedtype.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -15,6 +15,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 @Builder
 public final class TypeVariableInfo implements TypeInfo {
+    private static final long serialVersionUID = 7632941203572660271L;
     private final String name;
     // TODO: support generic bounds
 

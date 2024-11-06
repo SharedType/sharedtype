@@ -1,6 +1,6 @@
 package online.sharedtype.processor.parser;
 
-import online.sharedtype.domain.TypeDef;
+import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 

@@ -58,11 +58,6 @@
                 <artifactId>sharedtype</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sharedtype-internal</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
@@ -213,7 +208,6 @@
             </activation>
             <modules>
                 <module>annotation</module>
-                <module>internal</module>
                 <module>processor</module>
                 <module>it</module>
                 <module>it/java8</module>
@@ -224,7 +218,6 @@
             <id>release</id>
             <modules>
                 <module>annotation</module>
-                <module>internal</module>
                 <module>processor</module>
             </modules>
             <build>

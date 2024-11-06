@@ -1,16 +1,16 @@
 package online.sharedtype.processor.writer;
 
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.domain.ArrayTypeInfo;
-import online.sharedtype.domain.ClassDef;
-import online.sharedtype.domain.ConcreteTypeInfo;
-import online.sharedtype.domain.Constants;
-import online.sharedtype.domain.EnumDef;
-import online.sharedtype.domain.EnumValueInfo;
-import online.sharedtype.domain.FieldComponentInfo;
-import online.sharedtype.domain.TypeDef;
-import online.sharedtype.domain.TypeInfo;
-import online.sharedtype.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.ArrayTypeInfo;
+import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.EnumDef;
+import online.sharedtype.processor.domain.EnumValueInfo;
+import online.sharedtype.processor.domain.FieldComponentInfo;
+import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.support.annotation.SideEffect;
 import online.sharedtype.support.exception.SharedTypeInternalError;

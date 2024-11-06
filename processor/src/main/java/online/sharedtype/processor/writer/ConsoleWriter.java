@@ -1,7 +1,7 @@
 package online.sharedtype.processor.writer;
 
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.domain.TypeDef;
+import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.context.Context;
 
 import java.util.List;

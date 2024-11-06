@@ -2,10 +2,10 @@ package online.sharedtype.it;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import online.sharedtype.domain.ArrayTypeInfo;
-import online.sharedtype.domain.ClassDef;
-import online.sharedtype.domain.ConcreteTypeInfo;
-import online.sharedtype.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.ArrayTypeInfo;
+import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.TypeVariableInfo;
 
 import static online.sharedtype.it.support.TypeDefDeserializer.deserializeTypeDef;
 import static org.assertj.core.api.Assertions.assertThat;

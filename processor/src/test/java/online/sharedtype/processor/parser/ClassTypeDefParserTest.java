@@ -1,7 +1,7 @@
 package online.sharedtype.processor.parser;
 
-import online.sharedtype.domain.ClassDef;
-import online.sharedtype.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TypeElementMock;
 import org.junit.jupiter.api.Test;

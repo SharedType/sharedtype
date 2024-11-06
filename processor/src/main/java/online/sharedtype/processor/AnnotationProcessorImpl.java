@@ -1,7 +1,7 @@
 package online.sharedtype.processor;
 
 import com.google.auto.service.AutoService;
-import online.sharedtype.domain.TypeDef;
+import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.PropsFactory;
 import online.sharedtype.processor.parser.TypeDefParser;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static online.sharedtype.domain.Constants.ANNOTATION_QUALIFIED_NAME;
+import static online.sharedtype.processor.domain.Constants.ANNOTATION_QUALIFIED_NAME;
 import static online.sharedtype.support.Preconditions.checkArgument;
 
 /**

@@ -5,9 +5,9 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import online.sharedtype.domain.ArrayTypeInfo;
-import online.sharedtype.domain.ConcreteTypeInfo;
-import online.sharedtype.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.ArrayTypeInfo;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.support.annotation.Issue;
 
 import javax.lang.model.type.TypeKind;

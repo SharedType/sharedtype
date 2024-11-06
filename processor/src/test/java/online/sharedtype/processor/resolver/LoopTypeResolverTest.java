@@ -1,14 +1,14 @@
 package online.sharedtype.processor.resolver;
 
-import online.sharedtype.domain.ArrayTypeInfo;
-import online.sharedtype.domain.ClassDef;
-import online.sharedtype.domain.ConcreteTypeInfo;
-import online.sharedtype.domain.EnumDef;
-import online.sharedtype.domain.EnumValueInfo;
-import online.sharedtype.domain.FieldComponentInfo;
-import online.sharedtype.domain.TypeDef;
-import online.sharedtype.domain.TypeInfo;
-import online.sharedtype.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.ArrayTypeInfo;
+import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.EnumDef;
+import online.sharedtype.processor.domain.EnumValueInfo;
+import online.sharedtype.processor.domain.FieldComponentInfo;
+import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.context.ContextMocks;
 import org.junit.jupiter.api.Test;
 import online.sharedtype.processor.parser.TypeDefParser;
@@ -21,7 +21,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static online.sharedtype.domain.Constants.STRING_TYPE_INFO;
+import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 
 final class LoopTypeResolverTest {
     private final ContextMocks ctxMocks = new ContextMocks();

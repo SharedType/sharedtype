@@ -1,8 +1,8 @@
 package online.sharedtype.it;
 
-import online.sharedtype.domain.ConcreteTypeInfo;
-import online.sharedtype.domain.EnumDef;
-import online.sharedtype.domain.EnumValueInfo;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.EnumDef;
+import online.sharedtype.processor.domain.EnumValueInfo;
 import org.junit.jupiter.api.Test;
 
 import static online.sharedtype.it.support.TypeDefDeserializer.deserializeTypeDef;

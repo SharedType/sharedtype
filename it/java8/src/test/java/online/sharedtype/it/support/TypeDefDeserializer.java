@@ -1,6 +1,6 @@
 package online.sharedtype.it.support;
 
-import online.sharedtype.domain.TypeDef;
+import online.sharedtype.processor.domain.TypeDef;
 
 import java.io.IOException;
 import java.io.InputStream;

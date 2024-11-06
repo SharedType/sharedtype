@@ -8,11 +8,14 @@ Internal types also have javadoc for more information.
 #### Project structure
 * `annotation` contains the annotation type `@SharedType` as client code compile-time dependency.
 * `processor` contains annotation processor logic, put on client's annotation processing path.
-* `internal` contains domain types used in `processor` and integration test.
 * `it` contains integration tests, which do metadata verification by deserializing metadata objects.
     * `java8` contains major types for tests.
     * `java17` uses symlink to reuse types in `java8` then does more type checks, e.g. for Java `record`.
 * `client-test` contains target languages' tests respectively against generated code.
+
+Why symlinks are used to share code between modules?
+1. To reduce modules counts and dependencies.
+2. `@SharedType` is only retained in source code level.
 
 ## Setup
 **Linux is assumed**. If you use Windows, you can use WSL with a remotely connected IDE. Windows 11 supports GUI app inside WSL.
@@ -57,7 +60,7 @@ Debug annotation processor by run maven build:
 ```
 Then attach your debugger on it.
 
-## Coding Style Guide
+## Coding Style Guide / Keep it simple
 1. since annotation processing is one shot execution, JIT is not likely to optimize the code. So prefer plain loop than long calling stacks like Stream chains.
 2. no adding dependencies without strong justification.
 3. Lombok is used in this project, but do not abuse. Only use it to replace unavoidable boilerplate code, and not to increase the bytecode size.

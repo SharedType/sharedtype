@@ -1,6 +1,6 @@
 package online.sharedtype.processor.parser;
 
-import online.sharedtype.domain.EnumDef;
+import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TypeElementMock;
 import org.junit.jupiter.api.Test;

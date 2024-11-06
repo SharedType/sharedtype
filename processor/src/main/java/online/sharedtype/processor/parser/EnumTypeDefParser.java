@@ -7,10 +7,10 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
-import online.sharedtype.domain.EnumDef;
-import online.sharedtype.domain.EnumValueInfo;
-import online.sharedtype.domain.TypeDef;
-import online.sharedtype.domain.TypeInfo;
+import online.sharedtype.processor.domain.EnumDef;
+import online.sharedtype.processor.domain.EnumValueInfo;
+import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static online.sharedtype.domain.Constants.STRING_TYPE_INFO;
+import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 
 /**
  * Literal values are parsed via {@link Tree} API. It has limitations, see the documentation for more details.
