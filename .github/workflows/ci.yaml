@@ -129,11 +129,11 @@ jobs:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
       - name: Release
-        run: |
-          export SONATYPE_CENTRAL_USER='${{ secrets.SONATYPE_CENTRAL_USER }}'
-          export SONATYPE_CENTRAL_PASS='${{ secrets.SONATYPE_CENTRAL_PASS }}'
-          export MAVEN_GPG_PASSPHRASE='${{ secrets.MAVEN_GPG_PASSPHRASE }}'
-          ./misc/release.sh
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          SONATYPE_CENTRAL_USER: ${{ secrets.SONATYPE_CENTRAL_USER }}
+          SONATYPE_CENTRAL_PASS: ${{ secrets.SONATYPE_CENTRAL_PASS }}
+        run: ./misc/release.sh
       - uses: actions/create-github-app-token@v1
         id: generate-token
         with:
