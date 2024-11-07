@@ -129,7 +129,9 @@ jobs:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
       - name: Release
-        run: ./misc/release.sh
+        run: |
+          export MAVEN_GPG_PASSPHRASE='${{ secrets.MAVEN_GPG_PASSPHRASE }}'
+          ./misc/release.sh
       - uses: actions/create-github-app-token@v1
         id: generate-token
         with:
