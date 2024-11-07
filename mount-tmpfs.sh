@@ -6,7 +6,7 @@ MAVEN_REPO_CACHE_PATH="$DIR/.run/maven-repository-path.cache"
 if [ -f "$MAVEN_REPO_CACHE_PATH" ]; then
   MAVEN_REPO_DIR=$(cat "$MAVEN_REPO_CACHE_PATH")
 else
-  MAVEN_REPO_DIR="$(./mvnw help:evaluate -Dexpression=settings.localRepository -q -DforceStdout)/org/sharedtype"
+  MAVEN_REPO_DIR="$(./mvnw help:evaluate -Dexpression=settings.localRepository -q -DforceStdout)/online/sharedtype"
   printf '%s' "$MAVEN_REPO_DIR" > "$MAVEN_REPO_CACHE_PATH"
 fi
 
