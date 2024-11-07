@@ -8,14 +8,13 @@ Internal types also have javadoc for more information.
 #### Project structure
 * `annotation` contains the annotation type `@SharedType` as client code compile-time dependency.
 * `processor` contains annotation processor logic, put on client's annotation processing path.
+* `internal` shared domain types among `processor` and `it`.
 * `it` contains integration tests, which do metadata verification by deserializing metadata objects.
     * `java8` contains major types for tests.
     * `java17` uses symlink to reuse types in `java8` then does more type checks, e.g. for Java `record`.
 * `client-test` contains target languages' tests respectively against generated code.
 
-Why symlinks are used to share code between modules?
-1. To reduce modules counts and dependencies.
-2. `@SharedType` is only retained in source code level.
+Domain types are shared among processor and integration tests to reduce maven module count.
 
 ## Setup
 **Linux is assumed**. If you use Windows, you can use WSL with a remotely connected IDE. Windows 11 supports GUI app inside WSL.
