@@ -5,7 +5,7 @@
 
     <groupId>online.sharedtype</groupId>
     <artifactId>sharedtype-parent</artifactId>
-    <version>${lib.version}</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>SharedType Parent</name>
@@ -41,7 +41,6 @@
     </distributionManagement>
 
     <properties>
-        <lib.version>0.1.0-SNAPSHOT</lib.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
