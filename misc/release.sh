@@ -22,7 +22,8 @@ increment_version() {
 snapshotVersion=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
 version="$(printf '%s' "$snapshotVersion" | sed -e "s/-SNAPSHOT//g")"
 
-echo "Release version=$version"
 ./mvnw versions:set -DgenerateBackupPoms=false -DnewVersion="$version"
 ./mvnw deploy -DskipTests -Prelease -DskipPublishing=true
-./mvnw versions:set -DgenerateBackupPoms=false -DnewVersion="$(increment_version "$version" 1)-SNAPSHOT"
+NEW_VERSION="$(increment_version "$version" 1)-SNAPSHOT"
+./mvnw versions:set -DgenerateBackupPoms=false -DnewVersion="$NEW_VERSION"
+printf '%s' "$NEW_VERSION" > NEW_VERSION.cache

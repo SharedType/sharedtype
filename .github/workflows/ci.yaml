@@ -130,11 +130,14 @@ jobs:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
       - name: Release
+        id: release
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
           SONATYPE_CENTRAL_USER: ${{ secrets.SONATYPE_CENTRAL_USER }}
           SONATYPE_CENTRAL_PASS: ${{ secrets.SONATYPE_CENTRAL_PASS }}
-        run: . ./misc/release.sh
+        run: |
+          . ./misc/release.sh
+          echo "new_version=$(cat NEW_VERSION.cache)" >> "$GITHUB_OUTPUT"
       - uses: actions/create-github-app-token@v1
         id: generate-token
         with:
@@ -147,3 +150,6 @@ jobs:
           branch: create-pull-request/bump_version
           base: master
           delete-branch: true
+          title: Bump version to ${{ steps.release.outputs.new_version }}
+          commit-message: |
+            Bump version to ${{ steps.release.outputs.new_version }}

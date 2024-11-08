@@ -3,6 +3,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .run/*.cache
+NEW_VERSION.cache
 
 ### STS ###
 .apt_generated
