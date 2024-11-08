@@ -33,13 +33,13 @@ And more.
 
 ## Features
 * Java8 support. No hassles.
+* Generics support.
+* (Planed) Constant support.
 * Client source dependency is only `@SharedType`. Nothing gets into bytecode/runtime.
-* SharedType AP jars <100KB, only 2 small dependencies: jsr305 annotations and mustache. Download less.
+* SharedType AP jars <100KB, only 2 small dependencies: jsr305 annotations and [mustache](https://github.com/spullara/mustache.java). Download less.
 * Parsing takes milliseconds with `-proc:only`. Implemented with performance in head.
 * Intuitive defaults, put `@SharedType` and there you go.
 * Global + class level options. Fine tune your configs.
-* Generics support.
-* (Planed) Constant support.
 
 ## Similar Projects
 * [bsorrentino/java2typescript](https://github.com/bsorrentino/java2typescript)
