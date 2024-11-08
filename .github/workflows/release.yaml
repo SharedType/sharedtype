@@ -16,9 +16,23 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: build_maven
+          key: release_maven
+      - uses: s4u/maven-settings-action@v3.1.0
+        with:
+          servers: '[{"id": "central", "username": "${env.SONATYPE_CENTRAL_USER}", "password": "${env.SONATYPE_CENTRAL_PASS}"}]'
+      - uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
       - name: Release
-        run: ./misc/release.sh
+        id: release
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          SONATYPE_CENTRAL_USER: ${{ secrets.SONATYPE_CENTRAL_USER }}
+          SONATYPE_CENTRAL_PASS: ${{ secrets.SONATYPE_CENTRAL_PASS }}
+        run: |
+          . ./misc/release.sh
+          echo "new_version=$(cat NEW_VERSION.cache)" >> "$GITHUB_OUTPUT"
       - uses: actions/create-github-app-token@v1
         id: generate-token
         with:
@@ -28,3 +42,9 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ steps.generate-token.outputs.token }}
+          branch: create-pull-request/bump_version
+          base: master
+          delete-branch: true
+          title: Bump version to ${{ steps.release.outputs.new_version }}
+          commit-message: |
+            Bump version to ${{ steps.release.outputs.new_version }}
