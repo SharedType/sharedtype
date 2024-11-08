@@ -145,4 +145,5 @@ jobs:
         with:
           token: ${{ steps.generate-token.outputs.token }}
           branch: create-pull-request/bump_version
+          base: master
           delete-branch: true
