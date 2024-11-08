@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+#set -e
 
 if [ -z "$MAVEN_GPG_PASSPHRASE" ];then
   echo "No MAVEN_GPG_PASSPHRASE provided, exit 1"
@@ -16,7 +16,7 @@ increment_version() {
   array[$2]=$((array[$2]+1))
   if [ $2 -lt 2 ]; then array[2]=0; fi
   if [ $2 -lt 1 ]; then array[1]=0; fi
-  printf '%s' "$(local IFS=$delimiter ; echo "${array[*]}")-SNAPSHOT"
+  printf '%s' "$(local IFS=$delimiter ; echo "${array[*]}")"
 }
 
 snapshotVersion=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)

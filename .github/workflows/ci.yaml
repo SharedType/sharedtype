@@ -122,8 +122,9 @@ jobs:
         with:
           path: ~/.m2/repository
           key: release_maven
-      - name: Copy maven settings.xml
-        run: cat ${{ secrets.MAVEN_SETTINGS_XML }} > ~/.m2/settings.xml
+      - uses: s4u/maven-settings-action@v3.1.0
+        with:
+          servers: '[{"id": "central", "username": "${env.SONATYPE_CENTRAL_USER}", "password": "${env.SONATYPE_CENTRAL_PASS}"}]'
       - uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -133,7 +134,7 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
           SONATYPE_CENTRAL_USER: ${{ secrets.SONATYPE_CENTRAL_USER }}
           SONATYPE_CENTRAL_PASS: ${{ secrets.SONATYPE_CENTRAL_PASS }}
-        run: ./misc/release.sh
+        run: . ./misc/release.sh
       - uses: actions/create-github-app-token@v1
         id: generate-token
         with:
