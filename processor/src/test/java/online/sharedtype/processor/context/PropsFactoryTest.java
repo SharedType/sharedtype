@@ -15,7 +15,7 @@ final class PropsFactoryTest {
     @Test
     void loadUserProps() {
         Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-user.properties"));
-        assertThat(props.getTargets()).containsExactly(OutputTarget.TYPESCRIPT, OutputTarget.CONSOLE);
+        assertThat(props.getTargets()).containsExactly(OutputTarget.CONSOLE, OutputTarget.TYPESCRIPT);
         assertThat(props.getOptionalAnno()).isEqualTo(Override.class);
         assertThat(props.getTypescript().getJavaObjectMapType()).isEqualTo("unknown");
     }
