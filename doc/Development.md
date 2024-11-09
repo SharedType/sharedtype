@@ -47,7 +47,8 @@ Setup `JAVA8_HOME` to point to your Java8 installation. Open a new terminal and 
 ```
 #### Run client tests locally:
 Client tests are run in target languages in respective dir inside `./client-test`. They do basic type checking.
-* Typescript. `. setenv && npm i && npm run test`
+* Typescript - `. setenv && npm i && npm run test`
+* Rust - `cargo build` (rust binaries are assumed at PATH)
 #### Misc:
 Style check:
 ```bash

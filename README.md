@@ -23,7 +23,7 @@ type User struct {
 ```
 Rust (Planed):
 ```rust
-struct User {
+pub struct User {
     name: String,
     age: i32,
     email: String,

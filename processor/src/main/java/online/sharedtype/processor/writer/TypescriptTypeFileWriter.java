@@ -78,8 +78,8 @@ final class TypescriptTypeFileWriter implements TypeWriter {
         typeNameMappings = new HashMap<>(PREDEFINED_TYPE_NAME_MAPPINGS);
         typeNameMappings.put(Constants.OBJECT_TYPE_INFO, ctx.getProps().getTypescript().getJavaObjectMapType());
         renderer.loadTemplates(
-            Template.TEMPLATE_INTERFACE,
-            Template.TEMPLATE_ENUM_UNION
+            Template.TEMPLATE_TYPESCRIPT_INTERFACE,
+            Template.TEMPLATE_TYPESCRIPT_ENUM_UNION
         );
     }
 
@@ -107,7 +107,7 @@ final class TypescriptTypeFileWriter implements TypeWriter {
                             "Failed to get constant expression for enum value: %s of type %s in enum: %s", component.value(), component.type(), enumDef), e);
                     }
                 }
-                data.add(Tuple.of(Template.TEMPLATE_ENUM_UNION, new EnumUnionExpr(enumDef.simpleName(), values)));
+                data.add(Tuple.of(Template.TEMPLATE_TYPESCRIPT_ENUM_UNION, new EnumUnionExpr(enumDef.simpleName(), values)));
             } else if (typeDef instanceof ClassDef) {
                 ClassDef classDef = (ClassDef) typeDef;
                 InterfaceExpr value = new InterfaceExpr(
@@ -116,7 +116,7 @@ final class TypescriptTypeFileWriter implements TypeWriter {
                     classDef.supertypes().stream().map(this::toTypeExpr).collect(Collectors.toList()),
                     classDef.components().stream().map(this::toPropertyExpr).collect(Collectors.toList())
                 );
-                data.add(Tuple.of(Template.TEMPLATE_INTERFACE, value));
+                data.add(Tuple.of(Template.TEMPLATE_TYPESCRIPT_INTERFACE, value));
             }
         }
 

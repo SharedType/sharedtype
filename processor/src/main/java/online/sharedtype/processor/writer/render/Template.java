@@ -13,8 +13,9 @@ import online.sharedtype.processor.context.OutputTarget;
 @EqualsAndHashCode
 @Getter(AccessLevel.PACKAGE)
 public final class Template {
-    public static final Template TEMPLATE_INTERFACE = new Template(OutputTarget.TYPESCRIPT, "interface");
-    public static final Template TEMPLATE_ENUM_UNION = new Template(OutputTarget.TYPESCRIPT, "enum-union");
+    public static final Template TEMPLATE_TYPESCRIPT_INTERFACE = new Template(OutputTarget.TYPESCRIPT, "interface");
+    public static final Template TEMPLATE_TYPESCRIPT_ENUM_UNION = new Template(OutputTarget.TYPESCRIPT, "enum-union");
+    public static final Template TEMPLATE_RUST_STRUCT = new Template(OutputTarget.RUST, "struct");
 
     private final OutputTarget outputTarget;
     private final String resourcePath;

@@ -34,8 +34,12 @@ public interface TypeWriter {
         }
 
         TemplateRenderer renderer = TemplateRenderer.create();
-        if (ctx.getProps().getTargets().contains(OutputTarget.TYPESCRIPT)) {
+        Set<OutputTarget> targets = ctx.getProps().getTargets();
+        if (targets.contains(OutputTarget.TYPESCRIPT)) {
             writers.add(new TypescriptTypeFileWriter(ctx, renderer));
+        }
+        if (targets.contains(OutputTarget.RUST)) {
+            writers.add(new RustTypeFileWriter(renderer));
         }
         return new CompositeWriter(writers);
     }

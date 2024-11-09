@@ -84,7 +84,7 @@ final class TypescriptTypeFileWriterTest {
 
         List<Tuple<Template, Object>> data = renderDataCaptor.getValue();
         assertThat(data).hasSize(1);
-        assertThat(data.get(0).a()).isEqualTo(Template.TEMPLATE_ENUM_UNION);
+        assertThat(data.get(0).a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_ENUM_UNION);
         TypescriptTypeFileWriter.EnumUnionExpr model = (TypescriptTypeFileWriter.EnumUnionExpr) data.get(0).b();
         assertThat(model.name).isEqualTo("EnumA");
         assertThat(model.values).containsExactly("\"Value1\"", "123");
@@ -137,7 +137,7 @@ final class TypescriptTypeFileWriterTest {
         verify(renderer).render(any(), renderDataCaptor.capture());
         List<Tuple<Template, Object>> data = renderDataCaptor.getValue();
         assertThat(data).hasSize(1);
-        assertThat(data.get(0).a()).isEqualTo(Template.TEMPLATE_INTERFACE);
+        assertThat(data.get(0).a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_INTERFACE);
         TypescriptTypeFileWriter.InterfaceExpr model = (TypescriptTypeFileWriter.InterfaceExpr) data.get(0).b();
         assertThat(model.name).isEqualTo("ClassA");
         assertThat(model.typeParameters).containsExactly("T", "U");
