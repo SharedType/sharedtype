@@ -1,4 +1,6 @@
 [![CI](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml/badge.svg)](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml)
+![Maven Central Version](https://img.shields.io/maven-central/v/online.sharedtype/sharedtype?style=plastic)
+
 # SharedType - Sharing Java Types made easy
 From Java:
 ```java
@@ -41,13 +43,13 @@ And more.
 * Intuitive defaults, put `@SharedType` and there you go.
 * Global + class level options. Fine tune your configs.
 
-## Similar Projects
-* [bsorrentino/java2typescript](https://github.com/bsorrentino/java2typescript)
-* [vojtechhabarta/typescript-generator](https://github.com/vojtechhabarta/typescript-generator)
-
 ## Documentation
 * [User Guide](doc/Usage.md)
 * [Developer Guide](doc/Development.md)
+
+## Similar Projects
+* [bsorrentino/java2typescript](https://github.com/bsorrentino/java2typescript)
+* [vojtechhabarta/typescript-generator](https://github.com/vojtechhabarta/typescript-generator)
 
 ## Authors
 Cause Chung (cuzfrog@gmail.com)

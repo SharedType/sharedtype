@@ -19,6 +19,13 @@ Add sharedtype dependency, the annotation `@SharedType` is only used at compile 
 </dependency>
 ```
 
+Add Maven properties:
+```xml
+<properties>
+    <sharedtype.compilerArg /> <!-- Placeholder -->
+    <sharedtype.version>0.2.0</sharedtype.version>
+</properties>
+```
 Setup annotation processing:
 ```xml
 <plugin>
@@ -29,10 +36,10 @@ Setup annotation processing:
             <path>
                 <groupId>online.sharedtype</groupId>
                 <artifactId>sharedtype-ap</artifactId>
-                <version>${project.version}</version>
+                <version>${sharedtype.version}</version>
             </path>
         </annotationProcessorPaths>
-        <showWarnings>true</showWarnings> <!-- Show annotation processing info log  -->
+        <showWarnings>true</showWarnings> <!-- Show annotation processing info log -->
         <compilerArgs>
             <arg>${sharedtype.compilerArg}</arg> <!-- supplied as a property from cmd -->
         </compilerArgs>
