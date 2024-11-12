@@ -3,6 +3,7 @@ package online.sharedtype.processor.writer;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.OutputTarget;
+import online.sharedtype.processor.writer.converter.TemplateDataConverter;
 import online.sharedtype.processor.writer.render.TemplateRenderer;
 
 import java.io.IOException;
@@ -34,13 +35,7 @@ public interface TypeWriter {
         }
 
         TemplateRenderer renderer = TemplateRenderer.create();
-        Set<OutputTarget> targets = ctx.getProps().getTargets();
-        if (targets.contains(OutputTarget.TYPESCRIPT)) {
-            writers.add(new TypescriptTypeFileWriter(ctx, renderer));
-        }
-        if (targets.contains(OutputTarget.RUST)) {
-            writers.add(new RustTypeFileWriter(renderer));
-        }
+        writers.add(new TemplateTypeFileWriter(ctx, renderer, TemplateDataConverter.createConverters(ctx)));
         return new CompositeWriter(writers);
     }
 }

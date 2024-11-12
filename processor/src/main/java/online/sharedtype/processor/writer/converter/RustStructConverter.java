@@ -1,22 +1,19 @@
-package online.sharedtype.processor.writer;
+package online.sharedtype.processor.writer.converter;
 
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.writer.render.TemplateRenderer;
+import online.sharedtype.processor.support.utils.Tuple;
+import online.sharedtype.processor.writer.render.Template;
 
-import java.io.IOException;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author Cause Chung
- */
-final class RustTypeFileWriter implements TypeWriter {
+final class RustStructConverter implements TemplateDataConverter {
     private static final Map<ConcreteTypeInfo, String> PREDEFINED_TYPE_NAME_MAPPINGS;
+
     static {
         Map<ConcreteTypeInfo, String> tempMap = new HashMap<>(20);
         tempMap.put(Constants.BOOLEAN_TYPE_INFO, "bool");
@@ -43,14 +40,9 @@ final class RustTypeFileWriter implements TypeWriter {
         PREDEFINED_TYPE_NAME_MAPPINGS = Collections.unmodifiableMap(tempMap);
     }
 
-    private final TemplateRenderer renderer;
-
-    RustTypeFileWriter(TemplateRenderer renderer) {
-        this.renderer = renderer;
-    }
-
     @Override
-    public void write(List<TypeDef> typeDefs) throws IOException {
-
+    @Nullable
+    public Tuple<Template, Object> convert(TypeDef typeDef) {
+        return null;
     }
 }
