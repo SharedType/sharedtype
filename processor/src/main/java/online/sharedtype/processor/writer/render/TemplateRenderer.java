@@ -11,13 +11,6 @@ import java.util.List;
  * @author Cause Chung
  */
 public interface TemplateRenderer {
-    /**
-     * Implementation can use this method to compile and cache templates.
-     * This should be called during initialization of the client writer.
-     *
-     * @param templates a specific target writer should use.
-     */
-    void loadTemplates(Template... templates);
 
     /**
      * Renders the target output to the writer specified.

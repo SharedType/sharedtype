@@ -7,33 +7,24 @@ import online.sharedtype.support.exception.SharedTypeInternalError;
 import online.sharedtype.support.utils.Tuple;
 
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Implementation via on <a href="https://github.com/spullara/mustache.java">Mustache</a>.
+ * The underlying implementation already caches compiled templates.
  *
  * @author Cause Chung
  */
 @RequiredArgsConstructor
 final class MustacheTemplateRenderer implements TemplateRenderer {
     private final MustacheFactory mf;
-    private final Map<Template, Mustache> compiledTemplates = new HashMap<>();
-
-    @Override
-    public void loadTemplates(Template... templates) {
-        for (Template template : templates) {
-            compiledTemplates.put(template, mf.compile(template.getResourcePath()));
-        }
-    }
 
     @Override
     public void render(Writer writer, List<Tuple<Template, Object>> data) {
         for (Tuple<Template, Object> tuple : data) {
             Template template = tuple.a();
             Object values = tuple.b();
-            Mustache mustache = compiledTemplates.get(template);
+            Mustache mustache = mf.compile(template.getResourcePath());
             if (mustache == null) {
                 throw new SharedTypeInternalError(String.format("Template not found: '%s'", template));
             }
