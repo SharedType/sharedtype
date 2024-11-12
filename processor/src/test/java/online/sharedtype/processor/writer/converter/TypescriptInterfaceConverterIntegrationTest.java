@@ -1,11 +1,13 @@
 package online.sharedtype.processor.writer.converter;
 
 import online.sharedtype.processor.context.ContextMocks;
+import online.sharedtype.processor.context.OutputTarget;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
+import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
 import org.junit.jupiter.api.Test;
 
@@ -16,9 +18,10 @@ import static online.sharedtype.processor.domain.Constants.INT_TYPE_INFO;
 import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
 
-final class TypescriptInterfaceConverterTest {
+final class TypescriptInterfaceConverterIntegrationTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final TypescriptInterfaceConverter converter = new TypescriptInterfaceConverter(ctxMocks.getContext());
+    private final TypescriptInterfaceConverter converter = new TypescriptInterfaceConverter(
+        ctxMocks.getContext(), TypeExpressionConverter.create(OutputTarget.TYPESCRIPT, ctxMocks.getContext()));
 
     @Test
     void writeInterface() {

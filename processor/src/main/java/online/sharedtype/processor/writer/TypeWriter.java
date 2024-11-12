@@ -35,7 +35,7 @@ public interface TypeWriter {
         }
 
         TemplateRenderer renderer = TemplateRenderer.create();
-        writers.add(new TemplateTypeFileWriter(ctx, renderer, TemplateDataConverter.createConverters(ctx)));
+        writers.add(new TemplateTypeFileWriter(ctx, renderer, TemplateDataConverter.create(ctx)));
         return new CompositeWriter(writers);
     }
 }
