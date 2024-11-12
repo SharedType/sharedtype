@@ -3,7 +3,7 @@ package online.sharedtype.processor.writer.render;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import online.sharedtype.processor.context.OutputTarget;
-import online.sharedtype.support.utils.Tuple;
+import online.sharedtype.processor.support.utils.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

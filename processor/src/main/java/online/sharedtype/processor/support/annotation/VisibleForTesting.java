@@ -1,4 +1,4 @@
-package online.sharedtype.support.annotation;
+package online.sharedtype.processor.support.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

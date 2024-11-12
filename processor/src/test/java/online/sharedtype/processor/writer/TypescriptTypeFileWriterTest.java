@@ -17,7 +17,7 @@ import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.support.utils.Tuple;
+import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.render.Template;
 import online.sharedtype.processor.writer.render.TemplateRenderer;
 

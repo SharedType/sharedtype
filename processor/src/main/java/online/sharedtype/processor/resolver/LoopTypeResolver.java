@@ -12,8 +12,8 @@ import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.parser.TypeDefParser;
-import online.sharedtype.support.annotation.SideEffect;
-import online.sharedtype.support.exception.SharedTypeInternalError;
+import online.sharedtype.processor.support.annotation.SideEffect;
+import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayDeque;

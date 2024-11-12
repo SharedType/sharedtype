@@ -14,7 +14,7 @@ import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
-import online.sharedtype.support.exception.SharedTypeInternalError;
+import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;

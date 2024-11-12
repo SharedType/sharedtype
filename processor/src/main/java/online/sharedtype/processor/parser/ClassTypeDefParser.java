@@ -9,9 +9,9 @@ import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
-import online.sharedtype.support.annotation.VisibleForTesting;
-import online.sharedtype.support.utils.Tuple;
-import online.sharedtype.support.utils.Utils;
+import online.sharedtype.processor.support.annotation.VisibleForTesting;
+import online.sharedtype.processor.support.utils.Tuple;
+import online.sharedtype.processor.support.utils.Utils;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Element;

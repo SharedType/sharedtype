@@ -3,7 +3,7 @@ package online.sharedtype.processor.parser;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.context.Context;
-import online.sharedtype.support.exception.SharedTypeInternalError;
+import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.TypeElement;
 import java.util.Map;

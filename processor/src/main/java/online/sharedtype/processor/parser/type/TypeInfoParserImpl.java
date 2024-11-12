@@ -6,7 +6,7 @@ import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.context.Context;
-import online.sharedtype.support.exception.SharedTypeInternalError;
+import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static online.sharedtype.processor.domain.Constants.PRIMITIVES;
-import static online.sharedtype.support.Preconditions.checkArgument;
+import static online.sharedtype.processor.support.Preconditions.checkArgument;
 
 /**
  *

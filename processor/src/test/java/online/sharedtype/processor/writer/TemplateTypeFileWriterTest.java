@@ -5,7 +5,7 @@ import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.writer.converter.TemplateDataConverter;
 import online.sharedtype.processor.writer.render.Template;
 import online.sharedtype.processor.writer.render.TemplateRenderer;
-import online.sharedtype.support.utils.Tuple;
+import online.sharedtype.processor.support.utils.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

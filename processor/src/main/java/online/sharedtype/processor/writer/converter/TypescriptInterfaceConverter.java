@@ -1,41 +1,26 @@
-package online.sharedtype.processor.writer;
+package online.sharedtype.processor.writer.converter;
 
 import lombok.RequiredArgsConstructor;
+import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.EnumDef;
-import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
-import online.sharedtype.processor.context.Context;
-import online.sharedtype.processor.support.annotation.SideEffect;
-import online.sharedtype.processor.support.exception.SharedTypeInternalError;
-import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.render.Template;
-import online.sharedtype.processor.writer.render.TemplateRenderer;
+import online.sharedtype.processor.support.utils.Tuple;
 
-import javax.lang.model.util.Elements;
-import javax.tools.FileObject;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author Cause Chung
- */
-final class TypescriptTypeFileWriter implements TypeWriter {
+final class TypescriptInterfaceConverter implements TemplateDataConverter {
     private static final Map<ConcreteTypeInfo, String> PREDEFINED_TYPE_NAME_MAPPINGS;
     static {
         Map<ConcreteTypeInfo, String> tempMap = new HashMap<>(20);
@@ -64,64 +49,31 @@ final class TypescriptTypeFileWriter implements TypeWriter {
     }
 
     private final Context ctx;
-    private final Elements elements;
     private final Map<ConcreteTypeInfo, String> typeNameMappings;
-    private final TemplateRenderer renderer;
     private final char interfacePropertyDelimiter;
 
-    TypescriptTypeFileWriter(Context ctx, TemplateRenderer renderer) {
+    TypescriptInterfaceConverter(Context ctx) {
         this.ctx = ctx;
-        elements = ctx.getProcessingEnv().getElementUtils();
-        this.renderer = renderer;
         interfacePropertyDelimiter = ctx.getProps().getTypescript().getInterfacePropertyDelimiter();
-
         typeNameMappings = new HashMap<>(PREDEFINED_TYPE_NAME_MAPPINGS);
         typeNameMappings.put(Constants.OBJECT_TYPE_INFO, ctx.getProps().getTypescript().getJavaObjectMapType());
     }
 
-    @Override
-    public void write(List<TypeDef> typeDefs) throws IOException {
-        List<Tuple<Template, Object>> data = new ArrayList<>(typeDefs.size());
-        Map<String, TypeDef> simpleNames = new HashMap<>(typeDefs.size());
-        for (TypeDef typeDef : typeDefs) {
-            TypeDef duplicate = simpleNames.get(typeDef.simpleName());
-            if (duplicate != null) {
-                ctx.error("Duplicate names found: %s and %s, which is not allowed in output typescript code." +
-                    " You may use @SharedType(name=\"...\") to rename a type.", typeDef.qualifiedName(), duplicate.qualifiedName());
-                return;
-            }
-            simpleNames.put(typeDef.simpleName(), typeDef);
-            if (typeDef instanceof EnumDef) {
-                EnumDef enumDef = (EnumDef) typeDef;
-                List<String> values = new ArrayList<>(enumDef.components().size());
-                for (EnumValueInfo component : enumDef.components()) {
-                    try {
-                        String result = elements.getConstantExpression(component.value()); // TODO: do not use getConstantExpression, it's only for java source code
-                        values.add(result);
-                    } catch (IllegalArgumentException e) {
-                        throw new SharedTypeInternalError(String.format(
-                            "Failed to get constant expression for enum value: %s of type %s in enum: %s", component.value(), component.type(), enumDef), e);
-                    }
-                }
-                data.add(Tuple.of(Template.TEMPLATE_TYPESCRIPT_ENUM_UNION, new EnumUnionExpr(enumDef.simpleName(), values)));
-            } else if (typeDef instanceof ClassDef) {
-                ClassDef classDef = (ClassDef) typeDef;
-                InterfaceExpr value = new InterfaceExpr(
-                    classDef.simpleName(),
-                    classDef.typeVariables().stream().map(this::toTypeExpr).collect(Collectors.toList()),
-                    classDef.supertypes().stream().map(this::toTypeExpr).collect(Collectors.toList()),
-                    classDef.components().stream().map(this::toPropertyExpr).collect(Collectors.toList())
-                );
-                data.add(Tuple.of(Template.TEMPLATE_TYPESCRIPT_INTERFACE, value));
-            }
+    @Override @Nullable
+    public Tuple<Template, Object> convert(TypeDef typeDef) {
+        if (typeDef instanceof ClassDef) {
+            ClassDef classDef = (ClassDef) typeDef;
+            InterfaceExpr value = new InterfaceExpr(
+                classDef.simpleName(),
+                classDef.typeVariables().stream().map(this::toTypeExpr).collect(Collectors.toList()),
+                classDef.supertypes().stream().map(this::toTypeExpr).collect(Collectors.toList()),
+                classDef.components().stream().map(this::toPropertyExpr).collect(Collectors.toList())
+            );
+            return Tuple.of(Template.TEMPLATE_TYPESCRIPT_INTERFACE, value);
         }
-
-        FileObject file = ctx.createSourceOutput(ctx.getProps().getTypescript().getOutputFileName()); // TODO: abstract up
-        try (OutputStream outputStream = file.openOutputStream();
-             Writer writer = new OutputStreamWriter(outputStream)) {
-            renderer.render(writer, data);
-        }
+        return null;
     }
+
 
     private PropertyExpr toPropertyExpr(FieldComponentInfo field) {
         return new PropertyExpr(
@@ -140,7 +92,7 @@ final class TypescriptTypeFileWriter implements TypeWriter {
         return typeExprBuilder.toString();
     }
 
-    private void buildTypeExprRecursively(TypeInfo typeInfo, @SideEffect StringBuilder nameBuilder) { // TODO: abstract up
+    private void buildTypeExprRecursively(TypeInfo typeInfo, @online.sharedtype.processor.support.annotation.SideEffect StringBuilder nameBuilder) { // TODO: abstract up
         if (typeInfo instanceof ConcreteTypeInfo) {
             ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
             nameBuilder.append(typeNameMappings.getOrDefault(concreteTypeInfo, concreteTypeInfo.simpleName()));
@@ -165,7 +117,7 @@ final class TypescriptTypeFileWriter implements TypeWriter {
 
     @RequiredArgsConstructor
     @SuppressWarnings("unused")
-    static final class InterfaceExpr{
+    static final class InterfaceExpr {
         final String name;
         final List<String> typeParameters;
         final List<String> supertypes;
@@ -195,16 +147,5 @@ final class TypescriptTypeFileWriter implements TypeWriter {
         final boolean optional;
         final boolean unionNull;
         final boolean unionUndefined;
-    }
-
-    @RequiredArgsConstructor
-    static final class EnumUnionExpr {
-        final String name;
-        final List<String> values;
-
-        @SuppressWarnings("unused")
-        String valuesExpr() {
-            return String.join(" | ", values);
-        }
     }
 }

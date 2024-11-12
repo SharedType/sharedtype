@@ -5,7 +5,7 @@ import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.writer.converter.TemplateDataConverter;
 import online.sharedtype.processor.writer.render.Template;
 import online.sharedtype.processor.writer.render.TemplateRenderer;
-import online.sharedtype.support.utils.Tuple;
+import online.sharedtype.processor.support.utils.Tuple;
 
 import javax.tools.FileObject;
 import java.io.IOException;

@@ -11,7 +11,7 @@ import static online.sharedtype.processor.domain.Constants.INT_TYPE_INFO;
 import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TypescriptEnumUnionConverterTest {
+final class TypescriptEnumUnionConverterTest {
     private final TypescriptEnumUnionConverter converter = new TypescriptEnumUnionConverter();
 
     @Test

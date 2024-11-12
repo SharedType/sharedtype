@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
-import online.sharedtype.support.annotation.Issue;
+import online.sharedtype.processor.support.annotation.Issue;
 
 import javax.lang.model.type.TypeKind;
 

@@ -1,4 +1,4 @@
-package online.sharedtype.support.utils;
+package online.sharedtype.processor.support.utils;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

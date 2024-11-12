@@ -1,7 +1,7 @@
 package online.sharedtype.processor.context;
 
 import org.junit.jupiter.api.Test;
-import online.sharedtype.support.exception.SharedTypeException;
+import online.sharedtype.processor.support.exception.SharedTypeException;
 
 import javax.annotation.Nullable;
 import java.net.URISyntaxException;

@@ -4,13 +4,14 @@ import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.writer.render.Template;
-import online.sharedtype.support.utils.Tuple;
+import online.sharedtype.processor.support.utils.Tuple;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 final class TypescriptEnumUnionConverter implements TemplateDataConverter {
-    @Override
+    @Override @Nullable
     public Tuple<Template, Object> convert(TypeDef typeDef) {
         if (typeDef instanceof EnumDef) {
             EnumDef enumDef = (EnumDef) typeDef;
