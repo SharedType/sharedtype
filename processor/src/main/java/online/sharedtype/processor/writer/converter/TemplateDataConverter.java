@@ -6,17 +6,13 @@ import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.render.Template;
 
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
 public interface TemplateDataConverter {
 
-    /**
-     *
-     * @return null if the typeDef is not supported by this particular converter
-     */
-    @Nullable
+    boolean supports(TypeDef typeDef);
+
     Tuple<Template, Object> convert(TypeDef typeDef);
 
     static Set<TemplateDataConverter> createConverters(Context ctx) {

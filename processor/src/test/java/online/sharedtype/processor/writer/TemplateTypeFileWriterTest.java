@@ -35,6 +35,7 @@ final class TemplateTypeFileWriterTest {
     private @Mock TemplateRenderer renderer;
     private @Mock TemplateDataConverter converter1;
     private @Mock TemplateDataConverter converter2;
+    private @Mock TemplateDataConverter converter3;
     private TemplateTypeFileWriter writer;
 
     private @Mock FileObject fileObject;
@@ -43,7 +44,7 @@ final class TemplateTypeFileWriterTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        writer = new TemplateTypeFileWriter(ctxMocks.getContext(), renderer, Set.of(converter1, converter2));
+        writer = new TemplateTypeFileWriter(ctxMocks.getContext(), renderer, Set.of(converter1, converter2, converter3));
         when(ctxMocks.getContext().createSourceOutput("types.d.ts")).thenReturn(fileObject);
         when(fileObject.openOutputStream()).thenReturn(outputStream);
     }
@@ -59,6 +60,9 @@ final class TemplateTypeFileWriterTest {
         ClassDef classDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.ClassA").build();
         var data1 = new Object();
         var data2 = new Object();
+        when(converter1.supports(classDef)).thenReturn(true);
+        when(converter2.supports(classDef)).thenReturn(true);
+        when(converter3.supports(classDef)).thenReturn(false);
         when(converter1.convert(classDef)).thenReturn(Tuple.of(Template.TEMPLATE_TYPESCRIPT_INTERFACE, data1));
         when(converter2.convert(classDef)).thenReturn(Tuple.of(Template.TEMPLATE_RUST_STRUCT, data2));
         writer.write(List.of(classDef));

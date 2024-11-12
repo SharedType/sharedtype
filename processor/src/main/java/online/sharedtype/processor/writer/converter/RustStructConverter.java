@@ -41,6 +41,11 @@ final class RustStructConverter implements TemplateDataConverter {
     }
 
     @Override
+    public boolean supports(TypeDef typeDef) {
+        return false;
+    }
+
+    @Override
     @Nullable
     public Tuple<Template, Object> convert(TypeDef typeDef) {
         return null;

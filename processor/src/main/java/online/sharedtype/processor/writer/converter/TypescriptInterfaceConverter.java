@@ -10,10 +10,9 @@ import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
-import online.sharedtype.processor.writer.render.Template;
 import online.sharedtype.processor.support.utils.Tuple;
+import online.sharedtype.processor.writer.render.Template;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -59,19 +58,21 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
         typeNameMappings.put(Constants.OBJECT_TYPE_INFO, ctx.getProps().getTypescript().getJavaObjectMapType());
     }
 
-    @Override @Nullable
+    @Override
+    public boolean supports(TypeDef typeDef) {
+        return typeDef instanceof ClassDef;
+    }
+
+    @Override
     public Tuple<Template, Object> convert(TypeDef typeDef) {
-        if (typeDef instanceof ClassDef) {
-            ClassDef classDef = (ClassDef) typeDef;
-            InterfaceExpr value = new InterfaceExpr(
-                classDef.simpleName(),
-                classDef.typeVariables().stream().map(this::toTypeExpr).collect(Collectors.toList()),
-                classDef.supertypes().stream().map(this::toTypeExpr).collect(Collectors.toList()),
-                classDef.components().stream().map(this::toPropertyExpr).collect(Collectors.toList())
-            );
-            return Tuple.of(Template.TEMPLATE_TYPESCRIPT_INTERFACE, value);
-        }
-        return null;
+        ClassDef classDef = (ClassDef) typeDef;
+        InterfaceExpr value = new InterfaceExpr(
+            classDef.simpleName(),
+            classDef.typeVariables().stream().map(this::toTypeExpr).collect(Collectors.toList()),
+            classDef.supertypes().stream().map(this::toTypeExpr).collect(Collectors.toList()),
+            classDef.components().stream().map(this::toPropertyExpr).collect(Collectors.toList())
+        );
+        return Tuple.of(Template.TEMPLATE_TYPESCRIPT_INTERFACE, value);
     }
 
 
