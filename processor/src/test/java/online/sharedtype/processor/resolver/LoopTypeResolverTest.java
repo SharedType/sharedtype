@@ -1,5 +1,6 @@
 package online.sharedtype.processor.resolver;
 
+import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
@@ -7,21 +8,19 @@ import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
-import online.sharedtype.processor.context.ContextMocks;
-import org.junit.jupiter.api.Test;
 import online.sharedtype.processor.parser.TypeDefParser;
+import org.junit.jupiter.api.Test;
 
 import javax.lang.model.element.TypeElement;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 
 final class LoopTypeResolverTest {
     private final ContextMocks ctxMocks = new ContextMocks();
@@ -30,7 +29,7 @@ final class LoopTypeResolverTest {
 
     @Test
     void resolveFullClass() {
-        TypeInfo aTypeInfo = ConcreteTypeInfo.builder()
+        ConcreteTypeInfo aTypeInfo = ConcreteTypeInfo.builder()
             .qualifiedName("com.github.cuzfrog.A")
             .resolved(false)
             .build();
@@ -122,6 +121,8 @@ final class LoopTypeResolverTest {
                 }
             );
         }
+        assertThat(aTypeInfo.resolved()).isTrue();
+        assertThat(aTypeInfo.resolvedTypeDef()).isEqualTo(aDef);
     }
 
     @Test

@@ -25,6 +25,7 @@ public final class ConcreteTypeInfo implements TypeInfo {
     private final List<? extends TypeInfo> typeArgs = Collections.emptyList();
     @Builder.Default
     private boolean resolved = true;
+    private TypeDef resolvedTypeDef;
 
     static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
         return ConcreteTypeInfo.builder().qualifiedName(qualifiedName).simpleName(simpleName).build();
@@ -39,8 +40,12 @@ public final class ConcreteTypeInfo implements TypeInfo {
         return resolved;
     }
 
-    public void markShallowResolved() {
+    public void markShallowResolved(TypeDef resolvedTypeDef) {
         this.resolved = true;
+        this.resolvedTypeDef = resolvedTypeDef;
+    }
+    public TypeDef resolvedTypeDef() {
+        return resolvedTypeDef;
     }
 
     public String qualifiedName() {

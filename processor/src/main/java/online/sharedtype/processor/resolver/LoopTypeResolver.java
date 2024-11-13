@@ -97,7 +97,7 @@ final class LoopTypeResolver implements TypeResolver {
                     TypeElement typeElement = ctx.getProcessingEnv().getElementUtils().getTypeElement(concreteTypeInfo.qualifiedName());
                     TypeDef parsed = typeDefParser.parse(typeElement);
                     if (parsed != null) {
-                        concreteTypeInfo.markShallowResolved();
+                        concreteTypeInfo.markShallowResolved(parsed);
                         processingDefStack.push(parsed);
                     }
                 }
