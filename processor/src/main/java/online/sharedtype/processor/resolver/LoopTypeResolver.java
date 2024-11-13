@@ -60,7 +60,7 @@ final class LoopTypeResolver implements TypeResolver {
                         processingInfoStack.push(fieldComponentInfo.type());
                     }
                 }
-                for (TypeInfo supertype : classDef.supertypes()) {
+                for (TypeInfo supertype : classDef.directSupertypes()) {
                     if (!supertype.resolved()) {
                         processingInfoStack.push(supertype);
                     }

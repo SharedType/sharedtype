@@ -94,7 +94,7 @@ final class ClassTypeDefParserTest {
         assertThat(typeVar2.name()).isEqualTo("U");
 
         // supertypes
-        assertThat(classDef.supertypes()).containsExactly(parsedSupertype1, parsedSupertype2, parsedSupertype3);
+        assertThat(classDef.directSupertypes()).containsExactly(parsedSupertype1, parsedSupertype2, parsedSupertype3);
 
         inOrder.verify(typeInfoParser).parse(field1.type());
         inOrder.verify(typeInfoParser).parse(field2.type());

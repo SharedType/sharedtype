@@ -3,6 +3,7 @@ package online.sharedtype.processor.domain;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +45,11 @@ public final class ConcreteTypeInfo implements TypeInfo {
         this.resolved = true;
         this.resolvedTypeDef = resolvedTypeDef;
     }
+
+    /**
+     * @return null when the type is not resolved if it's a user defined type; or does not have a corresponding {@link TypeDef}, e.g. a predefined type.
+     */
+    @Nullable
     public TypeDef resolvedTypeDef() {
         return resolvedTypeDef;
     }

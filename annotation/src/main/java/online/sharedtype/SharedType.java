@@ -30,19 +30,42 @@ import java.lang.annotation.Target;
  * </p>
  *
  * <p>
- * <b>Inner class:</b><br>
+ * <b>Inheritance:</b>
+ * In different target schemas, inheritance may be transferred differently.
+ * <ul>
+ *     <li>Typescript: Inheritance is mimicked. A subtype's inherited properties will not be included in its own declared properties,
+ *     while the supertype is also emitted. </li>
+ *     <li>Rust: Inheritance is not supported.
+ *     Type hierarchy will be flattened that a subtype's inherited properties will be included in its own declared properties,
+ *     while the supertype is also emitted.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * <b>Inner classes:</b><br>
  * Declared inner and nested types will not be included by default, unless they are referenced by other types.
  * Non-static inner classes are not supported.
  * </p>
  *
  * <p>
+ * <b>Constants:</b><br>
+ * Support is planned in upcoming versions. Only compile-time resolvable values or their combinations are supported.
+ * </p>
+ *
+ * <p>
  * <b>Generics:</b><br>
- * Generics are supported. But it's also limited to target schema's capacity.
+ * Generics are supported. But it's also limited to target schema's capacity. Currently, type bounds are not supported.
  * </p>
  *
  * <p>
  * <b>Collections:</b><br>
- * Iterables and arrays are treated as arrays. Map is mapped to:
+ * Iterables and arrays are treated as arrays and, by default, are mapped to:
+ * <ul>
+ *     <li>Typescript: {@code T[]}</li>
+ *     <li>Rust: {@code Vec<T>}</li>
+ * </ul>
+ *
+ * Maps are mapped to:
  * <ul>
  *     <li>Typescript: {@code [key: string]: T} where {@code T} can be a reified type.</li>
  * </ul>
@@ -52,6 +75,7 @@ import java.lang.annotation.Target;
  * @author Cause Chung
  * @implNote generics type bounds are not supported yet, Map is not supported yet.
  */
+// TODO: test user-defined array-like types
 @Retention(RetentionPolicy.SOURCE)
 @Target({java.lang.annotation.ElementType.TYPE})
 @Documented

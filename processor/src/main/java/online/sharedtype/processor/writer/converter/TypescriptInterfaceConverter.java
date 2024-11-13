@@ -32,7 +32,7 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
         InterfaceExpr value = new InterfaceExpr(
             classDef.simpleName(),
             classDef.typeVariables().stream().map(typeExpressionConverter::toTypeExpr).collect(Collectors.toList()),
-            classDef.supertypes().stream().map(typeExpressionConverter::toTypeExpr).collect(Collectors.toList()),
+            classDef.directSupertypes().stream().map(typeExpressionConverter::toTypeExpr).collect(Collectors.toList()),
             classDef.components().stream().map(this::toPropertyExpr).collect(Collectors.toList())
         );
         return Tuple.of(Template.TEMPLATE_TYPESCRIPT_INTERFACE, value);
