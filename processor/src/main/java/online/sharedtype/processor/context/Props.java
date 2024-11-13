@@ -17,6 +17,7 @@ import java.util.Set;
 public final class Props {
     private final Set<OutputTarget> targets;
     private final Typescript typescript;
+    private final Rust rust;
 
     private final Class<? extends Annotation> optionalAnno;
     private final Set<String> accessorGetterPrefixes;
@@ -30,5 +31,11 @@ public final class Props {
         private final String outputFileName;
         private final char interfacePropertyDelimiter;
         private final String javaObjectMapType;
+    }
+
+    @Builder(access = AccessLevel.PACKAGE)
+    @Getter
+    public static final class Rust {
+        private final String outputFileName;
     }
 }

@@ -32,8 +32,8 @@ final class JavaClassIntegrationTest {
             }
         );
 
-        assertThat(classDef.supertypes()).hasSize(1);
-        ConcreteTypeInfo superType = (ConcreteTypeInfo)classDef.supertypes().get(0);
+        assertThat(classDef.directSupertypes()).hasSize(1);
+        ConcreteTypeInfo superType = (ConcreteTypeInfo)classDef.directSupertypes().get(0);
         assertThat(superType.qualifiedName()).isEqualTo("online.sharedtype.it.java8.SuperClassA");
     }
 
@@ -55,8 +55,8 @@ final class JavaClassIntegrationTest {
         ClassDef classDef = (ClassDef) deserializeTypeDef("online.sharedtype.it.java8.SuperClassA.ser");
         assertThat(classDef.simpleName()).isEqualTo("SuperClassA");
 
-        assertThat(classDef.supertypes()).hasSize(1);
-        ConcreteTypeInfo superType = (ConcreteTypeInfo)classDef.supertypes().get(0);
+        assertThat(classDef.directSupertypes()).hasSize(1);
+        ConcreteTypeInfo superType = (ConcreteTypeInfo)classDef.directSupertypes().get(0);
         assertThat(superType.qualifiedName()).isEqualTo("online.sharedtype.it.java8.InterfaceA");
 
         assertThat(classDef.typeVariables()).isEmpty();

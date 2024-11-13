@@ -44,7 +44,7 @@ final class TemplateTypeFileWriterTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        writer = new TemplateTypeFileWriter(ctxMocks.getContext(), renderer, Set.of(converter1, converter2, converter3));
+        writer = new TemplateTypeFileWriter(ctxMocks.getContext(), renderer, Set.of(converter1, converter2, converter3), "types.d.ts");
         when(ctxMocks.getContext().createSourceOutput("types.d.ts")).thenReturn(fileObject);
         when(fileObject.openOutputStream()).thenReturn(outputStream);
     }

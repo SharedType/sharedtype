@@ -48,6 +48,9 @@ public final class PropsFactory {
                 .interfacePropertyDelimiter(properties.getProperty("sharedtype.typescript.interface-property-delimiter").charAt(0))
                 .javaObjectMapType(properties.getProperty("sharedtype.typescript.java-object-map-type"))
                 .build())
+            .rust(Props.Rust.builder()
+                .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))
+                .build())
             .build();
     }
 

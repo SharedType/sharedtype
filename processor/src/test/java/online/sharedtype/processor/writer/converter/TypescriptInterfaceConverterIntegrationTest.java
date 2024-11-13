@@ -1,7 +1,6 @@
 package online.sharedtype.processor.writer.converter;
 
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.context.OutputTarget;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
@@ -21,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 final class TypescriptInterfaceConverterIntegrationTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypescriptInterfaceConverter converter = new TypescriptInterfaceConverter(
-        ctxMocks.getContext(), TypeExpressionConverter.create(OutputTarget.TYPESCRIPT, ctxMocks.getContext()));
+        ctxMocks.getContext(), TypeExpressionConverter.typescript(ctxMocks.getContext()));
 
     @Test
     void writeInterface() {

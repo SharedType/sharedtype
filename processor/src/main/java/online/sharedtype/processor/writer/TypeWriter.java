@@ -35,7 +35,12 @@ public interface TypeWriter {
         }
 
         TemplateRenderer renderer = TemplateRenderer.create();
-        writers.add(new TemplateTypeFileWriter(ctx, renderer, TemplateDataConverter.create(ctx)));
+        if (ctx.getProps().getTargets().contains(OutputTarget.TYPESCRIPT)) {
+            writers.add(new TemplateTypeFileWriter(ctx, renderer, TemplateDataConverter.typescript(ctx), ctx.getProps().getTypescript().getOutputFileName()));
+        }
+        if (ctx.getProps().getTargets().contains(OutputTarget.RUST)) {
+            writers.add(new TemplateTypeFileWriter(ctx, renderer, TemplateDataConverter.rust(), ctx.getProps().getRust().getOutputFileName()));
+        }
         return new CompositeWriter(writers);
     }
 }

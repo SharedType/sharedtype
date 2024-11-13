@@ -24,8 +24,8 @@ final class JavaRecordIntegrationTest {
     }
 
     @Test
-    void supertypes() {
-        var superTypes = classDef.supertypes();
+    void directSupertypes() {
+        var superTypes = classDef.directSupertypes();
         assertThat(superTypes).hasSize(1);
         var supertypeInfo = (ConcreteTypeInfo)superTypes.get(0);
         assertThat(supertypeInfo.resolved()).isTrue();

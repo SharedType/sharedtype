@@ -1,5 +1,6 @@
 package online.sharedtype.processor.writer;
 
+import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.writer.converter.TemplateDataConverter;
@@ -22,16 +23,12 @@ import java.util.Set;
  *
  * @author Cause Chung
  */
+@RequiredArgsConstructor
 final class TemplateTypeFileWriter implements TypeWriter {
     private final Context ctx;
     private final TemplateRenderer renderer;
     private final Set<TemplateDataConverter> converters;
-
-    TemplateTypeFileWriter(Context ctx, TemplateRenderer renderer, Set<TemplateDataConverter> converters) {
-        this.ctx = ctx;
-        this.renderer = renderer;
-        this.converters = converters;
-    }
+    private final String outputFileName;
 
     @Override
     public void write(List<TypeDef> typeDefs) throws IOException {
@@ -52,7 +49,7 @@ final class TemplateTypeFileWriter implements TypeWriter {
             }
         }
 
-        FileObject file = ctx.createSourceOutput(ctx.getProps().getTypescript().getOutputFileName());
+        FileObject file = ctx.createSourceOutput(outputFileName);
         try (OutputStream outputStream = file.openOutputStream();
              Writer writer = new OutputStreamWriter(outputStream)) {
             renderer.render(writer, data);

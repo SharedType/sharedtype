@@ -30,24 +30,22 @@ final class RustStructConverter implements TemplateDataConverter {
         ClassDef classDef = (ClassDef) typeDef;
         List<PropertyExpr> properties = new ArrayList<>(); // TODO: init cap
         for (FieldComponentInfo component : classDef.components()) {
-            properties.add(new PropertyExpr(
-                component.name(),
-                typeExpressionConverter.toTypeExpr(component.type()),
-                component.optional()
-            ));
+            properties.add(toPropertyExpr(component));
         }
 
-
-        for (TypeInfo supertype : classDef.directSupertypes()) {
+        for (TypeInfo supertype : classDef.allSupertypes()) {
             if (supertype instanceof ConcreteTypeInfo) {
-                ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) supertype;
-                TypeDef supertypeDef = concreteTypeInfo.resolvedTypeDef();
-                if (supertypeDef instanceof ClassDef) {
-                    ClassDef supertypeClassDef = (ClassDef) supertypeDef;
-//                    properties.addAll(supertypeClassDef.properties());
+                ConcreteTypeInfo superConcreteTypeInfo = (ConcreteTypeInfo) supertype;
+                TypeDef superTypeDef = superConcreteTypeInfo.resolvedTypeDef();
+                if (superTypeDef instanceof ClassDef) {
+                    ClassDef superClassDef = (ClassDef) superTypeDef;
+                    for (FieldComponentInfo component : superClassDef.components()) {
+                        properties.add(toPropertyExpr(component));
+                    }
                 }
             }
         }
+        // TODO: generic types
 
         StructExpr value = new StructExpr(
             classDef.simpleName(),
@@ -56,12 +54,22 @@ final class RustStructConverter implements TemplateDataConverter {
         return Tuple.of(Template.TEMPLATE_RUST_STRUCT, value);
     }
 
+    private PropertyExpr toPropertyExpr(FieldComponentInfo field) {
+        return new PropertyExpr(
+            field.name(),
+            typeExpressionConverter.toTypeExpr(field.type()),
+            field.optional()
+        );
+    }
+
+    @SuppressWarnings("unused")
     @RequiredArgsConstructor
     static final class StructExpr {
         final String name;
         final List<PropertyExpr> properties;
     }
 
+    @SuppressWarnings("unused")
     @RequiredArgsConstructor
     static final class PropertyExpr {
         final String name;

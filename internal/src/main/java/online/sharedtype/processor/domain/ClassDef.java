@@ -2,7 +2,6 @@ package online.sharedtype.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,12 +49,17 @@ public final class ClassDef implements TypeDef {
         return supertypes;
     }
 
+    /**
+     *
+     * @return all supertypes in the hierarchy.
+     * @throws IllegalStateException if a supertype is not resolved.
+     */
     public List<TypeInfo> allSupertypes() {
         List<TypeInfo> res = new ArrayList<>(supertypes.size() * 3); // TODO: cap estimate
         res.addAll(supertypes);
         for (TypeInfo supertype : supertypes) {
             if (!supertype.resolved()) {
-                throw new SharedTypeInternalError("An unresolved supertype does not have type hierarchy information." +
+                throw new IllegalStateException("An unresolved supertype does not have type hierarchy information." +
                     String.format(" Failed to gather deep type info from type: %s, direct unresolved super type: %s", qualifiedName, supertype));
             }
             if (supertype instanceof ConcreteTypeInfo) {
