@@ -1,30 +1,40 @@
 package online.sharedtype.processor.writer.converter.type;
 
-import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
-import online.sharedtype.processor.support.annotation.Recursive;
 import online.sharedtype.processor.support.annotation.SideEffect;
 
-@RequiredArgsConstructor
-final class RecursiveTypeExpressionConverter implements TypeExpressionConverter {
-    private final TypeExpressionBuilder expressionBuilder;
+import java.util.HashMap;
+import java.util.Map;
+
+abstract class AbstractTypeExpressionConverter implements TypeExpressionConverter {
+    private final Map<ConcreteTypeInfo, String> typeNameMappings;
+
+    public AbstractTypeExpressionConverter() {
+        typeNameMappings = new HashMap<>(20);
+    }
 
     @Override
-    public String toTypeExpr(TypeInfo typeInfo) {
-        StringBuilder exprBuilder = new StringBuilder();
+    public final String toTypeExpr(TypeInfo typeInfo) {
+        StringBuilder exprBuilder = new StringBuilder(); // TODO: a better init size
         buildTypeExprRecursively(typeInfo, exprBuilder);
         return exprBuilder.toString();
     }
+    final void addTypeMapping(ConcreteTypeInfo typeInfo, String name) {
+        typeNameMappings.put(typeInfo, name);
+    }
 
-    @Recursive
-    private void buildTypeExprRecursively(TypeInfo typeInfo,
-                                          @SideEffect StringBuilder exprBuilder) {
+    void buildArrayExprPrefix(ArrayTypeInfo typeInfo, @SideEffect StringBuilder exprBuilder) {
+    }
+    void buildArrayExprSuffix(ArrayTypeInfo typeInfo, @SideEffect StringBuilder exprBuilder) {
+    }
+
+    private void buildTypeExprRecursively(TypeInfo typeInfo, @SideEffect StringBuilder exprBuilder) {
         if (typeInfo instanceof ConcreteTypeInfo) {
             ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
-            expressionBuilder.buildTypeExpr(concreteTypeInfo, exprBuilder);
+            exprBuilder.append(typeNameMappings.getOrDefault(concreteTypeInfo, concreteTypeInfo.simpleName()));
             if (!concreteTypeInfo.typeArgs().isEmpty()) {
                 exprBuilder.append("<");
                 for (TypeInfo typeArg : concreteTypeInfo.typeArgs()) {
@@ -39,9 +49,9 @@ final class RecursiveTypeExpressionConverter implements TypeExpressionConverter 
             exprBuilder.append(typeVariableInfo.name());
         } else if (typeInfo instanceof ArrayTypeInfo) {
             ArrayTypeInfo arrayTypeInfo = (ArrayTypeInfo) typeInfo;
-            expressionBuilder.buildArrayExprPrefix(arrayTypeInfo, exprBuilder);
+            buildArrayExprPrefix(arrayTypeInfo, exprBuilder);
             buildTypeExprRecursively(arrayTypeInfo.component(), exprBuilder);
-            expressionBuilder.buildArrayExprSuffix(arrayTypeInfo, exprBuilder);
+            buildArrayExprSuffix(arrayTypeInfo, exprBuilder);
         }
     }
 }

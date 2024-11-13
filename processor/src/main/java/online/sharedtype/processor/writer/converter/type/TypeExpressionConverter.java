@@ -10,10 +10,10 @@ public interface TypeExpressionConverter {
 
     static TypeExpressionConverter create(OutputTarget target, Context ctx) {
         if (target == OutputTarget.TYPESCRIPT) {
-            return new RecursiveTypeExpressionConverter(new TypescriptTypeExpressionBuilder(ctx));
+            return new TypescriptTypeExpressionConverter(ctx);
         }
         if (target == OutputTarget.RUST) {
-            return new RecursiveTypeExpressionConverter(new RustTypeExpressionBuilder());
+            return new RustTypeExpressionConverter();
         }
         throw new SharedTypeInternalError(String.format("Unsupported target: %s", target));
     }

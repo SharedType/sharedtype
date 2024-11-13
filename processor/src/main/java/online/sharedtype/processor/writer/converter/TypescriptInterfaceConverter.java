@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 final class TypescriptInterfaceConverter implements TemplateDataConverter {
-    private final TypeExpressionConverter typeExpressionBuilder;
+    private final TypeExpressionConverter typeExpressionConverter;
     private final char interfacePropertyDelimiter;
 
     TypescriptInterfaceConverter(Context ctx, TypeExpressionConverter typeExpressionConverter) {
         interfacePropertyDelimiter = ctx.getProps().getTypescript().getInterfacePropertyDelimiter();
-        this.typeExpressionBuilder = typeExpressionConverter;
+        this.typeExpressionConverter = typeExpressionConverter;
     }
 
     @Override
@@ -31,8 +31,8 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
         ClassDef classDef = (ClassDef) typeDef;
         InterfaceExpr value = new InterfaceExpr(
             classDef.simpleName(),
-            classDef.typeVariables().stream().map(typeExpressionBuilder::toTypeExpr).collect(Collectors.toList()),
-            classDef.supertypes().stream().map(typeExpressionBuilder::toTypeExpr).collect(Collectors.toList()),
+            classDef.typeVariables().stream().map(typeExpressionConverter::toTypeExpr).collect(Collectors.toList()),
+            classDef.supertypes().stream().map(typeExpressionConverter::toTypeExpr).collect(Collectors.toList()),
             classDef.components().stream().map(this::toPropertyExpr).collect(Collectors.toList())
         );
         return Tuple.of(Template.TEMPLATE_TYPESCRIPT_INTERFACE, value);
@@ -41,7 +41,7 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
     private PropertyExpr toPropertyExpr(FieldComponentInfo field) {
         return new PropertyExpr(
             field.name(),
-            typeExpressionBuilder.toTypeExpr(field.type()),
+            typeExpressionConverter.toTypeExpr(field.type()),
             interfacePropertyDelimiter,
             field.optional(),
             false,
