@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
  *     while the supertype is also emitted. </li>
  *     <li>Rust: Inheritance is not supported.
  *     Type hierarchy will be flattened that a subtype's inherited properties will be included in its own declared properties,
- *     while the supertype is also emitted.</li>
+ *     while, by default, any supertypes will not be emitted again.</li>
  * </ul>
  * </p>
  *

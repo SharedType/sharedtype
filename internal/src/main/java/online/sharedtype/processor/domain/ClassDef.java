@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Represents structural info captured from an interface, class, or record.
+ * Represents structural info captured from an interface, class, or record. Similar concept with {@link javax.lang.model.element.TypeElement}.
  *
+ * @see TypeInfo
  * @author Cause Chung
  */
 @Builder
@@ -50,11 +51,20 @@ public final class ClassDef implements TypeDef {
     }
 
     /**
+     * Recursively gather all supertypes.
+     * <br>
+     * Due to a generic type can have different reified type arguments,
+     * there can be multiple {@link TypeInfo} pointing to the same resolved {@link TypeDef}.
+     * So when called from this TypeInfo, the actual supertype type arguments must be passed to and reified at its supertypes.
      *
-     * @return all supertypes in the hierarchy.
+     * @return all supertypes in the hierarchy with type parameters reified from this callee.
      * @throws IllegalStateException if a supertype is not resolved.
      */
     public List<TypeInfo> allSupertypes() {
+        return allSupertypes(null);
+    }
+
+    private List<TypeInfo> allSupertypes(Object typeArgs) {
         List<TypeInfo> res = new ArrayList<>(supertypes.size() * 3); // TODO: cap estimate
         res.addAll(supertypes);
         for (TypeInfo supertype : supertypes) {
@@ -67,6 +77,8 @@ public final class ClassDef implements TypeDef {
                 TypeDef superTypeDef = superConcreteTypeInfo.resolvedTypeDef();
                 if (superTypeDef instanceof ClassDef) {
                     ClassDef superClassDef = (ClassDef) superTypeDef;
+                    superConcreteTypeInfo.typeArgs();
+                    superClassDef.typeVariables();
                     res.addAll(superClassDef.allSupertypes());
                 }
             }

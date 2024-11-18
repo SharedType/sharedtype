@@ -3,7 +3,7 @@ package online.sharedtype.processor.domain;
 import java.io.Serializable;
 
 /**
- * Type information.
+ * Type information. Similar concept as {@link javax.lang.model.type.TypeMirror}.
  *
  * @author Cause Chung
  * @see TypeDef
