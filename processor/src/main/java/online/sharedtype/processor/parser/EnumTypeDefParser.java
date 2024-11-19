@@ -73,7 +73,7 @@ final class EnumTypeDefParser implements TypeDefParser {
 
     private List<EnumValueInfo> parseEnumConstants(TypeElement enumTypeElement, List<VariableElement> enumConstants, EnumValueMarker enumValueMarker) {
         List<EnumValueInfo> res = new ArrayList<>(enumConstants.size());
-        TypeInfo valueTypeInfo = typeInfoParser.parse(enumValueMarker.enumValueVariableElem.asType());
+        TypeInfo valueTypeInfo = typeInfoParser.parse(enumValueMarker.enumValueVariableElem.asType(), enumTypeElement.getQualifiedName().toString());
         int ctorArgIdx = enumValueMarker.matchAndGetConstructorArgIdx();
         if (ctorArgIdx < 0) {
             return Collections.emptyList();

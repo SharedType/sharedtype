@@ -27,7 +27,7 @@ public interface TypeInfoParser {
      * So there's no structural information, e.g. name, saved in global context yet.
      * </p>
      */
-    TypeInfo parse(TypeMirror typeMirror);
+    TypeInfo parse(TypeMirror typeMirror, String contextTypeQualifiedName);
 
     static TypeInfoParser create(Context ctx) {
         return new TypeInfoParserImpl(ctx);

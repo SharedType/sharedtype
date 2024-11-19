@@ -59,12 +59,12 @@ final class ClassTypeDefParserTest {
         var parsedSupertype1 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.SuperClassA").build();
         var parsedSupertype2 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.InterfaceA").build();
         var parsedSupertype3 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.InterfaceB").build();
-        when(typeInfoParser.parse(field1.type())).thenReturn(parsedField1Type);
-        when(typeInfoParser.parse(field2.type())).thenReturn(parsedField2Type);
-        when(typeInfoParser.parse(method2.type())).thenReturn(parsedMethod2Type);
-        when(typeInfoParser.parse(supertype1.type())).thenReturn(parsedSupertype1);
-        when(typeInfoParser.parse(supertype2.type())).thenReturn(parsedSupertype2);
-        when(typeInfoParser.parse(supertype3.type())).thenReturn(parsedSupertype3);
+        when(typeInfoParser.parse(field1.type(), "com.github.cuzfrog.Abc")).thenReturn(parsedField1Type);
+        when(typeInfoParser.parse(field2.type(), "com.github.cuzfrog.Abc")).thenReturn(parsedField2Type);
+        when(typeInfoParser.parse(method2.type(), "com.github.cuzfrog.Abc")).thenReturn(parsedMethod2Type);
+        when(typeInfoParser.parse(supertype1.type(), "com.github.cuzfrog.Abc")).thenReturn(parsedSupertype1);
+        when(typeInfoParser.parse(supertype2.type(), "com.github.cuzfrog.Abc")).thenReturn(parsedSupertype2);
+        when(typeInfoParser.parse(supertype3.type(), "com.github.cuzfrog.Abc")).thenReturn(parsedSupertype3);
         InOrder inOrder = inOrder(typeInfoParser);
 
         var classDef = (ClassDef) parser.parse(clazz);
@@ -96,11 +96,11 @@ final class ClassTypeDefParserTest {
         // supertypes
         assertThat(classDef.directSupertypes()).containsExactly(parsedSupertype1, parsedSupertype2, parsedSupertype3);
 
-        inOrder.verify(typeInfoParser).parse(field1.type());
-        inOrder.verify(typeInfoParser).parse(field2.type());
-        inOrder.verify(typeInfoParser).parse(method2.type());
-        inOrder.verify(typeInfoParser).parse(supertype1.type());
-        inOrder.verify(typeInfoParser).parse(supertype2.type());
-        inOrder.verify(typeInfoParser).parse(supertype3.type());
+        inOrder.verify(typeInfoParser).parse(field1.type(), "com.github.cuzfrog.Abc");
+        inOrder.verify(typeInfoParser).parse(field2.type(), "com.github.cuzfrog.Abc");
+        inOrder.verify(typeInfoParser).parse(method2.type(), "com.github.cuzfrog.Abc");
+        inOrder.verify(typeInfoParser).parse(supertype1.type(), "com.github.cuzfrog.Abc");
+        inOrder.verify(typeInfoParser).parse(supertype2.type(), "com.github.cuzfrog.Abc");
+        inOrder.verify(typeInfoParser).parse(supertype3.type(), "com.github.cuzfrog.Abc");
     }
 }

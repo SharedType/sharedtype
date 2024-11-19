@@ -220,8 +220,8 @@ final class JavaRecordIntegrationTest {
         var genericListField = classDef.components().get(22);
         assertThat(genericListField.name()).isEqualTo("genericList");
         var arrayTypeInfo = (ArrayTypeInfo)genericListField.type();
-        var typeInfo = (ConcreteTypeInfo)arrayTypeInfo.component();
-        assertThat(typeInfo.qualifiedName()).isEqualTo("T");
+        var typeInfo = (TypeVariableInfo)arrayTypeInfo.component();
+        assertThat(typeInfo.qualifiedName()).isEqualTo("online.sharedtype.it.java17.JavaRecord@T");
     }
 
     @Test
@@ -229,8 +229,8 @@ final class JavaRecordIntegrationTest {
         var genericSetField = classDef.components().get(23);
         assertThat(genericSetField.name()).isEqualTo("genericSet");
         var arrayTypeInfo = (ArrayTypeInfo)genericSetField.type();
-        var typeInfo = (ConcreteTypeInfo)arrayTypeInfo.component();
-        assertThat(typeInfo.qualifiedName()).isEqualTo("T");
+        var typeInfo = (TypeVariableInfo)arrayTypeInfo.component();
+        assertThat(typeInfo.qualifiedName()).isEqualTo("online.sharedtype.it.java17.JavaRecord@T");
     }
 
     @Test
@@ -239,8 +239,8 @@ final class JavaRecordIntegrationTest {
         assertThat(genericListSetField.name()).isEqualTo("genericListSet");
         var arrayTypeInfo = (ArrayTypeInfo)genericListSetField.type();
         var nestedArrayTypeInfo = (ArrayTypeInfo)arrayTypeInfo.component();
-        var typeInfo = (ConcreteTypeInfo)nestedArrayTypeInfo.component();
-        assertThat(typeInfo.qualifiedName()).isEqualTo("T");
+        var typeInfo = (TypeVariableInfo)nestedArrayTypeInfo.component();
+        assertThat(typeInfo.qualifiedName()).isEqualTo("online.sharedtype.it.java17.JavaRecord@T");
     }
 
     @Test

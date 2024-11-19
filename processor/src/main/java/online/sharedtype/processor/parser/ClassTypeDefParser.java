@@ -95,7 +95,7 @@ final class ClassTypeDefParser implements TypeDefParser {
         List<TypeInfo> res = new ArrayList<>(supertypes.size());
         for (DeclaredType supertype : supertypes) {
             if (!ctx.isTypeIgnored((TypeElement) supertype.asElement())) {
-                res.add(typeInfoParser.parse(supertype));
+                res.add(typeInfoParser.parse(supertype, typeElement.getQualifiedName().toString()));
             }
         }
         return res;
@@ -111,7 +111,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 .name(tuple.b())
                 .modifiers(element.getModifiers())
                 .optional(element.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
-                .type(typeInfoParser.parse(element.asType()))
+                .type(typeInfoParser.parse(element.asType(), typeElement.getQualifiedName().toString()))
                 .build();
             fields.add(fieldInfo);
         }

@@ -16,11 +16,28 @@ import lombok.EqualsAndHashCode;
 @Builder
 public final class TypeVariableInfo implements TypeInfo {
     private static final long serialVersionUID = 7632941203572660271L;
+    private final String contextTypeQualifiedName;
     private final String name;
+    private String qualifiedName;
     // TODO: support generic bounds
+
+    public static String concatQualifiedName(String contextTypeQualifiedName, String name) {
+        return contextTypeQualifiedName + "@" + name;
+    }
+
+    public String contextTypeQualifiedName() {
+        return contextTypeQualifiedName;
+    }
 
     public String name() {
         return name;
+    }
+
+    public String qualifiedName() {
+        if (qualifiedName == null) {
+            qualifiedName = concatQualifiedName(contextTypeQualifiedName, name);
+        }
+        return qualifiedName;
     }
 
     @Override
