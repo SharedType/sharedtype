@@ -8,6 +8,7 @@ import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.parser.type.TypeContext;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.support.annotation.VisibleForTesting;
 import online.sharedtype.processor.support.utils.Tuple;
@@ -95,7 +96,7 @@ final class ClassTypeDefParser implements TypeDefParser {
         List<TypeInfo> res = new ArrayList<>(supertypes.size());
         for (DeclaredType supertype : supertypes) {
             if (!ctx.isTypeIgnored((TypeElement) supertype.asElement())) {
-                res.add(typeInfoParser.parse(supertype, typeElement.getQualifiedName().toString()));
+                res.add(typeInfoParser.parse(supertype, TypeContext.builder().qualifiedName(typeElement.getQualifiedName().toString()).build()));
             }
         }
         return res;
@@ -111,7 +112,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 .name(tuple.b())
                 .modifiers(element.getModifiers())
                 .optional(element.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
-                .type(typeInfoParser.parse(element.asType(), typeElement.getQualifiedName().toString()))
+                .type(typeInfoParser.parse(element.asType(),TypeContext.builder().qualifiedName(typeElement.getQualifiedName().toString()).build()))
                 .build();
             fields.add(fieldInfo);
         }

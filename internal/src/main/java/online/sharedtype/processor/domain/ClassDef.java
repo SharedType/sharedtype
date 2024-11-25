@@ -74,7 +74,7 @@ public final class ClassDef implements TypeDef {
             }
             if (supertype instanceof ConcreteTypeInfo) {
                 ConcreteTypeInfo superConcreteTypeInfo = (ConcreteTypeInfo) supertype;
-                TypeDef superTypeDef = superConcreteTypeInfo.resolvedTypeDef();
+                TypeDef superTypeDef = superConcreteTypeInfo.typeDef();
                 if (superTypeDef instanceof ClassDef) {
                     ClassDef superClassDef = (ClassDef) superTypeDef;
                     superConcreteTypeInfo.typeArgs();

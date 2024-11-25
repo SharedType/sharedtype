@@ -15,7 +15,7 @@ final class ClassDefTest {
                 ConcreteTypeInfo.builder()
                     .qualifiedName("com.github.cuzfrog.A")
                     .resolved(true)
-                    .resolvedTypeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.A").simpleName("A").supertypes(List.of(
+                    .typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.A").simpleName("A").supertypes(List.of(
                         ConcreteTypeInfo.builder().resolved(true).qualifiedName("com.github.cuzfrog.AA").simpleName("AA").build()
                     )).build())
                     .build(),

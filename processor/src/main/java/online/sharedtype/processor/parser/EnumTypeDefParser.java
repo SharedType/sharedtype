@@ -13,6 +13,7 @@ import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.parser.type.TypeContext;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
@@ -73,7 +74,10 @@ final class EnumTypeDefParser implements TypeDefParser {
 
     private List<EnumValueInfo> parseEnumConstants(TypeElement enumTypeElement, List<VariableElement> enumConstants, EnumValueMarker enumValueMarker) {
         List<EnumValueInfo> res = new ArrayList<>(enumConstants.size());
-        TypeInfo valueTypeInfo = typeInfoParser.parse(enumValueMarker.enumValueVariableElem.asType(), enumTypeElement.getQualifiedName().toString());
+        TypeInfo valueTypeInfo = typeInfoParser.parse(
+            enumValueMarker.enumValueVariableElem.asType(),
+            TypeContext.builder().qualifiedName(enumTypeElement.getQualifiedName().toString()).build()
+        );
         int ctorArgIdx = enumValueMarker.matchAndGetConstructorArgIdx();
         if (ctorArgIdx < 0) {
             return Collections.emptyList();

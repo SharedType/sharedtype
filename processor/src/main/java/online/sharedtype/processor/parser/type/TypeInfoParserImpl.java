@@ -36,25 +36,25 @@ final class TypeInfoParserImpl implements TypeInfoParser {
     }
 
     @Override
-    public TypeInfo parse(TypeMirror typeMirror, String contextTypeQualifiedName) {
+    public TypeInfo parse(TypeMirror typeMirror, TypeContext typeContext) {
         TypeKind typeKind = typeMirror.getKind();
 
         // TODO: use enumMap
         if (typeKind.isPrimitive()) {
             return PRIMITIVES.get(typeKind);
         } else if (typeKind == TypeKind.ARRAY) {
-            return new ArrayTypeInfo(parse(((ArrayType) typeMirror).getComponentType(), contextTypeQualifiedName));
+            return new ArrayTypeInfo(parse(((ArrayType) typeMirror).getComponentType(), typeContext));
         } else if (typeKind == TypeKind.DECLARED) {
-            return parseDeclared((DeclaredType) typeMirror, contextTypeQualifiedName);
+            return parseDeclared((DeclaredType) typeMirror, typeContext);
         } else if (typeKind == TypeKind.TYPEVAR) {
-            return parseTypeVariable((TypeVariable) typeMirror, contextTypeQualifiedName);
+            return parseTypeVariable((TypeVariable) typeMirror, typeContext);
         } else if (typeKind == TypeKind.EXECUTABLE) {
-            return parse(((ExecutableType) typeMirror).getReturnType(), contextTypeQualifiedName);
+            return parse(((ExecutableType) typeMirror).getReturnType(), typeContext);
         }
         throw new SharedTypeInternalError(String.format("Unsupported type: %s, typeKind: %s", typeMirror, typeKind));
     }
 
-    private TypeInfo parseDeclared(DeclaredType declaredType, String contextTypeQualifiedName) {
+    private TypeInfo parseDeclared(DeclaredType declaredType, TypeContext typeContext) {
         TypeElement typeElement = (TypeElement) declaredType.asElement();
         String qualifiedName = typeElement.getQualifiedName().toString();
         String simpleName = typeElement.getSimpleName().toString();
@@ -75,7 +75,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                 typeArgs = argDeclaredType.getTypeArguments();
             } else if (currentType instanceof TypeVariable) {
                 TypeVariable argTypeVariable = (TypeVariable) currentType;
-                TypeVariableInfo typeVarInfo = parseTypeVariable(argTypeVariable, contextTypeQualifiedName);
+                TypeVariableInfo typeVarInfo = parseTypeVariable(argTypeVariable, typeContext);
                 qualifiedName = typeVarInfo.qualifiedName();
                 simpleName = typeVarInfo.name();
                 typeArgs = Collections.emptyList();
@@ -98,7 +98,8 @@ final class TypeInfoParserImpl implements TypeInfoParser {
 
         if (typeInfo == null) {
             boolean resolved = typeStore.contains(qualifiedName);
-            List<TypeInfo> parsedTypeArgs = typeArgs.stream().map(typeArg -> parse(typeArg, contextTypeQualifiedName)).collect(Collectors.toList());
+            TypeContext typeContextAsTypeArgument = typeContext.toBuilder().isTypeArgument(true).build();
+            List<TypeInfo> parsedTypeArgs = typeArgs.stream().map(typeArg -> parse(typeArg, typeContextAsTypeArgument)).collect(Collectors.toList());
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)
@@ -118,15 +119,15 @@ final class TypeInfoParserImpl implements TypeInfoParser {
         return typeInfo;
     }
 
-    private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable, String contextTypeQualifiedName) {
+    private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable, TypeContext typeContext) {
         String simpleName = typeVariable.asElement().getSimpleName().toString();
-        String qualifiedName = TypeVariableInfo.concatQualifiedName(contextTypeQualifiedName, simpleName);
+        String qualifiedName = TypeVariableInfo.concatQualifiedName(typeContext.getQualifiedName(), simpleName);
         TypeInfo typeInfo = typeStore.getTypeInfo(qualifiedName);
         if (typeInfo != null) {
             return (TypeVariableInfo)typeInfo;
         }
         typeInfo = TypeVariableInfo.builder()
-            .contextTypeQualifiedName(contextTypeQualifiedName)
+            .contextTypeQualifiedName(typeContext.getQualifiedName())
             .name(simpleName)
             .qualifiedName(qualifiedName)
             .build();

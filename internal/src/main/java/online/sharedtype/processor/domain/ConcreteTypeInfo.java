@@ -26,7 +26,19 @@ public final class ConcreteTypeInfo implements TypeInfo {
     private final List<? extends TypeInfo> typeArgs = Collections.emptyList();
     @Builder.Default
     private boolean resolved = true;
-    private TypeDef resolvedTypeDef;
+
+    /**
+     * The corresponding type definition.
+     * @see this#typeDef()
+     */
+    @Nullable
+    private TypeDef typeDef;
+
+    /**
+     * The corresponding type variable if this type info is a reified type argument.
+     */
+    @Nullable
+    private TypeVariableInfo typeVariable;
 
     static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
         return ConcreteTypeInfo.builder().qualifiedName(qualifiedName).simpleName(simpleName).build();
@@ -43,15 +55,23 @@ public final class ConcreteTypeInfo implements TypeInfo {
 
     public void markShallowResolved(TypeDef resolvedTypeDef) {
         this.resolved = true;
-        this.resolvedTypeDef = resolvedTypeDef;
+        this.typeDef = resolvedTypeDef;
     }
 
     /**
      * @return null when the type is not resolved if it's a user defined type; or does not have a corresponding {@link TypeDef}, e.g. a predefined type.
      */
     @Nullable
-    public TypeDef resolvedTypeDef() {
-        return resolvedTypeDef;
+    public TypeDef typeDef() {
+        return typeDef;
+    }
+
+    /**
+     * @return null if this type info is not a reified type argument.
+     */
+    @Nullable
+    public TypeVariableInfo reifiedTypeVariable() {
+        return typeVariable;
     }
 
     public String qualifiedName() {

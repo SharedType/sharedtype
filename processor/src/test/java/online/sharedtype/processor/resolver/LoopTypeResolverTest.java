@@ -122,7 +122,7 @@ final class LoopTypeResolverTest {
             );
         }
         assertThat(aTypeInfo.resolved()).isTrue();
-        assertThat(aTypeInfo.resolvedTypeDef()).isEqualTo(aDef);
+        assertThat(aTypeInfo.typeDef()).isEqualTo(aDef);
     }
 
     @Test

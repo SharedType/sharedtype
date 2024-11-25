@@ -45,7 +45,7 @@ public final class EnumDef implements TypeDef {
     public String toString() {
         return String.format("%s[%s]",
             qualifiedName,
-            enumValueInfos.isEmpty() ? "" : String.join(",", enumValueInfos.stream().map(EnumValueInfo::toString).collect(Collectors.toList()))
+            enumValueInfos.isEmpty() ? "" : enumValueInfos.stream().map(EnumValueInfo::toString).collect(Collectors.joining(","))
         );
     }
 }

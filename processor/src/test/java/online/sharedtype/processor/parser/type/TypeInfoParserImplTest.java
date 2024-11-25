@@ -23,6 +23,9 @@ class TypeInfoParserImplTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParserImpl parser = new TypeInfoParserImpl(ctxMocks.getContext());
 
+    private final TypeContext typeContext = TypeContext.builder().qualifiedName("com.github.cuzfrog.Abc").build();
+    private final TypeContext typeContextOtter = TypeContext.builder().qualifiedName("com.github.cuzfrog.Outer").build();
+
     @ParameterizedTest
     @CsvSource({
       "BYTE, byte",
@@ -37,7 +40,7 @@ class TypeInfoParserImplTest {
     void parsePrimitives(TypeKind typeKind, String expectedName) {
         var type = ctxMocks.primitiveVariable("field1", typeKind).type();
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, "com.github.cuzfrog.Abc");
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContext);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo(expectedName);
             softly.assertThat(typeInfo.simpleName()).isEqualTo(expectedName);
@@ -45,7 +48,7 @@ class TypeInfoParserImplTest {
         });
 
         var arrayType = ctxMocks.array(type).type();
-        var arrayTypeInfo = (ArrayTypeInfo) parser.parse(arrayType, "com.github.cuzfrog.Abc");
+        var arrayTypeInfo = (ArrayTypeInfo) parser.parse(arrayType, typeContext);
         SoftAssertions.assertSoftly(softly -> {
             var componentTypeInfo = (ConcreteTypeInfo) arrayTypeInfo.component();
             softly.assertThat(componentTypeInfo.qualifiedName()).isEqualTo(expectedName);
@@ -72,7 +75,7 @@ class TypeInfoParserImplTest {
           .withTypeKind(TypeKind.DECLARED)
           .type();
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, "com.github.cuzfrog.Abc");
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContext);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo(qualifiedName);
             softly.assertThat(typeInfo.simpleName()).isEqualTo(qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1));
@@ -80,7 +83,7 @@ class TypeInfoParserImplTest {
         });
 
         var arrayType = ctxMocks.array(type).type();
-        var arrayTypeInfo = (ArrayTypeInfo) parser.parse(arrayType, "com.github.cuzfrog.Abc");
+        var arrayTypeInfo = (ArrayTypeInfo) parser.parse(arrayType, typeContext);
         SoftAssertions.assertSoftly(softly -> {
             var componentTypeInfo = (ConcreteTypeInfo) arrayTypeInfo.component();
             softly.assertThat(componentTypeInfo.resolved()).isTrue();
@@ -95,7 +98,7 @@ class TypeInfoParserImplTest {
           .type();
         when(ctxMocks.getContext().isArraylike(type)).thenReturn(true);
 
-        var arrayTypeInfo = (ArrayTypeInfo) parser.parse(type, "com.github.cuzfrog.Abc");
+        var arrayTypeInfo = (ArrayTypeInfo) parser.parse(type, typeContext);
         var typeInfo = (ConcreteTypeInfo) arrayTypeInfo.component();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
@@ -121,7 +124,7 @@ class TypeInfoParserImplTest {
         when(ctxMocks.getContext().isArraylike(type)).thenReturn(true);
         when(ctxMocks.getContext().isArraylike(nestedType)).thenReturn(true);
 
-        var arrayTypeInfo = (ArrayTypeInfo) parser.parse(type, "com.github.cuzfrog.Abc");
+        var arrayTypeInfo = (ArrayTypeInfo) parser.parse(type, typeContext);
         var nestedArrayTypeInfo = (ArrayTypeInfo) arrayTypeInfo.component();
         var typeInfo = (ConcreteTypeInfo) nestedArrayTypeInfo.component();
         SoftAssertions.assertSoftly(softly -> {
@@ -138,7 +141,7 @@ class TypeInfoParserImplTest {
           .withTypeKind(TypeKind.DECLARED)
           .type();
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, "com.github.cuzfrog.Outer");
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOtter);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
             softly.assertThat(typeInfo.simpleName()).isEqualTo("Abc");
@@ -157,7 +160,7 @@ class TypeInfoParserImplTest {
           )
           .type();
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, "com.github.cuzfrog.Outer");
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOtter);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Tuple");
             softly.assertThat(typeInfo.resolved()).isFalse();
@@ -187,7 +190,7 @@ class TypeInfoParserImplTest {
           )
           .type();
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, "com.github.cuzfrog.Outer");
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOtter);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Container");
             softly.assertThat(typeInfo.resolved()).isFalse();
@@ -207,7 +210,7 @@ class TypeInfoParserImplTest {
         var type = ctxMocks.executable("value")
             .withReturnType(ctxMocks.typeElement("java.lang.String").type())
             .type();
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, "com.github.cuzfrog.Outer");
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOtter);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
             softly.assertThat(typeInfo.resolved()).isTrue();
@@ -223,7 +226,7 @@ class TypeInfoParserImplTest {
             .resolved(false)
             .build();
         ctxMocks.getTypeStore().saveTypeInfo("com.github.cuzfrog.Abc", cachedTypeInfo);
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, "com.github.cuzfrog.Abc");
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContext);
         assertThat(typeInfo).isSameAs(cachedTypeInfo);
     }
 
@@ -231,7 +234,7 @@ class TypeInfoParserImplTest {
     void shouldNotCacheTypeInfoIfIsGeneric() {
         var type = ctxMocks.typeElement("com.github.cuzfrog.Container")
             .withTypeArguments(ctxMocks.typeElement("java.lang.Integer").type()).type();
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, "com.github.cuzfrog.Container");
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, TypeContext.builder().qualifiedName("com.github.cuzfrog.Container").build());
         assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Container");
         assertThat(typeInfo.typeArgs()).hasSize(1);
         var typeArg = (ConcreteTypeInfo)typeInfo.typeArgs().get(0);
