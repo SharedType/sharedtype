@@ -1,13 +1,12 @@
 package online.sharedtype.processor.parser;
 
 import online.sharedtype.SharedType;
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.FieldComponentInfo;
-import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeInfo;
-import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.FieldComponentInfo;
+import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.parser.type.TypeContext;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.support.annotation.VisibleForTesting;
@@ -50,7 +49,7 @@ final class ClassTypeDefParser implements TypeDefParser {
     }
 
     @Override
-    public TypeDef parse(TypeElement typeElement) {
+    public ClassDef parse(TypeElement typeElement) {
         if (!isValidClassTypeElement(typeElement)) {
             return null;
         }
@@ -112,7 +111,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 .name(tuple.b())
                 .modifiers(element.getModifiers())
                 .optional(element.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
-                .type(typeInfoParser.parse(element.asType(),TypeContext.builder().qualifiedName(typeElement.getQualifiedName().toString()).build()))
+                .type(typeInfoParser.parse(element.asType(), TypeContext.builder().qualifiedName(typeElement.getQualifiedName().toString()).build()))
                 .build();
             fields.add(fieldInfo);
         }

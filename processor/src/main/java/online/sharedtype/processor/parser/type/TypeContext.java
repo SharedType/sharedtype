@@ -8,5 +8,4 @@ import lombok.Getter;
 public final class TypeContext {
     /** The name of the context type definition. */
     private final String qualifiedName;
-    private final boolean isTypeArgument;
 }
