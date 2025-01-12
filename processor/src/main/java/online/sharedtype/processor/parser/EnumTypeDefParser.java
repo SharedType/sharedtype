@@ -67,7 +67,8 @@ final class EnumTypeDefParser implements TypeDefParser {
     private static List<EnumValueInfo> useEnumConstantNames(List<VariableElement> enumConstants) {
         List<EnumValueInfo> res = new ArrayList<>(enumConstants.size());
         for (VariableElement enumConstant : enumConstants) {
-            res.add(new EnumValueInfo(STRING_TYPE_INFO, enumConstant.getSimpleName().toString()));
+            String name = enumConstant.getSimpleName().toString();
+            res.add(new EnumValueInfo(name, STRING_TYPE_INFO, name));
         }
         return res;
     }
@@ -83,12 +84,13 @@ final class EnumTypeDefParser implements TypeDefParser {
             return Collections.emptyList();
         }
         for (VariableElement enumConstant : enumConstants) {
+            String name = enumConstant.getSimpleName().toString();
             Tree tree = ctx.getTrees().getTree(enumConstant);
             if (tree instanceof VariableTree) {
                 VariableTree variableTree = (VariableTree) tree;
                 Object value = resolveValue(enumTypeElement, variableTree, ctorArgIdx);
                 if (value != null) {
-                    res.add(new EnumValueInfo(valueTypeInfo, value));
+                    res.add(new EnumValueInfo(name, valueTypeInfo, value));
                 }
             } else if (tree == null) {
                 ctx.error("Literal value cannot be parsed from enum constant: %s of enum %s, because source tree from the element is null." +

@@ -16,6 +16,7 @@ public final class Template {
     public static final Template TEMPLATE_TYPESCRIPT_INTERFACE = new Template(OutputTarget.TYPESCRIPT, "interface");
     public static final Template TEMPLATE_TYPESCRIPT_ENUM_UNION = new Template(OutputTarget.TYPESCRIPT, "enum-union");
     public static final Template TEMPLATE_RUST_STRUCT = new Template(OutputTarget.RUST, "struct");
+    public static final Template TEMPLATE_RUST_ENUM = new Template(OutputTarget.RUST, "enum");
 
     private final OutputTarget outputTarget;
     private final String resourcePath;

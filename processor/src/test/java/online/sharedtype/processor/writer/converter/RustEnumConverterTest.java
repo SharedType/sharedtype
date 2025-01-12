@@ -2,7 +2,6 @@ package online.sharedtype.processor.writer.converter;
 
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
-import online.sharedtype.processor.writer.render.Template;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -10,12 +9,13 @@ import java.util.Arrays;
 import static online.sharedtype.processor.domain.Constants.INT_TYPE_INFO;
 import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-final class TypescriptEnumUnionConverterTest {
-    private final TypescriptEnumUnionConverter converter = new TypescriptEnumUnionConverter();
+final class RustEnumConverterTest {
+    private final RustEnumConverter converter = new RustEnumConverter();
 
     @Test
-    void writeEnumUnion() {
+    void convert() {
         EnumDef enumDef = EnumDef.builder()
             .simpleName("EnumA")
             .qualifiedName("com.github.cuzfrog.EnumA")
@@ -28,9 +28,12 @@ final class TypescriptEnumUnionConverterTest {
         var data = converter.convert(enumDef);
         assertThat(data).isNotNull();
 
-        assertThat(data.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_ENUM_UNION);
-        EnumUnionExpr model = (EnumUnionExpr) data.b();
+        var model = (RustEnumConverter.EnumExpr) data.b();
         assertThat(model.name).isEqualTo("EnumA");
-        assertThat(model.values).containsExactly("\"Value1\"", "123", "null");
+        assertThat(model.enumerations).satisfiesExactly(
+            v1 -> assertThat(v1.name).isEqualTo("Value1"),
+            v2 -> assertThat(v2.name).isEqualTo("Value2"),
+            v3 -> assertThat(v3.name).isEqualTo("Value3")
+        );
     }
 }

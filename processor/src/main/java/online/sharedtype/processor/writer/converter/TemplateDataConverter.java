@@ -25,6 +25,7 @@ public interface TemplateDataConverter {
     static Set<TemplateDataConverter> rust() {
         Set<TemplateDataConverter> converters = new HashSet<>(2);
         converters.add(new RustStructConverter(TypeExpressionConverter.rust()));
+        converters.add(new RustEnumConverter());
         return converters;
     }
 }
