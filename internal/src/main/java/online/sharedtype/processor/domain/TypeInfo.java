@@ -1,6 +1,7 @@
 package online.sharedtype.processor.domain;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Type information. Similar concept as {@link javax.lang.model.type.TypeMirror}.
@@ -23,4 +24,12 @@ public interface TypeInfo extends Serializable {
      * @return true is this type and its dependency types are resolved.
      */
     boolean resolved();
+
+    /**
+     * Replace type variables with type arguments.
+     * @param mappings key is a type variable e.g. T
+     *                 value is a type argument, a concrete type e.g. Integer, or a generic type with concrete type parameter, e.g. Tuple<String, String></>
+     * @return a newly created type info if updated.
+     */
+    TypeInfo reify(Map<TypeVariableInfo, TypeInfo> mappings);
 }

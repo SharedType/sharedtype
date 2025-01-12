@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
  * @author Cause Chung
  */
 @EqualsAndHashCode(of = {"qualifiedName", "typeArgs"})
-@Builder
+@Builder(toBuilder = true)
 public final class ConcreteTypeInfo implements TypeInfo {
     private static final long serialVersionUID = 6912267731376244613L;
     private final String qualifiedName;
@@ -34,12 +35,6 @@ public final class ConcreteTypeInfo implements TypeInfo {
     @Nullable
     private TypeDef typeDef;
 
-    /**
-     * The corresponding type variable if this type info is a reified type argument.
-     */
-    @Nullable
-    private TypeVariableInfo typeVariable;
-
     static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
         return ConcreteTypeInfo.builder().qualifiedName(qualifiedName).simpleName(simpleName).build();
     }
@@ -47,6 +42,13 @@ public final class ConcreteTypeInfo implements TypeInfo {
     @Override
     public boolean resolved() {
         return resolved && typeArgs.stream().allMatch(TypeInfo::resolved);
+    }
+
+    @Override
+    public TypeInfo reify(Map<TypeVariableInfo, TypeInfo> mappings) {
+        return this.toBuilder()
+            .typeArgs(typeArgs.stream().map(typeArg -> typeArg.reify(mappings)).collect(Collectors.toList()))
+            .build();
     }
 
     public boolean shallowResolved() {
@@ -64,14 +66,6 @@ public final class ConcreteTypeInfo implements TypeInfo {
     @Nullable
     public TypeDef typeDef() {
         return typeDef;
-    }
-
-    /**
-     * @return null if this type info is not a reified type argument.
-     */
-    @Nullable
-    public TypeVariableInfo reifiedTypeVariable() {
-        return typeVariable;
     }
 
     public String qualifiedName() {

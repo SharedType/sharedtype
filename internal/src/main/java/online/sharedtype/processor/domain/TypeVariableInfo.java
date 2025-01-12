@@ -2,6 +2,9 @@ package online.sharedtype.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
+
+import java.util.Map;
 
 /**
  * Represents a generic type variable.
@@ -12,7 +15,7 @@ import lombok.EqualsAndHashCode;
  * @see ConcreteTypeInfo#typeArgs()
  * @author Cause Chung
  */
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"contextTypeQualifiedName", "name"})
 @Builder
 public final class TypeVariableInfo implements TypeInfo {
     private static final long serialVersionUID = 7632941203572660271L;
@@ -43,6 +46,12 @@ public final class TypeVariableInfo implements TypeInfo {
     @Override
     public boolean resolved() {
         return true;
+    }
+
+    @Override
+    public TypeInfo reify(Map<TypeVariableInfo, TypeInfo> mappings) {
+        TypeInfo reifiedType = mappings.get(this);
+        return reifiedType == null ? this : reifiedType;
     }
 
     @Override

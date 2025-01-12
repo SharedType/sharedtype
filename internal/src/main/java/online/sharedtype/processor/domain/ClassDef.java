@@ -5,7 +5,9 @@ import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -14,7 +16,7 @@ import java.util.stream.Collectors;
  * @see TypeInfo
  * @author Cause Chung
  */
-@Builder
+@Builder(toBuilder = true)
 @EqualsAndHashCode(of = "qualifiedName")
 public final class ClassDef implements TypeDef {
     private static final long serialVersionUID = 9052013791381913516L;
@@ -50,40 +52,27 @@ public final class ClassDef implements TypeDef {
         return supertypes;
     }
 
-    /**
-     * Recursively gather all supertypes.
-     * <br>
-     * Due to a generic type can have different reified type arguments,
-     * there can be multiple {@link TypeInfo} pointing to the same resolved {@link TypeDef}.
-     * So when called from this TypeInfo, the actual supertype type arguments must be passed to and reified at its supertypes.
-     *
-     * @return all supertypes in the hierarchy with type parameters reified from this callee.
-     * @throws IllegalStateException if a supertype is not resolved.
-     */
-    public List<TypeInfo> allSupertypes() {
-        return allSupertypes(null);
-    }
-
-    private List<TypeInfo> allSupertypes(Object typeArgs) {
-        List<TypeInfo> res = new ArrayList<>(supertypes.size() * 3); // TODO: cap estimate
-        res.addAll(supertypes);
-        for (TypeInfo supertype : supertypes) {
-            if (!supertype.resolved()) {
-                throw new IllegalStateException("An unresolved supertype does not have type hierarchy information." +
-                    String.format(" Failed to gather deep type info from type: %s, direct unresolved super type: %s", qualifiedName, supertype));
-            }
-            if (supertype instanceof ConcreteTypeInfo) {
-                ConcreteTypeInfo superConcreteTypeInfo = (ConcreteTypeInfo) supertype;
-                TypeDef superTypeDef = superConcreteTypeInfo.typeDef();
-                if (superTypeDef instanceof ClassDef) {
-                    ClassDef superClassDef = (ClassDef) superTypeDef;
-                    superConcreteTypeInfo.typeArgs();
-                    superClassDef.typeVariables();
-                    res.addAll(superClassDef.allSupertypes());
-                }
-            }
+    public ClassDef reify(List<? extends TypeInfo> typeArgs) {
+        int l;
+        if ((l = typeArgs.size()) != typeVariables.size()) {
+            throw new IllegalArgumentException(String.format("Cannot reify %s against typeArgs: %s", this, typeArgs));
         }
-        return res;
+        if (l == 0) {
+            return this;
+        }
+        Map<TypeVariableInfo, TypeInfo> mappings = new HashMap<>(l);
+        for (int i = 0; i < l; i++) {
+            mappings.put(typeVariables.get(i), typeArgs.get(i));
+        }
+        List<FieldComponentInfo> reifiedComponents = components.stream()
+            .map(comp -> comp.toBuilder().type(comp.type().reify(mappings)).build())
+            .collect(Collectors.toList());
+        List<TypeInfo> reifiedSupertypes = supertypes.stream()
+            .map(supertype -> supertype.reify(mappings)).collect(Collectors.toList());
+        return this.toBuilder()
+            .components(reifiedComponents)
+            .supertypes(reifiedSupertypes)
+            .build();
     }
 
     // TODO: optimize
