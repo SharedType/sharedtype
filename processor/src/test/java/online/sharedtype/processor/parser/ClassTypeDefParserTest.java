@@ -1,6 +1,5 @@
 package online.sharedtype.processor.parser;
 
-import online.sharedtype.SharedType;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.context.ContextMocks;
@@ -27,8 +26,12 @@ final class ClassTypeDefParserTest {
     private final ClassTypeDefParser parser = new ClassTypeDefParser(ctxMocks.getContext(), typeInfoParser);
 
     private final TypeElementMock string = ctxMocks.typeElement("java.lang.String");
-    private final TypeContext typeContextForComponents = TypeContext.builder().qualifiedName("com.github.cuzfrog.Abc").dependingKind(DependingKind.COMPONENTS).build();
-    private final TypeContext typeContextForSupertypes = TypeContext.builder().qualifiedName("com.github.cuzfrog.Abc").dependingKind(DependingKind.SUPER_TYPE).build();
+    private final TypeContext typeContextForComponents = TypeContext.builder()
+        .typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build())
+        .dependingKind(DependingKind.COMPONENTS).build();
+    private final TypeContext typeContextForSupertypes = TypeContext.builder()
+        .typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build())
+        .dependingKind(DependingKind.SUPER_TYPE).build();
 
     @Test
     void parseComplexClass() {
@@ -76,7 +79,6 @@ final class ClassTypeDefParserTest {
         var classDef = (ClassDef) parser.parse(clazz);
         assert classDef != null;
         assertThat(classDef.simpleName()).isEqualTo("Abc");
-        assertThat(classDef.isAnnotated()).isFalse();
 
         // components
         assertThat(classDef.components()).hasSize(3);
@@ -111,16 +113,5 @@ final class ClassTypeDefParserTest {
         inOrder.verify(typeInfoParser).parse(supertype1.type(), typeContextForSupertypes);
         inOrder.verify(typeInfoParser).parse(supertype2.type(), typeContextForSupertypes);
         inOrder.verify(typeInfoParser).parse(supertype3.type(), typeContextForSupertypes);
-    }
-
-    @Test
-    void markClassDefAsAnnotated() {
-        var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc")
-            .withAnnotation(SharedType.class)
-            .element();
-        var classDef = (ClassDef) parser.parse(clazz);
-        assert classDef != null;
-        assertThat(classDef.simpleName()).isEqualTo("Abc");
-        assertThat(classDef.isAnnotated()).isTrue();
     }
 }

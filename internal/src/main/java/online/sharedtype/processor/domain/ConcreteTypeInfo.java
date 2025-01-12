@@ -32,7 +32,7 @@ public final class ConcreteTypeInfo implements TypeInfo {
      * Qualified names of types from where this typeInfo is strongly referenced, i.e. as a component type.
      */
     @Builder.Default
-    private final Set<String> referencingTypes = new HashSet<>();
+    private final Set<TypeDef> referencingTypes = new HashSet<>();
     @Builder.Default
     private boolean resolved = true;
 
@@ -88,7 +88,7 @@ public final class ConcreteTypeInfo implements TypeInfo {
         return simpleName;
     }
 
-    public Set<String> referencingTypeQualifiedNames() {
+    public Set<TypeDef> referencingTypes() {
         return referencingTypes;
     }
 

@@ -1,6 +1,7 @@
 package online.sharedtype.processor.parser.type;
 
 import online.sharedtype.processor.context.ContextMocks;
+import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.DependingKind;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,6 @@ import java.util.Collections;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,8 +26,12 @@ class TypeInfoParserImplTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParserImpl parser = new TypeInfoParserImpl(ctxMocks.getContext());
 
-    private final TypeContext typeContext = TypeContext.builder().qualifiedName("com.github.cuzfrog.Abc").dependingKind(DependingKind.COMPONENTS).build();
-    private final TypeContext typeContextOuter = TypeContext.builder().qualifiedName("com.github.cuzfrog.Outer").dependingKind(DependingKind.COMPONENTS).build();
+    private final TypeContext typeContext = TypeContext.builder()
+        .typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build())
+        .dependingKind(DependingKind.COMPONENTS).build();
+    private final TypeContext typeContextOuter = TypeContext.builder()
+        .typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.Outer").build())
+        .dependingKind(DependingKind.COMPONENTS).build();
 
     @ParameterizedTest
     @CsvSource({
@@ -148,7 +152,7 @@ class TypeInfoParserImplTest {
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
             softly.assertThat(typeInfo.simpleName()).isEqualTo("Abc");
-            softly.assertThat(typeInfo.referencingTypeQualifiedNames()).contains("com.github.cuzfrog.Outer");
+            softly.assertThat(typeInfo.referencingTypes()).contains(typeContextOuter.getTypeDef());
             softly.assertThat(typeInfo.resolved()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
@@ -238,7 +242,7 @@ class TypeInfoParserImplTest {
     void shouldCacheTypeInfoWithTypeArgsIfIsGeneric() {
         var type = ctxMocks.typeElement("com.github.cuzfrog.Container")
             .withTypeArguments(ctxMocks.typeElement("java.lang.Integer").type()).type();
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, TypeContext.builder().qualifiedName("com.github.cuzfrog.Container").build());
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, TypeContext.builder().typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.Container").build()).build());
         assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Container");
         assertThat(typeInfo.typeArgs()).hasSize(1);
         var typeArg = (ConcreteTypeInfo)typeInfo.typeArgs().get(0);

@@ -2,10 +2,9 @@ package online.sharedtype.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,21 +18,18 @@ import java.util.stream.Collectors;
  * @see TypeInfo
  * @author Cause Chung
  */
-@Builder(toBuilder = true)
-@EqualsAndHashCode(of = "qualifiedName")
-public final class ClassDef implements TypeDef {
+@SuperBuilder(toBuilder = true)
+@EqualsAndHashCode(of = "qualifiedName", callSuper = false)
+public final class ClassDef extends AbstractTypeDef {
     private static final long serialVersionUID = 9052013791381913516L;
     private final String qualifiedName;
     private final String simpleName;
-    /** Whether this type is explicitly annotated with {@link online.sharedtype.SharedType} */
-    @Getter
-    private final boolean annotated;
     @Builder.Default
-    private final List<FieldComponentInfo> components = Collections.emptyList();
+    private final List<FieldComponentInfo> components = new ArrayList<>();
     @Builder.Default
-    private final List<TypeVariableInfo> typeVariables = Collections.emptyList();
+    private final List<TypeVariableInfo> typeVariables = new ArrayList<>();
     @Builder.Default
-    private final List<TypeInfo> supertypes = Collections.emptyList(); // direct supertypes
+    private final List<TypeInfo> supertypes = new ArrayList<>(); // direct supertypes
 
     /** Counterpart typeInfos, there can be multiple typeInfo instances with different reified typeArgs relating to the same typeDef. */
     private final Set<ConcreteTypeInfo> typeInfoSet = new HashSet<>();
@@ -64,7 +60,10 @@ public final class ClassDef implements TypeDef {
     public Set<ConcreteTypeInfo> typeInfoSet() {
         return typeInfoSet;
     }
-    /** Register a counterpart typeInfo */
+    /**
+     * Register a counterpart typeInfo.
+     * @see #typeInfoSet
+     */
     public void linkTypeInfo(ConcreteTypeInfo typeInfo) {
         typeInfoSet.add(typeInfo);
     }

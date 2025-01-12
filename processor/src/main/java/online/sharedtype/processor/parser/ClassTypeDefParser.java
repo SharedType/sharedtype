@@ -59,11 +59,14 @@ final class ClassTypeDefParser implements TypeDefParser {
         }
         Config config = new Config(typeElement);
 
-        return ClassDef.builder().qualifiedName(config.getQualifiedName()).simpleName(config.getName()).annotated(config.isAnnotated())
-            .typeVariables(parseTypeVariables(typeElement))
-            .components(parseComponents(typeElement, config, TypeContext.builder().qualifiedName(config.getQualifiedName()).dependingKind(COMPONENTS).build()))
-            .supertypes(parseSupertypes(typeElement, TypeContext.builder().qualifiedName(config.getQualifiedName()).dependingKind(SUPER_TYPE).build()))
+        ClassDef classDef = ClassDef.builder()
+            .qualifiedName(config.getQualifiedName()).simpleName(config.getName())
             .build();
+        classDef.typeVariables().addAll(parseTypeVariables(typeElement));
+        classDef.components().addAll(parseComponents(typeElement, config, TypeContext.builder().typeDef(classDef).dependingKind(COMPONENTS).build()));
+        classDef.directSupertypes().addAll(parseSupertypes(typeElement, TypeContext.builder().typeDef(classDef).dependingKind(SUPER_TYPE).build()));
+
+        return classDef;
     }
 
     private boolean isValidClassTypeElement(TypeElement typeElement) {

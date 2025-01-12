@@ -92,7 +92,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
         }
 
         if (typeInfo == null) {
-            boolean resolved = typeStore.contains(qualifiedName);
+            boolean resolved = typeStore.containsTypeDef(qualifiedName);
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)
@@ -104,7 +104,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
 
         if (typeContext.getDependingKind() == DependingKind.COMPONENTS && typeInfo instanceof ConcreteTypeInfo) {
             ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo)typeInfo;
-            concreteTypeInfo.referencingTypeQualifiedNames().add(typeContext.getQualifiedName());
+            concreteTypeInfo.referencingTypes().add(typeContext.getTypeDef());
         }
 
         while (arrayStack > 0) {
@@ -115,14 +115,15 @@ final class TypeInfoParserImpl implements TypeInfoParser {
     }
 
     private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable, TypeContext typeContext) {
+        String contextTypeQualifiedName = typeContext.getTypeDef().qualifiedName();
         String simpleName = typeVariable.asElement().getSimpleName().toString();
-        String qualifiedName = TypeVariableInfo.concatQualifiedName(typeContext.getQualifiedName(), simpleName);
+        String qualifiedName = TypeVariableInfo.concatQualifiedName(contextTypeQualifiedName, simpleName);
         TypeInfo typeInfo = typeStore.getTypeInfo(qualifiedName, Collections.emptyList());
         if (typeInfo != null) {
             return (TypeVariableInfo)typeInfo;
         }
         typeInfo = TypeVariableInfo.builder()
-            .contextTypeQualifiedName(typeContext.getQualifiedName())
+            .contextTypeQualifiedName(contextTypeQualifiedName)
             .name(simpleName)
             .qualifiedName(qualifiedName)
             .build();

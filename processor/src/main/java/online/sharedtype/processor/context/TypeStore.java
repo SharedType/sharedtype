@@ -9,8 +9,10 @@ import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static online.sharedtype.processor.domain.Constants.PREDEFINED_OBJECT_TYPES;
 
@@ -18,8 +20,6 @@ import static online.sharedtype.processor.domain.Constants.PREDEFINED_OBJECT_TYP
  * Store and cache type information during annotation processing.
  * <br>
  * A same type can be referenced at multiple places. Once resolved, it should be cached.
- * By design, a type should be represented by only one instance.
- * Note that generic types with different type arguments are different types.
  *
  * @see TypeVariableInfo
  * @see TypeInfoParser
@@ -51,7 +51,7 @@ public final class TypeStore {
         return typeInfoByKey.get(new TypeInfoKey(qualifiedName, typeArgs));
     }
 
-    public boolean contains(String qualifiedName) {
+    public boolean containsTypeDef(String qualifiedName) {
         return typeDefByQualifiedName.containsKey(qualifiedName);
     }
 

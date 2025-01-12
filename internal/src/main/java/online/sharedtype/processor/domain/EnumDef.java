@@ -2,8 +2,9 @@ package online.sharedtype.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,14 +13,14 @@ import java.util.stream.Collectors;
  *
  * @author Cause Chung
  */
-@EqualsAndHashCode(of = "qualifiedName")
-@Builder
-public final class EnumDef implements TypeDef {
+@EqualsAndHashCode(of = "qualifiedName", callSuper = false)
+@SuperBuilder
+public final class EnumDef extends AbstractTypeDef {
     private static final long serialVersionUID = 9158463705652816935L;
     private final String qualifiedName;
     private final String simpleName;
     @Builder.Default
-    private final List<EnumValueInfo> enumValueInfos = Collections.emptyList();
+    private final List<EnumValueInfo> enumValueInfos = new ArrayList<>();
 
     @Override
     public String qualifiedName() {

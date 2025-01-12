@@ -1,5 +1,6 @@
 package online.sharedtype.processor.parser;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.context.ContextMocks;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +40,7 @@ final class CompositeTypeDefParserTest {
             ctxMocks.getContext(),
             Map.of(
                 ElementKind.RECORD.name(), delegate1,
+                ElementKind.CLASS.name(), delegate1,
                 ElementKind.ENUM.name(), delegate2
         ));
         when(ctxMocks.getTypeStore().getTypeDef("com.github.cuzfrog.Abc")).thenReturn(null);
@@ -55,6 +57,7 @@ final class CompositeTypeDefParserTest {
         var typeDef = parser.parse(typeElement);
         verify(delegate1).parse(typeElement);
         assertThat(typeDef).isEqualTo(classDef);
+        assertThat(classDef.isAnnotated()).isFalse();
 
         when(typeElement.getKind()).thenReturn(ElementKind.ENUM);
         typeDef = parser.parse(typeElement);
@@ -65,6 +68,25 @@ final class CompositeTypeDefParserTest {
         assertThatThrownBy(() -> parser.parse(typeElement));
 
         inOrder.verify(ctxMocks.getContext().getTypeStore()).saveTypeDef("com.github.cuzfrog.Abc", classDef);
+    }
+
+    @Test
+    void markClassDefAsAnnotated() {
+        var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.class)
+            .element();
+        when(delegate1.parse(clazz)).thenReturn(classDef);
+
+        var classDef = (ClassDef) parser.parse(clazz);
+        assert classDef != null;
+        assertThat(classDef.isAnnotated()).isTrue();
+    }
+
+    @Test
+    void skipOnNullResult() {
+        when(delegate1.parse(typeElement)).thenReturn(null);
+        assertThat(parser.parse(typeElement)).isNull();
+        verify(ctxMocks.getTypeStore(), never()).saveTypeDef(any(), any());
     }
 
     @Test

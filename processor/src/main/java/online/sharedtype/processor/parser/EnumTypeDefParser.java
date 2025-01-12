@@ -7,6 +7,7 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.TypeDef;
@@ -55,13 +56,14 @@ final class EnumTypeDefParser implements TypeDefParser {
             }
         }
 
-        return EnumDef.builder()
+        EnumDef enumDef = EnumDef.builder()
             .qualifiedName(config.getQualifiedName())
             .simpleName(config.getName())
-            .enumValueInfos(
-                enumValueMarker.marked() ? parseEnumConstants(typeElement, enumConstantElems, enumValueMarker) : useEnumConstantNames(enumConstantElems)
-            )
             .build();
+        enumDef.components().addAll(
+            enumValueMarker.marked() ? parseEnumConstants(typeElement, enumConstantElems, enumValueMarker, enumDef) : useEnumConstantNames(enumConstantElems)
+        );
+        return enumDef;
     }
 
     private static List<EnumValueInfo> useEnumConstantNames(List<VariableElement> enumConstants) {
@@ -73,11 +75,14 @@ final class EnumTypeDefParser implements TypeDefParser {
         return res;
     }
 
-    private List<EnumValueInfo> parseEnumConstants(TypeElement enumTypeElement, List<VariableElement> enumConstants, EnumValueMarker enumValueMarker) {
+    private List<EnumValueInfo> parseEnumConstants(TypeElement enumTypeElement,
+                                                   List<VariableElement> enumConstants,
+                                                   EnumValueMarker enumValueMarker,
+                                                   EnumDef enumDef) {
         List<EnumValueInfo> res = new ArrayList<>(enumConstants.size());
         TypeInfo valueTypeInfo = typeInfoParser.parse(
             enumValueMarker.enumValueVariableElem.asType(),
-            TypeContext.builder().qualifiedName(enumTypeElement.getQualifiedName().toString()).build()
+            TypeContext.builder().typeDef(enumDef).dependingKind(DependingKind.ENUM_VALUE).build()
         );
         int ctorArgIdx = enumValueMarker.matchAndGetConstructorArgIdx();
         if (ctorArgIdx < 0) {

@@ -22,4 +22,13 @@ public interface TypeDef extends Serializable {
      * @return true if all required types are resolved.
      */
     boolean resolved();
+
+    boolean isCyclicReferenced();
+    void setCyclicReferenced(boolean cyclicReferenced);
+
+    boolean isAnnotated();
+    void setAnnotated(boolean annotated);
+
+    boolean isReferencedByAnnotated();
+    void setReferencedByAnnotated(boolean referencedByAnnotated);
 }

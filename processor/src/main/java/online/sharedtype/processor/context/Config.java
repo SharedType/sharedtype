@@ -20,8 +20,6 @@ import java.util.Set;
 public final class Config {
     private final SharedType anno;
     @Getter
-    private final boolean annotated;
-    @Getter
     private final String name;
     @Getter
     private final String qualifiedName;
@@ -39,7 +37,6 @@ public final class Config {
     public Config(TypeElement typeElement) {
         String simpleName = typeElement.getSimpleName().toString();
         SharedType annoFromType = typeElement.getAnnotation(SharedType.class);
-        this.annotated = annoFromType != null;
         this.anno = annoFromType == null ? DummyDefault.class.getAnnotation(AnnoContainer.class).anno() : annoFromType;
         this.name = anno.name().isEmpty() ? simpleName : anno.name();
         this.qualifiedName = typeElement.getQualifiedName().toString();
