@@ -44,7 +44,7 @@ final class RustStructConverter implements TemplateDataConverter {
 
     private PropertyExpr toPropertyExpr(FieldComponentInfo field) {
         return new PropertyExpr(
-            field.name(),
+            field.name().replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase(), // TODO: optimize
             typeExpressionConverter.toTypeExpr(field.type()),
             field.optional()
         );
