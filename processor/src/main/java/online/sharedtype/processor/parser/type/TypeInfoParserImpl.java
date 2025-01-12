@@ -4,6 +4,7 @@ import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.TypeStore;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
@@ -83,33 +84,27 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                 break;
             }
         }
-        /* This check should be enough since array types have been stripped off.
-         *
-         * Generic type with different reified type arguments have different literal representations.
-         * E.g. List<String> and List<Integer> are different types.
-         * In target code this could be e.g. interface A extends List<String> {} and interface B extends List<Integer> {}.
-         * So generic types are not easy to compare in terms of caching. Current implementation does not cache generic types.
-         */
-        boolean isGeneric = !typeArgs.isEmpty();
 
-        if (typeInfo == null && !isGeneric) {
-            typeInfo = typeStore.getTypeInfo(qualifiedName);
+        List<TypeInfo> parsedTypeArgs = typeArgs.stream().map(typeArg -> parse(typeArg, typeContext)).collect(Collectors.toList());
+
+        if (typeInfo == null) {
+            typeInfo = typeStore.getTypeInfo(qualifiedName, parsedTypeArgs);
         }
 
         if (typeInfo == null) {
             boolean resolved = typeStore.contains(qualifiedName);
-            List<TypeInfo> parsedTypeArgs = typeArgs.stream().map(typeArg -> parse(typeArg, typeContext)).collect(Collectors.toList());
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)
-                .dependingTypeQualifiedName(typeContext.getQualifiedName()).dependingKind(typeContext.getDependingKind())
                 .typeArgs(parsedTypeArgs)
                 .resolved(resolved)
                 .build();
+            typeStore.saveTypeInfo(qualifiedName, parsedTypeArgs, typeInfo);
+        }
 
-            if (!isGeneric) {
-                typeStore.saveTypeInfo(qualifiedName, typeInfo);
-            }
+        if (typeContext.getDependingKind() == DependingKind.COMPONENTS && typeInfo instanceof ConcreteTypeInfo) {
+            ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo)typeInfo;
+            concreteTypeInfo.referencingTypeQualifiedNames().add(typeContext.getQualifiedName());
         }
 
         while (arrayStack > 0) {
@@ -122,7 +117,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
     private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable, TypeContext typeContext) {
         String simpleName = typeVariable.asElement().getSimpleName().toString();
         String qualifiedName = TypeVariableInfo.concatQualifiedName(typeContext.getQualifiedName(), simpleName);
-        TypeInfo typeInfo = typeStore.getTypeInfo(qualifiedName);
+        TypeInfo typeInfo = typeStore.getTypeInfo(qualifiedName, Collections.emptyList());
         if (typeInfo != null) {
             return (TypeVariableInfo)typeInfo;
         }
@@ -131,7 +126,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             .name(simpleName)
             .qualifiedName(qualifiedName)
             .build();
-        typeStore.saveTypeInfo(qualifiedName, typeInfo);
+        typeStore.saveTypeInfo(qualifiedName, Collections.emptyList(), typeInfo);
         return (TypeVariableInfo)typeInfo;
     }
 }

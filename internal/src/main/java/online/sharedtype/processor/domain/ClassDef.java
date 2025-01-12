@@ -7,8 +7,10 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -33,6 +35,9 @@ public final class ClassDef implements TypeDef {
     @Builder.Default
     private final List<TypeInfo> supertypes = Collections.emptyList(); // direct supertypes
 
+    /** Counter-party typeInfos, there can be multiple typeInfo instances with different reified typeArgs relating to the same typeDef. */
+    private final Set<ConcreteTypeInfo> typeInfoSet = new HashSet<>();
+
     @Override
     public String qualifiedName() {
         return qualifiedName;
@@ -54,6 +59,13 @@ public final class ClassDef implements TypeDef {
 
     public List<TypeInfo> directSupertypes() {
         return supertypes;
+    }
+
+    public Set<ConcreteTypeInfo> typeInfoSet() {
+        return typeInfoSet;
+    }
+    public void linkTypeInfo(ConcreteTypeInfo typeInfo) {
+        typeInfoSet.add(typeInfo);
     }
 
     public ClassDef reify(List<? extends TypeInfo> typeArgs) {

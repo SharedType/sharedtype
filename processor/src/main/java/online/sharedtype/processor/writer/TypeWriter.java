@@ -43,7 +43,7 @@ public interface TypeWriter {
         }
         if (ctx.getProps().getTargets().contains(OutputTarget.RUST)) {
             writers.add(new TemplateTypeFileWriter(
-                ctx, renderer, Template.TEMPLATE_RUST_HEADER, TemplateDataConverter.rust(), ctx.getProps().getRust().getOutputFileName()
+                ctx, renderer, Template.TEMPLATE_RUST_HEADER, TemplateDataConverter.rust(ctx), ctx.getProps().getRust().getOutputFileName()
             ));
         }
         return new CompositeWriter(writers);

@@ -2,6 +2,7 @@ package online.sharedtype.processor.writer.converter;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
@@ -13,18 +14,17 @@ import online.sharedtype.processor.writer.render.Template;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 final class RustStructConverter implements TemplateDataConverter {
+    private final Context ctx;
     private final TypeExpressionConverter typeExpressionConverter;
-
-    RustStructConverter(TypeExpressionConverter typeExpressionConverter) {
-        this.typeExpressionConverter = typeExpressionConverter;
-    }
 
     @Override
     public boolean supports(TypeDef typeDef) {
@@ -32,7 +32,26 @@ final class RustStructConverter implements TemplateDataConverter {
             return false;
         }
         ClassDef classDef = (ClassDef) typeDef;
-        return classDef.isAnnotated();
+        if (classDef.isAnnotated()) {
+            return true;
+        }
+        Deque<ClassDef> referencingClassDefs = new ArrayDeque<>();
+        referencingClassDefs.push(classDef);
+        while (!referencingClassDefs.isEmpty()) {
+            ClassDef cur = referencingClassDefs.pop();
+            List<String> referencingTypeQualifiedNames = cur.typeInfoSet().stream()
+                .flatMap(ts -> ts.referencingTypeQualifiedNames().stream()).collect(Collectors.toList());
+            for (String referencingTypeQualifiedName : referencingTypeQualifiedNames) {
+                TypeDef dependingTypeDef = ctx.getTypeStore().getTypeDef(referencingTypeQualifiedName);
+                if (dependingTypeDef instanceof ClassDef) {
+                    if (((ClassDef) dependingTypeDef).isAnnotated()) {
+                        return true;
+                    }
+                    referencingClassDefs.push((ClassDef) dependingTypeDef);
+                }
+            }
+        }
+        return false;
     }
 
     @Override

@@ -13,6 +13,8 @@ import online.sharedtype.processor.support.annotation.Issue;
 
 import javax.lang.model.type.TypeKind;
 
+import java.util.Collections;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -146,8 +148,7 @@ class TypeInfoParserImplTest {
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
             softly.assertThat(typeInfo.simpleName()).isEqualTo("Abc");
-            softly.assertThat(typeInfo.dependingTypeQualifiedName()).isEqualTo("com.github.cuzfrog.Outer");
-            softly.assertThat(typeInfo.dependingKind()).isEqualTo(DependingKind.COMPONENTS);
+            softly.assertThat(typeInfo.referencingTypeQualifiedNames()).contains("com.github.cuzfrog.Outer");
             softly.assertThat(typeInfo.resolved()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
@@ -228,13 +229,13 @@ class TypeInfoParserImplTest {
             .qualifiedName("com.github.cuzfrog.Abc")
             .resolved(false)
             .build();
-        ctxMocks.getTypeStore().saveTypeInfo("com.github.cuzfrog.Abc", cachedTypeInfo);
+        ctxMocks.getTypeStore().saveTypeInfo("com.github.cuzfrog.Abc", Collections.emptyList(), cachedTypeInfo);
         var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContext);
         assertThat(typeInfo).isSameAs(cachedTypeInfo);
     }
 
     @Test @Issue(44)
-    void shouldNotCacheTypeInfoIfIsGeneric() {
+    void shouldCacheTypeInfoWithTypeArgsIfIsGeneric() {
         var type = ctxMocks.typeElement("com.github.cuzfrog.Container")
             .withTypeArguments(ctxMocks.typeElement("java.lang.Integer").type()).type();
         var typeInfo = (ConcreteTypeInfo) parser.parse(type, TypeContext.builder().qualifiedName("com.github.cuzfrog.Container").build());
@@ -243,8 +244,8 @@ class TypeInfoParserImplTest {
         var typeArg = (ConcreteTypeInfo)typeInfo.typeArgs().get(0);
         assertThat(typeArg.qualifiedName()).isEqualTo("java.lang.Integer");
 
-        verify(ctxMocks.getTypeStore(), never()).getTypeInfo("com.github.cuzfrog.Container");
-        verify(ctxMocks.getTypeStore(), never()).saveTypeInfo(eq("com.github.cuzfrog.Container"), any());
-        verify(ctxMocks.getTypeStore()).getTypeInfo("java.lang.Integer");
+        verify(ctxMocks.getTypeStore()).getTypeInfo("com.github.cuzfrog.Container", Collections.singletonList(typeArg));
+        verify(ctxMocks.getTypeStore()).saveTypeInfo(eq("com.github.cuzfrog.Container"), eq(Collections.singletonList(typeArg)), any());
+        verify(ctxMocks.getTypeStore()).getTypeInfo("java.lang.Integer", Collections.emptyList());
     }
 }

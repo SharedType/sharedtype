@@ -5,8 +5,10 @@ import lombok.EqualsAndHashCode;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -23,16 +25,14 @@ public final class ConcreteTypeInfo implements TypeInfo {
     private static final long serialVersionUID = 6912267731376244613L;
     private final String qualifiedName;
     private final String simpleName;
-    /**
-     * Where this typeInfo is depended. It can be a supertype, a field reference, or type parameter.
-     * @see this#dependingKind
-     */
-    @Nullable
-    private final String dependingTypeQualifiedName;
-    @Nullable
-    private final DependingKind dependingKind;
     @Builder.Default
     private final List<? extends TypeInfo> typeArgs = Collections.emptyList();
+
+    /**
+     * Qualified names of types from where this typeInfo is strongly referenced, i.e. as a component type.
+     */
+    @Builder.Default
+    private final Set<String> referencingTypes = new HashSet<>();
     @Builder.Default
     private boolean resolved = true;
 
@@ -67,6 +67,9 @@ public final class ConcreteTypeInfo implements TypeInfo {
     public void markShallowResolved(TypeDef resolvedTypeDef) {
         this.resolved = true;
         this.typeDef = resolvedTypeDef;
+        if (resolvedTypeDef instanceof ClassDef) {
+            ((ClassDef) resolvedTypeDef).linkTypeInfo(this);
+        }
     }
 
     /**
@@ -85,13 +88,8 @@ public final class ConcreteTypeInfo implements TypeInfo {
         return simpleName;
     }
 
-    @Nullable
-    public String dependingTypeQualifiedName() {
-        return dependingTypeQualifiedName;
-    }
-    @Nullable
-    public DependingKind dependingKind() {
-        return dependingKind;
+    public Set<String> referencingTypeQualifiedNames() {
+        return referencingTypes;
     }
 
     public List<? extends TypeInfo> typeArgs() {
@@ -101,7 +99,7 @@ public final class ConcreteTypeInfo implements TypeInfo {
     @Override
     public String toString() {
         return String.format("%s%s%s",
-                qualifiedName,
+            qualifiedName,
                 typeArgs.isEmpty() ? "" : "<" + typeArgs.stream().map(TypeInfo::toString).collect(Collectors.joining(",")) + ">",
                 resolved ? "" : "?"
         );

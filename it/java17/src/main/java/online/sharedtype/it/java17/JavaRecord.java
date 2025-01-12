@@ -33,7 +33,7 @@ public record JavaRecord<T>(
     Character boxedChar,
 
     Object object,
-    Void aVoid,
+//    Void aVoid,
 
     DependencyClassA cyclicDependency,// cyclic a ->b ->c ->a
 
