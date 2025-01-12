@@ -57,7 +57,7 @@ final class JavaClassIntegrationTest {
 
         assertThat(classDef.directSupertypes()).hasSize(1);
         ConcreteTypeInfo superType = (ConcreteTypeInfo)classDef.directSupertypes().get(0);
-        assertThat(superType.qualifiedName()).isEqualTo("online.sharedtype.it.java8.InterfaceA");
+        assertThat(superType.qualifiedName()).isEqualTo("online.sharedtype.it.java8.InterfaceSubA");
 
         assertThat(classDef.typeVariables()).isEmpty();
         assertThat(classDef.components()).hasSize(3);

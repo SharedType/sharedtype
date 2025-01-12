@@ -4,6 +4,7 @@ import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TypeElementMock;
+import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.parser.type.TypeContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -55,9 +56,9 @@ final class ClassTypeDefParserTest {
           )
           .element();
 
-        var parsedField1Type = ConcreteTypeInfo.builder().qualifiedName("int").build();
-        var parsedField2Type = ConcreteTypeInfo.builder().qualifiedName("java.lang.String").build();
-        var parsedMethod2Type = ConcreteTypeInfo.builder().qualifiedName("int").build();
+        var parsedField1Type = Constants.BOOLEAN_TYPE_INFO;
+        var parsedField2Type = Constants.STRING_TYPE_INFO;
+        var parsedMethod2Type = Constants.INT_TYPE_INFO;
         var parsedSupertype1 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.SuperClassA").build();
         var parsedSupertype2 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.InterfaceA").build();
         var parsedSupertype3 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.InterfaceB").build();
@@ -92,8 +93,10 @@ final class ClassTypeDefParserTest {
         assertThat(classDef.typeVariables()).hasSize(2);
         var typeVar1 = classDef.typeVariables().get(0);
         assertThat(typeVar1.name()).isEqualTo("T");
+        assertThat(typeVar1.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc@T");
         var typeVar2 = classDef.typeVariables().get(1);
         assertThat(typeVar2.name()).isEqualTo("U");
+        assertThat(typeVar2.contextTypeQualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
 
         // supertypes
         assertThat(classDef.directSupertypes()).containsExactly(parsedSupertype1, parsedSupertype2, parsedSupertype3);

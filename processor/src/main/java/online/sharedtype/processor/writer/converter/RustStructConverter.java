@@ -1,5 +1,6 @@
 package online.sharedtype.processor.writer.converter;
 
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
@@ -10,8 +11,12 @@ import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 
 final class RustStructConverter implements TemplateDataConverter {
     private final TypeExpressionConverter typeExpressionConverter;
@@ -28,23 +33,7 @@ final class RustStructConverter implements TemplateDataConverter {
     @Override
     public Tuple<Template, Object> convert(TypeDef typeDef) {
         ClassDef classDef = (ClassDef) typeDef;
-        List<PropertyExpr> properties = new ArrayList<>(); // TODO: init cap
-        for (FieldComponentInfo component : classDef.components()) {
-            properties.add(toPropertyExpr(component));
-        }
-
-        for (TypeInfo supertype : classDef.allSupertypes()) {
-            if (supertype instanceof ConcreteTypeInfo) {
-                ConcreteTypeInfo superConcreteTypeInfo = (ConcreteTypeInfo) supertype;
-                TypeDef superTypeDef = superConcreteTypeInfo.typeDef();
-                if (superTypeDef instanceof ClassDef) {
-                    ClassDef superClassDef = (ClassDef) superTypeDef;
-                    for (FieldComponentInfo component : superClassDef.components()) {
-                        properties.add(toPropertyExpr(component));
-                    }
-                }
-            }
-        }
+        List<PropertyExpr> properties = gatherProperties(classDef);
         // TODO: generic types
 
         StructExpr value = new StructExpr(
@@ -62,6 +51,35 @@ final class RustStructConverter implements TemplateDataConverter {
         );
     }
 
+    private List<PropertyExpr> gatherProperties(ClassDef classDef) {
+        List<PropertyExpr> properties = new ArrayList<>(); // TODO: init cap
+        Set<String> propertyNames = new HashSet<>();
+        for (FieldComponentInfo component : classDef.components()) {
+            properties.add(toPropertyExpr(component));
+            propertyNames.add(component.name());
+        }
+
+        Queue<TypeInfo> superTypes = new ArrayDeque<>(classDef.directSupertypes());
+        while (!superTypes.isEmpty()) {
+            TypeInfo supertype = superTypes.poll();
+            if (supertype instanceof ConcreteTypeInfo) {
+                ConcreteTypeInfo superConcreteTypeInfo = (ConcreteTypeInfo) supertype;
+                ClassDef superTypeDef = (ClassDef) superConcreteTypeInfo.typeDef(); // supertype must be ClassDef
+                if (superTypeDef != null) {
+                    superTypeDef = superTypeDef.reify(superConcreteTypeInfo.typeArgs());
+                    for (FieldComponentInfo component : superTypeDef.components()) {
+                        if (!propertyNames.contains(component.name())) {
+                            properties.add(toPropertyExpr(component));
+                            propertyNames.add(component.name());
+                        }
+                    }
+                    superTypes.addAll(superTypeDef.directSupertypes());
+                }
+            }
+        }
+        return properties;
+    }
+
     @SuppressWarnings("unused")
     @RequiredArgsConstructor
     static final class StructExpr {
@@ -70,6 +88,7 @@ final class RustStructConverter implements TemplateDataConverter {
     }
 
     @SuppressWarnings("unused")
+    @EqualsAndHashCode(of = "name")
     @RequiredArgsConstructor
     static final class PropertyExpr {
         final String name;

@@ -15,6 +15,7 @@
     <properties>
         <sharedtype.compilerArg />
         <sharedtype.propsFile>it/sharedtype.properties</sharedtype.propsFile>
+        <compileClasses/>
     </properties>
 
     <dependencies>
@@ -84,6 +85,7 @@
                         <arg>${sharedtype.compilerArg}</arg> <!-- supplied from cmd "-Dsharedtype.compilerArg=-proc:only" -->
                         <arg>-Asharedtype.propsFile=${sharedtype.propsFile}</arg>
                     </compilerArgs>
+                    <includes>${compileClasses}</includes>
                 </configuration>
             </plugin>
         </plugins>

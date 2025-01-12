@@ -55,11 +55,12 @@ final class ClassTypeDefParser implements TypeDefParser {
             return null;
         }
         Config config = new Config(typeElement);
+        TypeContext typeContext = TypeContext.builder().qualifiedName(config.getQualifiedName()).build();
 
         ClassDef.ClassDefBuilder builder = ClassDef.builder().qualifiedName(config.getQualifiedName()).simpleName(config.getName());
         builder.typeVariables(parseTypeVariables(typeElement));
-        builder.components(parseComponents(typeElement, config));
-        builder.supertypes(parseSupertypes(typeElement));
+        builder.components(parseComponents(typeElement, config, typeContext));
+        builder.supertypes(parseSupertypes(typeElement, typeContext));
 
         return builder.build();
     }
@@ -77,11 +78,16 @@ final class ClassTypeDefParser implements TypeDefParser {
     private List<TypeVariableInfo> parseTypeVariables(TypeElement typeElement) {
         List<? extends TypeParameterElement> typeParameters = typeElement.getTypeParameters();
         return typeParameters.stream()
-            .map(typeParameterElement -> TypeVariableInfo.builder().name(typeParameterElement.getSimpleName().toString()).build())
+            .map(typeParameterElement ->
+                TypeVariableInfo.builder()
+                    .contextTypeQualifiedName(typeElement.getQualifiedName().toString())
+                    .name(typeParameterElement.getSimpleName().toString())
+                    .build()
+            )
             .collect(Collectors.toList()); // TODO: type bounds
     }
 
-    private List<TypeInfo> parseSupertypes(TypeElement typeElement) {
+    private List<TypeInfo> parseSupertypes(TypeElement typeElement, TypeContext typeContext) {
         List<DeclaredType> supertypes = new ArrayList<>();
         TypeMirror superclass = typeElement.getSuperclass();
         if (superclass instanceof DeclaredType) { // superclass can be NoType.
@@ -96,13 +102,13 @@ final class ClassTypeDefParser implements TypeDefParser {
         List<TypeInfo> res = new ArrayList<>(supertypes.size());
         for (DeclaredType supertype : supertypes) {
             if (!ctx.isTypeIgnored((TypeElement) supertype.asElement())) {
-                res.add(typeInfoParser.parse(supertype, TypeContext.builder().qualifiedName(typeElement.getQualifiedName().toString()).build()));
+                res.add(typeInfoParser.parse(supertype, typeContext));
             }
         }
         return res;
     }
 
-    private List<FieldComponentInfo> parseComponents(TypeElement typeElement, Config config) {
+    private List<FieldComponentInfo> parseComponents(TypeElement typeElement, Config config, TypeContext typeContext) {
         List<Tuple<Element, String>> componentElems = resolveComponents(typeElement, config);
 
         List<FieldComponentInfo> fields = new ArrayList<>(componentElems.size());
@@ -112,7 +118,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 .name(tuple.b())
                 .modifiers(element.getModifiers())
                 .optional(element.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
-                .type(typeInfoParser.parse(element.asType(),TypeContext.builder().qualifiedName(typeElement.getQualifiedName().toString()).build()))
+                .type(typeInfoParser.parse(element.asType(), typeContext))
                 .build();
             fields.add(fieldInfo);
         }
