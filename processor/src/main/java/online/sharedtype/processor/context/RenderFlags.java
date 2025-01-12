@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public final class RenderFlags {
-    private boolean useRustAny = true;
+    private boolean useRustAny = false;
 }

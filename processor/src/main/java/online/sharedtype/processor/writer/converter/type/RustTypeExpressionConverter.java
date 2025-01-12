@@ -1,10 +1,16 @@
 package online.sharedtype.processor.writer.converter.type;
 
+import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.context.RenderFlags;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.TypeInfo;
 
 final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter {
-    RustTypeExpressionConverter() {
+    private final RenderFlags renderFlags;
+
+    RustTypeExpressionConverter(Context ctx) {
+        this.renderFlags = ctx.getRenderFlags();
         addTypeMapping(Constants.BOOLEAN_TYPE_INFO, "bool");
         addTypeMapping(Constants.BYTE_TYPE_INFO, "i8");
         addTypeMapping(Constants.CHAR_TYPE_INFO, "char");
@@ -36,5 +42,12 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
     @Override
     public void buildArrayExprSuffix(ArrayTypeInfo typeInfo, StringBuilder exprBuilder) {
         exprBuilder.append(">");
+    }
+
+    @Override
+    void beforeVisitTypeInfo(TypeInfo typeInfo) {
+        if (typeInfo.equals(Constants.OBJECT_TYPE_INFO)) {
+            renderFlags.setUseRustAny(true);
+        }
     }
 }

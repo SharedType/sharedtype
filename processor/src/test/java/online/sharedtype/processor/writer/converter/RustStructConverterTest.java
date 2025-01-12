@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class RustStructConverterTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final RustStructConverter converter = new RustStructConverter(ctxMocks.getContext(), TypeExpressionConverter.rust());
+    private final RustStructConverter converter = new RustStructConverter(ctxMocks.getContext(), TypeExpressionConverter.rust(ctxMocks.getContext()));
 
     @Test
     void skipNonClassDef() {
