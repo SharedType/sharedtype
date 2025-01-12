@@ -25,7 +25,7 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
 
         addTypeMapping(Constants.STRING_TYPE_INFO, "String");
         addTypeMapping(Constants.VOID_TYPE_INFO, "!");
-        addTypeMapping(Constants.OBJECT_TYPE_INFO, "Any");
+        addTypeMapping(Constants.OBJECT_TYPE_INFO, "Box<dyn Any>");
     }
 
     @Override
