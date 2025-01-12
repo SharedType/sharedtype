@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 final class RustStructConverter implements TemplateDataConverter {
     private final TypeExpressionConverter typeExpressionConverter;
@@ -33,12 +34,10 @@ final class RustStructConverter implements TemplateDataConverter {
     @Override
     public Tuple<Template, Object> convert(TypeDef typeDef) {
         ClassDef classDef = (ClassDef) typeDef;
-        List<PropertyExpr> properties = gatherProperties(classDef);
-        // TODO: generic types
-
         StructExpr value = new StructExpr(
             classDef.simpleName(),
-            properties
+            classDef.typeVariables().stream().map(typeExpressionConverter::toTypeExpr).collect(Collectors.toList()),
+            gatherProperties(classDef)
         );
         return Tuple.of(Template.TEMPLATE_RUST_STRUCT, value);
     }
@@ -84,7 +83,15 @@ final class RustStructConverter implements TemplateDataConverter {
     @RequiredArgsConstructor
     static final class StructExpr {
         final String name;
+        final List<String> typeParameters;
         final List<PropertyExpr> properties;
+
+        String typeParametersExpr() {
+            if (typeParameters.isEmpty()) {
+                return null;
+            }
+            return String.format("<%s>", String.join(", ", typeParameters));
+        }
     }
 
     @SuppressWarnings("unused")
