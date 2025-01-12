@@ -37,5 +37,6 @@ public final class Props {
     @Getter
     public static final class Rust {
         private final String outputFileName;
+        private final boolean allowDeadcode;
     }
 }

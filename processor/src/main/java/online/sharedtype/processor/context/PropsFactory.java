@@ -50,6 +50,7 @@ public final class PropsFactory {
                 .build())
             .rust(Props.Rust.builder()
                 .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))
+                .allowDeadcode(parseBoolean(properties, "sharedtype.rust.allow-deadcode"))
                 .build())
             .build();
     }
@@ -73,6 +74,17 @@ public final class PropsFactory {
             }
         }
         return trimmedElems;
+    }
+
+    private static boolean parseBoolean(Properties properties, String key) {
+        String value = properties.getProperty(key);
+        if ("true".equals(value)) {
+            return true;
+        }
+        if ("false".equals(value)) {
+            return false;
+        }
+        throw new SharedTypeException(String.format("property '%s', can only be 'true' or 'false'.", key));
     }
 
     @SuppressWarnings("unchecked")

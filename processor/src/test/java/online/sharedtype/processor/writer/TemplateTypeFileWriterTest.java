@@ -75,7 +75,7 @@ final class TemplateTypeFileWriterTest {
         assertThat(renderData).satisfiesExactlyInAnyOrder(
             entry -> {
               assertThat(entry.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_HEADER);
-              assertThat(entry.b()).isEqualTo(ctxMocks.getRenderFlags());
+              assertThat(entry.b()).isEqualTo(ctxMocks.getContext());
             },
             entry -> {
                 assertThat(entry.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_INTERFACE);
