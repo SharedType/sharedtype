@@ -98,7 +98,8 @@ final class TypeInfoParserImpl implements TypeInfoParser {
 
         if (typeInfo == null) {
             boolean resolved = typeStore.contains(qualifiedName);
-            List<TypeInfo> parsedTypeArgs = typeArgs.stream().map(typeArg -> parse(typeArg, typeContext)).collect(Collectors.toList());
+            TypeContext typeContextAsTypeArgument = typeContext.toBuilder().isTypeArgument(true).build();
+            List<TypeInfo> parsedTypeArgs = typeArgs.stream().map(typeArg -> parse(typeArg, typeContextAsTypeArgument)).collect(Collectors.toList());
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)

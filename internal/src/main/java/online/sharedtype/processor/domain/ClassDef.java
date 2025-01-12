@@ -79,7 +79,7 @@ public final class ClassDef implements TypeDef {
                     ClassDef superClassDef = (ClassDef) superTypeDef;
                     superConcreteTypeInfo.typeArgs();
                     superClassDef.typeVariables();
-                    res.addAll(superClassDef.allSupertypes(typeArgs));
+                    res.addAll(superClassDef.allSupertypes());
                 }
             }
         }

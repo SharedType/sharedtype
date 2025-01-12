@@ -10,10 +10,8 @@ import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 final class RustStructConverter implements TemplateDataConverter {
     private final TypeExpressionConverter typeExpressionConverter;
@@ -62,23 +60,6 @@ final class RustStructConverter implements TemplateDataConverter {
             typeExpressionConverter.toTypeExpr(field.type()),
             field.optional()
         );
-    }
-
-    private void addSuperTypeProperties(List<PropertyExpr> properties, ClassDef classDef) {
-        Queue<TypeInfo> superTypes = new ArrayDeque<>(classDef.directSupertypes());
-        while (!superTypes.isEmpty()) {
-            TypeInfo supertype = superTypes.poll();
-            if (supertype instanceof ConcreteTypeInfo) {
-                ConcreteTypeInfo superConcreteTypeInfo = (ConcreteTypeInfo) supertype;
-                ClassDef superTypeDef = superConcreteTypeInfo.typeDef();
-                if (superTypeDef != null) {
-                    for (FieldComponentInfo component : superTypeDef.components()) {
-                        properties.add(toPropertyExpr(component));
-                    }
-                    superTypes.addAll(superTypeDef.directSupertypes());
-                }
-            }
-        }
     }
 
     @SuppressWarnings("unused")

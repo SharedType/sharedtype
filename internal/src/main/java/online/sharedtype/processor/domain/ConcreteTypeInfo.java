@@ -4,8 +4,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +23,7 @@ public final class ConcreteTypeInfo implements TypeInfo {
     private final String qualifiedName;
     private final String simpleName;
     @Builder.Default
-    private final List<TypeInfo> typeArgs = new ArrayList<>();
+    private final List<? extends TypeInfo> typeArgs = Collections.emptyList();
     @Builder.Default
     private boolean resolved = true;
 
@@ -33,7 +32,7 @@ public final class ConcreteTypeInfo implements TypeInfo {
      * @see this#typeDef()
      */
     @Nullable
-    private ClassDef typeDef;
+    private TypeDef typeDef;
 
     /**
      * The corresponding type variable if this type info is a reified type argument.
@@ -54,16 +53,16 @@ public final class ConcreteTypeInfo implements TypeInfo {
         return resolved;
     }
 
-    public void markShallowResolved(ClassDef resolvedTypeDef) {
+    public void markShallowResolved(TypeDef resolvedTypeDef) {
         this.resolved = true;
         this.typeDef = resolvedTypeDef;
     }
 
     /**
-     * @return null when the type is not resolved if it's a user defined type; or does not have a corresponding {@link ClassDef}, e.g. a predefined type.
+     * @return null when the type is not resolved if it's a user defined type; or does not have a corresponding {@link TypeDef}, e.g. a predefined type.
      */
     @Nullable
-    public ClassDef typeDef() {
+    public TypeDef typeDef() {
         return typeDef;
     }
 
@@ -85,9 +84,6 @@ public final class ConcreteTypeInfo implements TypeInfo {
 
     public List<? extends TypeInfo> typeArgs() {
         return typeArgs;
-    }
-    public void addTypeArgs(Collection<? extends TypeInfo> typeArgs) {
-        this.typeArgs.addAll(typeArgs);
     }
 
     @Override
