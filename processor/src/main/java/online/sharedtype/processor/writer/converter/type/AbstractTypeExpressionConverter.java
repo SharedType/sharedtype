@@ -32,12 +32,15 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
     }
     void beforeVisitTypeInfo(TypeInfo typeInfo) {
     }
+    String toConcreteTypeExpression(ConcreteTypeInfo concreteTypeInfo) {
+        return concreteTypeInfo.simpleName();
+    }
 
     private void buildTypeExprRecursively(TypeInfo typeInfo, @SideEffect StringBuilder exprBuilder) {
         beforeVisitTypeInfo(typeInfo);
         if (typeInfo instanceof ConcreteTypeInfo) {
             ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
-            exprBuilder.append(typeNameMappings.getOrDefault(concreteTypeInfo, concreteTypeInfo.simpleName()));
+            exprBuilder.append(typeNameMappings.getOrDefault(concreteTypeInfo, toConcreteTypeExpression(concreteTypeInfo)));
             if (!concreteTypeInfo.typeArgs().isEmpty()) {
                 exprBuilder.append("<");
                 for (TypeInfo typeArg : concreteTypeInfo.typeArgs()) {

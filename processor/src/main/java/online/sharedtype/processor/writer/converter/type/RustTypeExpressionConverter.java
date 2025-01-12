@@ -3,6 +3,7 @@ package online.sharedtype.processor.writer.converter.type;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.RenderFlags;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.TypeInfo;
 
@@ -49,5 +50,14 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
         if (typeInfo.equals(Constants.OBJECT_TYPE_INFO)) {
             renderFlags.setUseRustAny(true);
         }
+    }
+
+    @Override
+    String toConcreteTypeExpression(ConcreteTypeInfo concreteTypeInfo) {
+        String expr = super.toConcreteTypeExpression(concreteTypeInfo);
+        if (concreteTypeInfo.typeDef() != null && concreteTypeInfo.typeDef().isCyclicReferenced()) {
+            return String.format("Box<%s>", expr);
+        }
+        return expr;
     }
 }

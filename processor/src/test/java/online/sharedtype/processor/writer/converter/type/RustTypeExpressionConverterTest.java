@@ -3,6 +3,8 @@ package online.sharedtype.processor.writer.converter.type;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.RenderFlags;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
+import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -37,5 +39,12 @@ final class RustTypeExpressionConverterTest {
 
         converter.beforeVisitTypeInfo(Constants.OBJECT_TYPE_INFO);
         verify(renderFlags).setUseRustAny(true);
+    }
+
+    @Test
+    void addSmartPointerBoxToCyclicReferencedType() {
+        var classDef = ClassDef.builder().cyclicReferenced(true).build();
+        var expr = converter.toConcreteTypeExpression(ConcreteTypeInfo.builder().simpleName("Abc").typeDef(classDef).build());
+        assertThat(expr).isEqualTo("Box<Abc>");
     }
 }
