@@ -1,6 +1,7 @@
 package online.sharedtype.processor.parser.type;
 
 import online.sharedtype.processor.context.ContextMocks;
+import online.sharedtype.processor.domain.DependingKind;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,8 +24,8 @@ class TypeInfoParserImplTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParserImpl parser = new TypeInfoParserImpl(ctxMocks.getContext());
 
-    private final TypeContext typeContext = TypeContext.builder().qualifiedName("com.github.cuzfrog.Abc").build();
-    private final TypeContext typeContextOtter = TypeContext.builder().qualifiedName("com.github.cuzfrog.Outer").build();
+    private final TypeContext typeContext = TypeContext.builder().qualifiedName("com.github.cuzfrog.Abc").dependingKind(DependingKind.COMPONENTS).build();
+    private final TypeContext typeContextOuter = TypeContext.builder().qualifiedName("com.github.cuzfrog.Outer").dependingKind(DependingKind.COMPONENTS).build();
 
     @ParameterizedTest
     @CsvSource({
@@ -141,10 +142,12 @@ class TypeInfoParserImplTest {
           .withTypeKind(TypeKind.DECLARED)
           .type();
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOtter);
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
             softly.assertThat(typeInfo.simpleName()).isEqualTo("Abc");
+            softly.assertThat(typeInfo.dependingTypeQualifiedName()).isEqualTo("com.github.cuzfrog.Outer");
+            softly.assertThat(typeInfo.dependingKind()).isEqualTo(DependingKind.COMPONENTS);
             softly.assertThat(typeInfo.resolved()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
@@ -160,7 +163,7 @@ class TypeInfoParserImplTest {
           )
           .type();
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOtter);
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Tuple");
             softly.assertThat(typeInfo.resolved()).isFalse();
@@ -190,7 +193,7 @@ class TypeInfoParserImplTest {
           )
           .type();
 
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOtter);
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Container");
             softly.assertThat(typeInfo.resolved()).isFalse();
@@ -210,7 +213,7 @@ class TypeInfoParserImplTest {
         var type = ctxMocks.executable("value")
             .withReturnType(ctxMocks.typeElement("java.lang.String").type())
             .type();
-        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOtter);
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.String");
             softly.assertThat(typeInfo.resolved()).isTrue();

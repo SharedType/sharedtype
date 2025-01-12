@@ -23,17 +23,26 @@ public final class ConcreteTypeInfo implements TypeInfo {
     private static final long serialVersionUID = 6912267731376244613L;
     private final String qualifiedName;
     private final String simpleName;
+    /**
+     * Where this typeInfo is depended. It can be a supertype, a field reference, or type parameter.
+     * @see this#dependingKind
+     */
+    @Nullable
+    private final String dependingTypeQualifiedName;
+    @Nullable
+    private final DependingKind dependingKind;
     @Builder.Default
     private final List<? extends TypeInfo> typeArgs = Collections.emptyList();
     @Builder.Default
     private boolean resolved = true;
 
     /**
-     * The corresponding type definition.
+     * The counter-parting type definition.
      * @see this#typeDef()
      */
     @Nullable
     private TypeDef typeDef;
+
 
     static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
         return ConcreteTypeInfo.builder().qualifiedName(qualifiedName).simpleName(simpleName).build();
@@ -74,6 +83,15 @@ public final class ConcreteTypeInfo implements TypeInfo {
 
     public String simpleName() {
         return simpleName;
+    }
+
+    @Nullable
+    public String dependingTypeQualifiedName() {
+        return dependingTypeQualifiedName;
+    }
+    @Nullable
+    public DependingKind dependingKind() {
+        return dependingKind;
     }
 
     public List<? extends TypeInfo> typeArgs() {

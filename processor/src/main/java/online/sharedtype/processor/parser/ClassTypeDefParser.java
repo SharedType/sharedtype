@@ -34,6 +34,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static online.sharedtype.processor.domain.DependingKind.COMPONENTS;
+import static online.sharedtype.processor.domain.DependingKind.SUPER_TYPE;
+
 /**
  *
  * @author Cause Chung
@@ -55,15 +58,12 @@ final class ClassTypeDefParser implements TypeDefParser {
             return null;
         }
         Config config = new Config(typeElement);
-        TypeContext typeContext = TypeContext.builder().qualifiedName(config.getQualifiedName()).build();
 
-        ClassDef.ClassDefBuilder builder = ClassDef.builder()
-            .qualifiedName(config.getQualifiedName()).simpleName(config.getName()).annotated(config.isAnnotated());
-        builder.typeVariables(parseTypeVariables(typeElement));
-        builder.components(parseComponents(typeElement, config, typeContext));
-        builder.supertypes(parseSupertypes(typeElement, typeContext));
-
-        return builder.build();
+        return ClassDef.builder().qualifiedName(config.getQualifiedName()).simpleName(config.getName()).annotated(config.isAnnotated())
+            .typeVariables(parseTypeVariables(typeElement))
+            .components(parseComponents(typeElement, config, TypeContext.builder().qualifiedName(config.getQualifiedName()).dependingKind(COMPONENTS).build()))
+            .supertypes(parseSupertypes(typeElement, TypeContext.builder().qualifiedName(config.getQualifiedName()).dependingKind(SUPER_TYPE).build()))
+            .build();
     }
 
     private boolean isValidClassTypeElement(TypeElement typeElement) {

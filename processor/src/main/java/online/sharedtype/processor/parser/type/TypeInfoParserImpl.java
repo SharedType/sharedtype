@@ -102,6 +102,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)
+                .dependingTypeQualifiedName(typeContext.getQualifiedName()).dependingKind(typeContext.getDependingKind())
                 .typeArgs(parsedTypeArgs)
                 .resolved(resolved)
                 .build();
