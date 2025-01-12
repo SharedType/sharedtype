@@ -44,7 +44,9 @@ final class TemplateTypeFileWriterTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        writer = new TemplateTypeFileWriter(ctxMocks.getContext(), renderer, Set.of(converter1, converter2, converter3), "types.d.ts");
+        writer = new TemplateTypeFileWriter(
+            ctxMocks.getContext(), renderer, Template.TEMPLATE_TYPESCRIPT_HEADER,
+            Set.of(converter1, converter2, converter3), "types.d.ts");
         when(ctxMocks.getContext().createSourceOutput("types.d.ts")).thenReturn(fileObject);
         when(fileObject.openOutputStream()).thenReturn(outputStream);
     }
@@ -71,6 +73,10 @@ final class TemplateTypeFileWriterTest {
 
         List<Tuple<Template, Object>> renderData = renderDataCaptor.getValue();
         assertThat(renderData).satisfiesExactlyInAnyOrder(
+            entry -> {
+              assertThat(entry.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_HEADER);
+              assertThat(entry.b()).isEqualTo(ctxMocks.getRenderFlags());
+            },
             entry -> {
                 assertThat(entry.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_INTERFACE);
                 assertThat(entry.b()).isEqualTo(data1);

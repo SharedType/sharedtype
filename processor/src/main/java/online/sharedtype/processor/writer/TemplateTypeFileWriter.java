@@ -27,12 +27,15 @@ import java.util.Set;
 final class TemplateTypeFileWriter implements TypeWriter {
     private final Context ctx;
     private final TemplateRenderer renderer;
+    private final Template headerTemplate;
     private final Set<TemplateDataConverter> converters;
     private final String outputFileName;
 
     @Override
     public void write(List<TypeDef> typeDefs) throws IOException {
         List<Tuple<Template, Object>> data = new ArrayList<>(typeDefs.size() * converters.size());
+        data.add(Tuple.of(headerTemplate, ctx.getRenderFlags()));
+
         Map<String, TypeDef> simpleNames = new HashMap<>(typeDefs.size());
         for (TypeDef typeDef : typeDefs) {
             TypeDef duplicate = simpleNames.get(typeDef.simpleName());

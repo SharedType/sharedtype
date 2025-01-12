@@ -4,6 +4,7 @@ import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.OutputTarget;
 import online.sharedtype.processor.writer.converter.TemplateDataConverter;
+import online.sharedtype.processor.writer.render.Template;
 import online.sharedtype.processor.writer.render.TemplateRenderer;
 
 import java.io.IOException;
@@ -36,10 +37,14 @@ public interface TypeWriter {
 
         TemplateRenderer renderer = TemplateRenderer.create();
         if (ctx.getProps().getTargets().contains(OutputTarget.TYPESCRIPT)) {
-            writers.add(new TemplateTypeFileWriter(ctx, renderer, TemplateDataConverter.typescript(ctx), ctx.getProps().getTypescript().getOutputFileName()));
+            writers.add(new TemplateTypeFileWriter(
+                ctx, renderer, Template.TEMPLATE_TYPESCRIPT_HEADER, TemplateDataConverter.typescript(ctx), ctx.getProps().getTypescript().getOutputFileName()
+            ));
         }
         if (ctx.getProps().getTargets().contains(OutputTarget.RUST)) {
-            writers.add(new TemplateTypeFileWriter(ctx, renderer, TemplateDataConverter.rust(), ctx.getProps().getRust().getOutputFileName()));
+            writers.add(new TemplateTypeFileWriter(
+                ctx, renderer, Template.TEMPLATE_RUST_HEADER, TemplateDataConverter.rust(), ctx.getProps().getRust().getOutputFileName()
+            ));
         }
         return new CompositeWriter(writers);
     }

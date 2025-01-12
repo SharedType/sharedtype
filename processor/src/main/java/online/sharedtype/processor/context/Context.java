@@ -25,6 +25,8 @@ public final class Context {
     @Getter
     private final TypeStore typeStore = new TypeStore();
     @Getter
+    private final RenderFlags renderFlags = new RenderFlags();
+    @Getter
     private final ProcessingEnvironment processingEnv;
     @Getter
     private final Props props;
