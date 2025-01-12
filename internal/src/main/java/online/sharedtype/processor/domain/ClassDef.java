@@ -35,7 +35,7 @@ public final class ClassDef implements TypeDef {
     @Builder.Default
     private final List<TypeInfo> supertypes = Collections.emptyList(); // direct supertypes
 
-    /** Counter-party typeInfos, there can be multiple typeInfo instances with different reified typeArgs relating to the same typeDef. */
+    /** Counterpart typeInfos, there can be multiple typeInfo instances with different reified typeArgs relating to the same typeDef. */
     private final Set<ConcreteTypeInfo> typeInfoSet = new HashSet<>();
 
     @Override
@@ -64,6 +64,7 @@ public final class ClassDef implements TypeDef {
     public Set<ConcreteTypeInfo> typeInfoSet() {
         return typeInfoSet;
     }
+    /** Register a counterpart typeInfo */
     public void linkTypeInfo(ConcreteTypeInfo typeInfo) {
         typeInfoSet.add(typeInfo);
     }

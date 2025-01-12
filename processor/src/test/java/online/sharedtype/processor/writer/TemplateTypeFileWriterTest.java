@@ -62,9 +62,9 @@ final class TemplateTypeFileWriterTest {
         ClassDef classDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.ClassA").build();
         var data1 = new Object();
         var data2 = new Object();
-        when(converter1.supports(classDef)).thenReturn(true);
-        when(converter2.supports(classDef)).thenReturn(true);
-        when(converter3.supports(classDef)).thenReturn(false);
+        when(converter1.shouldAccept(classDef)).thenReturn(true);
+        when(converter2.shouldAccept(classDef)).thenReturn(true);
+        when(converter3.shouldAccept(classDef)).thenReturn(false);
         when(converter1.convert(classDef)).thenReturn(Tuple.of(Template.TEMPLATE_TYPESCRIPT_INTERFACE, data1));
         when(converter2.convert(classDef)).thenReturn(Tuple.of(Template.TEMPLATE_RUST_STRUCT, data2));
         writer.write(List.of(classDef));

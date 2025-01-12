@@ -27,7 +27,7 @@ final class RustStructConverter implements TemplateDataConverter {
     private final TypeExpressionConverter typeExpressionConverter;
 
     @Override
-    public boolean supports(TypeDef typeDef) {
+    public boolean shouldAccept(TypeDef typeDef) {
         if (!(typeDef instanceof ClassDef)) {
             return false;
         }
@@ -35,6 +35,9 @@ final class RustStructConverter implements TemplateDataConverter {
         if (classDef.isAnnotated()) {
             return true;
         }
+
+        Set<ClassDef> visitedClassDef = new HashSet<>();
+        visitedClassDef.add(classDef);
         Deque<ClassDef> referencingClassDefs = new ArrayDeque<>();
         referencingClassDefs.push(classDef);
         while (!referencingClassDefs.isEmpty()) {
@@ -47,7 +50,10 @@ final class RustStructConverter implements TemplateDataConverter {
                     if (((ClassDef) dependingTypeDef).isAnnotated()) {
                         return true;
                     }
-                    referencingClassDefs.push((ClassDef) dependingTypeDef);
+                    if (!visitedClassDef.contains(dependingTypeDef)) {
+                        referencingClassDefs.push((ClassDef) dependingTypeDef);
+                        visitedClassDef.add(classDef);
+                    }
                 }
             }
         }

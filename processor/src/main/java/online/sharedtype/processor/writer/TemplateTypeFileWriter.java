@@ -46,7 +46,7 @@ final class TemplateTypeFileWriter implements TypeWriter {
             }
             simpleNames.put(typeDef.simpleName(), typeDef);
             for (TemplateDataConverter converter : converters) {
-                if (converter.supports(typeDef)) {
+                if (converter.shouldAccept(typeDef)) {
                     data.add(converter.convert(typeDef));
                 }
             }

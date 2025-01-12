@@ -11,7 +11,7 @@ import java.util.List;
 
 final class TypescriptEnumUnionConverter implements TemplateDataConverter {
     @Override
-    public boolean supports(TypeDef typeDef) {
+    public boolean shouldAccept(TypeDef typeDef) {
         return typeDef instanceof EnumDef;
     }
 

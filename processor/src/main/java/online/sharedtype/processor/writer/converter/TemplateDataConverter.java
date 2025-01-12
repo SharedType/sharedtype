@@ -11,7 +11,7 @@ import java.util.Set;
 
 public interface TemplateDataConverter {
 
-    boolean supports(TypeDef typeDef);
+    boolean shouldAccept(TypeDef typeDef);
 
     Tuple<Template, Object> convert(TypeDef typeDef);
 
