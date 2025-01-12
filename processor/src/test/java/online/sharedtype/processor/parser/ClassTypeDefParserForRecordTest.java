@@ -5,7 +5,7 @@ import online.sharedtype.processor.context.DeclaredTypeVariableElementMock;
 import online.sharedtype.processor.context.ExecutableElementMock;
 import online.sharedtype.processor.context.RecordComponentMock;
 import online.sharedtype.processor.context.TypeElementMock;
-import online.sharedtype.support.annotation.Issue;
+import online.sharedtype.processor.support.annotation.Issue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

@@ -48,8 +48,8 @@ final class TypeDefIntegrationTest {
             softly.assertThat(component1type.qualifiedName()).isEqualTo("online.sharedtype.it.java8.DependencyClassB");
 
             softly.assertThat(classA.typeVariables()).isEmpty();
-            softly.assertThat(classA.supertypes()).hasSize(1);
-            ConcreteTypeInfo supertype1 = (ConcreteTypeInfo)classA.supertypes().get(0);
+            softly.assertThat(classA.directSupertypes()).hasSize(1);
+            ConcreteTypeInfo supertype1 = (ConcreteTypeInfo)classA.directSupertypes().get(0);
             softly.assertThat(supertype1.resolved()).isTrue();
             softly.assertThat(supertype1.qualifiedName()).isEqualTo("online.sharedtype.it.java8.SuperClassA");
             softly.assertThat(classA.resolved()).isTrue();

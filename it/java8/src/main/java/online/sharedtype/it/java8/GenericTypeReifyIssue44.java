@@ -66,7 +66,7 @@ public class GenericTypeReifyIssue44 {
     }
 
     static final class CustomContainer<T> {
-        int value;
+        T value;
     }
 
     @SharedType

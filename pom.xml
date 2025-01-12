@@ -111,6 +111,11 @@
                 <artifactId>mockito-junit-jupiter</artifactId>
                 <version>${mockito.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>4.2.2</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

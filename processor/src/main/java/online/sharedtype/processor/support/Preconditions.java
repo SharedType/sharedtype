@@ -1,6 +1,6 @@
-package online.sharedtype.support;
+package online.sharedtype.processor.support;
 
-import online.sharedtype.support.exception.SharedTypeInternalError;
+import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import java.util.Collection;
 

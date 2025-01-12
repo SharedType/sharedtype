@@ -10,7 +10,7 @@ import java.util.Set;
  *
  * @author Cause Chung
  */
-@Builder
+@Builder(toBuilder = true)
 public final class FieldComponentInfo implements ComponentInfo {
     private static final long serialVersionUID = -155863067131290289L;
     private final String name;

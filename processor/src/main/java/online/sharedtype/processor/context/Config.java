@@ -7,7 +7,9 @@ import javax.lang.model.element.TypeElement;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -38,7 +40,8 @@ public final class Config {
         this.anno = annoFromType == null ? DummyDefault.class.getAnnotation(AnnoContainer.class).anno() : annoFromType;
         this.name = anno.name().isEmpty() ? simpleName : anno.name();
         this.qualifiedName = typeElement.getQualifiedName().toString();
-        this.includedComponentTypes = EnumSet.copyOf(Arrays.asList(anno.includes()));
+        List<SharedType.ComponentType> includedCompTypes = Arrays.asList(anno.includes());
+        this.includedComponentTypes = includedCompTypes.isEmpty() ? Collections.emptySet() : EnumSet.copyOf(includedCompTypes);
     }
 
     public boolean includes(SharedType.ComponentType componentType) {

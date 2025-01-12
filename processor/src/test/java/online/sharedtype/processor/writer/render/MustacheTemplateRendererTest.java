@@ -2,19 +2,18 @@ package online.sharedtype.processor.writer.render;
 
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+import online.sharedtype.processor.context.OutputTarget;
+import online.sharedtype.processor.support.utils.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import online.sharedtype.processor.context.OutputTarget;
-import online.sharedtype.support.utils.Tuple;
 
 import java.io.Writer;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,7 +35,6 @@ final class MustacheTemplateRendererTest {
     @Test
     void loadTemplatesAndRender() {
         when(mf.compile("templates/go/test.mustache")).thenReturn(compiledMustache);
-        renderer.loadTemplates(template);
 
         renderer.render(writer, Collections.singletonList(Tuple.of(template, new HashMap<>())));
         verify(compiledMustache).execute(writer, new HashMap<>());

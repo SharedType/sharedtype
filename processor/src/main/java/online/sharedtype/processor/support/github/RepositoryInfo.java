@@ -1,4 +1,4 @@
-package online.sharedtype.support.github;
+package online.sharedtype.processor.support.github;
 
 /**
  * @author Cause Chung

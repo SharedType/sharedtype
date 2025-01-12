@@ -8,7 +8,7 @@ Internal types also have javadoc for more information.
 #### Project structure
 * `annotation` contains the annotation type `@SharedType` as client code compile-time dependency.
 * `processor` contains annotation processor logic, put on client's annotation processing path.
-* `internal` shared domain types among `processor` and `it`.
+* `internal` shared domain types among `processor` and `it`. This is done via build-helper-maven-plugin.
 * `it` contains integration tests, which do metadata verification by deserializing metadata objects.
     * `java8` contains major types for tests.
     * `java17` uses symlink to reuse types in `java8` then does more type checks, e.g. for Java `record`.
@@ -47,7 +47,8 @@ Setup `JAVA8_HOME` to point to your Java8 installation. Open a new terminal and 
 ```
 #### Run client tests locally:
 Client tests are run in target languages in respective dir inside `./client-test`. They do basic type checking.
-* Typescript. `. setenv && npm i && npm run test`
+* Typescript - `. setenv && npm i && npm run test`
+* Rust - `cargo build` (rust binaries are assumed at PATH)
 #### Misc:
 Style check:
 ```bash
@@ -58,6 +59,12 @@ Debug annotation processor by run maven build:
 ./mvnd <your args goes here>
 ```
 Then attach your debugger on it.
+
+Compile specific classes, e.g.:
+```bash
+./mvnw clean install -DskipTests
+./mvnw clean compile -pl it/java17 -DcompileClasses=online/sharedtype/it/java8/TempClass.java
+```
 
 ## Coding Style Guide / Keep it simple
 1. since annotation processing is one shot execution, JIT is not likely to optimize the code. So prefer plain loop than long calling stacks like Stream chains.

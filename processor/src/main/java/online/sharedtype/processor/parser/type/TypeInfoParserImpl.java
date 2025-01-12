@@ -1,12 +1,13 @@
 package online.sharedtype.processor.parser.type;
 
-import lombok.RequiredArgsConstructor;
+import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.context.TypeStore;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
-import online.sharedtype.processor.context.Context;
-import online.sharedtype.support.exception.SharedTypeInternalError;
+import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -20,44 +21,49 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static online.sharedtype.processor.domain.Constants.PRIMITIVES;
-import static online.sharedtype.support.Preconditions.checkArgument;
+import static online.sharedtype.processor.support.Preconditions.checkArgument;
 
 /**
  *
  * @author Cause Chung
  */
-@RequiredArgsConstructor
 final class TypeInfoParserImpl implements TypeInfoParser {
     private final Context ctx;
+    private final TypeStore typeStore;
+
+    TypeInfoParserImpl(Context ctx) {
+        this.ctx = ctx;
+        this.typeStore = ctx.getTypeStore();
+    }
 
     @Override
-    public TypeInfo parse(TypeMirror typeMirror) {
+    public TypeInfo parse(TypeMirror typeMirror, TypeContext typeContext) {
         TypeKind typeKind = typeMirror.getKind();
 
         // TODO: use enumMap
         if (typeKind.isPrimitive()) {
             return PRIMITIVES.get(typeKind);
         } else if (typeKind == TypeKind.ARRAY) {
-            return new ArrayTypeInfo(parse(((ArrayType) typeMirror).getComponentType()));
+            return new ArrayTypeInfo(parse(((ArrayType) typeMirror).getComponentType(), typeContext));
         } else if (typeKind == TypeKind.DECLARED) {
-            return parseDeclared((DeclaredType) typeMirror);
+            return parseDeclared((DeclaredType) typeMirror, typeContext);
         } else if (typeKind == TypeKind.TYPEVAR) {
-            return parseTypeVariable((TypeVariable) typeMirror);
+            return parseTypeVariable((TypeVariable) typeMirror, typeContext);
         } else if (typeKind == TypeKind.EXECUTABLE) {
-            return parse(((ExecutableType) typeMirror).getReturnType());
+            return parse(((ExecutableType) typeMirror).getReturnType(), typeContext);
         }
         throw new SharedTypeInternalError(String.format("Unsupported type: %s, typeKind: %s", typeMirror, typeKind));
     }
 
-    private TypeInfo parseDeclared(DeclaredType declaredType) {
+    private TypeInfo parseDeclared(DeclaredType declaredType, TypeContext typeContext) {
         TypeElement typeElement = (TypeElement) declaredType.asElement();
         String qualifiedName = typeElement.getQualifiedName().toString();
         String simpleName = typeElement.getSimpleName().toString();
         List<? extends TypeMirror> typeArgs = declaredType.getTypeArguments();
 
         int arrayStack = 0;
-        boolean isTypeVar = false;
         TypeMirror currentType = declaredType;
+        TypeInfo typeInfo = null;
         while (ctx.isArraylike(currentType)) {
             checkArgument(typeArgs.size() == 1, "Array type must have exactly one type argument, but got: %s, type: %s", typeArgs.size(), currentType);
             arrayStack++;
@@ -70,40 +76,35 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                 typeArgs = argDeclaredType.getTypeArguments();
             } else if (currentType instanceof TypeVariable) {
                 TypeVariable argTypeVariable = (TypeVariable) currentType;
-                TypeVariableInfo typeVarInfo = parseTypeVariable(argTypeVariable);
-                qualifiedName = typeVarInfo.name();
+                TypeVariableInfo typeVarInfo = parseTypeVariable(argTypeVariable, typeContext);
+                qualifiedName = typeVarInfo.qualifiedName();
                 simpleName = typeVarInfo.name();
                 typeArgs = Collections.emptyList();
-                isTypeVar = true;
+                typeInfo = typeVarInfo;
+                break;
             }
         }
-        /* This check should be enough since array types have been stripped off.
-         *
-         * Generic type with different reified type arguments have different literal representations.
-         * E.g. List<String> and List<Integer> are different types.
-         * In target code this could be e.g. interface A extends List<String> {} and interface B extends List<Integer> {}.
-         * So generic types are not easy to compare in terms of caching. Current implementation does not cache generic types.
-         */
-        boolean isGeneric = !typeArgs.isEmpty();
 
-        TypeInfo typeInfo = null;
-        if (!isGeneric) {
-            typeInfo = ctx.getTypeStore().getTypeInfo(qualifiedName);
+        List<TypeInfo> parsedTypeArgs = typeArgs.stream().map(typeArg -> parse(typeArg, typeContext)).collect(Collectors.toList());
+
+        if (typeInfo == null) {
+            typeInfo = typeStore.getTypeInfo(qualifiedName, parsedTypeArgs);
         }
 
         if (typeInfo == null) {
-            boolean resolved = isTypeVar || ctx.getTypeStore().contains(qualifiedName);
-            List<TypeInfo> parsedTypeArgs = typeArgs.stream().map(this::parse).collect(Collectors.toList());
+            boolean resolved = typeStore.containsTypeDef(qualifiedName);
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)
                 .typeArgs(parsedTypeArgs)
                 .resolved(resolved)
                 .build();
+            typeStore.saveTypeInfo(qualifiedName, parsedTypeArgs, typeInfo);
+        }
 
-            if (!isGeneric) {
-                ctx.getTypeStore().saveTypeInfo(qualifiedName, typeInfo);
-            }
+        if (typeContext.getDependingKind() == DependingKind.COMPONENTS && typeInfo instanceof ConcreteTypeInfo) {
+            ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo)typeInfo;
+            concreteTypeInfo.referencingTypes().add(typeContext.getTypeDef());
         }
 
         while (arrayStack > 0) {
@@ -113,10 +114,20 @@ final class TypeInfoParserImpl implements TypeInfoParser {
         return typeInfo;
     }
 
-    private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable) {
-        return TypeVariableInfo.builder()
-            .name(typeVariable.asElement().getSimpleName().toString())
+    private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable, TypeContext typeContext) {
+        String contextTypeQualifiedName = typeContext.getTypeDef().qualifiedName();
+        String simpleName = typeVariable.asElement().getSimpleName().toString();
+        String qualifiedName = TypeVariableInfo.concatQualifiedName(contextTypeQualifiedName, simpleName);
+        TypeInfo typeInfo = typeStore.getTypeInfo(qualifiedName, Collections.emptyList());
+        if (typeInfo != null) {
+            return (TypeVariableInfo)typeInfo;
+        }
+        typeInfo = TypeVariableInfo.builder()
+            .contextTypeQualifiedName(contextTypeQualifiedName)
+            .name(simpleName)
+            .qualifiedName(qualifiedName)
             .build();
+        typeStore.saveTypeInfo(qualifiedName, Collections.emptyList(), typeInfo);
+        return (TypeVariableInfo)typeInfo;
     }
-
 }

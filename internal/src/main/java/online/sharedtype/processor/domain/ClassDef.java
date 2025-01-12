@@ -2,29 +2,37 @@ package online.sharedtype.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Represents structural info captured from an interface, class, or record.
+ * Represents structural info captured from an interface, class, or record. Similar concept with {@link javax.lang.model.element.TypeElement}.
  *
+ * @see TypeInfo
  * @author Cause Chung
  */
-@Builder
-@EqualsAndHashCode(of = "qualifiedName")
-public final class ClassDef implements TypeDef {
+@SuperBuilder(toBuilder = true)
+@EqualsAndHashCode(of = "qualifiedName", callSuper = false)
+public final class ClassDef extends AbstractTypeDef {
     private static final long serialVersionUID = 9052013791381913516L;
     private final String qualifiedName;
     private final String simpleName;
     @Builder.Default
-    private final List<FieldComponentInfo> components = Collections.emptyList();
+    private final List<FieldComponentInfo> components = new ArrayList<>();
     @Builder.Default
-    private final List<TypeVariableInfo> typeVariables = Collections.emptyList();
+    private final List<TypeVariableInfo> typeVariables = new ArrayList<>();
     @Builder.Default
-    private final List<TypeInfo> supertypes = Collections.emptyList(); // direct supertypes
+    private final List<TypeInfo> supertypes = new ArrayList<>(); // direct supertypes
+
+    /** Counterpart typeInfos, there can be multiple typeInfo instances with different reified typeArgs relating to the same typeDef. */
+    private final Set<ConcreteTypeInfo> typeInfoSet = new HashSet<>();
 
     @Override
     public String qualifiedName() {
@@ -45,8 +53,42 @@ public final class ClassDef implements TypeDef {
         return typeVariables;
     }
 
-    public List<TypeInfo> supertypes() {
+    public List<TypeInfo> directSupertypes() {
         return supertypes;
+    }
+
+    public Set<ConcreteTypeInfo> typeInfoSet() {
+        return typeInfoSet;
+    }
+    /**
+     * Register a counterpart typeInfo.
+     * @see #typeInfoSet
+     */
+    public void linkTypeInfo(ConcreteTypeInfo typeInfo) {
+        typeInfoSet.add(typeInfo);
+    }
+
+    public ClassDef reify(List<? extends TypeInfo> typeArgs) {
+        int l;
+        if ((l = typeArgs.size()) != typeVariables.size()) {
+            throw new IllegalArgumentException(String.format("Cannot reify %s against typeArgs: %s", this, typeArgs));
+        }
+        if (l == 0) {
+            return this;
+        }
+        Map<TypeVariableInfo, TypeInfo> mappings = new HashMap<>(l);
+        for (int i = 0; i < l; i++) {
+            mappings.put(typeVariables.get(i), typeArgs.get(i));
+        }
+        List<FieldComponentInfo> reifiedComponents = components.stream()
+            .map(comp -> comp.toBuilder().type(comp.type().reify(mappings)).build())
+            .collect(Collectors.toList());
+        List<TypeInfo> reifiedSupertypes = supertypes.stream()
+            .map(supertype -> supertype.reify(mappings)).collect(Collectors.toList());
+        return this.toBuilder()
+            .components(reifiedComponents)
+            .supertypes(reifiedSupertypes)
+            .build();
     }
 
     // TODO: optimize

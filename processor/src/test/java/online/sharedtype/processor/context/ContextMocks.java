@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 @Getter
 public final class ContextMocks {
     private final TypeStore typeStore = spy(new TypeStore());
+    private final RenderFlags renderFlags = spy(new RenderFlags());
     private final Props props;
     private final ProcessingEnvironment processingEnv = mock(ProcessingEnvironment.class);
     private final Types types = mock(Types.class);
@@ -32,6 +33,7 @@ public final class ContextMocks {
         when(processingEnv.getElementUtils()).thenReturn(elements);
         when(processingEnv.getTypeUtils()).thenReturn(types);
         when(context.getTypeStore()).thenReturn(typeStore);
+        when(context.getRenderFlags()).thenReturn(renderFlags);
         when(context.getTrees()).thenReturn(trees);
     }
 

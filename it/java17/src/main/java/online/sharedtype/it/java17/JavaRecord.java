@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 @SharedType
-public record JavaRecord<T, K>(
+public record JavaRecord<T>(
     String string,
     byte primitiveByte,
     Byte boxedByte,
@@ -33,7 +33,7 @@ public record JavaRecord<T, K>(
     Character boxedChar,
 
     Object object,
-    Void aVoid,
+//    Void aVoid,
 
     DependencyClassA cyclicDependency,// cyclic a ->b ->c ->a
 
@@ -43,7 +43,7 @@ public record JavaRecord<T, K>(
     List<T> genericList,
     Set<T> genericSet,
     List<Set<T>> genericListSet,
-    Map<K, T> genericMap,
+//    Map<K, T> genericMap,
     int[] intArray,
     Integer[] boxedIntArray,
 

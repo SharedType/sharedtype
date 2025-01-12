@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Fail.fail;
+import static org.mockito.Mockito.RETURNS_SMART_NULLS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -46,7 +47,7 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
     }
 
     public final <A extends Annotation> M withAnnotation(Class<A> annotationClazz) {
-        when(element.getAnnotation(annotationClazz)).thenReturn(mock(annotationClazz));
+        when(element.getAnnotation(annotationClazz)).thenReturn(mock(annotationClazz, RETURNS_SMART_NULLS));
         return returnThis();
     }
 

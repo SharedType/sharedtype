@@ -1,6 +1,6 @@
 package online.sharedtype.it.java8;
 
-public abstract class SuperClassA extends IgnoredSuperClassB implements InterfaceA<Integer>, IgnoredInterfaceB {
+public abstract class SuperClassA extends IgnoredSuperClassB implements InterfaceSubA<Integer>, IgnoredInterfaceB {
     private int a;
 
     @Override

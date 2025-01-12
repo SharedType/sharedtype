@@ -3,8 +3,12 @@ package online.sharedtype.processor.domain;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -16,15 +20,29 @@ import java.util.stream.Collectors;
  * @author Cause Chung
  */
 @EqualsAndHashCode(of = {"qualifiedName", "typeArgs"})
-@Builder
+@Builder(toBuilder = true)
 public final class ConcreteTypeInfo implements TypeInfo {
     private static final long serialVersionUID = 6912267731376244613L;
     private final String qualifiedName;
     private final String simpleName;
     @Builder.Default
     private final List<? extends TypeInfo> typeArgs = Collections.emptyList();
+
+    /**
+     * Qualified names of types from where this typeInfo is strongly referenced, i.e. as a component type.
+     */
+    @Builder.Default
+    private final Set<TypeDef> referencingTypes = new HashSet<>();
     @Builder.Default
     private boolean resolved = true;
+
+    /**
+     * The counter-parting type definition.
+     * @see this#typeDef()
+     */
+    @Nullable
+    private TypeDef typeDef;
+
 
     static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
         return ConcreteTypeInfo.builder().qualifiedName(qualifiedName).simpleName(simpleName).build();
@@ -35,12 +53,31 @@ public final class ConcreteTypeInfo implements TypeInfo {
         return resolved && typeArgs.stream().allMatch(TypeInfo::resolved);
     }
 
+    @Override
+    public TypeInfo reify(Map<TypeVariableInfo, TypeInfo> mappings) {
+        return this.toBuilder()
+            .typeArgs(typeArgs.stream().map(typeArg -> typeArg.reify(mappings)).collect(Collectors.toList()))
+            .build();
+    }
+
     public boolean shallowResolved() {
         return resolved;
     }
 
-    public void markShallowResolved() {
+    public void markShallowResolved(TypeDef resolvedTypeDef) {
         this.resolved = true;
+        this.typeDef = resolvedTypeDef;
+        if (resolvedTypeDef instanceof ClassDef) {
+            ((ClassDef) resolvedTypeDef).linkTypeInfo(this);
+        }
+    }
+
+    /**
+     * @return null when the type is not resolved if it's a user defined type; or does not have a corresponding {@link TypeDef}, e.g. a predefined type.
+     */
+    @Nullable
+    public TypeDef typeDef() {
+        return typeDef;
     }
 
     public String qualifiedName() {
@@ -51,6 +88,10 @@ public final class ConcreteTypeInfo implements TypeInfo {
         return simpleName;
     }
 
+    public Set<TypeDef> referencingTypes() {
+        return referencingTypes;
+    }
+
     public List<? extends TypeInfo> typeArgs() {
         return typeArgs;
     }
@@ -58,7 +99,7 @@ public final class ConcreteTypeInfo implements TypeInfo {
     @Override
     public String toString() {
         return String.format("%s%s%s",
-                qualifiedName,
+            qualifiedName,
                 typeArgs.isEmpty() ? "" : "<" + typeArgs.stream().map(TypeInfo::toString).collect(Collectors.joining(",")) + ">",
                 resolved ? "" : "?"
         );

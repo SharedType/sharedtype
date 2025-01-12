@@ -3,6 +3,8 @@ package online.sharedtype.processor.domain;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Map;
+
 /**
  * Represents an array-like type.
  * During parsing, a predefined array-like type and its subtypes is captured as this class.
@@ -26,6 +28,12 @@ public final class ArrayTypeInfo implements TypeInfo {
     @Override
     public boolean resolved() {
         return component.resolved();
+    }
+
+    @Override
+    public TypeInfo reify(Map<TypeVariableInfo, TypeInfo> mappings) {
+        TypeInfo reifiedComponent = component.reify(mappings);
+        return reifiedComponent == component ? this : new ArrayTypeInfo(reifiedComponent);
     }
 
     @Override

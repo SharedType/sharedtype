@@ -24,6 +24,9 @@ public interface TypeResolver {
     List<TypeDef> resolve(List<TypeDef> typeDefs);
 
     static TypeResolver create(Context ctx, TypeDefParser typeDefParser) {
-        return new LoopTypeResolver(ctx, typeDefParser);
+        return new CompositeTypeResolver(
+            new LoopTypeResolver(ctx, typeDefParser),
+            new ReferenceResolver()
+        );
     }
 }
