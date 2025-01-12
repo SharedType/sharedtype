@@ -28,7 +28,11 @@ final class RustStructConverter implements TemplateDataConverter {
 
     @Override
     public boolean supports(TypeDef typeDef) {
-        return typeDef instanceof ClassDef;
+        if (!(typeDef instanceof ClassDef)) {
+            return false;
+        }
+        ClassDef classDef = (ClassDef) typeDef;
+        return classDef.isAnnotated();
     }
 
     @Override

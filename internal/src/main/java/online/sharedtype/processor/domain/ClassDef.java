@@ -2,6 +2,7 @@ package online.sharedtype.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,9 @@ public final class ClassDef implements TypeDef {
     private static final long serialVersionUID = 9052013791381913516L;
     private final String qualifiedName;
     private final String simpleName;
+    /** Whether this type is explicitly annotated with {@link online.sharedtype.SharedType} */
+    @Getter
+    private final boolean annotated;
     @Builder.Default
     private final List<FieldComponentInfo> components = Collections.emptyList();
     @Builder.Default

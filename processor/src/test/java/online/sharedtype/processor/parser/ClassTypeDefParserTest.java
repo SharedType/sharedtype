@@ -1,5 +1,6 @@
 package online.sharedtype.processor.parser;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.context.ContextMocks;
@@ -9,12 +10,14 @@ import online.sharedtype.processor.parser.type.TypeContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
+import org.mockito.internal.stubbing.defaultanswers.ReturnsMoreEmptyValues;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.type.TypeKind;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.RETURNS_SMART_NULLS;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,24 +40,24 @@ final class ClassTypeDefParserTest {
         var supertype2 = ctxMocks.typeElement("com.github.cuzfrog.InterfaceA");
         var supertype3 = ctxMocks.typeElement("com.github.cuzfrog.InterfaceB");
         var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc")
-          .withEnclosedElements(
-            field1.element(),
-            field2.element(),
-            method1.element(),
-            method2.element()
-          )
-          .withTypeParameters(
-            ctxMocks.typeParameter("T").element(),
-            ctxMocks.typeParameter("U").element()
-          )
-          .withSuperClass(
-              supertype1.type()
-          )
-          .withInterfaces(
-              supertype2.type(),
-              supertype3.type()
-          )
-          .element();
+            .withEnclosedElements(
+                field1.element(),
+                field2.element(),
+                method1.element(),
+                method2.element()
+            )
+            .withTypeParameters(
+                ctxMocks.typeParameter("T").element(),
+                ctxMocks.typeParameter("U").element()
+            )
+            .withSuperClass(
+                supertype1.type()
+            )
+            .withInterfaces(
+                supertype2.type(),
+                supertype3.type()
+            )
+            .element();
 
         var parsedField1Type = Constants.BOOLEAN_TYPE_INFO;
         var parsedField2Type = Constants.STRING_TYPE_INFO;
@@ -73,6 +76,7 @@ final class ClassTypeDefParserTest {
         var classDef = (ClassDef) parser.parse(clazz);
         assert classDef != null;
         assertThat(classDef.simpleName()).isEqualTo("Abc");
+        assertThat(classDef.isAnnotated()).isFalse();
 
         // components
         assertThat(classDef.components()).hasSize(3);
@@ -107,5 +111,16 @@ final class ClassTypeDefParserTest {
         inOrder.verify(typeInfoParser).parse(supertype1.type(), typeContext);
         inOrder.verify(typeInfoParser).parse(supertype2.type(), typeContext);
         inOrder.verify(typeInfoParser).parse(supertype3.type(), typeContext);
+    }
+
+    @Test
+    void markClassDefAsAnnotated() {
+        var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.class)
+            .element();
+        var classDef = (ClassDef) parser.parse(clazz);
+        assert classDef != null;
+        assertThat(classDef.simpleName()).isEqualTo("Abc");
+        assertThat(classDef.isAnnotated()).isTrue();
     }
 }

@@ -57,7 +57,8 @@ final class ClassTypeDefParser implements TypeDefParser {
         Config config = new Config(typeElement);
         TypeContext typeContext = TypeContext.builder().qualifiedName(config.getQualifiedName()).build();
 
-        ClassDef.ClassDefBuilder builder = ClassDef.builder().qualifiedName(config.getQualifiedName()).simpleName(config.getName());
+        ClassDef.ClassDefBuilder builder = ClassDef.builder()
+            .qualifiedName(config.getQualifiedName()).simpleName(config.getName()).annotated(config.isAnnotated());
         builder.typeVariables(parseTypeVariables(typeElement));
         builder.components(parseComponents(typeElement, config, typeContext));
         builder.supertypes(parseSupertypes(typeElement, typeContext));
