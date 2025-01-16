@@ -1,6 +1,8 @@
 package online.sharedtype.processor.resolver;
 
 
+import online.sharedtype.processor.context.ContextMocks;
+import online.sharedtype.processor.context.Props;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
@@ -10,9 +12,15 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 final class ReferenceResolverTest {
-    private final ReferenceResolver referenceResolver = new ReferenceResolver();
+    private final ContextMocks ctxMocks = new ContextMocks();
+    private final ReferenceResolver referenceResolver = new ReferenceResolver(ctxMocks.getContext());
 
     @Test
     void markReferencedByAnnotated() {
@@ -49,9 +57,16 @@ final class ReferenceResolverTest {
         classDefB.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("a.b.B").referencingTypes(Set.of(classDefA)).build());
         classDefC.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("a.b.C").referencingTypes(Set.of(classDefB)).build());
 
+        assertThatThrownBy(() -> referenceResolver.resolve(List.of(classDefA, classDefB, classDefC)))
+            .hasMessageContaining("'a.b.A' is cyclically referenced");
+
+        when(ctxMocks.getProps().getCyclicReferenceReportStrategy()).thenReturn(Props.CyclicReferenceReportStrategy.WARN);
         referenceResolver.resolve(List.of(classDefA, classDefB, classDefC));
         assertThat(classDefA.isCyclicReferenced()).isTrue();
         assertThat(classDefB.isCyclicReferenced()).isTrue();
         assertThat(classDefC.isCyclicReferenced()).isTrue();
+        verify(ctxMocks.getContext()).warn(anyString(), eq("a.b.A"));
+        verify(ctxMocks.getContext()).warn(anyString(), eq("a.b.B"));
+        verify(ctxMocks.getContext()).warn(anyString(), eq("a.b.C"));
     }
 }

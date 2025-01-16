@@ -2,7 +2,6 @@ package online.sharedtype.it.java17;
 
 import online.sharedtype.SharedType;
 import online.sharedtype.it.java8.Container;
-import online.sharedtype.it.java8.DependencyClassA;
 import online.sharedtype.it.java8.EnumGalaxy;
 import online.sharedtype.it.java8.EnumSize;
 import online.sharedtype.it.java8.InterfaceA;
@@ -35,7 +34,7 @@ public record JavaRecord<T>(
     Object object,
 //    Void aVoid,
 
-    DependencyClassA cyclicDependency,// cyclic a ->b ->c ->a
+//    DependencyClassA cyclicDependency,// cyclic a ->b ->c ->a, Not supported, see Javadoc of @SharedType
 
     List<Container<String>> containerStringList,
     List<Collection<Container<String>>> containerStringListCollection,

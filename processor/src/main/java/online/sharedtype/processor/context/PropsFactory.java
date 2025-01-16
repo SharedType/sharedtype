@@ -37,12 +37,13 @@ public final class PropsFactory {
 
     private static Props loadProps(Properties properties) throws Exception {
         return Props.builder()
-            .targets(parseEnumSet(properties.getProperty("sharedtype.targets"), OutputTarget.class))
+            .targets(parseEnumSet(properties, "sharedtype.targets", OutputTarget.class))
             .optionalAnno(parseAnnotationClass(properties.getProperty("sharedtype.optional-annotations")))
             .accessorGetterPrefixes(splitArray(properties.getProperty("sharedtype.accessor.getter-prefixes")))
             .arraylikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.array-like-types")))
             .maplikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.map-like-types")))
             .ignoredTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.ignored-types")))
+            .cyclicReferenceReportStrategy(parseEnum(properties, "sharedtype.cyclic-reference-report-strategy", Props.CyclicReferenceReportStrategy.class))
             .typescript(Props.Typescript.builder()
                 .outputFileName(properties.getProperty("sharedtype.typescript.output-file-name"))
                 .interfacePropertyDelimiter(properties.getProperty("sharedtype.typescript.interface-property-delimiter").charAt(0))
@@ -55,13 +56,27 @@ public final class PropsFactory {
             .build();
     }
 
-    private static <T extends Enum<T>> Set<T> parseEnumSet(String value, Class<T> type) {
-        Set<String> trimmedElems = splitArray(value);
-        Set<T> set = EnumSet.noneOf(type);
-        for (String trimmed : trimmedElems) {
-            set.add(Enum.valueOf(type, trimmed));
+    private static <T extends Enum<T>> Set<T> parseEnumSet(Properties properties, String key, Class<T> type) {
+        String value = properties.getProperty(key);
+        try {
+            Set<String> trimmedElems = splitArray(value);
+            Set<T> set = EnumSet.noneOf(type);
+            for (String trimmed : trimmedElems) {
+                set.add(Enum.valueOf(type, trimmed));
+            }
+            return set;
+        } catch (Exception e) {
+            throw new SharedTypeException(String.format("Property '%s' has invalid value '%s'. ", key, value), e);
         }
-        return set;
+    }
+
+    private static <T extends Enum<T>> T parseEnum(Properties properties, String key, Class<T> type) {
+        String value = properties.getProperty(key);
+        try {
+            return Enum.valueOf(type, value.toUpperCase());
+        } catch (Exception e) {
+            throw new SharedTypeException(String.format("Property '%s' has invalid value '%s'. ", key, value), e);
+        }
     }
 
     private static Set<String> splitArray(String value) {

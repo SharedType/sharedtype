@@ -1,4 +1,4 @@
-package online.sharedtype.it.java8;
+package online.sharedtype.it.java8.cyclic;
 
 import lombok.Getter;
 import lombok.Setter;

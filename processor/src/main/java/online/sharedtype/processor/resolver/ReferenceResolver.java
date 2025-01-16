@@ -1,8 +1,12 @@
 package online.sharedtype.processor.resolver;
 
+import lombok.RequiredArgsConstructor;
+import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.context.Props;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.support.annotation.SideEffect;
+import online.sharedtype.processor.support.exception.SharedTypeException;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -18,7 +22,9 @@ import java.util.stream.Collectors;
  *     <li>direct or indirect reference from explicitly annotated classes</li>
  * </ul>
  */
+@RequiredArgsConstructor
 final class ReferenceResolver implements TypeResolver {
+    private final Context ctx;
 
     @Override
     public List<TypeDef> resolve(@SideEffect List<TypeDef> typeDefs) {
@@ -28,7 +34,7 @@ final class ReferenceResolver implements TypeResolver {
         return typeDefs;
     }
 
-    private static void traverse(TypeDef typeDef) {
+    private void traverse(TypeDef typeDef) {
         Set<TypeDef> visited = new HashSet<>();
         Deque<TypeDef> typeDefStack = new ArrayDeque<>();
         typeDefStack.push(typeDef);
@@ -38,6 +44,12 @@ final class ReferenceResolver implements TypeResolver {
             TypeDef cur = typeDefStack.pop();
             if (visited.contains(cur)) {
                 cur.setCyclicReferenced(true);
+                if (ctx.getProps().getCyclicReferenceReportStrategy() == Props.CyclicReferenceReportStrategy.ERROR) {
+                    throw new SharedTypeException(String.format("Type '%s' is cyclically referenced, which is not supported." +
+                        " You can change the configuration to warn and ignore cyclically referenced types.", cur.qualifiedName()));
+                } else {
+                    ctx.warn("Type '%s' is cyclically referenced, which will not be emitted. Cyclic references are not supported.", cur.qualifiedName());
+                }
                 continue;
             } else {
                 visited.add(cur);

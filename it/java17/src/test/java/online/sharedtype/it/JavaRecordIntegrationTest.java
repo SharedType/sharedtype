@@ -175,13 +175,6 @@ final class JavaRecordIntegrationTest {
     }
 
     @Test
-    void cyclicDependencyField() {
-        var cyclicDependencyField = componentByName.get("cyclicDependency");
-        var typeInfo = (ConcreteTypeInfo)cyclicDependencyField.type();
-        assertThat(typeInfo.qualifiedName()).isEqualTo("online.sharedtype.it.java8.DependencyClassA");
-    }
-
-    @Test
     void containerStringListField() {
         var containerStringListField = componentByName.get("containerStringList");
         var arrayTypeInfo = (ArrayTypeInfo)containerStringListField.type();
@@ -278,6 +271,6 @@ final class JavaRecordIntegrationTest {
 
     @Test
     void fieldsSize() {
-        assertThat(classDef.components().size()).isEqualTo(30);
+        assertThat(classDef.components().size()).isEqualTo(29);
     }
 }

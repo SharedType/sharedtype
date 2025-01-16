@@ -8,6 +8,8 @@ import online.sharedtype.processor.support.github.RepositoryInfo;
  * @author Cause Chung
  */
 public final class SharedTypeInternalError extends Error {
+    private static final long serialVersionUID = -1941815777983350796L;
+
     public SharedTypeInternalError(String message) {
         super(format(message));
     }

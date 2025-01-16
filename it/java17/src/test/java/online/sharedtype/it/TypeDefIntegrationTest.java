@@ -34,10 +34,10 @@ final class TypeDefIntegrationTest {
 
     @Test
     void dependencyClassA() {
-        ClassDef classA = (ClassDef) deserializeTypeDef("online.sharedtype.it.java8.DependencyClassA.ser");
+        ClassDef classA = (ClassDef) deserializeTypeDef("online.sharedtype.it.java8.cyclic.DependencyClassA.ser");
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(classA.simpleName()).isEqualTo("DependencyClassA");
-            softly.assertThat(classA.qualifiedName()).isEqualTo("online.sharedtype.it.java8.DependencyClassA");
+            softly.assertThat(classA.qualifiedName()).isEqualTo("online.sharedtype.it.java8.cyclic.DependencyClassA");
             softly.assertThat(classA.components()).hasSize(1);
 
             FieldComponentInfo component1 = classA.components().get(0);
@@ -45,7 +45,7 @@ final class TypeDefIntegrationTest {
             softly.assertThat(component1.name()).isEqualTo("b");
             softly.assertThat(component1.type().resolved()).isTrue();
             ConcreteTypeInfo component1type = (ConcreteTypeInfo) component1.type();
-            softly.assertThat(component1type.qualifiedName()).isEqualTo("online.sharedtype.it.java8.DependencyClassB");
+            softly.assertThat(component1type.qualifiedName()).isEqualTo("online.sharedtype.it.java8.cyclic.DependencyClassB");
 
             softly.assertThat(classA.typeVariables()).isEmpty();
             softly.assertThat(classA.directSupertypes()).hasSize(1);
@@ -58,13 +58,13 @@ final class TypeDefIntegrationTest {
 
     @Test
     void dependencyClassB() {
-        ClassDef classB = (ClassDef) deserializeTypeDef("online.sharedtype.it.java8.DependencyClassB.ser");
+        ClassDef classB = (ClassDef) deserializeTypeDef("online.sharedtype.it.java8.cyclic.DependencyClassB.ser");
         assertThat(classB.simpleName()).isEqualTo("DependencyClassB");
     }
 
     @Test
     void dependencyClassC() {
-        ClassDef classC = (ClassDef) deserializeTypeDef("online.sharedtype.it.java8.DependencyClassC.ser");
+        ClassDef classC = (ClassDef) deserializeTypeDef("online.sharedtype.it.java8.cyclic.DependencyClassC.ser");
         assertThat(classC.simpleName()).isEqualTo("DependencyClassC");
     }
 

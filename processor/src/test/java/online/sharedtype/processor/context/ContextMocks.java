@@ -26,8 +26,8 @@ public final class ContextMocks {
     private final Trees trees = mock(Trees.class);
     private final Context context = Mockito.mock(Context.class);
 
-    public ContextMocks(Props props) {
-        this.props = props;
+    public ContextMocks() {
+        this.props = spy(PropsFactory.loadProps(null));
         when(context.getProps()).thenReturn(props);
         when(context.getProcessingEnv()).thenReturn(processingEnv);
         when(processingEnv.getElementUtils()).thenReturn(elements);
@@ -35,10 +35,6 @@ public final class ContextMocks {
         when(context.getTypeStore()).thenReturn(typeStore);
         when(context.getRenderFlags()).thenReturn(renderFlags);
         when(context.getTrees()).thenReturn(trees);
-    }
-
-    public ContextMocks() {
-        this(PropsFactory.loadProps(null));
     }
 
     public TypeElementMock typeElement(String qualifiedName) {
