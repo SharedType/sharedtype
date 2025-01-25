@@ -85,7 +85,7 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
                 if (typeDef != null) {
                     discoveredDefs.add(typeDef);
                 } else {
-                    ctx.warn("Type '%s' is ignored or invalid, but annotated with '%s'.", typeElement.getQualifiedName().toString(), ANNOTATION_QUALIFIED_NAME);
+                    ctx.warning("Type '%s' is ignored or invalid, but annotated with '%s'.", typeElement.getQualifiedName().toString(), ANNOTATION_QUALIFIED_NAME);
                 }
             } else {
                 throw new SharedTypeInternalError(String.format("Unsupported element: %s of kind %s", element, element.getKind()));

@@ -48,12 +48,6 @@ import java.lang.annotation.Target;
  * </p>
  *
  * <p>
- * <b>Cyclic Reference:</b><br>
- * Cyclic references are not supported. If a circular dependency is detected, a compilation error or warning will be reported.
- * In case of warning, referenced types will not be emitted.
- * </p>
- *
- * <p>
  * <b>Constants:</b><br>
  * Support is planned in upcoming versions. Only compile-time resolvable values or their combinations are supported.
  * </p>
@@ -70,11 +64,8 @@ import java.lang.annotation.Target;
  *     <li>Typescript: {@code T[]}</li>
  *     <li>Rust: {@code Vec<T>}</li>
  * </ul>
- * </p>
  *
- * <p>
- * <b>Maps:</b><br>
- * (Not supported yet.)
+ * Maps are mapped to:
  * <ul>
  *     <li>Typescript: {@code [key: string]: T} where {@code T} can be a reified type.</li>
  * </ul>

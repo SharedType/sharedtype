@@ -6,8 +6,6 @@ package online.sharedtype.processor.support.exception;
  * @author Cause Chung
  */
 public final class SharedTypeException extends RuntimeException {
-    private static final long serialVersionUID = -50161145644065579L;
-
     public SharedTypeException(String message) {
         super(message);
     }

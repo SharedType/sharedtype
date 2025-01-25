@@ -51,7 +51,7 @@ public final class Context {
     public void info(String message, Object... objects) {
         log(Diagnostic.Kind.NOTE, message, objects);
     }
-    public void warn(String message, Object... objects) {
+    public void warning(String message, Object... objects) {
         log(Diagnostic.Kind.WARNING, message, objects);
     }
     public void error(String message, Object... objects) {

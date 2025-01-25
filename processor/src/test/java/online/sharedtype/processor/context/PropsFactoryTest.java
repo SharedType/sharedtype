@@ -34,7 +34,6 @@ final class PropsFactoryTest {
             "java.io.Serializable",
             "java.lang.Record"
         );
-        assertThat(props.getCyclicReferenceReportStrategy()).isEqualTo(Props.CyclicReferenceReportStrategy.ERROR);
 
         Props.Typescript typescriptProps = props.getTypescript();
         assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.d.ts");

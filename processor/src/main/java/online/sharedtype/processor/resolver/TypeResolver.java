@@ -26,7 +26,7 @@ public interface TypeResolver {
     static TypeResolver create(Context ctx, TypeDefParser typeDefParser) {
         return new CompositeTypeResolver(
             new LoopTypeResolver(ctx, typeDefParser),
-            new ReferenceResolver(ctx)
+            new ReferenceResolver()
         );
     }
 }
