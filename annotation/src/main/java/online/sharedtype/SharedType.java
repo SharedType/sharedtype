@@ -48,6 +48,13 @@ import java.lang.annotation.Target;
  * </p>
  *
  * <p>
+ * <b>Cyclic Reference:</b><br>
+ * <ul>
+ *     <li>Rust: Cyclic references will be wrapped in {@code Option<Box<T>>}.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
  * <b>Constants:</b><br>
  * Support is planned in upcoming versions. Only compile-time resolvable values or their combinations are supported.
  * </p>
@@ -66,6 +73,9 @@ import java.lang.annotation.Target;
  * </ul>
  *
  * Maps are mapped to:
+ * <p>
+ * <b>Maps:</b><br>
+ * (Not supported yet.)
  * <ul>
  *     <li>Typescript: {@code [key: string]: T} where {@code T} can be a reified type.</li>
  * </ul>

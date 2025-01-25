@@ -43,14 +43,6 @@ final class RustStructConverter implements TemplateDataConverter {
         return Tuple.of(Template.TEMPLATE_RUST_STRUCT, value);
     }
 
-    private PropertyExpr toPropertyExpr(FieldComponentInfo field) {
-        return new PropertyExpr(
-            field.name().replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase(), // TODO: optimize
-            typeExpressionConverter.toTypeExpr(field.type()),
-            field.optional()
-        );
-    }
-
     private List<PropertyExpr> gatherProperties(ClassDef classDef) {
         List<PropertyExpr> properties = new ArrayList<>(); // TODO: init cap
         Set<String> propertyNames = new HashSet<>();
@@ -80,6 +72,25 @@ final class RustStructConverter implements TemplateDataConverter {
         return properties;
     }
 
+    private PropertyExpr toPropertyExpr(FieldComponentInfo field) {
+        return new PropertyExpr(
+            field.name().replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase(), // TODO: optimize
+            typeExpressionConverter.toTypeExpr(field.type()),
+            isOptionalField(field)
+        );
+    }
+
+    private static boolean isOptionalField(FieldComponentInfo field) {
+        if (field.optional()) {
+            return true;
+        }
+        if (field.type() instanceof ConcreteTypeInfo) {
+            ConcreteTypeInfo type = (ConcreteTypeInfo) field.type();
+            return type.typeDef() != null && type.typeDef().isCyclicReferenced();
+        }
+        return false;
+    }
+
     @SuppressWarnings("unused")
     @RequiredArgsConstructor
     static final class StructExpr {
@@ -102,5 +113,9 @@ final class RustStructConverter implements TemplateDataConverter {
         final String name;
         final String type;
         final boolean optional;
+
+        String typeExpr() {
+            return optional ? String.format("Option<%s>", type) : type;
+        }
     }
 }
