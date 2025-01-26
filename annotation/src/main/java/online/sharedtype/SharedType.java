@@ -121,6 +121,15 @@ public @interface SharedType {
     ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS, ComponentType.CONSTANTS};
 
     /**
+     * Macros to be added to the type in generated Rust code. E.g. "Debug" will generate {@code #[derive](Debug)}.
+     * This property only affects this annotated type. By default, "Debug" and "PartialEq" are added to all types, which can be configured via global properties.
+     * Resulted macros contain both global default and this property.
+     *
+     * @return Rust macro traits. E.g. "serde::Serialize".
+     */
+    String[] rustMacroTraits() default {};
+
+    /**
      * Mark a method as an accessor regardless of its name.
      * Getter prefixes are configured in global properties.
      * This annotation will be ignored if {@link #includes()} does not include {@link ComponentType#ACCESSORS}.
@@ -134,7 +143,7 @@ public @interface SharedType {
      * Exclude fields, record components, accessors in a type, or a dependency type, e.g. a supertype.
      * <p>
      * <b>When placed on a type:</b> a subtype of this type will not extend this type in target code.
-     * But if this type is referenced directly as type of a field or return type of an accessor, a compilation error will be reported,
+     * But if this type is referenced directly as type of field or return type of accessor, a compilation error will be reported,
      * unless the field or accessor is also ignored.
      * </p>
      */

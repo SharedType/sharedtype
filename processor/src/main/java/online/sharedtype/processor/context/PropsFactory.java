@@ -51,6 +51,7 @@ public final class PropsFactory {
             .rust(Props.Rust.builder()
                 .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))
                 .allowDeadcode(parseBoolean(properties, "sharedtype.rust.allow-deadcode"))
+                .defaultTypeMacros(splitArray(properties.getProperty("sharedtype.rust.default-macros-traits")))
                 .build())
             .build();
     }

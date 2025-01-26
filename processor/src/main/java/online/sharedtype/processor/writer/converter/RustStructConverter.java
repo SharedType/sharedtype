@@ -2,6 +2,7 @@ package online.sharedtype.processor.writer.converter;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 final class RustStructConverter implements TemplateDataConverter {
+    private final Context ctx;
     private final TypeExpressionConverter typeExpressionConverter;
 
     @Override
@@ -76,7 +78,8 @@ final class RustStructConverter implements TemplateDataConverter {
         return new PropertyExpr(
             field.name().replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase(), // TODO: optimize
             typeExpressionConverter.toTypeExpr(field.type()),
-            isOptionalField(field)
+            isOptionalField(field),
+            ctx.getProps().getRust().getDefaultTypeMacros()
         );
     }
 
@@ -113,6 +116,7 @@ final class RustStructConverter implements TemplateDataConverter {
         final String name;
         final String type;
         final boolean optional;
+        final Set<String> macroTraits;
 
         String typeExpr() {
             return optional ? String.format("Option<%s>", type) : type;

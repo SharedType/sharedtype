@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class RustStructConverterIntegrationTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final RustStructConverter converter = new RustStructConverter(TypeExpressionConverter.rust(ctxMocks.getContext()));
+    private final RustStructConverter converter = new RustStructConverter(ctxMocks.getContext(), TypeExpressionConverter.rust(ctxMocks.getContext()));
 
     @Test
     void skipNonClassDef() {
