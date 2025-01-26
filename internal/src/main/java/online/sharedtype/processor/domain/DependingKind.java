@@ -4,5 +4,7 @@ public enum DependingKind {
     SUPER_TYPE,
     /** Including fields and methods. */
     COMPONENTS,
-    ENUM_VALUE
+    /** E.g. recursive references */
+    SELF,
+    ENUM_VALUE,
 }

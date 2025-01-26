@@ -59,5 +59,6 @@ final class RustEnumConverterTest {
         var data = converter.convert(enumDef);
         var model = (RustEnumConverter.EnumExpr) data.b();
         assertThat(model.macroTraits).contains("Debug", "PartialEq", "Clone");
+        assertThat(model.macroTraitsExpr()).isEqualTo("#[derive(Debug, PartialEq, Clone)]");
     }
 }

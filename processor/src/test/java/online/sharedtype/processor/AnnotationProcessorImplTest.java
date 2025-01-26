@@ -50,7 +50,7 @@ class AnnotationProcessorImplTest {
         processor.doProcess(Set.of(typeElement1, typeElement2));
 
         verify(typeWriter).write(List.of(classDef1, dependencyDef));
-        verify(ctxMocks.getContext()).warning(messageCaptor.capture(), eq("com.github.cuzfrog.IgnoredClass"), eq(Constants.ANNOTATION_QUALIFIED_NAME));
+        verify(ctxMocks.getContext()).warn(messageCaptor.capture(), eq("com.github.cuzfrog.IgnoredClass"), eq(Constants.ANNOTATION_QUALIFIED_NAME));
         assertThat(messageCaptor.getValue()).contains("is ignored or invalid");
     }
 }

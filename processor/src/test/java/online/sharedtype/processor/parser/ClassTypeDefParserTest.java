@@ -84,6 +84,12 @@ final class ClassTypeDefParserTest {
         when(typeInfoParser.parse(supertype1.type(), typeContextForSupertypes)).thenReturn(parsedSupertype1);
         when(typeInfoParser.parse(supertype2.type(), typeContextForSupertypes)).thenReturn(parsedSupertype2);
         when(typeInfoParser.parse(supertype3.type(), typeContextForSupertypes)).thenReturn(parsedSupertype3);
+
+        var parsedSelfTypeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.Abc").build();
+        var typeContextForSelf = TypeContext.builder()
+            .typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build())
+            .dependingKind(DependingKind.SELF).build();
+        when(typeInfoParser.parse(clazz.asType(), typeContextForSelf)).thenReturn(parsedSelfTypeInfo);
         InOrder inOrder = inOrder(typeInfoParser);
 
         var classDef = (ClassDef) parser.parse(clazz);
@@ -124,6 +130,10 @@ final class ClassTypeDefParserTest {
         inOrder.verify(typeInfoParser).parse(supertype2.type(), typeContextForSupertypes);
         inOrder.verify(typeInfoParser).parse(supertype3.type(), typeContextForSupertypes);
 
+        // self typeInfo
+        assertThat(classDef.typeInfoSet()).satisfiesExactly(typeInfo -> assertThat(typeInfo).isSameAs(parsedSelfTypeInfo));
+
+        // config
         verify(ctxMocks.getTypeStore()).saveConfig(eq(classDef), configCaptor.capture());
         var config = configCaptor.getValue();
         assertThat(config.getAnno()).isSameAs(anno);

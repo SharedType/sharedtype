@@ -2,6 +2,7 @@ package online.sharedtype.processor.parser;
 
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
@@ -35,10 +36,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static online.sharedtype.processor.domain.DependingKind.COMPONENTS;
+import static online.sharedtype.processor.domain.DependingKind.SELF;
 import static online.sharedtype.processor.domain.DependingKind.SUPER_TYPE;
 
 /**
- *
  * @author Cause Chung
  */
 final class ClassTypeDefParser implements TypeDefParser {
@@ -66,6 +67,9 @@ final class ClassTypeDefParser implements TypeDefParser {
         classDef.components().addAll(parseComponents(typeElement, config, TypeContext.builder().typeDef(classDef).dependingKind(COMPONENTS).build()));
         classDef.directSupertypes().addAll(parseSupertypes(typeElement, TypeContext.builder().typeDef(classDef).dependingKind(SUPER_TYPE).build()));
         ctx.getTypeStore().saveConfig(classDef, config);
+
+        TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), TypeContext.builder().typeDef(classDef).dependingKind(SELF).build());
+        classDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);
         return classDef;
     }
 
@@ -162,7 +166,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 boolean explicitAccessor = methodElem.getAnnotation(SharedType.Accessor.class) != null;
                 if (!isZeroArgNonstaticMethod(methodElem)) {
                     if (explicitAccessor) {
-                        ctx.warning("%s.%s annotated with @SharedType.Accessor is not a zero-arg nonstatic method.", typeElement, methodElem);
+                        ctx.warn("%s.%s annotated with @SharedType.Accessor is not a zero-arg nonstatic method.", typeElement, methodElem);
                     }
                     continue;
                 }
@@ -182,7 +186,7 @@ final class ClassTypeDefParser implements TypeDefParser {
 
             if (uniqueNamesOfTypes.ignoredType != null) {
                 ctx.error("%s.%s references to explicitly ignored type %s, which is not allowed." +
-                    " Either remove the ignored type, or add @SharedType.Ignore to the field or accessor.",typeElement, name, uniqueNamesOfTypes.ignoredType);
+                    " Either remove the ignored type, or add @SharedType.Ignore to the field or accessor.", typeElement, name, uniqueNamesOfTypes.ignoredType);
                 return Collections.emptyList();
             }
         }

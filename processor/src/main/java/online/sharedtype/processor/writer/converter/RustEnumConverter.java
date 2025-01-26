@@ -48,6 +48,10 @@ final class RustEnumConverter extends AbstractRustConverter {
         final String name;
         final List<EnumerationExpr> enumerations;
         final Set<String> macroTraits;
+
+        String macroTraitsExpr() {
+            return buildMacroTraitsExpr(macroTraits);
+        }
     }
 
     @SuppressWarnings("unused")

@@ -26,4 +26,11 @@ abstract class AbstractRustConverter implements TemplateDataConverter {
         Collections.addAll(traits, typeMacroTraits);
         return traits;
     }
+
+    static String buildMacroTraitsExpr(Set<String> macroTraits) {
+        if (macroTraits.isEmpty()) {
+            return null;
+        }
+        return String.format("#[derive(%s)]", String.join(", ", macroTraits));
+    }
 }

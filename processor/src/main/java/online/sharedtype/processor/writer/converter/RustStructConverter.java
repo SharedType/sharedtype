@@ -113,10 +113,7 @@ final class RustStructConverter extends AbstractRustConverter {
         }
 
         String macroTraitsExpr() {
-            if (macroTraits.isEmpty()) {
-                return null;
-            }
-            return String.join(",", macroTraits);
+            return buildMacroTraitsExpr(macroTraits);
         }
     }
 

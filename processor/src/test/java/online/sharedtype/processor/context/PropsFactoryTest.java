@@ -43,7 +43,7 @@ final class PropsFactoryTest {
         Props.Rust rustProps = props.getRust();
         assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");
         assertThat(rustProps.isAllowDeadcode()).isEqualTo(true);
-        assertThat(rustProps.getDefaultTypeMacros()).containsExactly("Debug", "PartialEq");
+        assertThat(rustProps.getDefaultTypeMacros()).containsExactly("Debug");
     }
 
     @Test

@@ -23,7 +23,7 @@ mod tests {
         };
         let json = serde_json::to_string(&dep_a).unwrap();
 
-        let dep_a_deser: DependencyClassA = serde_json::from_str(&json).unwrap(); 
+        let dep_a_deser: DependencyClassA = serde_json::from_str(&json).unwrap();
         assert_eq!(dep_a_deser, dep_a);
 
         print!("{}", &json);

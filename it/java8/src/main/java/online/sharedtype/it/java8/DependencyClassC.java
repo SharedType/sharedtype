@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import online.sharedtype.SharedType;
 
-@SharedType(rustMacroTraits = {"serde::Serialize", "serde::Deserialize"})
+@SharedType(rustMacroTraits = {"PartialEq", "serde::Serialize", "serde::Deserialize"})
 @Getter
 @Setter
 public final class DependencyClassC {
