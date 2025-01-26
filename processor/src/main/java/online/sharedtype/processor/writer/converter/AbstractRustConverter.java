@@ -10,7 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 abstract class AbstractRustConverter implements TemplateDataConverter {
-    private final Context ctx;
+    final Context ctx;
     private final Set<String> defaultTraits;
 
     AbstractRustConverter(Context ctx) {

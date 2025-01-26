@@ -38,6 +38,7 @@ public final class Props {
     public static final class Rust {
         private final String outputFileName;
         private final boolean allowDeadcode;
+        private final boolean convertToSnakeCase;
         private final Set<String> defaultTypeMacros;
     }
 }

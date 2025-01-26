@@ -80,7 +80,7 @@ final class RustStructConverter extends AbstractRustConverter {
 
     private PropertyExpr toPropertyExpr(FieldComponentInfo field) {
         return new PropertyExpr(
-            field.name().replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase(), // TODO: optimize
+            ctx.getProps().getRust().isConvertToSnakeCase() ? LiteralUtils.toSnakeCase(field.name()) : field.name(),
             typeExpressionConverter.toTypeExpr(field.type()),
             isOptionalField(field)
         );

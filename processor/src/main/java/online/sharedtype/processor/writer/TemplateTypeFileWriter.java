@@ -3,6 +3,7 @@ package online.sharedtype.processor.writer;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.writer.adaptor.RenderDataAdaptor;
 import online.sharedtype.processor.writer.converter.TemplateDataConverter;
 import online.sharedtype.processor.writer.render.Template;
 import online.sharedtype.processor.writer.render.TemplateRenderer;
@@ -34,7 +35,7 @@ final class TemplateTypeFileWriter implements TypeWriter {
     @Override
     public void write(List<TypeDef> typeDefs) throws IOException {
         List<Tuple<Template, Object>> data = new ArrayList<>(typeDefs.size() * converters.size());
-        data.add(Tuple.of(headerTemplate, ctx));
+        data.add(Tuple.of(headerTemplate, RenderDataAdaptor.header(ctx)));
 
         Map<String, TypeDef> simpleNames = new HashMap<>(typeDefs.size());
         for (TypeDef typeDef : typeDefs) {

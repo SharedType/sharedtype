@@ -13,13 +13,13 @@ mod tests {
                       b: None,
                       a: 6,
                       value: 33,
-                      not_ignored_implemented_method: 999,
+                      notIgnoredImplementedMethod: 999,
                     })),
                 })),
             })),
             a: 5,
             value: 4,
-            not_ignored_implemented_method: 5,
+            notIgnoredImplementedMethod: 5,
         };
         let json = serde_json::to_string(&dep_a).unwrap();
 
@@ -27,19 +27,19 @@ mod tests {
         assert_eq!(dep_a_deser, dep_a);
 
         print!("{}", &json);
-        assert_eq!(&json, r#"{"b":{"c":{"a":{"b":null,"a":6,"value":33,"not_ignored_implemented_method":999}}},"a":5,"value":4,"not_ignored_implemented_method":5}"#);
+        assert_eq!(&json, r#"{"b":{"c":{"a":{"b":null,"a":6,"value":33,"notIgnoredImplementedMethod":999}}},"a":5,"value":4,"notIgnoredImplementedMethod":5}"#);
     }
 
     #[test]
     fn recursieve_type() {
         let recusive_class = RecursiveClass {
-            direct_ref: Some(Box::new(RecursiveClass {
-                direct_ref: None,
-                array_ref: vec![],
+            directRef: Some(Box::new(RecursiveClass {
+                directRef: None,
+                arrayRef: vec![],
             })),
-            array_ref: vec![Box::new(RecursiveClass {
-                direct_ref: None,
-                array_ref: vec![],
+            arrayRef: vec![Box::new(RecursiveClass {
+                directRef: None,
+                arrayRef: vec![],
             })],
         };
 
@@ -49,6 +49,6 @@ mod tests {
         assert_eq!(recusive_class_deser, recusive_class);
 
         print!("{}", &json);
-        assert_eq!(&json, r#"{"direct_ref":{"direct_ref":null,"array_ref":[]},"array_ref":[{"direct_ref":null,"array_ref":[]}]}"#);
+        assert_eq!(&json, r#"{"directRef":{"directRef":null,"arrayRef":[]},"arrayRef":[{"directRef":null,"arrayRef":[]}]}"#);
     }
 }

@@ -23,7 +23,7 @@ type User struct {
     Email string
 }
 ```
-Rust (Planed):
+Rust:
 ```rust
 pub struct User {
     name: String,
@@ -31,7 +31,6 @@ pub struct User {
     email: String,
 }
 ```
-And more.
 
 ## Features
 * Java8 support. No hassles.

@@ -2,6 +2,7 @@ package online.sharedtype.processor.writer;
 
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.writer.adaptor.RenderDataAdaptor;
 import online.sharedtype.processor.writer.converter.TemplateDataConverter;
 import online.sharedtype.processor.writer.render.Template;
 import online.sharedtype.processor.writer.render.TemplateRenderer;
@@ -75,7 +76,7 @@ final class TemplateTypeFileWriterTest {
         assertThat(renderData).satisfiesExactlyInAnyOrder(
             entry -> {
               assertThat(entry.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_HEADER);
-              assertThat(entry.b()).isEqualTo(ctxMocks.getContext());
+              assertThat(entry.b()).isInstanceOf(RenderDataAdaptor.class);
             },
             entry -> {
                 assertThat(entry.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_INTERFACE);
