@@ -1,6 +1,7 @@
 package online.sharedtype.processor.writer.converter;
 
 import lombok.RequiredArgsConstructor;
+import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.TypeDef;
@@ -9,8 +10,13 @@ import online.sharedtype.processor.writer.render.Template;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-final class RustEnumConverter implements TemplateDataConverter {
+final class RustEnumConverter extends AbstractRustConverter {
+    public RustEnumConverter(Context ctx) {
+        super(ctx);
+    }
+
     @Override
     public boolean shouldAccept(TypeDef typeDef) {
         return typeDef instanceof EnumDef;
@@ -22,7 +28,8 @@ final class RustEnumConverter implements TemplateDataConverter {
 
         EnumExpr value = new EnumExpr(
             enumDef.simpleName(),
-            extractEnumValues(enumDef.components())
+            extractEnumValues(enumDef.components()),
+            macroTraits(enumDef)
         );
         return Tuple.of(Template.TEMPLATE_RUST_ENUM, value);
     }
@@ -40,6 +47,7 @@ final class RustEnumConverter implements TemplateDataConverter {
     static final class EnumExpr {
         final String name;
         final List<EnumerationExpr> enumerations;
+        final Set<String> macroTraits;
     }
 
     @SuppressWarnings("unused")

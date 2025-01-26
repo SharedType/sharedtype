@@ -65,7 +65,7 @@ final class ClassTypeDefParser implements TypeDefParser {
         classDef.typeVariables().addAll(parseTypeVariables(typeElement));
         classDef.components().addAll(parseComponents(typeElement, config, TypeContext.builder().typeDef(classDef).dependingKind(COMPONENTS).build()));
         classDef.directSupertypes().addAll(parseSupertypes(typeElement, TypeContext.builder().typeDef(classDef).dependingKind(SUPER_TYPE).build()));
-
+        ctx.getTypeStore().saveConfig(classDef, config);
         return classDef;
     }
 

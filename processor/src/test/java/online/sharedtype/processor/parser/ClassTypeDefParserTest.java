@@ -1,5 +1,8 @@
 package online.sharedtype.processor.parser;
 
+import online.sharedtype.SharedType;
+import online.sharedtype.processor.context.Config;
+import online.sharedtype.processor.context.TestUtils;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.context.ContextMocks;
@@ -8,6 +11,7 @@ import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.parser.type.TypeContext;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 
@@ -16,14 +20,18 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.type.TypeKind;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 final class ClassTypeDefParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
     private final ClassTypeDefParser parser = new ClassTypeDefParser(ctxMocks.getContext(), typeInfoParser);
+
+    private final ArgumentCaptor<Config> configCaptor = ArgumentCaptor.forClass(Config.class);
 
     private final TypeElementMock string = ctxMocks.typeElement("java.lang.String");
     private final TypeContext typeContextForComponents = TypeContext.builder()
@@ -42,7 +50,9 @@ final class ClassTypeDefParserTest {
         var supertype1 = ctxMocks.typeElement("com.github.cuzfrog.SuperClassA");
         var supertype2 = ctxMocks.typeElement("com.github.cuzfrog.InterfaceA");
         var supertype3 = ctxMocks.typeElement("com.github.cuzfrog.InterfaceB");
+        var anno = TestUtils.defaultSharedTypeAnnotation();
         var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.class, () -> anno)
             .withEnclosedElements(
                 field1.element(),
                 field2.element(),
@@ -113,5 +123,9 @@ final class ClassTypeDefParserTest {
         inOrder.verify(typeInfoParser).parse(supertype1.type(), typeContextForSupertypes);
         inOrder.verify(typeInfoParser).parse(supertype2.type(), typeContextForSupertypes);
         inOrder.verify(typeInfoParser).parse(supertype3.type(), typeContextForSupertypes);
+
+        verify(ctxMocks.getTypeStore()).saveConfig(eq(classDef), configCaptor.capture());
+        var config = configCaptor.getValue();
+        assertThat(config.getAnno()).isSameAs(anno);
     }
 }

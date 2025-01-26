@@ -63,6 +63,7 @@ final class EnumTypeDefParser implements TypeDefParser {
         enumDef.components().addAll(
             enumValueMarker.marked() ? parseEnumConstants(typeElement, enumConstantElems, enumValueMarker, enumDef) : useEnumConstantNames(enumConstantElems)
         );
+        ctx.getTypeStore().saveConfig(enumDef, config);
         return enumDef;
     }
 

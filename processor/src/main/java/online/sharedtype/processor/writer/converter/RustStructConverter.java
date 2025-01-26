@@ -20,10 +20,13 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-final class RustStructConverter implements TemplateDataConverter {
-    private final Context ctx;
+final class RustStructConverter extends AbstractRustConverter {
     private final TypeExpressionConverter typeExpressionConverter;
+
+    RustStructConverter(Context ctx, TypeExpressionConverter typeExpressionConverter) {
+        super(ctx);
+        this.typeExpressionConverter = typeExpressionConverter;
+    }
 
     @Override
     public boolean shouldAccept(TypeDef typeDef) {
@@ -40,7 +43,8 @@ final class RustStructConverter implements TemplateDataConverter {
         StructExpr value = new StructExpr(
             classDef.simpleName(),
             classDef.typeVariables().stream().map(typeExpressionConverter::toTypeExpr).collect(Collectors.toList()),
-            gatherProperties(classDef)
+            gatherProperties(classDef),
+            macroTraits(classDef)
         );
         return Tuple.of(Template.TEMPLATE_RUST_STRUCT, value);
     }
@@ -78,8 +82,7 @@ final class RustStructConverter implements TemplateDataConverter {
         return new PropertyExpr(
             field.name().replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase(), // TODO: optimize
             typeExpressionConverter.toTypeExpr(field.type()),
-            isOptionalField(field),
-            ctx.getProps().getRust().getDefaultTypeMacros()
+            isOptionalField(field)
         );
     }
 
@@ -100,12 +103,20 @@ final class RustStructConverter implements TemplateDataConverter {
         final String name;
         final List<String> typeParameters;
         final List<PropertyExpr> properties;
+        final Set<String> macroTraits;
 
         String typeParametersExpr() {
             if (typeParameters.isEmpty()) {
                 return null;
             }
             return String.format("<%s>", String.join(", ", typeParameters));
+        }
+
+        String macroTraitsExpr() {
+            if (macroTraits.isEmpty()) {
+                return null;
+            }
+            return String.join(",", macroTraits);
         }
     }
 
@@ -116,7 +127,6 @@ final class RustStructConverter implements TemplateDataConverter {
         final String name;
         final String type;
         final boolean optional;
-        final Set<String> macroTraits;
 
         String typeExpr() {
             return optional ? String.format("Option<%s>", type) : type;

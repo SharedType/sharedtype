@@ -1,6 +1,7 @@
 package online.sharedtype.processor.context;
 
 import lombok.Getter;
+import lombok.Setter;
 import online.sharedtype.SharedType;
 
 import javax.lang.model.element.TypeElement;
@@ -18,6 +19,7 @@ import java.util.Set;
  * @author Cause Chung
  */
 public final class Config {
+    @Getter
     private final SharedType anno;
     @Getter
     private final String name;
@@ -26,12 +28,12 @@ public final class Config {
     private final Set<SharedType.ComponentType> includedComponentTypes;
 
     @Retention(RetentionPolicy.RUNTIME)
-    private @interface AnnoContainer {
+    @interface AnnoContainer {
         SharedType anno() default @SharedType;
     }
 
     @AnnoContainer
-    private static class DummyDefault {
+    static final class DummyDefault {
     }
 
     public Config(TypeElement typeElement) {

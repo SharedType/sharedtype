@@ -1,5 +1,7 @@
 package online.sharedtype.processor.parser;
 
+import online.sharedtype.processor.context.Config;
+import online.sharedtype.processor.context.TestUtils;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.EnumDef;
@@ -16,6 +18,7 @@ import javax.lang.model.type.TypeKind;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,6 +27,8 @@ final class EnumTypeDefParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
     private final EnumTypeDefParser parser = new EnumTypeDefParser(ctxMocks.getContext(), typeInfoParser);
+
+    private final ArgumentCaptor<Config> configCaptor = ArgumentCaptor.forClass(Config.class);
 
     private final TypeElementMock enumType = ctxMocks.typeElement("com.github.cuzfrog.EnumA")
         .withElementKind(ElementKind.ENUM);
@@ -35,7 +40,10 @@ final class EnumTypeDefParserTest {
 
     @Test
     void simpleEnum() {
-        enumType.withEnclosedElements(
+        var anno = TestUtils.defaultSharedTypeAnnotation();
+        enumType
+            .withAnnotation(SharedType.class, () -> anno)
+            .withEnclosedElements(
             ctxMocks.declaredTypeVariable("Value1", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element(),
             ctxMocks.declaredTypeVariable("Value2", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element()
         );
@@ -53,6 +61,11 @@ final class EnumTypeDefParserTest {
                 assertThat(c2.name()).isEqualTo("Value2");
             }
         );
+
+        verify(ctxMocks.getTypeStore()).saveConfig(eq(typeDef), configCaptor.capture());
+        var config = configCaptor.getValue();
+        assertThat(config.getQualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
+        assertThat(config.getAnno()).isSameAs(anno);
     }
 
     @Test

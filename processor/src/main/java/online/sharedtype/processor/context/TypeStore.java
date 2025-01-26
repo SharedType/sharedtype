@@ -8,6 +8,7 @@ import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,7 @@ import static online.sharedtype.processor.domain.Constants.PREDEFINED_OBJECT_TYP
 public final class TypeStore {
     private final Map<String, TypeDef> typeDefByQualifiedName = new HashMap<>();
     private final Map<TypeInfoKey, TypeInfo> typeInfoByKey = new HashMap<>();
+    private final Map<TypeDef, Config> typeConfig = new HashMap<>();
 
     TypeStore() {
         for (Map.Entry<String, ConcreteTypeInfo> entry : PREDEFINED_OBJECT_TYPES.entrySet()) {
@@ -53,6 +55,14 @@ public final class TypeStore {
 
     public boolean containsTypeDef(String qualifiedName) {
         return typeDefByQualifiedName.containsKey(qualifiedName);
+    }
+
+    public void saveConfig(TypeDef typeDef, Config config) {
+        typeConfig.put(typeDef, config);
+    }
+    @Nullable
+    public Config getConfig(TypeDef typeDef) {
+        return typeConfig.get(typeDef);
     }
 
     @EqualsAndHashCode

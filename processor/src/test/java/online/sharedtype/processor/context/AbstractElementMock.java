@@ -11,6 +11,8 @@ import javax.lang.model.util.Types;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.RETURNS_SMART_NULLS;
@@ -47,7 +49,16 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
     }
 
     public final <A extends Annotation> M withAnnotation(Class<A> annotationClazz) {
-        when(element.getAnnotation(annotationClazz)).thenReturn(mock(annotationClazz, RETURNS_SMART_NULLS));
+        Consumer<A> mockCustomizer = anno -> {};
+        return withAnnotation(annotationClazz, mockCustomizer);
+    }
+    public final <A extends Annotation> M withAnnotation(Class<A> annotationClazz, Consumer<A> mockCustomizer) {
+        A annotation = mock(annotationClazz, RETURNS_SMART_NULLS);
+        mockCustomizer.accept(annotation);
+        return withAnnotation(annotationClazz, () -> annotation);
+    }
+    public final <A extends Annotation> M withAnnotation(Class<A> annotationClazz, Supplier<A> supplier) {
+        when(element.getAnnotation(annotationClazz)).thenReturn(supplier.get());
         return returnThis();
     }
 
