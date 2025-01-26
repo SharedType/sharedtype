@@ -1,13 +1,12 @@
 package online.sharedtype.it;
 
-import online.sharedtype.processor.domain.FieldComponentInfo;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -166,13 +165,13 @@ final class JavaRecordIntegrationTest {
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Object");
     }
 
-    @Disabled("not supported")
-    @Test
-    void aVoidField() {
-        var aVoidField = componentByName.get("aVoid");
-        var typeInfo = (ConcreteTypeInfo)aVoidField.type();
-        assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Void");
-    }
+//    @Disabled("not supported")
+//    @Test
+//    void aVoidField() {
+//        var aVoidField = componentByName.get("aVoid");
+//        var typeInfo = (ConcreteTypeInfo)aVoidField.type();
+//        assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Void");
+//    }
 
     @Test
     void cyclicDependencyField() {

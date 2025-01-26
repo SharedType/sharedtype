@@ -1,4 +1,4 @@
-import type {DependencyClassA, DependencyClassB, DependencyClassC, EnumGalaxy, EnumSize, EnumTShirt, JavaRecord, AnotherJavaClass} from "../src/index.java17.js";
+import type { DependencyClassA, DependencyClassB, DependencyClassC, EnumGalaxy, EnumSize, EnumTShirt, JavaRecord, AnotherJavaClass, RecursiveClass } from "../src/index.java17.js";
 
 export const list1: EnumGalaxy[] = ["Andromeda", "MilkyWay", "Triangulum"];
 export const record1: Record<EnumTShirt, number> = {
@@ -8,7 +8,9 @@ export const record1: Record<EnumTShirt, number> = {
 }
 export const size1: EnumSize = 1;
 
-export const dependencyClassC: DependencyClassC = {} as DependencyClassC;
+export const dependencyClassC: DependencyClassC = {
+    a: {} as DependencyClassA, // TODO: optional for cyclic dependency
+};
 
 export const dependencyClassB: DependencyClassB = {
     c: dependencyClassC
@@ -22,7 +24,7 @@ export const dependencyClassA: DependencyClassA = {
 };
 dependencyClassC.a = dependencyClassA
 
-export const obj: Omit<JavaRecord<string, number>, "aVoid" | "genericMap"> = {
+export const obj: Omit<JavaRecord<string>, "aVoid" | "genericMap"> = {
     boxedBoolean: false,
     boxedByte: 0,
     boxedChar: "",
@@ -57,4 +59,12 @@ export const obj: Omit<JavaRecord<string, number>, "aVoid" | "genericMap"> = {
 
 export const anotherJavaClass: AnotherJavaClass = {
     value: 333,
+}
+
+export const recursiveClass: RecursiveClass = {
+    directRef: {
+        directRef: {} as RecursiveClass, // TODO: optional for cyclic dependency
+        arrayRef: [],
+    },
+    arrayRef: [],
 }
