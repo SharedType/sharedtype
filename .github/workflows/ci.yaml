@@ -102,6 +102,14 @@ jobs:
           npm i
           npm run test
 
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          profile: minimal
+          toolchain: 1.31.0
+      - name: Test Rust
+        working-directory: client-test/rust
+        run: cargo test
+
 #  clean-artifact:
 #    needs: [ jdk_compatibility_test, client_test ]
 #    runs-on: ubuntu-latest
