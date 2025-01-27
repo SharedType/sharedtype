@@ -38,7 +38,7 @@ public final class ConcreteTypeInfo implements TypeInfo {
 
     /**
      * The counter-parting type definition.
-     * @see this#typeDef()
+     * @see #typeDef()
      */
     @Nullable
     private TypeDef typeDef;
