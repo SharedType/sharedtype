@@ -74,3 +74,4 @@ Do not use compile time heavy annotation like `lombok.val`.
 
 ## Release
 Release is via Sonatype [Central Portal](https://central.sonatype.org/register/central-portal/). Snapshot release is not supported.
+Create a GitHub release, GitHub action will automatically deploy to Sonatype. Version will be automatically bumped by the action.
