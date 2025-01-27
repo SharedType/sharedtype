@@ -1,4 +1,4 @@
-package online.sharedtype.support.exception;
+package online.sharedtype.processor.support.exception;
 
 /**
  * Indicate an exception, equivalent to {@link RuntimeException}.

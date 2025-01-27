@@ -1,7 +1,7 @@
 package online.sharedtype.processor.context;
 
 import org.junit.jupiter.api.Test;
-import online.sharedtype.support.exception.SharedTypeException;
+import online.sharedtype.processor.support.exception.SharedTypeException;
 
 import javax.annotation.Nullable;
 import java.net.URISyntaxException;
@@ -15,7 +15,7 @@ final class PropsFactoryTest {
     @Test
     void loadUserProps() {
         Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-user.properties"));
-        assertThat(props.getTargets()).containsExactly(OutputTarget.TYPESCRIPT, OutputTarget.CONSOLE);
+        assertThat(props.getTargets()).containsExactly(OutputTarget.CONSOLE, OutputTarget.TYPESCRIPT);
         assertThat(props.getOptionalAnno()).isEqualTo(Override.class);
         assertThat(props.getTypescript().getJavaObjectMapType()).isEqualTo("unknown");
     }
@@ -39,6 +39,12 @@ final class PropsFactoryTest {
         assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.d.ts");
         assertThat(typescriptProps.getInterfacePropertyDelimiter()).isEqualTo(';');
         assertThat(typescriptProps.getJavaObjectMapType()).isEqualTo("any");
+
+        Props.Rust rustProps = props.getRust();
+        assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");
+        assertThat(rustProps.isAllowDeadcode()).isEqualTo(true);
+        assertThat(rustProps.isConvertToSnakeCase()).isEqualTo(false);
+        assertThat(rustProps.getDefaultTypeMacros()).containsExactly("Debug");
     }
 
     @Test

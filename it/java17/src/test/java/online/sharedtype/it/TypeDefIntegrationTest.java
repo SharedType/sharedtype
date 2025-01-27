@@ -1,5 +1,7 @@
 package online.sharedtype.it;
 
+import online.sharedtype.processor.domain.ArrayTypeInfo;
+import online.sharedtype.processor.domain.TypeInfo;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import online.sharedtype.processor.domain.ClassDef;
@@ -48,11 +50,14 @@ final class TypeDefIntegrationTest {
             softly.assertThat(component1type.qualifiedName()).isEqualTo("online.sharedtype.it.java8.DependencyClassB");
 
             softly.assertThat(classA.typeVariables()).isEmpty();
-            softly.assertThat(classA.supertypes()).hasSize(1);
-            ConcreteTypeInfo supertype1 = (ConcreteTypeInfo)classA.supertypes().get(0);
+            softly.assertThat(classA.directSupertypes()).hasSize(1);
+            ConcreteTypeInfo supertype1 = (ConcreteTypeInfo)classA.directSupertypes().get(0);
             softly.assertThat(supertype1.resolved()).isTrue();
             softly.assertThat(supertype1.qualifiedName()).isEqualTo("online.sharedtype.it.java8.SuperClassA");
             softly.assertThat(classA.resolved()).isTrue();
+
+            softly.assertThat(classA.isCyclicReferenced()).isTrue();
+            softly.assertThat(classA.isReferencedByAnnotated()).isTrue();
         });
     }
 
@@ -105,5 +110,23 @@ final class TypeDefIntegrationTest {
 
         EnumValueInfo constant3 = enumSize.components().get(2);
         assertThat(constant3.value()).isEqualTo(3);
+    }
+
+    @Test
+    void recursiveClass() {
+        ClassDef recursiveClass = (ClassDef) deserializeTypeDef("online.sharedtype.it.java8.RecursiveClass.ser");
+        assertThat(recursiveClass.simpleName()).isEqualTo("RecursiveClass");
+
+        assertThat(recursiveClass.components()).hasSize(2);
+        FieldComponentInfo component1 = recursiveClass.components().get(0);
+        assertThat(component1.name()).isEqualTo("directRef");
+        ConcreteTypeInfo field1TypeInfo = (ConcreteTypeInfo) component1.type();
+        assertThat(field1TypeInfo.typeDef()).isEqualTo(recursiveClass);
+
+        FieldComponentInfo component2 = recursiveClass.components().get(1);
+        assertThat(component2.name()).isEqualTo("arrayRef");
+        ArrayTypeInfo field2TypeInfo = (ArrayTypeInfo) component2.type();
+        ConcreteTypeInfo arrayElementTypeInfo = (ConcreteTypeInfo) field2TypeInfo.component();
+        assertThat(arrayElementTypeInfo.typeDef()).isEqualTo(recursiveClass);
     }
 }

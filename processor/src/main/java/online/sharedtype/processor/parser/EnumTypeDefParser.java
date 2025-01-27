@@ -7,14 +7,16 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.parser.type.TypeContext;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
-import online.sharedtype.support.exception.SharedTypeInternalError;
+import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -54,37 +56,47 @@ final class EnumTypeDefParser implements TypeDefParser {
             }
         }
 
-        return EnumDef.builder()
+        EnumDef enumDef = EnumDef.builder()
             .qualifiedName(config.getQualifiedName())
             .simpleName(config.getName())
-            .enumValueInfos(
-                enumValueMarker.marked() ? parseEnumConstants(typeElement, enumConstantElems, enumValueMarker) : useEnumConstantNames(enumConstantElems)
-            )
             .build();
+        enumDef.components().addAll(
+            enumValueMarker.marked() ? parseEnumConstants(typeElement, enumConstantElems, enumValueMarker, enumDef) : useEnumConstantNames(enumConstantElems)
+        );
+        ctx.getTypeStore().saveConfig(enumDef, config);
+        return enumDef;
     }
 
     private static List<EnumValueInfo> useEnumConstantNames(List<VariableElement> enumConstants) {
         List<EnumValueInfo> res = new ArrayList<>(enumConstants.size());
         for (VariableElement enumConstant : enumConstants) {
-            res.add(new EnumValueInfo(STRING_TYPE_INFO, enumConstant.getSimpleName().toString()));
+            String name = enumConstant.getSimpleName().toString();
+            res.add(new EnumValueInfo(name, STRING_TYPE_INFO, name));
         }
         return res;
     }
 
-    private List<EnumValueInfo> parseEnumConstants(TypeElement enumTypeElement, List<VariableElement> enumConstants, EnumValueMarker enumValueMarker) {
+    private List<EnumValueInfo> parseEnumConstants(TypeElement enumTypeElement,
+                                                   List<VariableElement> enumConstants,
+                                                   EnumValueMarker enumValueMarker,
+                                                   EnumDef enumDef) {
         List<EnumValueInfo> res = new ArrayList<>(enumConstants.size());
-        TypeInfo valueTypeInfo = typeInfoParser.parse(enumValueMarker.enumValueVariableElem.asType());
+        TypeInfo valueTypeInfo = typeInfoParser.parse(
+            enumValueMarker.enumValueVariableElem.asType(),
+            TypeContext.builder().typeDef(enumDef).dependingKind(DependingKind.ENUM_VALUE).build()
+        );
         int ctorArgIdx = enumValueMarker.matchAndGetConstructorArgIdx();
         if (ctorArgIdx < 0) {
             return Collections.emptyList();
         }
         for (VariableElement enumConstant : enumConstants) {
+            String name = enumConstant.getSimpleName().toString();
             Tree tree = ctx.getTrees().getTree(enumConstant);
             if (tree instanceof VariableTree) {
                 VariableTree variableTree = (VariableTree) tree;
                 Object value = resolveValue(enumTypeElement, variableTree, ctorArgIdx);
                 if (value != null) {
-                    res.add(new EnumValueInfo(valueTypeInfo, value));
+                    res.add(new EnumValueInfo(name, valueTypeInfo, value));
                 }
             } else if (tree == null) {
                 ctx.error("Literal value cannot be parsed from enum constant: %s of enum %s, because source tree from the element is null." +

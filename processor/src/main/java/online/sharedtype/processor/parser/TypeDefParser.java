@@ -22,6 +22,8 @@ public interface TypeDefParser {
      * Parse structural information.
      *
      * @return null if the typeElement is ignored or invalid.
+     *         A typeElement can be ignored via configuration.
+     *         An invalid type can be an unsupported type, e.g. a non-static inner class.
      */
     @Nullable
     TypeDef parse(TypeElement typeElement);

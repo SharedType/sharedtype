@@ -1,8 +1,13 @@
 package online.sharedtype.processor.parser;
 
+import online.sharedtype.processor.context.Config;
+import online.sharedtype.processor.context.TestUtils;
+import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TypeElementMock;
+import online.sharedtype.processor.parser.type.TypeContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import online.sharedtype.SharedType;
@@ -13,38 +18,59 @@ import javax.lang.model.type.TypeKind;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 final class EnumTypeDefParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
     private final EnumTypeDefParser parser = new EnumTypeDefParser(ctxMocks.getContext(), typeInfoParser);
 
+    private final ArgumentCaptor<Config> configCaptor = ArgumentCaptor.forClass(Config.class);
+
     private final TypeElementMock enumType = ctxMocks.typeElement("com.github.cuzfrog.EnumA")
         .withElementKind(ElementKind.ENUM);
+    private final TypeContext typeContext = TypeContext.builder()
+        .typeDef(EnumDef.builder().qualifiedName("com.github.cuzfrog.EnumA").build())
+        .dependingKind(DependingKind.ENUM_VALUE).build();
 
     private final ArgumentCaptor<String> msgCaptor = ArgumentCaptor.forClass(String.class);
 
     @Test
     void simpleEnum() {
-        enumType.withEnclosedElements(
+        var anno = TestUtils.defaultSharedTypeAnnotation();
+        enumType
+            .withAnnotation(SharedType.class, () -> anno)
+            .withEnclosedElements(
             ctxMocks.declaredTypeVariable("Value1", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element(),
             ctxMocks.declaredTypeVariable("Value2", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element()
         );
 
         EnumDef typeDef = (EnumDef)parser.parse(enumType.element());
-        assert typeDef != null;
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
         assertThat(typeDef.components()).satisfiesExactly(
-            c1 -> assertThat(c1.value()).isEqualTo("Value1"),
-            c2 -> assertThat(c2.value()).isEqualTo("Value2")
+            c1 -> {
+                assertThat(c1.value()).isEqualTo("Value1");
+                assertThat(c1.name()).isEqualTo("Value1");
+            },
+            c2 -> {
+                assertThat(c2.value()).isEqualTo("Value2");
+                assertThat(c2.name()).isEqualTo("Value2");
+            }
         );
+
+        verify(ctxMocks.getTypeStore()).saveConfig(eq(typeDef), configCaptor.capture());
+        var config = configCaptor.getValue();
+        assertThat(config.getQualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
+        assertThat(config.getAnno()).isSameAs(anno);
     }
 
     @Test
     void enumValueMarkedOnField() {
+        var field2 = ctxMocks.primitiveVariable("field2", TypeKind.CHAR).withAnnotation(SharedType.EnumValue.class);
         enumType.withEnclosedElements(
             ctxMocks.executable("EnumA").withElementKind(ElementKind.CONSTRUCTOR)
                 .withParameters(
@@ -73,16 +99,24 @@ final class EnumTypeDefParserTest {
                 )
                 .element(),
             ctxMocks.primitiveVariable("field1", TypeKind.INT).element(),
-            ctxMocks.primitiveVariable("field2", TypeKind.CHAR).withAnnotation(SharedType.EnumValue.class).element()
+            field2.element()
         );
+        when(typeInfoParser.parse(field2.type(), typeContext)).thenReturn(Constants.CHAR_TYPE_INFO);
 
         EnumDef typeDef = (EnumDef)parser.parse(enumType.element());
-        assert typeDef != null;
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
         assertThat(typeDef.components()).satisfiesExactly(
-            c1 -> assertThat(c1.value()).isEqualTo('a'),
-            c2 -> assertThat(c2.value()).isEqualTo('b')
+            c1 -> {
+                assertThat(c1.value()).isEqualTo('a');
+                assertThat(c1.name()).isEqualTo("Value1");
+                assertThat(c1.type()).isEqualTo(Constants.CHAR_TYPE_INFO);
+            },
+            c2 -> {
+                assertThat(c2.value()).isEqualTo('b');
+                assertThat(c2.name()).isEqualTo("Value2");
+                assertThat(c2.type()).isEqualTo(Constants.CHAR_TYPE_INFO);
+            }
         );
     }
 
@@ -120,7 +154,6 @@ final class EnumTypeDefParserTest {
         );
 
         var typeDef = (EnumDef)parser.parse(enumType.element());
-        assert typeDef != null;
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
         assertThat(typeDef.components()).satisfiesExactly(

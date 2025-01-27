@@ -1,6 +1,6 @@
-package online.sharedtype.support.exception;
+package online.sharedtype.processor.support.exception;
 
-import online.sharedtype.support.github.RepositoryInfo;
+import online.sharedtype.processor.support.github.RepositoryInfo;
 
 /**
  * Indicate an error.

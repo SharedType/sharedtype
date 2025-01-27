@@ -25,6 +25,8 @@ public final class Context {
     @Getter
     private final TypeStore typeStore = new TypeStore();
     @Getter
+    private final RenderFlags renderFlags = new RenderFlags();
+    @Getter
     private final ProcessingEnvironment processingEnv;
     @Getter
     private final Props props;
@@ -49,7 +51,7 @@ public final class Context {
     public void info(String message, Object... objects) {
         log(Diagnostic.Kind.NOTE, message, objects);
     }
-    public void warning(String message, Object... objects) {
+    public void warn(String message, Object... objects) {
         log(Diagnostic.Kind.WARNING, message, objects);
     }
     public void error(String message, Object... objects) {

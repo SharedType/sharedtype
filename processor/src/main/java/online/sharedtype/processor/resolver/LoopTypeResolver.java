@@ -12,8 +12,8 @@ import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.parser.TypeDefParser;
-import online.sharedtype.support.annotation.SideEffect;
-import online.sharedtype.support.exception.SharedTypeInternalError;
+import online.sharedtype.processor.support.annotation.SideEffect;
+import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayDeque;
@@ -60,7 +60,7 @@ final class LoopTypeResolver implements TypeResolver {
                         processingInfoStack.push(fieldComponentInfo.type());
                     }
                 }
-                for (TypeInfo supertype : classDef.supertypes()) {
+                for (TypeInfo supertype : classDef.directSupertypes()) {
                     if (!supertype.resolved()) {
                         processingInfoStack.push(supertype);
                     }
@@ -97,7 +97,7 @@ final class LoopTypeResolver implements TypeResolver {
                     TypeElement typeElement = ctx.getProcessingEnv().getElementUtils().getTypeElement(concreteTypeInfo.qualifiedName());
                     TypeDef parsed = typeDefParser.parse(typeElement);
                     if (parsed != null) {
-                        concreteTypeInfo.markShallowResolved();
+                        concreteTypeInfo.markShallowResolved(parsed);
                         processingDefStack.push(parsed);
                     }
                 }

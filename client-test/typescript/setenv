@@ -1,5 +1,5 @@
 #!/bin/bash
 
-export PATH=$NODE20_HOME/bin:./node_modules/.bin:$PATH
+export PATH=$NODE22_HOME/bin:./node_modules/.bin:$PATH
 echo Node:"$(node -v)"
 
