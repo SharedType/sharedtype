@@ -39,7 +39,6 @@ import java.lang.annotation.Target;
  *     Type hierarchy will be flattened that a subtype's inherited properties will be included in its own declared properties,
  *     while, by default, any supertypes will not be emitted again.</li>
  * </ul>
- * </p>
  *
  * <p>
  * <b>Inner classes:</b><br>
@@ -48,11 +47,10 @@ import java.lang.annotation.Target;
  * </p>
  *
  * <p>
- * <b>Cyclic Reference:</b><br>
+ * <b>Cyclic Reference:</b>
  * <ul>
  *     <li>Rust: Cyclic references will be wrapped in {@code Option<Box<T>>}.</li>
  * </ul>
- * </p>
  *
  * <p>
  * <b>Constants:</b><br>
@@ -72,9 +70,8 @@ import java.lang.annotation.Target;
  *     <li>Rust: {@code Vec<T>}</li>
  * </ul>
  *
- * Maps are mapped to:
  * <p>
- * <b>Maps:</b><br>
+ * <b>Maps:</b>
  * (Not supported yet.)
  * <ul>
  *     <li>Typescript: {@code [key: string]: T} where {@code T} can be a reified type.</li>

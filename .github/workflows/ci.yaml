@@ -36,7 +36,9 @@ jobs:
           path: ~/.m2/repository
           key: build_maven
       - name: Build
-        run: ./mvnw install -e
+        run: ./mvnw install -e --ntp -B
+      - name: Javadoc
+        run: ./mvnw -P release javadoc:javadoc --ntp -B
       - name: Upload generated sources
         uses: actions/upload-artifact@v4
         with:
@@ -80,7 +82,7 @@ jobs:
           path: ~/.m2/repository
           key: build_maven
       - name: Test
-        run: ./mvnw verify -pl it/java8 -e
+        run: ./mvnw verify -pl it/java8 -e --ntp -B
 
   client_test:
     needs: [build_and_test]

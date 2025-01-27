@@ -1,6 +1,11 @@
 #!/bin/bash
 #set -e
 
+# To test locally, need to prepare GPG keys
+# gpg --gen-key
+# See also: https://maven.apache.org/plugins/maven-gpg-plugin/
+# See also: https://stackoverflow.com/questions/3174537/how-to-transfer-pgp-private-key-to-another-computer
+
 if [ -z "$MAVEN_GPG_PASSPHRASE" ];then
   echo "No MAVEN_GPG_PASSPHRASE provided, exit 1"
   exit 1
@@ -22,8 +27,8 @@ increment_version() {
 snapshotVersion=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
 version="$(printf '%s' "$snapshotVersion" | sed -e "s/-SNAPSHOT//g")"
 
-./mvnw versions:set -DgenerateBackupPoms=false -DnewVersion="$version"
-./mvnw deploy -DskipTests -Prelease # to debug release can add -DskipPublishing=true to prevent actual upload
+./mvnw versions:set -DgenerateBackupPoms=false -DnewVersion="$version" --ntp -B
+./mvnw deploy -DskipTests -Prelease --ntp -B # to debug release can add -DskipPublishing=true to prevent actual upload
 NEW_VERSION="$(increment_version "$version" 1)-SNAPSHOT"
-./mvnw versions:set -DgenerateBackupPoms=false -DnewVersion="$NEW_VERSION"
+./mvnw versions:set -DgenerateBackupPoms=false -DnewVersion="$NEW_VERSION" --ntp -B
 printf '%s' "$NEW_VERSION" > NEW_VERSION.cache

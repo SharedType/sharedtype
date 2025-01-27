@@ -75,3 +75,11 @@ Do not use compile time heavy annotation like `lombok.val`.
 ## Release
 Release is via Sonatype [Central Portal](https://central.sonatype.org/register/central-portal/). Snapshot release is not supported.
 Create a GitHub release, GitHub action will automatically deploy to Sonatype. Version will be automatically bumped by the action.
+
+To Test Javadoc locally:
+```bash
+./mvnw -P release javadoc:javadoc
+```
+Then open `annotation/target/reports/apidocs/index.html`.
+
+To test deployment, see [release](../misc/release.sh).
