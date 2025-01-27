@@ -2,7 +2,7 @@
 version=$1
 
 if [ -z "$version" ];then
-  version="17"
+  version="21"
   echo "No version provided, use default jdk$version"
 fi
 
