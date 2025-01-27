@@ -2,6 +2,7 @@ package online.sharedtype.processor.writer.converter;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
@@ -117,6 +118,7 @@ final class RustStructConverter extends AbstractRustConverter {
         }
     }
 
+    @ToString
     @SuppressWarnings("unused")
     @EqualsAndHashCode(of = "name")
     @RequiredArgsConstructor
