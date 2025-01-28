@@ -3,9 +3,6 @@ on:
   push:
     tags:
       - 'release*'
-  pull_request:
-    branches:
-      - master
 
 permissions:
   contents: write
@@ -40,15 +37,9 @@ jobs:
         run: |
           . ./misc/release.sh
           echo "new_version=$(cat NEW_VERSION.cache)" >> "$GITHUB_OUTPUT"
-#      - uses: actions/create-github-app-token@v1
-#        id: generate-token
-#        with:
-#          app-id: ${{ secrets.PR_APP_ID }}
-#          private-key: ${{ secrets.PR_APP_PRIVATE_KEY }}
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
-#          token: ${{ steps.generate-token.outputs.token }}
           branch: create-pull-request/bump_version
           base: master
           delete-branch: true
