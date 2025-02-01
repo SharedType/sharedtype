@@ -35,6 +35,8 @@ public final class Context {
     @Getter
     private final Trees trees;
     private final Set<TypeMirror> arraylikeTypes;
+    private final Set<TypeMirror> maplikeTypes;
+    private final TypeMirror enumType;
 
     public Context(ProcessingEnvironment processingEnv, Props props) {
         this.processingEnv = processingEnv;
@@ -45,6 +47,10 @@ public final class Context {
         arraylikeTypes = props.getArraylikeTypeQualifiedNames().stream()
                 .map(qualifiedName -> types.erasure(elements.getTypeElement(qualifiedName).asType()))
                 .collect(Collectors.toSet());
+        maplikeTypes = props.getMaplikeTypeQualifiedNames().stream()
+                .map(qualifiedName -> types.erasure(elements.getTypeElement(qualifiedName).asType()))
+                .collect(Collectors.toSet());
+        enumType = elements.getTypeElement(Enum.class.getName()).asType();
     }
 
     // TODO: optimize by remove varargs
@@ -65,6 +71,19 @@ public final class Context {
             }
         }
         return false;
+    }
+
+    public boolean isMaplike(TypeMirror typeMirror) {
+        for (TypeMirror maplikeType : maplikeTypes) {
+            if (types.isSubtype(types.erasure(typeMirror), maplikeType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isEnumType(TypeMirror typeMirror) {
+        return types.isSubtype(types.erasure(typeMirror), enumType);
     }
 
     public boolean isTypeIgnored(TypeElement typeElement) {

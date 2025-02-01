@@ -4,6 +4,7 @@ import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.TypeStore;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
@@ -97,6 +98,8 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)
                 .typeArgs(parsedTypeArgs)
+                .enumType(ctx.isEnumType(currentType))
+                .mapType(ctx.isMaplike(currentType))
                 .resolved(resolved)
                 .build();
             typeStore.saveTypeInfo(qualifiedName, parsedTypeArgs, typeInfo);
@@ -112,6 +115,14 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             arrayStack--;
         }
         return typeInfo;
+    }
+
+    private static boolean allowedMapKeyType(TypeInfo keyType) {
+        if (keyType instanceof ConcreteTypeInfo) {
+            ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo)keyType;
+            return Constants.ALLOWED_PREDEFINED_MAP_KEY_TYPES.contains(concreteTypeInfo) || concreteTypeInfo.isEnumType();
+        }
+        return false;
     }
 
     private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable, TypeContext typeContext) {

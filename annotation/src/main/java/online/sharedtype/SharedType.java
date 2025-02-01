@@ -72,7 +72,7 @@ import java.lang.annotation.Target;
  *
  * <p>
  * <b>Maps:</b>
- * (Not supported yet.)
+ * Key must be String or numeric types. Enum is support given that its value is a literal.
  * <ul>
  *     <li>Typescript: {@code [key: string]: T} where {@code T} can be a reified type.</li>
  * </ul>
