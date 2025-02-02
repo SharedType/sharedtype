@@ -77,7 +77,7 @@ public final class ClassDef extends AbstractTypeDef {
     public ClassDef reify(List<? extends TypeInfo> typeArgs) {
         int l;
         if ((l = typeArgs.size()) != typeVariables.size()) {
-            throw new IllegalArgumentException(String.format("Cannot reify %s against typeArgs: %s", this, typeArgs));
+            throw new IllegalArgumentException(String.format("Cannot reify %s against typeArgs: %s, type parameter sizes are different.", this, typeArgs));
         }
         if (l == 0) {
             return this;
@@ -121,7 +121,7 @@ public final class ClassDef extends AbstractTypeDef {
     @Override
     public String toString() {
         List<String> rows = new ArrayList<>(components.size()+2);
-        rows.add(String.format("%s%s%s {", simpleName, typeVariablesToString(), supertypesToString()));
+        rows.add(String.format("%s%s%s {", qualifiedName, typeVariablesToString(), supertypesToString()));
         rows.addAll(components.stream().map(f -> String.format("  %s", f)).collect(Collectors.toList()));
         rows.add("}");
         return String.join(System.lineSeparator(), rows);

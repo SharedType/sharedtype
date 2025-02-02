@@ -93,8 +93,8 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
         TypeInfo keyType = baseMapType.typeArgs().get(0);
         if (!(keyType instanceof ConcreteTypeInfo) || (!Constants.STRING_AND_NUMBER_TYPES.contains(keyType) && !keyType.isEnumType())) {
             throw new SharedTypeException(String.format(
-                "Key type of %s must be string or numbers or enum (with EnumValue being string or numbers), but here is %s. " +
-                "When trying to build expression for concrete type: %s. Context type: %s.",
+                "Key type of %s must be string or numbers or enum (with EnumValue being string or numbers), but is %s, " +
+                "when trying to build expression for concrete type: %s, context type: %s.",
                 baseMapType.qualifiedName(), keyType, concreteTypeInfo, contextTypeDef));
         }
         return (ConcreteTypeInfo) keyType;
@@ -115,7 +115,7 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
         }
         if (baseMapType.typeArgs().size() != 2) {
             throw new SharedTypeException(String.format("Base Map type must have 2 type arguments, with first as the key type and the second as the value type," +
-                "but here is %s. When trying to build expression for concrete type: %s", baseMapType, concreteTypeInfo));
+                "but is %s, when trying to build expression for concrete type: %s", baseMapType, concreteTypeInfo));
         }
         return baseMapType;
     }
