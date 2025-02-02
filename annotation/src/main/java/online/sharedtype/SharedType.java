@@ -74,7 +74,7 @@ import java.lang.annotation.Target;
  * <b>Maps:</b>
  * Key must be String or numeric types. Enum is support given that its value is a literal.
  * <ul>
- *     <li>Typescript: {@code [key: string]: T} where {@code T} can be a reified type.</li>
+ *     <li>Typescript: e.g. {@code Record<string, T>} where {@code T} can be a reified type. If the key is enum, it will be a {@code Partial<Record<?, ?>>}</li>
  * </ul>
  *
  * <p><a href="https://github.com/cuzfrog/SharedType">SharedType Website</a></p>

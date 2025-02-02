@@ -11,15 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter {
+    private static final ArraySpec ARRAY_SPEC = new ArraySpec("Vec<", ">");
     private final Map<TypeInfo, String> typeNameMappings = new HashMap<>(20);
     private final RenderFlags renderFlags;
 
     RustTypeExpressionConverter(Context ctx) {
-        super(
-            ctx,
-            new ArraySpec("Vec<", ">"),
-            null
-        );
+        super(ctx);
         this.renderFlags = ctx.getRenderFlags();
         typeNameMappings.put(Constants.BOOLEAN_TYPE_INFO, "bool");
         typeNameMappings.put(Constants.BYTE_TYPE_INFO, "i8");
@@ -49,6 +46,16 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
         if (typeInfo.equals(Constants.OBJECT_TYPE_INFO)) {
             renderFlags.setUseRustAny(true);
         }
+    }
+
+    @Override
+    ArraySpec arraySpec() {
+        return ARRAY_SPEC;
+    }
+
+    @Override
+    MapSpec mapSpec(ConcreteTypeInfo typeInfo) {
+        return null;
     }
 
     @Override

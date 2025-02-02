@@ -22,8 +22,6 @@ import static online.sharedtype.processor.support.Preconditions.requireNonNull;
 @RequiredArgsConstructor
 abstract class AbstractTypeExpressionConverter implements TypeExpressionConverter {
     final Context ctx;
-    private final ArraySpec arraySpec;
-    private final MapSpec mapSpec;
 
     @Override
     public final String toTypeExpr(TypeInfo typeInfo, TypeDef contextTypeDef) {
@@ -34,6 +32,8 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
 
     void beforeVisitTypeInfo(TypeInfo typeInfo) {
     }
+    abstract ArraySpec arraySpec();
+    abstract MapSpec mapSpec(ConcreteTypeInfo typeInfo);
 
     @Nullable
     abstract String toTypeExpression(ConcreteTypeInfo typeInfo, @Nullable String defaultExpr);
@@ -61,6 +61,7 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
             exprBuilder.append(typeVariableInfo.name());
         } else if (typeInfo instanceof ArrayTypeInfo) {
             ArrayTypeInfo arrayTypeInfo = (ArrayTypeInfo) typeInfo;
+            ArraySpec arraySpec = arraySpec();
             exprBuilder.append(arraySpec.prefix);
             buildTypeExprRecursively(arrayTypeInfo.component(), exprBuilder, contextTypeDef);
             exprBuilder.append(arraySpec.suffix);
@@ -68,6 +69,7 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
     }
 
     private void buildMapType(ConcreteTypeInfo concreteTypeInfo, @SideEffect StringBuilder exprBuilder, TypeDef contextTypeDef) {
+        MapSpec mapSpec = mapSpec(concreteTypeInfo);
         if (mapSpec == null) {
             return;
         }

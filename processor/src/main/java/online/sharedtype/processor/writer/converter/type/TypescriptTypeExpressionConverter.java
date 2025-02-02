@@ -10,14 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConverter {
+    private static final ArraySpec ARRAY_SPEC = new ArraySpec("", "[]");
+    private static final MapSpec DEFAULT_MAP_SPEC = new MapSpec("Record<", ", ", ">");
+    private static final MapSpec ENUM_KEY_MAP_SPEC = new MapSpec("Partial<Record<", ", ", ">>");
     final Map<TypeInfo, String> typeNameMappings = new HashMap<>(20);
 
     TypescriptTypeExpressionConverter(Context ctx) {
-        super(
-            ctx,
-            new ArraySpec("", "[]"),
-            new MapSpec("Record<", ", ", ">")
-        );
+        super(ctx);
         typeNameMappings.put(Constants.BOOLEAN_TYPE_INFO, "boolean");
         typeNameMappings.put(Constants.BYTE_TYPE_INFO, "number");
         typeNameMappings.put(Constants.CHAR_TYPE_INFO, "string");
@@ -39,6 +38,19 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
         typeNameMappings.put(Constants.STRING_TYPE_INFO, "string");
         typeNameMappings.put(Constants.VOID_TYPE_INFO, "never");
         typeNameMappings.put(Constants.OBJECT_TYPE_INFO, ctx.getProps().getTypescript().getJavaObjectMapType());
+    }
+
+    @Override
+    ArraySpec arraySpec() {
+        return ARRAY_SPEC;
+    }
+
+    @Override
+    MapSpec mapSpec(ConcreteTypeInfo typeInfo) {
+        if (typeInfo.isEnumType()) {
+            return ENUM_KEY_MAP_SPEC;
+        }
+        return DEFAULT_MAP_SPEC;
     }
 
     @Override
