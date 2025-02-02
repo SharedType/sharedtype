@@ -26,6 +26,14 @@ final class RustStructConverterIntegrationTest {
     }
 
     @Test
+    void skipMapClassDef() {
+        ClassDef classDef = ClassDef.builder()
+            .build();
+        classDef.linkTypeInfo(ConcreteTypeInfo.builder().mapType(true).build());
+        assertThat(converter.shouldAccept(classDef)).isFalse();
+    }
+
+    @Test
     void shouldAcceptClassDefAnnotated() {
         assertThat(converter.shouldAccept(ClassDef.builder().build())).isFalse();
         assertThat(converter.shouldAccept(ClassDef.builder().annotated(true).build())).isTrue();

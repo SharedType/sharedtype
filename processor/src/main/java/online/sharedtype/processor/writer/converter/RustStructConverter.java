@@ -35,6 +35,9 @@ final class RustStructConverter extends AbstractRustConverter {
             return false;
         }
         ClassDef classDef = (ClassDef) typeDef;
+        if (classDef.isMapType()) {
+            return false;
+        }
         return classDef.isAnnotated() || classDef.isReferencedByAnnotated();
     }
 
