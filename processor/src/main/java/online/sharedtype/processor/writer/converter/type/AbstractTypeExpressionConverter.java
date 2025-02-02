@@ -69,13 +69,12 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
     }
 
     private void buildMapType(ConcreteTypeInfo concreteTypeInfo, @SideEffect StringBuilder exprBuilder, TypeDef contextTypeDef) {
-        MapSpec mapSpec = mapSpec(concreteTypeInfo);
+        ConcreteTypeInfo baseMapType = findBaseMapType(concreteTypeInfo);
+        ConcreteTypeInfo keyType = getKeyType(baseMapType, concreteTypeInfo, contextTypeDef);
+        MapSpec mapSpec = mapSpec(keyType);
         if (mapSpec == null) {
             return;
         }
-
-        ConcreteTypeInfo baseMapType = findBaseMapType(concreteTypeInfo);
-        ConcreteTypeInfo keyType = getKeyType(baseMapType, concreteTypeInfo, contextTypeDef);
         String keyTypeExpr = toTypeExpression(keyType, keyType.simpleName());
         if (keyTypeExpr == null) {
             throw new SharedTypeInternalError(String.format(

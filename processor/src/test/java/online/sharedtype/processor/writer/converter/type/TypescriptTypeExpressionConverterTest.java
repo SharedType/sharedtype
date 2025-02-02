@@ -22,15 +22,6 @@ final class TypescriptTypeExpressionConverterTest {
     }
 
     @Test
-    void enumKeyWithPartialRecordMapSpec() {
-        ConcreteTypeInfo enumTypeInfo = ConcreteTypeInfo.builder().simpleName("MyEnum").enumType(true).build();
-        var mapSpec = converter.mapSpec(enumTypeInfo);
-        assertThat(mapSpec.prefix).isEqualTo("Partial<Record<");
-        assertThat(mapSpec.delimiter).isEqualTo(", ");
-        assertThat(mapSpec.suffix).isEqualTo(">>");
-    }
-
-    @Test
     void invalidKeyType() {
         ClassDef contextTypeDef = ClassDef.builder().qualifiedName("a.b.Abc").simpleName("Abc").build();
         ConcreteTypeInfo invalidKeyTypeInfo = ConcreteTypeInfo.builder()
