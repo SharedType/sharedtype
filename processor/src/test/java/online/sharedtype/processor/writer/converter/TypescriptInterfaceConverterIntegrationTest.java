@@ -108,6 +108,6 @@ final class TypescriptInterfaceConverterIntegrationTest {
 
         TypescriptInterfaceConverter.PropertyExpr prop5 = model.properties.get(4);
         assertThat(prop5.name).isEqualTo("mapField");
-        assertThat(prop5.type).isEqualTo("{ [key: string]: number }");
+        assertThat(prop5.type).isEqualTo("Record<string, number>");
     }
 }

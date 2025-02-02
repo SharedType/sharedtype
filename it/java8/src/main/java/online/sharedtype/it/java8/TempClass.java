@@ -7,5 +7,5 @@ import java.util.concurrent.ConcurrentMap;
 
 @SharedType
 public class TempClass {
-    private ConcurrentMap<Long, String> mapField;
+    private ConcurrentMap<EnumSize, String> mapField;
 }

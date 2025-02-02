@@ -53,11 +53,10 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
 
     @Override
     @Nullable
-    String toTypeExpression(TypeInfo typeInfo, @Nullable String fallback) {
-        String expr = typeNameMappings.getOrDefault(typeInfo, fallback);
-        if (typeInfo instanceof ConcreteTypeInfo && expr != null) {
-            ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
-            if (concreteTypeInfo.typeDef() != null && concreteTypeInfo.typeDef().isCyclicReferenced()) {
+    String toTypeExpression(ConcreteTypeInfo typeInfo, @Nullable String defaultExpr) {
+        String expr = typeNameMappings.getOrDefault(typeInfo, defaultExpr);
+        if (typeInfo != null && expr != null) {
+            if (typeInfo.typeDef() != null && typeInfo.typeDef().isCyclicReferenced()) {
                 expr = String.format("Box<%s>", expr);
             }
         }

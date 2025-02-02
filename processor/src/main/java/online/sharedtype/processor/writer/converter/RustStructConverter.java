@@ -43,7 +43,7 @@ final class RustStructConverter extends AbstractRustConverter {
         ClassDef classDef = (ClassDef) typeDef;
         StructExpr value = new StructExpr(
             classDef.simpleName(),
-            classDef.typeVariables().stream().map(typeExpressionConverter::toTypeExpr).collect(Collectors.toList()),
+            classDef.typeVariables().stream().map(typeInfo -> typeExpressionConverter.toTypeExpr(typeInfo, typeDef)).collect(Collectors.toList()),
             gatherProperties(classDef),
             macroTraits(classDef)
         );
@@ -54,7 +54,7 @@ final class RustStructConverter extends AbstractRustConverter {
         List<PropertyExpr> properties = new ArrayList<>(); // TODO: init cap
         Set<String> propertyNames = new HashSet<>();
         for (FieldComponentInfo component : classDef.components()) {
-            properties.add(toPropertyExpr(component));
+            properties.add(toPropertyExpr(component, classDef));
             propertyNames.add(component.name());
         }
 
@@ -68,7 +68,7 @@ final class RustStructConverter extends AbstractRustConverter {
                     superTypeDef = superTypeDef.reify(superConcreteTypeInfo.typeArgs());
                     for (FieldComponentInfo component : superTypeDef.components()) {
                         if (!propertyNames.contains(component.name())) {
-                            properties.add(toPropertyExpr(component));
+                            properties.add(toPropertyExpr(component, superTypeDef));
                             propertyNames.add(component.name());
                         }
                     }
@@ -79,10 +79,10 @@ final class RustStructConverter extends AbstractRustConverter {
         return properties;
     }
 
-    private PropertyExpr toPropertyExpr(FieldComponentInfo field) {
+    private PropertyExpr toPropertyExpr(FieldComponentInfo field, TypeDef contextTypeDef) {
         return new PropertyExpr(
             ctx.getProps().getRust().isConvertToSnakeCase() ? LiteralUtils.toSnakeCase(field.name()) : field.name(),
-            typeExpressionConverter.toTypeExpr(field.type()),
+            typeExpressionConverter.toTypeExpr(field.type(), contextTypeDef),
             isOptionalField(field)
         );
     }

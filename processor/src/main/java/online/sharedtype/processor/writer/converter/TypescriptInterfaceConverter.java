@@ -5,7 +5,6 @@ import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
@@ -36,17 +35,17 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
         ClassDef classDef = (ClassDef) typeDef;
         InterfaceExpr value = new InterfaceExpr(
             classDef.simpleName(),
-            classDef.typeVariables().stream().map(typeExpressionConverter::toTypeExpr).collect(Collectors.toList()),
-            classDef.directSupertypes().stream().map(typeExpressionConverter::toTypeExpr).collect(Collectors.toList()),
-            classDef.components().stream().map(this::toPropertyExpr).collect(Collectors.toList())
+            classDef.typeVariables().stream().map(typeInfo -> typeExpressionConverter.toTypeExpr(typeInfo, typeDef)).collect(Collectors.toList()),
+            classDef.directSupertypes().stream().map(typeInfo1 -> typeExpressionConverter.toTypeExpr(typeInfo1, typeDef)).collect(Collectors.toList()),
+            classDef.components().stream().map(field -> toPropertyExpr(field, typeDef)).collect(Collectors.toList())
         );
         return Tuple.of(Template.TEMPLATE_TYPESCRIPT_INTERFACE, value);
     }
 
-    private PropertyExpr toPropertyExpr(FieldComponentInfo field) {
+    private PropertyExpr toPropertyExpr(FieldComponentInfo field, TypeDef contextTypeDef) {
         return new PropertyExpr(
             field.name(),
-            typeExpressionConverter.toTypeExpr(field.type()),
+            typeExpressionConverter.toTypeExpr(field.type(), contextTypeDef),
             interfacePropertyDelimiter,
             field.optional(),
             false,

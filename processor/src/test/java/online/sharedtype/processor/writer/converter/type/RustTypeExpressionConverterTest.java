@@ -19,15 +19,17 @@ final class RustTypeExpressionConverterTest {
     private final ContextMocks contextMocks = new ContextMocks();
     private final RustTypeExpressionConverter converter = new RustTypeExpressionConverter(contextMocks.getContext());
 
+    private final ClassDef contextTypeDef = ClassDef.builder().simpleName("Abc").build();
+
     @Test
     void convertArrayType() {
-        String expr = converter.toTypeExpr(new ArrayTypeInfo(Constants.INT_TYPE_INFO));
+        String expr = converter.toTypeExpr(new ArrayTypeInfo(Constants.INT_TYPE_INFO), contextTypeDef);
         assertThat(expr).isEqualTo("Vec<i32>");
     }
 
     @Test
     void convertObjectType() {
-        assertThat(converter.toTypeExpr(Constants.OBJECT_TYPE_INFO)).isEqualTo("Box<dyn Any>");
+        assertThat(converter.toTypeExpr(Constants.OBJECT_TYPE_INFO, contextTypeDef)).isEqualTo("Box<dyn Any>");
     }
 
     @Test

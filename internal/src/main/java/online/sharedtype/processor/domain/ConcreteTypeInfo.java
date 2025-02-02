@@ -34,6 +34,9 @@ public final class ConcreteTypeInfo implements TypeInfo {
     /** If this type is map-like. */
     @Getter
     private final boolean mapType;
+    /** If this type is defined in global config as base Map type */
+    @Getter
+    private final boolean baseMapType;
 
     /**
      * Qualified names of types from where this typeInfo is strongly referenced, i.e. as a component type.

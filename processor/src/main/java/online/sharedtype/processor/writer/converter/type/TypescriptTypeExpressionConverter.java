@@ -1,6 +1,7 @@
 package online.sharedtype.processor.writer.converter.type;
 
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.TypeInfo;
 
@@ -9,13 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConverter {
-    private final Map<TypeInfo, String> typeNameMappings = new HashMap<>(20);
+    final Map<TypeInfo, String> typeNameMappings = new HashMap<>(20);
 
     TypescriptTypeExpressionConverter(Context ctx) {
         super(
             ctx,
             new ArraySpec("", "[]"),
-            new MapSpec("{ [key: ", "]", ": ", "", " }")
+            new MapSpec("Record<", ", ", ">")
         );
         typeNameMappings.put(Constants.BOOLEAN_TYPE_INFO, "boolean");
         typeNameMappings.put(Constants.BYTE_TYPE_INFO, "number");
@@ -42,7 +43,7 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
 
     @Override
     @Nullable
-    String toTypeExpression(TypeInfo typeInfo, String fallback) {
-        return typeNameMappings.getOrDefault(typeInfo, fallback);
+    String toTypeExpression(ConcreteTypeInfo typeInfo, String defaultExpr) {
+        return typeNameMappings.getOrDefault(typeInfo, defaultExpr);
     }
 }

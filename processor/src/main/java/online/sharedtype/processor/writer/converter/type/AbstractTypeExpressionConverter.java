@@ -6,11 +6,12 @@ import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.EnumDef;
+import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.support.annotation.SideEffect;
 import online.sharedtype.processor.support.exception.SharedTypeException;
+import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.annotation.Nullable;
 import java.util.ArrayDeque;
@@ -25,9 +26,9 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
     private final MapSpec mapSpec;
 
     @Override
-    public final String toTypeExpr(TypeInfo typeInfo) {
+    public final String toTypeExpr(TypeInfo typeInfo, TypeDef contextTypeDef) {
         StringBuilder exprBuilder = new StringBuilder(); // TODO: a better init size
-        buildTypeExprRecursively(typeInfo, exprBuilder);
+        buildTypeExprRecursively(typeInfo, exprBuilder, contextTypeDef);
         return exprBuilder.toString();
     }
 
@@ -35,20 +36,20 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
     }
 
     @Nullable
-    abstract String toTypeExpression(TypeInfo typeInfo, @Nullable String fallback);
+    abstract String toTypeExpression(ConcreteTypeInfo typeInfo, @Nullable String defaultExpr);
 
-    private void buildTypeExprRecursively(TypeInfo typeInfo, @SideEffect StringBuilder exprBuilder) {
+    private void buildTypeExprRecursively(TypeInfo typeInfo, @SideEffect StringBuilder exprBuilder, TypeDef contextTypeDef) {
         beforeVisitTypeInfo(typeInfo);
         if (typeInfo instanceof ConcreteTypeInfo) {
             ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
             if (concreteTypeInfo.isMapType()) {
-                buildMapType(concreteTypeInfo, exprBuilder);
+                buildMapType(concreteTypeInfo, exprBuilder, contextTypeDef);
             } else {
                 exprBuilder.append(toTypeExpression(concreteTypeInfo, concreteTypeInfo.simpleName()));
                 if (!concreteTypeInfo.typeArgs().isEmpty()) {
                     exprBuilder.append("<");
                     for (TypeInfo typeArg : concreteTypeInfo.typeArgs()) {
-                        buildTypeExprRecursively(typeArg, exprBuilder);
+                        buildTypeExprRecursively(typeArg, exprBuilder, contextTypeDef);
                         exprBuilder.append(", ");
                     }
                     exprBuilder.setLength(exprBuilder.length() - 2);
@@ -61,34 +62,40 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
         } else if (typeInfo instanceof ArrayTypeInfo) {
             ArrayTypeInfo arrayTypeInfo = (ArrayTypeInfo) typeInfo;
             exprBuilder.append(arraySpec.prefix);
-            buildTypeExprRecursively(arrayTypeInfo.component(), exprBuilder);
+            buildTypeExprRecursively(arrayTypeInfo.component(), exprBuilder, contextTypeDef);
             exprBuilder.append(arraySpec.suffix);
         }
     }
 
-    private void buildMapType(ConcreteTypeInfo concreteTypeInfo, @SideEffect StringBuilder exprBuilder) {
+    private void buildMapType(ConcreteTypeInfo concreteTypeInfo, @SideEffect StringBuilder exprBuilder, TypeDef contextTypeDef) {
         if (mapSpec == null) {
             return;
         }
 
         ConcreteTypeInfo baseMapType = findBaseMapType(concreteTypeInfo);
-        TypeInfo keyType = baseMapType.typeArgs().get(0);
-        if (keyType.isEnumType()) {
-            EnumDef enumDef = (EnumDef) requireNonNull(((ConcreteTypeInfo)keyType).typeDef(),
-                "Key type of %s is an enum type, which must have a type definition. When trying to build expression for concrete type: %s",
-                baseMapType.qualifiedName(), concreteTypeInfo);
-            keyType = enumDef.components().isEmpty() ? Constants.STRING_TYPE_INFO : enumDef.components().get(0).type();
-        }
-        String keyTypeExpr = toTypeExpression(keyType, null);
+        ConcreteTypeInfo keyType = getKeyType(baseMapType, concreteTypeInfo, contextTypeDef);
+        String keyTypeExpr = toTypeExpression(keyType, keyType.simpleName());
         if (keyTypeExpr == null) {
-            throw new SharedTypeException(String.format("Key type of %s must be string or numbers or enum, but here is %s. " +
-                "When trying to build expression for concrete type: %s", baseMapType.qualifiedName(), keyType, concreteTypeInfo));
+            throw new SharedTypeInternalError(String.format(
+                "Valid keyType should not be null, probably because type mapping is not provided, keyType: %s, baseMapType: %s" +
+                "When trying to build expression for concrete type: %s. Context type: %s.", keyType, baseMapType, concreteTypeInfo, contextTypeDef));
         }
-        exprBuilder.append(mapSpec.keyPrefix);
+        exprBuilder.append(mapSpec.prefix);
         exprBuilder.append(keyTypeExpr);
-        exprBuilder.append(mapSpec.keySuffix).append(mapSpec.delimiter).append(mapSpec.valuePrefix);
-        buildTypeExprRecursively(baseMapType.typeArgs().get(1), exprBuilder);
-        exprBuilder.append(mapSpec.valueSuffix);
+        exprBuilder.append(mapSpec.delimiter);
+        buildTypeExprRecursively(baseMapType.typeArgs().get(1), exprBuilder, contextTypeDef);
+        exprBuilder.append(mapSpec.suffix);
+    }
+
+    private static ConcreteTypeInfo getKeyType(ConcreteTypeInfo baseMapType, ConcreteTypeInfo concreteTypeInfo, TypeDef contextTypeDef) {
+        TypeInfo keyType = baseMapType.typeArgs().get(0);
+        if (!(keyType instanceof ConcreteTypeInfo) || (!Constants.STRING_AND_NUMBER_TYPES.contains(keyType) && !keyType.isEnumType())) {
+            throw new SharedTypeException(String.format(
+                "Key type of %s must be string or numbers or enum (with EnumValue being string or numbers), but here is %s. " +
+                "When trying to build expression for concrete type: %s. Context type: %s.",
+                baseMapType.qualifiedName(), keyType, concreteTypeInfo, contextTypeDef));
+        }
+        return (ConcreteTypeInfo) keyType;
     }
 
     private ConcreteTypeInfo findBaseMapType(ConcreteTypeInfo concreteTypeInfo) {
