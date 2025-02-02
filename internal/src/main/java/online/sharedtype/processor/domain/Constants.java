@@ -68,7 +68,7 @@ public final class Constants {
         PREDEFINED_OBJECT_TYPES.put("java.util.Optional", OPTIONAL_TYPE_INFO);
     }
 
-    public static final Set<ConcreteTypeInfo> ALLOWED_PREDEFINED_MAP_KEY_TYPES = new HashSet<>(14);
+    public static final Set<TypeInfo> ALLOWED_PREDEFINED_MAP_KEY_TYPES = new HashSet<>(14);
     static {
         ALLOWED_PREDEFINED_MAP_KEY_TYPES.add(STRING_TYPE_INFO);
         ALLOWED_PREDEFINED_MAP_KEY_TYPES.add(BYTE_TYPE_INFO);

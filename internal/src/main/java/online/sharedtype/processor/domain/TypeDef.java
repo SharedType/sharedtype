@@ -18,6 +18,8 @@ public interface TypeDef extends Serializable {
 
     List<? extends ComponentInfo> components();
 
+    List<TypeInfo> directSupertypes();
+
     /**
      * @return true if all required types are resolved.
      */

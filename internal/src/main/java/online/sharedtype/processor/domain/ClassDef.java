@@ -53,6 +53,7 @@ public final class ClassDef extends AbstractTypeDef {
         return typeVariables;
     }
 
+    @Override
     public List<TypeInfo> directSupertypes() {
         return supertypes;
     }
@@ -60,6 +61,11 @@ public final class ClassDef extends AbstractTypeDef {
     public Set<ConcreteTypeInfo> typeInfoSet() {
         return typeInfoSet;
     }
+
+    public boolean isMapType() {
+        return typeInfoSet.stream().anyMatch(ConcreteTypeInfo::isMapType);
+    }
+
     /**
      * Register a counterpart typeInfo.
      * @see #typeInfoSet

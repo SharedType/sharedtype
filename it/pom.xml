@@ -12,11 +12,6 @@
     <name>SharedType Integration Test Parent</name>
     <packaging>pom</packaging>
 
-    <modules>
-        <module>java8</module>
-        <module>java17</module>
-    </modules>
-
     <properties>
         <sharedtype.compilerArg />
         <sharedtype.propsFile>it/sharedtype.properties</sharedtype.propsFile>
@@ -101,6 +96,10 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <modules>
+                <module>java8</module>
+                <module>java17</module>
+            </modules>
             <build>
                 <plugins>
                     <plugin>

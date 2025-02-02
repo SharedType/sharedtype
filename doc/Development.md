@@ -8,7 +8,7 @@ Internal types also have javadoc for more information.
 #### Project structure
 * `annotation` contains the annotation type `@SharedType` as client code compile-time dependency.
 * `processor` contains annotation processor logic, put on client's annotation processing path.
-* `internal` shared domain types among `processor` and `it`. This is done via build-helper-maven-plugin.
+* `internal` shared domain types among `processor` and `it`. This is done via build-helper-maven-plugin. IDE visibility can be controlled by maven profile.
 * `it` contains integration tests, which do metadata verification by deserializing metadata objects.
     * `java8` contains major types for tests.
     * `java17` uses symlink to reuse types in `java8` then does more type checks, e.g. for Java `record`.
@@ -27,6 +27,13 @@ Optionally mount tmpfs to save your disk by:
 ```bash
 ./mount-tmpfs.sh
 ```
+
+### Maven profiles
+* `dev` and `release` - control whether to include test maven modules during build.
+* `it` - enable integration test profile. `internal` folder is shared source between `processor` and `it`,
+IDE may not able to properly resolve classes in `internal` folder for both modules.
+Enable this profile to enable `it` modules in IDE, and disable it when developing against `processor` module.
+
 ## Development
 ### Run test
 If you encounter compilation problems with your IDE, delegate compilation to maven.
@@ -58,7 +65,7 @@ Debug annotation processor by run maven build:
 ```bash
 ./mvnd <your args goes here>
 ```
-Then attach your debugger on it.
+Then attach your debugger on it. E.g. [IDEA run config](../.run/mvnd.run.xml).
 
 Compile specific classes, e.g.:
 ```bash

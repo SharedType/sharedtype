@@ -38,6 +38,11 @@ public final class EnumDef extends AbstractTypeDef {
     }
 
     @Override
+    public List<TypeInfo> directSupertypes() {
+        return List.of();
+    }
+
+    @Override
     public boolean resolved() {
         return enumValueInfos.stream().allMatch(EnumValueInfo::resolved);
     }

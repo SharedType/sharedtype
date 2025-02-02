@@ -5,6 +5,7 @@ import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
@@ -23,7 +24,11 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
 
     @Override
     public boolean shouldAccept(TypeDef typeDef) {
-        return typeDef instanceof ClassDef;
+        if (typeDef instanceof ClassDef) {
+            ClassDef classDef = (ClassDef) typeDef;
+            return !classDef.isMapType();
+        }
+        return false;
     }
 
     @Override

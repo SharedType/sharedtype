@@ -44,7 +44,7 @@ final class RustTypeExpressionConverterTest {
     @Test
     void addSmartPointerBoxToCyclicReferencedType() {
         var classDef = ClassDef.builder().cyclicReferenced(true).build();
-        var expr = converter.toConcreteTypeExpression(ConcreteTypeInfo.builder().simpleName("Abc").typeDef(classDef).build());
+        var expr = converter.toTypeExpression(ConcreteTypeInfo.builder().simpleName("Abc").typeDef(classDef).build(), "Abc");
         assertThat(expr).isEqualTo("Box<Abc>");
     }
 }
