@@ -11,4 +11,5 @@ import lombok.Setter;
 @Setter
 public final class RenderFlags {
     private boolean useRustAny = false;
+    private boolean useRustMap = false;
 }

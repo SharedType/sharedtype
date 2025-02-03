@@ -12,6 +12,7 @@ import java.util.Map;
 
 final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter {
     private static final ArraySpec ARRAY_SPEC = new ArraySpec("Vec<", ">");
+    private static final MapSpec DEFAULT_MAP_SPEC = new MapSpec("HashMap<", ", ", ">");
     private final Map<TypeInfo, String> typeNameMappings = new HashMap<>(20);
     private final RenderFlags renderFlags;
 
@@ -45,6 +46,8 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
     void beforeVisitTypeInfo(TypeInfo typeInfo) {
         if (typeInfo.equals(Constants.OBJECT_TYPE_INFO)) {
             renderFlags.setUseRustAny(true);
+        } else if (typeInfo instanceof ConcreteTypeInfo && ((ConcreteTypeInfo) typeInfo).isMapType()) {
+            renderFlags.setUseRustMap(true);
         }
     }
 
@@ -55,7 +58,7 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
 
     @Override
     MapSpec mapSpec(ConcreteTypeInfo typeInfo) {
-        return null;
+        return DEFAULT_MAP_SPEC;
     }
 
     @Override
