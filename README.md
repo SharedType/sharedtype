@@ -1,5 +1,5 @@
 [![CI](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml/badge.svg)](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/online.sharedtype/sharedtype/badge.svg)](https://maven-badges.herokuapp.com/maven-central/online.sharedtype/sharedtype)
+[![Maven Central](https://img.shields.io/maven-central/v/online.sharedtype/sharedtype?style=social)](https://central.sonatype.com/search?q=g:online.sharedtype++a:sharedtype&smo=true)
 
 # SharedType - Sharing Java Types made easy
 From Java:
