@@ -5,6 +5,7 @@ import lombok.Getter;
 import online.sharedtype.SharedType;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
@@ -35,6 +36,7 @@ public final class Context {
     @Getter
     private final Trees trees;
     private final Set<TypeMirror> arraylikeTypes;
+    private final Set<TypeMirror> maplikeTypes;
 
     public Context(ProcessingEnvironment processingEnv, Props props) {
         this.processingEnv = processingEnv;
@@ -43,6 +45,9 @@ public final class Context {
         elements = processingEnv.getElementUtils();
         trees = Trees.instance(processingEnv);
         arraylikeTypes = props.getArraylikeTypeQualifiedNames().stream()
+                .map(qualifiedName -> types.erasure(elements.getTypeElement(qualifiedName).asType()))
+                .collect(Collectors.toSet());
+        maplikeTypes = props.getMaplikeTypeQualifiedNames().stream()
                 .map(qualifiedName -> types.erasure(elements.getTypeElement(qualifiedName).asType()))
                 .collect(Collectors.toSet());
     }
@@ -65,6 +70,19 @@ public final class Context {
             }
         }
         return false;
+    }
+
+    public boolean isMaplike(TypeMirror typeMirror) {
+        for (TypeMirror maplikeType : maplikeTypes) {
+            if (types.isSubtype(types.erasure(typeMirror), maplikeType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isEnumType(TypeMirror typeMirror) {
+        return types.asElement(typeMirror).getKind() == ElementKind.ENUM;
     }
 
     public boolean isTypeIgnored(TypeElement typeElement) {

@@ -2,6 +2,7 @@ package online.sharedtype.processor.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -27,6 +28,15 @@ public final class ConcreteTypeInfo implements TypeInfo {
     private final String simpleName;
     @Builder.Default
     private final List<? extends TypeInfo> typeArgs = Collections.emptyList();
+    /** If this type is an Enum */
+    @Getter
+    private final boolean enumType;
+    /** If this type is map-like. */
+    @Getter
+    private final boolean mapType;
+    /** If this type is defined in global config as base Map type */
+    @Getter
+    private final boolean baseMapType;
 
     /**
      * Qualified names of types from where this typeInfo is strongly referenced, i.e. as a component type.

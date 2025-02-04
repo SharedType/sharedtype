@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,11 @@ public final class EnumDef extends AbstractTypeDef {
     @Override
     public List<EnumValueInfo> components() {
         return enumValueInfos;
+    }
+
+    @Override
+    public List<TypeInfo> directSupertypes() {
+        return Collections.emptyList();
     }
 
     @Override

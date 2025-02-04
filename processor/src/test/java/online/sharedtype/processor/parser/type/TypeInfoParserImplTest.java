@@ -158,6 +158,24 @@ class TypeInfoParserImplTest {
         });
     }
 
+    @ParameterizedTest
+    @CsvSource({
+        "false, false",
+        "true, false",
+        "false, true",
+    })
+    void setTypeFlags(boolean isEnum, boolean isMaplike) {
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("com.github.cuzfrog.SomeType").type())
+            .withTypeKind(TypeKind.DECLARED)
+            .type();
+
+        when(ctxMocks.getContext().isEnumType(type)).thenReturn(isEnum);
+        when(ctxMocks.getContext().isMaplike(type)).thenReturn(isMaplike);
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
+        assertThat(typeInfo.isEnumType()).isEqualTo(isEnum);
+        assertThat(typeInfo.isMapType()).isEqualTo(isMaplike);
+    }
+
     @Test
     void parseGenericObjectWithKnownTypeArgs() {
         var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("com.github.cuzfrog.Tuple").type())
@@ -245,7 +263,7 @@ class TypeInfoParserImplTest {
         var typeInfo = (ConcreteTypeInfo) parser.parse(type, TypeContext.builder().typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.Container").build()).build());
         assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Container");
         assertThat(typeInfo.typeArgs()).hasSize(1);
-        var typeArg = (ConcreteTypeInfo)typeInfo.typeArgs().get(0);
+        var typeArg = (ConcreteTypeInfo)typeInfo.typeArgs().getFirst();
         assertThat(typeArg.qualifiedName()).isEqualTo("java.lang.Integer");
 
         verify(ctxMocks.getTypeStore()).getTypeInfo("com.github.cuzfrog.Container", Collections.singletonList(typeArg));

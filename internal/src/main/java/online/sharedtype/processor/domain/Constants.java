@@ -4,7 +4,9 @@ import online.sharedtype.SharedType;
 
 import javax.lang.model.type.TypeKind;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Cause Chung
@@ -35,7 +37,6 @@ public final class Constants {
     public static final ConcreteTypeInfo CLASS_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Class", "Class");
     public static final ConcreteTypeInfo ENUM_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Enum", "Enum");
     public static final ConcreteTypeInfo OPTIONAL_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.util.Optional", "Optional");
-    public static final ConcreteTypeInfo MAP_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.util.Map", "Map");
 
     public static final Map<TypeKind, ConcreteTypeInfo> PRIMITIVES = new HashMap<>(8);
     static {
@@ -65,8 +66,26 @@ public final class Constants {
         PREDEFINED_OBJECT_TYPES.put("java.lang.Class", CLASS_TYPE_INFO);
         PREDEFINED_OBJECT_TYPES.put("java.lang.Enum", ENUM_TYPE_INFO);
         PREDEFINED_OBJECT_TYPES.put("java.util.Optional", OPTIONAL_TYPE_INFO);
-        // PREDEFINED_OBJECT_TYPES.put("java.util.Map", MAP_TYPE_INFO); // TODO: Map support
-    };
+    }
+
+    public static final Set<TypeInfo> STRING_AND_NUMBER_TYPES = new HashSet<>(14);
+    static {
+        STRING_AND_NUMBER_TYPES.add(STRING_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(BYTE_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(SHORT_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(INT_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(LONG_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(FLOAT_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(DOUBLE_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(CHAR_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(BOXED_BYTE_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(BOXED_SHORT_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(BOXED_INT_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(BOXED_LONG_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(BOXED_FLOAT_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(BOXED_DOUBLE_TYPE_INFO);
+        STRING_AND_NUMBER_TYPES.add(BOXED_CHAR_TYPE_INFO);
+    }
 
     private Constants() {
     }

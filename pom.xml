@@ -49,7 +49,7 @@
         <junit-jupiter.version>5.10.2</junit-jupiter.version>
         <lombok.version>1.18.34</lombok.version>
         <auto-service.version>1.1.1</auto-service.version>
-        <mockito.version>5.14.1</mockito.version>
+        <mockito.version>5.15.2</mockito.version>
     </properties>
 
     <dependencyManagement>
@@ -138,6 +138,12 @@
             <plugin>
                 <groupId>org.ec4j.maven</groupId>
                 <artifactId>editorconfig-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>.run/</exclude>
+                        <exclude>client-test/</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->

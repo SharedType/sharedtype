@@ -26,6 +26,14 @@ final class RustStructConverterIntegrationTest {
     }
 
     @Test
+    void skipMapClassDef() {
+        ClassDef classDef = ClassDef.builder()
+            .build();
+        classDef.linkTypeInfo(ConcreteTypeInfo.builder().mapType(true).build());
+        assertThat(converter.shouldAccept(classDef)).isFalse();
+    }
+
+    @Test
     void shouldAcceptClassDefAnnotated() {
         assertThat(converter.shouldAccept(ClassDef.builder().build())).isFalse();
         assertThat(converter.shouldAccept(ClassDef.builder().annotated(true).build())).isTrue();
@@ -70,6 +78,19 @@ final class RustStructConverterIntegrationTest {
                 FieldComponentInfo.builder()
                     .name("field3")
                     .type(recursiveTypeInfo)
+                    .build(),
+                FieldComponentInfo.builder()
+                    .name("mapField")
+                    .type(ConcreteTypeInfo.builder()
+                        .qualifiedName("java.util.Map")
+                        .simpleName("Map")
+                        .mapType(true)
+                        .typeArgs(List.of(
+                            Constants.STRING_TYPE_INFO,
+                            Constants.INT_TYPE_INFO
+                        ))
+                        .build()
+                    )
                     .build()
             ))
             .supertypes(List.of(
@@ -103,7 +124,7 @@ final class RustStructConverterIntegrationTest {
         assertThat(model.name).isEqualTo("ClassA");
         assertThat(model.typeParameters).containsExactly("T");
 
-        assertThat(model.properties).hasSize(4);
+        assertThat(model.properties).hasSize(5);
         RustStructConverter.PropertyExpr prop1 = model.properties.get(0);
         assertThat(prop1.name).isEqualTo("field1");
         assertThat(prop1.type).isEqualTo("i32");
@@ -121,7 +142,11 @@ final class RustStructConverterIntegrationTest {
         assertThat(prop3.optional).isTrue();
         assertThat(prop3.typeExpr()).isEqualTo("Option<Box<RecursiveClass>>");
 
-        RustStructConverter.PropertyExpr prop4 = model.properties.get(3);
+        RustStructConverter.PropertyExpr prop5 = model.properties.get(3);
+        assertThat(prop5.name).isEqualTo("mapField");
+        assertThat(prop5.type).isEqualTo("HashMap<String, i32>");
+
+        RustStructConverter.PropertyExpr prop4 = model.properties.get(4);
         assertThat(prop4.name).isEqualTo("superField1");
         assertThat(prop4.type).isEqualTo("String");
         assertThat(prop4.optional).isFalse();

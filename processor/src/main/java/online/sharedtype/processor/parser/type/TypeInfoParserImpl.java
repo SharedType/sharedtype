@@ -97,6 +97,9 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)
                 .typeArgs(parsedTypeArgs)
+                .enumType(ctx.isEnumType(currentType))
+                .mapType(ctx.isMaplike(currentType))
+                .baseMapType(ctx.getProps().getMaplikeTypeQualifiedNames().contains(qualifiedName))
                 .resolved(resolved)
                 .build();
             typeStore.saveTypeInfo(qualifiedName, parsedTypeArgs, typeInfo);
