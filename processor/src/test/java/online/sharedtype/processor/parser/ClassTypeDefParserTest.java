@@ -17,6 +17,7 @@ import online.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,6 +44,8 @@ final class ClassTypeDefParserTest {
 
     @Test
     void parseComplexClass() {
+        var staticField1 = ctxMocks.primitiveVariable("CONST_VALUE", TypeKind.INT)
+            .withModifiers(Modifier.STATIC);
         var field1 = ctxMocks.primitiveVariable("field1", TypeKind.BOOLEAN);
         var field2 = ctxMocks.declaredTypeVariable("field2", string.type()).withElementKind(ElementKind.FIELD).withAnnotation(Nullable.class);
         var method1 = ctxMocks.executable("method1").withElementKind(ElementKind.METHOD);
@@ -54,6 +57,7 @@ final class ClassTypeDefParserTest {
         var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc")
             .withAnnotation(SharedType.class, () -> anno)
             .withEnclosedElements(
+                staticField1.element(),
                 field1.element(),
                 field2.element(),
                 method1.element(),
@@ -78,6 +82,7 @@ final class ClassTypeDefParserTest {
         var parsedSupertype1 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.SuperClassA").build();
         var parsedSupertype2 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.InterfaceA").build();
         var parsedSupertype3 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.InterfaceB").build();
+        when(typeInfoParser.parse(staticField1.type(), typeContextForComponents)).thenReturn(Constants.INT_TYPE_INFO);
         when(typeInfoParser.parse(field1.type(), typeContextForComponents)).thenReturn(parsedField1Type);
         when(typeInfoParser.parse(field2.type(), typeContextForComponents)).thenReturn(parsedField2Type);
         when(typeInfoParser.parse(method2.type(), typeContextForComponents)).thenReturn(parsedMethod2Type);
@@ -97,19 +102,29 @@ final class ClassTypeDefParserTest {
         assertThat(classDef.simpleName()).isEqualTo("Abc");
 
         // components
-        assertThat(classDef.components()).hasSize(3);
-        var field1Def = classDef.components().get(0);
-        assertThat(field1Def.name()).isEqualTo("field1");
-        assertThat(field1Def.type()).isEqualTo(parsedField1Type);
-        assertThat(field1Def.optional()).isFalse();
-        var field2Def = classDef.components().get(1);
-        assertThat(field2Def.name()).isEqualTo("field2");
-        assertThat(field2Def.type()).isEqualTo(parsedField2Type);
-        assertThat(field2Def.optional()).isTrue();
-        var method2Def = classDef.components().get(2);
-        assertThat(method2Def.name()).isEqualTo("value");
-        assertThat(method2Def.type()).isEqualTo(parsedMethod2Type);
-        assertThat(method2Def.optional()).isFalse();
+        assertThat(classDef.components()).hasSize(4).satisfiesExactly(
+            component -> {
+                assertThat(component.name()).isEqualTo("CONST_VALUE");
+                assertThat(component.type()).isEqualTo(Constants.INT_TYPE_INFO);
+                assertThat(component.modifiers()).containsExactly(Modifier.STATIC);
+                assertThat(component.optional()).isFalse();
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("field1");
+                assertThat(component.type()).isEqualTo(parsedField1Type);
+                assertThat(component.optional()).isFalse();
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("field2");
+                assertThat(component.type()).isEqualTo(parsedField2Type);
+                assertThat(component.optional()).isTrue();
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("value");
+                assertThat(component.type()).isEqualTo(parsedMethod2Type);
+                assertThat(component.optional()).isFalse();
+            }
+        );
 
         // type variables
         assertThat(classDef.typeVariables()).hasSize(2);

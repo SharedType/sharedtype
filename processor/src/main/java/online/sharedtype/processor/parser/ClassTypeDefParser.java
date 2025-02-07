@@ -140,6 +140,7 @@ final class ClassTypeDefParser implements TypeDefParser {
         NamesOfTypes uniqueNamesOfTypes = new NamesOfTypes(enclosedElements.size(), typeElement);
         boolean includeAccessors = config.includes(SharedType.ComponentType.ACCESSORS);
         boolean includeFields = config.includes(SharedType.ComponentType.FIELDS);
+        boolean includeConstants = config.includes(SharedType.ComponentType.CONSTANTS);
 
         Set<String> instanceFieldNames = enclosedElements.stream()
             .filter(e -> e.getKind() == ElementKind.FIELD && !e.getModifiers().contains(Modifier.STATIC))
@@ -154,13 +155,15 @@ final class ClassTypeDefParser implements TypeDefParser {
             TypeMirror type = enclosedElement.asType();
             String name = enclosedElement.getSimpleName().toString();
 
-            if (includeFields && enclosedElement.getKind() == ElementKind.FIELD && enclosedElement instanceof VariableElement) {
+            if (enclosedElement.getKind() == ElementKind.FIELD && enclosedElement instanceof VariableElement) {
                 VariableElement variableElem = (VariableElement) enclosedElement;
-                if (uniqueNamesOfTypes.contains(name, type) || !instanceFieldNames.contains(name)) {
+                if (uniqueNamesOfTypes.contains(name, type)) {
                     continue;
                 }
-                res.add(Tuple.of(variableElem, name));
-                uniqueNamesOfTypes.add(name, type);
+                if ((includeFields && instanceFieldNames.contains(name)) || (includeConstants && !instanceFieldNames.contains(name))) {
+                    res.add(Tuple.of(variableElem, name));
+                    uniqueNamesOfTypes.add(name, type);
+                }
             } else if (includeAccessors && enclosedElement instanceof ExecutableElement) {
                 ExecutableElement methodElem = (ExecutableElement) enclosedElement;
                 boolean explicitAccessor = methodElem.getAnnotation(SharedType.Accessor.class) != null;
@@ -181,8 +184,6 @@ final class ClassTypeDefParser implements TypeDefParser {
                 res.add(Tuple.of(methodElem, baseName));
                 uniqueNamesOfTypes.add(baseName, returnType);
             }
-
-            // TODO: CONSTANTS
 
             if (uniqueNamesOfTypes.ignoredType != null) {
                 ctx.error("%s.%s references to explicitly ignored type %s, which is not allowed." +

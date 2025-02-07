@@ -29,6 +29,10 @@ public final class FieldComponentInfo implements ComponentInfo {
         return type;
     }
 
+    public Set<Modifier> modifiers() {
+        return modifiers;
+    }
+
     @Override
     public boolean resolved() {
         return type.resolved();
