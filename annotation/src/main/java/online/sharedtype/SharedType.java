@@ -54,7 +54,7 @@ import java.lang.annotation.Target;
  *
  * <p>
  * <b>Constants:</b><br>
- * Support is planned in upcoming versions. Only compile-time resolvable values or their combinations are supported.
+ * Static fields are treated as constants. Only compile-time resolvable values are supported.
  * </p>
  *
  * <p>

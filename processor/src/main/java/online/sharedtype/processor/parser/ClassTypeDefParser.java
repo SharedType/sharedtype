@@ -140,7 +140,6 @@ final class ClassTypeDefParser implements TypeDefParser {
         NamesOfTypes uniqueNamesOfTypes = new NamesOfTypes(enclosedElements.size(), typeElement);
         boolean includeAccessors = config.includes(SharedType.ComponentType.ACCESSORS);
         boolean includeFields = config.includes(SharedType.ComponentType.FIELDS);
-        boolean includeConstants = config.includes(SharedType.ComponentType.CONSTANTS);
 
         Set<String> instanceFieldNames = enclosedElements.stream()
             .filter(e -> e.getKind() == ElementKind.FIELD && !e.getModifiers().contains(Modifier.STATIC))
@@ -160,7 +159,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 if (uniqueNamesOfTypes.contains(name, type)) {
                     continue;
                 }
-                if ((includeFields && instanceFieldNames.contains(name)) || (includeConstants && !instanceFieldNames.contains(name))) {
+                if ((includeFields && instanceFieldNames.contains(name))) {
                     res.add(Tuple.of(variableElem, name));
                     uniqueNamesOfTypes.add(name, type);
                 }

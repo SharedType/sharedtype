@@ -45,7 +45,7 @@ final class ClassTypeDefParserTest {
     @Test
     void parseComplexClass() {
         var staticField1 = ctxMocks.primitiveVariable("CONST_VALUE", TypeKind.INT)
-            .withModifiers(Modifier.STATIC);
+            .withModifiers(Modifier.STATIC); // will be ignored
         var field1 = ctxMocks.primitiveVariable("field1", TypeKind.BOOLEAN);
         var field2 = ctxMocks.declaredTypeVariable("field2", string.type()).withElementKind(ElementKind.FIELD).withAnnotation(Nullable.class);
         var method1 = ctxMocks.executable("method1").withElementKind(ElementKind.METHOD);
@@ -82,7 +82,6 @@ final class ClassTypeDefParserTest {
         var parsedSupertype1 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.SuperClassA").build();
         var parsedSupertype2 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.InterfaceA").build();
         var parsedSupertype3 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.InterfaceB").build();
-        when(typeInfoParser.parse(staticField1.type(), typeContextForComponents)).thenReturn(Constants.INT_TYPE_INFO);
         when(typeInfoParser.parse(field1.type(), typeContextForComponents)).thenReturn(parsedField1Type);
         when(typeInfoParser.parse(field2.type(), typeContextForComponents)).thenReturn(parsedField2Type);
         when(typeInfoParser.parse(method2.type(), typeContextForComponents)).thenReturn(parsedMethod2Type);
@@ -102,13 +101,7 @@ final class ClassTypeDefParserTest {
         assertThat(classDef.simpleName()).isEqualTo("Abc");
 
         // components
-        assertThat(classDef.components()).hasSize(4).satisfiesExactly(
-            component -> {
-                assertThat(component.name()).isEqualTo("CONST_VALUE");
-                assertThat(component.type()).isEqualTo(Constants.INT_TYPE_INFO);
-                assertThat(component.modifiers()).containsExactly(Modifier.STATIC);
-                assertThat(component.optional()).isFalse();
-            },
+        assertThat(classDef.components()).hasSize(3).satisfiesExactly(
             component -> {
                 assertThat(component.name()).isEqualTo("field1");
                 assertThat(component.type()).isEqualTo(parsedField1Type);
