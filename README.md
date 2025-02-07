@@ -51,6 +51,7 @@ pub struct User {
 
 ## Authors
 Cause Chung (cuzfrog@gmail.com)
+Jeremy Zhou (hb.zhou.jeremy@gmail.com)
 
 ## License
 ![CC BY 4.0](./misc/by.svg)
