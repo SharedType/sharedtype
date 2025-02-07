@@ -96,8 +96,8 @@ final class ClassTypeDefParserTest {
         when(typeInfoParser.parse(clazz.asType(), typeContextForSelf)).thenReturn(parsedSelfTypeInfo);
         InOrder inOrder = inOrder(typeInfoParser);
 
-        var classDef = (ClassDef) parser.parse(clazz);
-        assert classDef != null;
+        var classDefs = parser.parse(clazz);
+        var classDef = (ClassDef)classDefs.get(0);
         assertThat(classDef.simpleName()).isEqualTo("Abc");
 
         // components

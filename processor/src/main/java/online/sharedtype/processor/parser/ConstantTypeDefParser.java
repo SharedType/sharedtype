@@ -8,15 +8,16 @@ import online.sharedtype.processor.parser.type.TypeInfoParser;
 import javax.annotation.Nullable;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Types;
+import java.util.Collections;
+import java.util.List;
 
 @RequiredArgsConstructor
 final class ConstantTypeDefParser implements TypeDefParser {
     private final Context ctx;
     private final TypeInfoParser typeInfoParser;
 
-    @Nullable
     @Override
-    public TypeDef parse(TypeElement typeElement) {
-        return null;
+    public List<TypeDef> parse(TypeElement typeElement) {
+        return Collections.emptyList();
     }
 }

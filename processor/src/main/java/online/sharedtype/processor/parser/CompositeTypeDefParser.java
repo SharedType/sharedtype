@@ -7,7 +7,10 @@ import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.TypeElement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -19,14 +22,14 @@ final class CompositeTypeDefParser implements TypeDefParser {
     private final Map<String, TypeDefParser> parsers;
 
     @Override
-    public TypeDef parse(TypeElement typeElement) {
+    public List<TypeDef> parse(TypeElement typeElement) {
         if (ctx.isTypeIgnored(typeElement)) {
             return null;
         }
         String qualifiedName = typeElement.getQualifiedName().toString();
-        TypeDef cachedDef = ctx.getTypeStore().getTypeDef(qualifiedName);
+        Set<TypeDef> cachedDef = ctx.getTypeStore().getTypeDefs(qualifiedName);
         if (cachedDef != null) {
-            return cachedDef;
+            return new ArrayList<>(cachedDef);
         }
         ctx.info("Processing: " + typeElement.getQualifiedName());
         TypeDefParser parser = parsers.get(typeElement.getKind().name());
@@ -34,13 +37,13 @@ final class CompositeTypeDefParser implements TypeDefParser {
             throw new SharedTypeInternalError(String.format("Unsupported element: %s, kind=%s", typeElement, typeElement.getKind()));
         }
 
-        TypeDef typeDef = parser.parse(typeElement);
-        if (typeDef != null) {
+        List<TypeDef> typeDefs = parser.parse(typeElement);
+        for (TypeDef typeDef : typeDefs) {
             if (typeElement.getAnnotation(SharedType.class) != null) {
                 typeDef.setAnnotated(true);
             }
             ctx.getTypeStore().saveTypeDef(qualifiedName, typeDef);
         }
-        return typeDef;
+        return typeDefs;
     }
 }

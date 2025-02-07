@@ -54,7 +54,7 @@ final class ClassTypeDefParser implements TypeDefParser {
     }
 
     @Override
-    public TypeDef parse(TypeElement typeElement) {
+    public List<TypeDef> parse(TypeElement typeElement) {
         if (!isValidClassTypeElement(typeElement)) {
             return null;
         }
@@ -70,7 +70,7 @@ final class ClassTypeDefParser implements TypeDefParser {
 
         TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), TypeContext.builder().typeDef(classDef).dependingKind(SELF).build());
         classDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);
-        return classDef;
+        return Collections.singletonList(classDef);
     }
 
     private boolean isValidClassTypeElement(TypeElement typeElement) {

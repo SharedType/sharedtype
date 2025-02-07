@@ -62,18 +62,18 @@ final class LoopTypeResolverTest {
             .build();
 
         ClassDef tupleDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Tuple").simpleName("Tuple").build();
-        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.Tuple"))).thenReturn(tupleDef);
+        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.Tuple"))).thenReturn(Collections.singletonList(tupleDef));
         ClassDef aDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.A").simpleName("A").build();
-        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.A"))).thenReturn(aDef);
+        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.A"))).thenReturn(Collections.singletonList(aDef));
         ClassDef bDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.B").simpleName("B").build();
-        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.B"))).thenReturn(bDef);
+        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.B"))).thenReturn(Collections.singletonList(bDef));
         ClassDef superADef = ClassDef.builder()
             .qualifiedName("com.github.cuzfrog.SuperClassA").simpleName("SuperClassA")
             .components(Collections.singletonList(
                 FieldComponentInfo.builder().name("a").type(aTypeInfo).build()
             ))
             .build();
-        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.SuperClassA"))).thenReturn(superADef);
+        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.SuperClassA"))).thenReturn(Collections.singletonList(superADef));
 
         List<TypeDef> defs = resolver.resolve(Collections.singletonList(typeDef));
         assertThat(defs).hasSize(5);

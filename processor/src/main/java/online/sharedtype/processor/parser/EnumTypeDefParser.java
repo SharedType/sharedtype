@@ -40,7 +40,7 @@ final class EnumTypeDefParser implements TypeDefParser {
     private final TypeInfoParser typeInfoParser;
 
     @Override
-    public TypeDef parse(TypeElement typeElement) {
+    public List<TypeDef> parse(TypeElement typeElement) {
         Config config = new Config(typeElement);
         List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
         List<VariableElement> enumConstantElems = new ArrayList<>(enclosedElements.size());
@@ -64,7 +64,7 @@ final class EnumTypeDefParser implements TypeDefParser {
             enumValueMarker.marked() ? parseEnumConstants(typeElement, enumConstantElems, enumValueMarker, enumDef) : useEnumConstantNames(enumConstantElems)
         );
         ctx.getTypeStore().saveConfig(enumDef, config);
-        return enumDef;
+        return Collections.singletonList(enumDef);
     }
 
     private static List<EnumValueInfo> useEnumConstantNames(List<VariableElement> enumConstants) {

@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,12 +22,12 @@ public interface TypeDefParser {
     /**
      * Parse structural information.
      *
-     * @return null if the typeElement is ignored or invalid.
+     * @return empty if the typeElement is ignored or invalid.
      *         A typeElement can be ignored via configuration.
      *         An invalid type can be an unsupported type, e.g. a non-static inner class.
+     *         The main classDef or enumDef must be the first element in the list, constantDef should be the 2nd element if exists.
      */
-    @Nullable
-    TypeDef parse(TypeElement typeElement);
+    List<TypeDef> parse(TypeElement typeElement);
 
     static TypeDefParser create(Context ctx) {
         TypeInfoParser typeInfoParser = TypeInfoParser.create(ctx);

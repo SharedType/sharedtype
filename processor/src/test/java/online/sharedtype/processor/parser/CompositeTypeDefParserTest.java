@@ -14,7 +14,9 @@ import org.mockito.quality.Strictness;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,24 +45,26 @@ final class CompositeTypeDefParserTest {
                 ElementKind.CLASS.name(), delegate1,
                 ElementKind.ENUM.name(), delegate2
         ));
-        when(ctxMocks.getTypeStore().getTypeDef("com.github.cuzfrog.Abc")).thenReturn(null);
+        when(ctxMocks.getTypeStore().getTypeDefs("com.github.cuzfrog.Abc")).thenReturn(null);
     }
 
     @Test
     void resolveDelegateParser() {
-        when(delegate1.parse(typeElement)).thenReturn(classDef);
-        when(delegate2.parse(typeElement)).thenReturn(classDef);
+        when(delegate1.parse(typeElement)).thenReturn(Collections.singletonList(classDef));
+        when(delegate2.parse(typeElement)).thenReturn(Collections.singletonList(classDef));
+
+        when(typeElement.getKind()).thenReturn(ElementKind.CLASS);
         when(typeElement.getKind()).thenReturn(ElementKind.RECORD);
 
         var inOrder = Mockito.inOrder(delegate1, delegate2, ctxMocks.getContext().getTypeStore());
 
-        var typeDef = parser.parse(typeElement);
+        var typeDef = parser.parse(typeElement).getFirst();
         verify(delegate1).parse(typeElement);
         assertThat(typeDef).isEqualTo(classDef);
         assertThat(classDef.isAnnotated()).isFalse();
 
         when(typeElement.getKind()).thenReturn(ElementKind.ENUM);
-        typeDef = parser.parse(typeElement);
+        typeDef = parser.parse(typeElement).getFirst();
         verify(delegate2).parse(typeElement);
         assertThat(typeDef).isEqualTo(classDef);
 
@@ -75,26 +79,25 @@ final class CompositeTypeDefParserTest {
         var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc")
             .withAnnotation(SharedType.class)
             .element();
-        when(delegate1.parse(clazz)).thenReturn(classDef);
+        when(delegate1.parse(clazz)).thenReturn(Collections.singletonList(classDef));
 
-        var classDef = (ClassDef) parser.parse(clazz);
-        assert classDef != null;
+        var classDef = (ClassDef) parser.parse(clazz).get(0);
         assertThat(classDef.isAnnotated()).isTrue();
     }
 
     @Test
-    void skipOnNullResult() {
-        when(delegate1.parse(typeElement)).thenReturn(null);
-        assertThat(parser.parse(typeElement)).isNull();
+    void skipOnEmptyResult() {
+        when(delegate1.parse(typeElement)).thenReturn(Collections.emptyList());
+        assertThat(parser.parse(typeElement)).isEmpty();
         verify(ctxMocks.getTypeStore(), never()).saveTypeDef(any(), any());
     }
 
     @Test
     void useCachedTypeDef() {
         var typeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build();
-        when(ctxMocks.getTypeStore().getTypeDef("com.github.cuzfrog.Abc")).thenReturn(typeDef);
+        when(ctxMocks.getTypeStore().getTypeDefs("com.github.cuzfrog.Abc")).thenReturn(Set.of(typeDef));
 
-        assertThat(parser.parse(typeElement)).isSameAs(typeDef);
+        assertThat(parser.parse(typeElement)).containsExactly(typeDef);
         verify(delegate1, never()).parse(any());
         verify(delegate2, never()).parse(any());
     }

@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @Getter
 public abstract class AbstractTypeDef implements TypeDef {
+    private static final long serialVersionUID = 2346502341189835693L;
     /** Whether this type is explicitly annotated with {@link online.sharedtype.SharedType} */
     private boolean annotated;
     /** Directly or indirectly referenced by a type that is annotated. */

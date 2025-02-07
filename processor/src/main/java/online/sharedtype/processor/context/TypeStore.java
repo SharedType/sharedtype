@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static online.sharedtype.processor.domain.Constants.PREDEFINED_OBJECT_TYPES;
 
@@ -27,7 +28,7 @@ import static online.sharedtype.processor.domain.Constants.PREDEFINED_OBJECT_TYP
  * @author Cause Chung
  */
 public final class TypeStore {
-    private final Map<String, TypeDef> typeDefByQualifiedName = new HashMap<>();
+    private final Map<String, Set<TypeDef>> typeDefByQualifiedName = new HashMap<>();
     private final Map<TypeInfoKey, TypeInfo> typeInfoByKey = new HashMap<>();
     private final Map<TypeDef, Config> typeConfig = new HashMap<>();
 
@@ -38,14 +39,20 @@ public final class TypeStore {
     }
 
     public void saveTypeDef(String qualifiedName, TypeDef typeDef) {
-        typeDefByQualifiedName.put(qualifiedName, typeDef);
+        typeDefByQualifiedName.compute(qualifiedName, (k, v) -> {
+            if (v == null) {
+                v = new HashSet<>();
+            }
+            v.add(typeDef);
+            return v;
+        });
     }
 
     public void saveTypeInfo(String qualifiedName, List<? extends TypeInfo> typeArgs, TypeInfo typeInfo) {
         typeInfoByKey.put(new TypeInfoKey(qualifiedName, typeArgs), typeInfo);
     }
 
-    public TypeDef getTypeDef(String qualifiedName) {
+    public Set<TypeDef> getTypeDefs(String qualifiedName) {
         return typeDefByQualifiedName.get(qualifiedName);
     }
     public TypeInfo getTypeInfo(String qualifiedName, List<? extends TypeInfo> typeArgs) {

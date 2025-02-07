@@ -11,7 +11,7 @@ import java.util.List;
  * Represents a constant namespace, i.e. a java class that contains static fields.
  */
 @Builder
-final class ConstantDef extends AbstractTypeDef {
+final class ConstantNamespaceDef implements TypeDef {
     private static final long serialVersionUID = 4249235760298548628L;
     private final String qualifiedName;
     private final String simpleName;
@@ -43,6 +43,24 @@ final class ConstantDef extends AbstractTypeDef {
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean isCyclicReferenced() {
+        return false;
+    }
+
+    @Override
+    public void setCyclicReferenced(boolean cyclicReferenced) {
+    }
+
+    @Override
+    public boolean isReferencedByAnnotated() {
+        return false;
+    }
+
+    @Override
+    public void setReferencedByAnnotated(boolean referencedByAnnotated) {
     }
 
     @Override
