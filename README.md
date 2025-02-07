@@ -50,8 +50,7 @@ pub struct User {
 * [vojtechhabarta/typescript-generator](https://github.com/vojtechhabarta/typescript-generator)
 
 ## Authors
-Cause Chung (cuzfrog@gmail.com)
-Jeremy Zhou (hb.zhou.jeremy@gmail.com)
+Cause Chung (cuzfrog@gmail.com), Jeremy Zhou (hb.zhou.jeremy@gmail.com)
 
 ## License
 ![CC BY 4.0](./misc/by.svg)
