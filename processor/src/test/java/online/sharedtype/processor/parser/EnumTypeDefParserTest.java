@@ -90,7 +90,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -100,7 +100,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(200), ctxMocks.literalTree('b')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -141,7 +141,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -151,7 +151,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(200), ctxMocks.literalTree('b')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -183,7 +183,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -211,7 +211,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -239,7 +239,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -262,7 +262,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -289,7 +289,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.identifierTree("FOO")
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),

@@ -73,6 +73,7 @@ import java.lang.annotation.Target;
  * <p>
  * <b>Maps:</b>
  * Key must be String or numeric types. Enum is support given that its value is a literal.
+ * Custom map types are supported, e.g. a class that extends HashMap. But the type itself is treated as a mapType, so its structure will not be emitted.
  * <ul>
  *     <li>Typescript: e.g. {@code Record<string, T>} where {@code T} can be a reified type. If the key is enum, it will be a {@code Partial<Record<?, ?>>}</li>
  * </ul>

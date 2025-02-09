@@ -67,7 +67,7 @@ Debug annotation processor by run maven build:
 ```
 Then attach your debugger on it. E.g. [IDEA run config](../.run/mvnd.run.xml).
 
-Compile specific classes, e.g.:
+Compile specific classes, **along with debug, this is useful for developing a specific feature**, e.g.:
 ```bash
 ./mvnw clean install -DskipTests
 ./mvnw clean compile -pl it/java17 -DcompileClasses=online/sharedtype/it/java8/TempClass.java

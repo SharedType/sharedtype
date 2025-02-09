@@ -10,6 +10,7 @@ import online.sharedtype.processor.domain.TypeInfo;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -57,6 +58,7 @@ public final class TypeStore {
         typeInfoByKey.put(new TypeInfoKey(qualifiedName, typeArgs), typeInfo);
     }
 
+    @Nullable
     public List<TypeDef> getTypeDefs(String qualifiedName) {
         return typeDefByQualifiedName.get(qualifiedName);
     }

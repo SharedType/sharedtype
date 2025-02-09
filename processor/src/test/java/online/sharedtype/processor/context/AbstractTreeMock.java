@@ -1,6 +1,7 @@
 package online.sharedtype.processor.context;
 
 import com.sun.source.tree.Tree;
+import lombok.Getter;
 
 import javax.lang.model.element.Element;
 
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 public abstract class AbstractTreeMock<T extends Tree, M extends AbstractTreeMock<T, M>> {
     final Context ctx;
+    @Getter
     final T tree;
 
     AbstractTreeMock(T tree, Context ctx) {

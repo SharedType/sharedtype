@@ -65,6 +65,9 @@ public final class ClassDef extends AbstractTypeDef {
     public boolean isMapType() {
         return typeInfoSet.stream().anyMatch(ConcreteTypeInfo::isMapType);
     }
+    public boolean isArrayType() {
+        return typeInfoSet.stream().anyMatch(ConcreteTypeInfo::isArrayType);
+    }
 
     /**
      * Register a counterpart typeInfo.

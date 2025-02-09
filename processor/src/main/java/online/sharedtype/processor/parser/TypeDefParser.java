@@ -32,7 +32,7 @@ public interface TypeDefParser {
 
     static TypeDefParser create(Context ctx) {
         TypeInfoParser typeInfoParser = TypeInfoParser.create(ctx);
-        List<TypeDefParser> parsers = new ArrayList<>(3);
+        List<TypeDefParser> parsers = new ArrayList<>(3); // order matters! see #parse
         parsers.add(new ClassTypeDefParser(ctx, typeInfoParser));
         parsers.add(new EnumTypeDefParser(ctx, typeInfoParser));
         parsers.add(new ConstantTypeDefParser(ctx, typeInfoParser));
