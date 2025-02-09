@@ -99,7 +99,7 @@ final class CompositeTypeDefParserTest {
     void ignoreType() {
         when(ctxMocks.getContext().isTypeIgnored(typeElement)).thenReturn(true);
 
-        assertThat(parser.parse(typeElement)).isNull();
+        assertThat(parser.parse(typeElement)).isEmpty();
         verify(delegate1, never()).parse(any());
         verify(delegate2, never()).parse(any());
     }

@@ -8,6 +8,7 @@ import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +25,7 @@ final class CompositeTypeDefParser implements TypeDefParser {
     @Override
     public List<TypeDef> parse(TypeElement typeElement) {
         if (ctx.isTypeIgnored(typeElement)) {
-            return null;
+            return Collections.emptyList();
         }
         String qualifiedName = typeElement.getQualifiedName().toString();
         Set<TypeDef> cachedDef = ctx.getTypeStore().getTypeDefs(qualifiedName);

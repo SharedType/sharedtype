@@ -30,7 +30,7 @@ import static online.sharedtype.processor.domain.Constants.PREDEFINED_OBJECT_TYP
 public final class TypeStore {
     private final Map<String, Set<TypeDef>> typeDefByQualifiedName = new HashMap<>();
     private final Map<TypeInfoKey, TypeInfo> typeInfoByKey = new HashMap<>();
-    private final Map<TypeDef, Config> typeConfig = new HashMap<>();
+    private final Map<String, Config> typeConfig = new HashMap<>();
 
     TypeStore() {
         for (Map.Entry<String, ConcreteTypeInfo> entry : PREDEFINED_OBJECT_TYPES.entrySet()) {
@@ -64,11 +64,11 @@ public final class TypeStore {
     }
 
     public void saveConfig(TypeDef typeDef, Config config) {
-        typeConfig.put(typeDef, config);
+        typeConfig.put(typeDef.qualifiedName(), config);
     }
     @Nullable
-    public Config getConfig(TypeDef typeDef) {
-        return typeConfig.get(typeDef);
+    public Config getConfig(String qualifiedName) {
+        return typeConfig.get(qualifiedName);
     }
 
     @EqualsAndHashCode

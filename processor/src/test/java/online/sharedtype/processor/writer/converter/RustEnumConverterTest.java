@@ -12,7 +12,6 @@ import java.util.Arrays;
 import static online.sharedtype.processor.domain.Constants.INT_TYPE_INFO;
 import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 final class RustEnumConverterTest {
@@ -54,7 +53,7 @@ final class RustEnumConverterTest {
                 .withAnnotation(SharedType.class, anno -> when(anno.rustMacroTraits()).thenReturn(new String[]{"PartialEq", "Clone"}))
                 .element()
         );
-        when(ctxMocks.getTypeStore().getConfig(enumDef)).thenReturn(config);
+        when(ctxMocks.getTypeStore().getConfig(enumDef.qualifiedName())).thenReturn(config);
 
         var data = converter.convert(enumDef);
         var model = (RustEnumConverter.EnumExpr) data.b();
