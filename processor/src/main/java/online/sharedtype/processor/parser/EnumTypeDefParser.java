@@ -41,6 +41,10 @@ final class EnumTypeDefParser implements TypeDefParser {
 
     @Override
     public List<TypeDef> parse(TypeElement typeElement) {
+        if (typeElement.getKind() != ElementKind.ENUM) {
+            return Collections.emptyList();
+        }
+
         Config config = new Config(typeElement);
         List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
         List<VariableElement> enumConstantElems = new ArrayList<>(enclosedElements.size());

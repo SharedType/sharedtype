@@ -11,7 +11,7 @@ import java.util.List;
  * Represents a constant namespace, i.e. a java class that contains static fields.
  */
 @Builder
-final class ConstantNamespaceDef implements TypeDef {
+public final class ConstantNamespaceDef implements TypeDef {
     private static final long serialVersionUID = 4249235760298548628L;
     private final String qualifiedName;
     private final String simpleName;

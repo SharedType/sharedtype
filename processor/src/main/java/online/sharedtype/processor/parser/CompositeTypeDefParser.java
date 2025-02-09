@@ -19,7 +19,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 final class CompositeTypeDefParser implements TypeDefParser {
     private final Context ctx;
-    private final Map<String, TypeDefParser> parsers;
+    private final List<TypeDefParser> parsers;
 
     @Override
     public List<TypeDef> parse(TypeElement typeElement) {
@@ -32,12 +32,11 @@ final class CompositeTypeDefParser implements TypeDefParser {
             return new ArrayList<>(cachedDef);
         }
         ctx.info("Processing: " + typeElement.getQualifiedName());
-        TypeDefParser parser = parsers.get(typeElement.getKind().name());
-        if (parser == null) {
-            throw new SharedTypeInternalError(String.format("Unsupported element: %s, kind=%s", typeElement, typeElement.getKind()));
+        List<TypeDef> typeDefs = new ArrayList<>();
+        for (TypeDefParser typeDefParser : parsers) {
+            typeDefs.addAll(typeDefParser.parse(typeElement));
         }
 
-        List<TypeDef> typeDefs = parser.parse(typeElement);
         for (TypeDef typeDef : typeDefs) {
             if (typeElement.getAnnotation(SharedType.class) != null) {
                 typeDef.setAnnotated(true);

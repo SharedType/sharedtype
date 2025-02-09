@@ -30,6 +30,7 @@ import javax.lang.model.util.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +44,11 @@ import static online.sharedtype.processor.domain.DependingKind.SUPER_TYPE;
  * @author Cause Chung
  */
 final class ClassTypeDefParser implements TypeDefParser {
+    private static final Set<String> SUPPORTED_ELEMENT_KINDS = new HashSet<String>(3){{
+        add(ElementKind.CLASS.name());
+        add(ElementKind.INTERFACE.name());
+        add("RECORD");
+    }};
     private final Context ctx;
     private final Types types;
     private final TypeInfoParser typeInfoParser;
@@ -55,8 +61,11 @@ final class ClassTypeDefParser implements TypeDefParser {
 
     @Override
     public List<TypeDef> parse(TypeElement typeElement) {
+        if (!SUPPORTED_ELEMENT_KINDS.contains(typeElement.getKind().name())) {
+            return Collections.emptyList();
+        }
         if (!isValidClassTypeElement(typeElement)) {
-            return null;
+            return Collections.emptyList();
         }
         Config config = new Config(typeElement);
 

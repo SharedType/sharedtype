@@ -111,9 +111,15 @@ final class ClassTypeDefParserForRecordTest {
     }
 
     @Test
+    void skipNonClass() {
+        var typeDefs = parser.parse(ctxMocks.typeElement("com.github.cuzfrog.Abc").withElementKind(ElementKind.ENUM).element());
+        assertThat(typeDefs).isEmpty();
+    }
+
+    @Test
     void nonStaticInnerClassIsInvalid() {
-        var typeDef = parser.parse(recordElement.withModifiers().withNestingKind(NestingKind.MEMBER).element());
-        assertThat(typeDef).isNull();
+        var typeDefs = parser.parse(recordElement.withModifiers().withNestingKind(NestingKind.MEMBER).element());
+        assertThat(typeDefs).isEmpty();
 
         verify(ctxMocks.getContext()).error(any(), any(Object[].class));
     }

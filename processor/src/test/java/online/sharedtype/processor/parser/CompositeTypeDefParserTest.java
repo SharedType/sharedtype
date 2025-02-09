@@ -3,6 +3,7 @@ package online.sharedtype.processor.parser;
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.context.ContextMocks;
+import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +16,7 @@ import org.mockito.quality.Strictness;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,44 +35,36 @@ final class CompositeTypeDefParserTest {
     private CompositeTypeDefParser parser;
 
     private final TypeElement typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc").element();
-    private final ClassDef classDef = ClassDef.builder().build();
+    private final ClassDef classDef = ClassDef.builder().simpleName("Abc").build();
+    private final ConstantNamespaceDef constDef = ConstantNamespaceDef.builder().simpleName("Abc").build();
 
     @BeforeEach
     void setUp() {
-        parser = new CompositeTypeDefParser(
-            ctxMocks.getContext(),
-            Map.of(
-                ElementKind.RECORD.name(), delegate1,
-                ElementKind.CLASS.name(), delegate1,
-                ElementKind.ENUM.name(), delegate2
-        ));
+        parser = new CompositeTypeDefParser(ctxMocks.getContext(), List.of(delegate1, delegate2));
         when(ctxMocks.getTypeStore().getTypeDefs("com.github.cuzfrog.Abc")).thenReturn(null);
     }
 
     @Test
-    void resolveDelegateParser() {
+    void callAllParsers() {
         when(delegate1.parse(typeElement)).thenReturn(Collections.singletonList(classDef));
-        when(delegate2.parse(typeElement)).thenReturn(Collections.singletonList(classDef));
+        when(delegate2.parse(typeElement)).thenReturn(Collections.singletonList(constDef));
 
         when(typeElement.getKind()).thenReturn(ElementKind.CLASS);
-        when(typeElement.getKind()).thenReturn(ElementKind.RECORD);
 
         var inOrder = Mockito.inOrder(delegate1, delegate2, ctxMocks.getContext().getTypeStore());
 
-        var typeDef = parser.parse(typeElement).getFirst();
-        verify(delegate1).parse(typeElement);
-        assertThat(typeDef).isEqualTo(classDef);
+        var typeDefs = parser.parse(typeElement);
+        var typeDef1 = typeDefs.get(0);
+        inOrder.verify(delegate1).parse(typeElement);
+        assertThat(typeDef1).isEqualTo(classDef);
         assertThat(classDef.isAnnotated()).isFalse();
 
-        when(typeElement.getKind()).thenReturn(ElementKind.ENUM);
-        typeDef = parser.parse(typeElement).getFirst();
-        verify(delegate2).parse(typeElement);
-        assertThat(typeDef).isEqualTo(classDef);
-
-        when(typeElement.getKind()).thenReturn(ElementKind.CONSTRUCTOR);
-        assertThatThrownBy(() -> parser.parse(typeElement));
+        var typeDef2 = typeDefs.get(1);
+        inOrder.verify(delegate2).parse(typeElement);
+        assertThat(typeDef2).isEqualTo(constDef);
 
         inOrder.verify(ctxMocks.getContext().getTypeStore()).saveTypeDef("com.github.cuzfrog.Abc", classDef);
+        inOrder.verify(ctxMocks.getContext().getTypeStore()).saveTypeDef("com.github.cuzfrog.Abc", constDef);
     }
 
     @Test

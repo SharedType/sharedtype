@@ -39,6 +39,12 @@ final class EnumTypeDefParserTest {
     private final ArgumentCaptor<String> msgCaptor = ArgumentCaptor.forClass(String.class);
 
     @Test
+    void skipIfNotEnum() {
+        var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc").withElementKind(ElementKind.CLASS);
+        assertThat(parser.parse(clazz.element())).isEmpty();
+    }
+
+    @Test
     void simpleEnum() {
         var anno = TestUtils.defaultSharedTypeAnnotation();
         enumType

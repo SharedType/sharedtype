@@ -7,6 +7,7 @@ import online.sharedtype.processor.parser.type.TypeInfoParser;
 import javax.annotation.Nullable;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,11 +32,10 @@ public interface TypeDefParser {
 
     static TypeDefParser create(Context ctx) {
         TypeInfoParser typeInfoParser = TypeInfoParser.create(ctx);
-        Map<String, TypeDefParser> parsers = new HashMap<>(4);
-        parsers.put(ElementKind.CLASS.name(), new ClassTypeDefParser(ctx, typeInfoParser));
-        parsers.put(ElementKind.INTERFACE.name(), new ClassTypeDefParser(ctx, typeInfoParser));
-        parsers.put(ElementKind.ENUM.name(), new EnumTypeDefParser(ctx, typeInfoParser));
-        parsers.put("RECORD", new ClassTypeDefParser(ctx, typeInfoParser));
+        List<TypeDefParser> parsers = new ArrayList<>(3);
+        parsers.add(new ClassTypeDefParser(ctx, typeInfoParser));
+        parsers.add(new EnumTypeDefParser(ctx, typeInfoParser));
+        parsers.add(new ConstantTypeDefParser(ctx, typeInfoParser));
         return new CompositeTypeDefParser(ctx, parsers);
     }
 }
