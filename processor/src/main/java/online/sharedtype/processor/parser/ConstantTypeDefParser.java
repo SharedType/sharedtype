@@ -65,7 +65,7 @@ final class ConstantTypeDefParser implements TypeDefParser {
             }
         }
 
-        return Collections.emptyList();
+        return Collections.singletonList(constantNamespaceDef);
     }
 
     private Object parseConstantValue(Element fieldElement) {

@@ -28,7 +28,7 @@ final class CompositeTypeDefParser implements TypeDefParser {
             return Collections.emptyList();
         }
         String qualifiedName = typeElement.getQualifiedName().toString();
-        Set<TypeDef> cachedDef = ctx.getTypeStore().getTypeDefs(qualifiedName);
+        List<TypeDef> cachedDef = ctx.getTypeStore().getTypeDefs(qualifiedName);
         if (cachedDef != null) {
             return new ArrayList<>(cachedDef);
         }

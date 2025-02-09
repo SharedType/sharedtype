@@ -9,11 +9,14 @@ import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import static online.sharedtype.processor.domain.Constants.PREDEFINED_OBJECT_TYPES;
 
@@ -28,7 +31,7 @@ import static online.sharedtype.processor.domain.Constants.PREDEFINED_OBJECT_TYP
  * @author Cause Chung
  */
 public final class TypeStore {
-    private final Map<String, Set<TypeDef>> typeDefByQualifiedName = new HashMap<>();
+    private final Map<String, List<TypeDef>> typeDefByQualifiedName = new HashMap<>();
     private final Map<TypeInfoKey, TypeInfo> typeInfoByKey = new HashMap<>();
     private final Map<String, Config> typeConfig = new HashMap<>();
 
@@ -41,9 +44,11 @@ public final class TypeStore {
     public void saveTypeDef(String qualifiedName, TypeDef typeDef) {
         typeDefByQualifiedName.compute(qualifiedName, (k, v) -> {
             if (v == null) {
-                v = new HashSet<>();
+                v = new ArrayList<>();
             }
-            v.add(typeDef);
+            if (!v.contains(typeDef)) {
+                v.add(typeDef);
+            }
             return v;
         });
     }
@@ -52,7 +57,7 @@ public final class TypeStore {
         typeInfoByKey.put(new TypeInfoKey(qualifiedName, typeArgs), typeInfo);
     }
 
-    public Set<TypeDef> getTypeDefs(String qualifiedName) {
+    public List<TypeDef> getTypeDefs(String qualifiedName) {
         return typeDefByQualifiedName.get(qualifiedName);
     }
     public TypeInfo getTypeInfo(String qualifiedName, List<? extends TypeInfo> typeArgs) {

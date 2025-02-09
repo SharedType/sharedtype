@@ -88,9 +88,10 @@ final class CompositeTypeDefParserTest {
     @Test
     void useCachedTypeDef() {
         var typeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build();
-        when(ctxMocks.getTypeStore().getTypeDefs("com.github.cuzfrog.Abc")).thenReturn(Set.of(typeDef));
+        var typeDef2 = ConstantNamespaceDef.builder().qualifiedName("com.github.cuzfrog.Abc").build();
+        when(ctxMocks.getTypeStore().getTypeDefs("com.github.cuzfrog.Abc")).thenReturn(List.of(typeDef, typeDef2));
 
-        assertThat(parser.parse(typeElement)).containsExactly(typeDef);
+        assertThat(parser.parse(typeElement)).containsExactly(typeDef, typeDef2);
         verify(delegate1, never()).parse(any());
         verify(delegate2, never()).parse(any());
     }
