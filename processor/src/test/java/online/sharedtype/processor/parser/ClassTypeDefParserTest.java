@@ -2,18 +2,18 @@ package online.sharedtype.processor.parser;
 
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
+import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TestUtils;
+import online.sharedtype.processor.context.TypeElementMock;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.context.TypeElementMock;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.parser.type.TypeContext;
+import online.sharedtype.processor.parser.type.TypeInfoParser;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
-import online.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.ElementKind;
@@ -145,5 +145,19 @@ final class ClassTypeDefParserTest {
         verify(ctxMocks.getTypeStore()).saveConfig(eq(classDef), configCaptor.capture());
         var config = configCaptor.getValue();
         assertThat(config.getAnno()).isSameAs(anno);
+    }
+
+    @Test
+    void ignoreGlobalConfiguredField() {
+        var fieldElement = ctxMocks.declaredTypeVariable("field333", string.type()).withElementKind(ElementKind.FIELD).element();
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withEnclosedElements(
+
+            )
+            .element();
+        when(ctxMocks.getContext().isIgnored(fieldElement)).thenReturn(true);
+
+        var classDef = parser.parse(typeElement).get(0);
+        assertThat(classDef.components()).isEmpty();
     }
 }

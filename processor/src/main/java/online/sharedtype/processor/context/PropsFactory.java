@@ -43,6 +43,7 @@ public final class PropsFactory {
             .arraylikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.array-like-types")))
             .maplikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.map-like-types")))
             .ignoredTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.ignored-types")))
+            .ignoredFieldNames(splitArray(properties.getProperty("sharedtype.ignored-fields")))
             .typescript(Props.Typescript.builder()
                 .outputFileName(properties.getProperty("sharedtype.typescript.output-file-name"))
                 .interfacePropertyDelimiter(properties.getProperty("sharedtype.typescript.interface-property-delimiter").charAt(0))

@@ -21,7 +21,7 @@ final class CompositeTypeDefParser implements TypeDefParser {
 
     @Override
     public List<TypeDef> parse(TypeElement typeElement) {
-        if (ctx.isTypeIgnored(typeElement)) {
+        if (ctx.isIgnored(typeElement)) {
             return Collections.emptyList();
         }
         String qualifiedName = typeElement.getQualifiedName().toString();

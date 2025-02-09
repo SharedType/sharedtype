@@ -66,9 +66,10 @@ final class ConstantTypeDefParser implements TypeDefParser {
             .build();
 
         for (Element enclosedElement : typeElement.getEnclosedElements()) {
-            if (enclosedElement.getAnnotation(SharedType.Ignore.class) != null) {
+            if (ctx.isIgnored(enclosedElement)) {
                 continue;
             }
+
             if (enclosedElement.getKind() == ElementKind.FIELD && enclosedElement.getModifiers().contains(Modifier.STATIC)) {
                 ConstantField constantField = new ConstantField(
                     enclosedElement.getSimpleName().toString(),

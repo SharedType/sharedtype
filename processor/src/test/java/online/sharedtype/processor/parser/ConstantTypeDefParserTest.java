@@ -10,11 +10,6 @@ import online.sharedtype.processor.parser.type.TypeContext;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
@@ -22,14 +17,13 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@MockitoSettings(strictness = Strictness.LENIENT)
-@ExtendWith(MockitoExtension.class)
 final class ConstantTypeDefParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private @Mock TypeInfoParser typeInfoParser;
-    private ConstantTypeDefParser parser;
+    private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
+    private final ConstantTypeDefParser parser = new ConstantTypeDefParser(ctxMocks.getContext(), typeInfoParser);
 
     private final TypeContext typeContext = TypeContext.builder()
         .typeDef(ConstantNamespaceDef.builder().qualifiedName("com.github.cuzfrog.Abc").build())
@@ -37,28 +31,36 @@ final class ConstantTypeDefParserTest {
     private final ClassDef mainTypeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build();
 
     @BeforeEach
-    void setUp() {
-        parser = new ConstantTypeDefParser(ctxMocks.getContext(), typeInfoParser);
+    void setup() {
+        ctxMocks.getTypeStore().saveTypeDef("com.github.cuzfrog.Abc", mainTypeDef);
     }
 
     @Test
     void skipMapType() {
         mainTypeDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("java.util.Map").mapType(true).build());
-        ctxMocks.getTypeStore().saveTypeDef("com.github.cuzfrog.Abc", mainTypeDef);
         assertThat(parser.parse(ctxMocks.typeElement("com.github.cuzfrog.Abc").element())).isEmpty();
     }
 
     @Test
     void skipArrayType() {
         mainTypeDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("java.util.List").arrayType(true).build());
-        ctxMocks.getTypeStore().saveTypeDef("com.github.cuzfrog.Abc", mainTypeDef);
         assertThat(parser.parse(ctxMocks.typeElement("com.github.cuzfrog.Abc").element())).isEmpty();
     }
 
     @Test
-    void parse() {
-        ctxMocks.getTypeStore().saveTypeDef("com.github.cuzfrog.Abc", mainTypeDef);
+    void ignoreGlobalConfiguredField() {
+        var fieldElement = ctxMocks.primitiveVariable("SHOULD_BE_IGNORED", TypeKind.INT)
+            .withModifiers(Modifier.STATIC).element();
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withEnclosedElements(fieldElement)
+            .element();
+        when(ctxMocks.getContext().isIgnored(fieldElement)).thenReturn(true);
+        var typeDef = parser.parse(typeElement).get(0);
+        assertThat(typeDef.components()).isEmpty();
+    }
 
+    @Test
+    void parse() {
         var intStaticField = ctxMocks.primitiveVariable("CONST_INT_VALUE", TypeKind.INT)
             .withModifiers(Modifier.STATIC)
             .ofTree(

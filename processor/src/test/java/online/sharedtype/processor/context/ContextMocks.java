@@ -2,7 +2,6 @@ package online.sharedtype.processor.context;
 
 import com.sun.source.util.Trees;
 import lombok.Getter;
-import org.mockito.Mockito;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.type.DeclaredType;
@@ -11,6 +10,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -24,10 +24,10 @@ public final class ContextMocks {
     private final Types types = mock(Types.class);
     private final Elements elements = mock(Elements.class);
     private final Trees trees = mock(Trees.class);
-    private final Context context = Mockito.mock(Context.class);
+    private final Context context = mock(Context.class);
 
-    public ContextMocks(Props props) {
-        this.props = props;
+    public ContextMocks() {
+        this.props = spy(PropsFactory.loadProps(null));
         when(context.getProps()).thenReturn(props);
         when(context.getProcessingEnv()).thenReturn(processingEnv);
         when(processingEnv.getElementUtils()).thenReturn(elements);
@@ -35,10 +35,6 @@ public final class ContextMocks {
         when(context.getTypeStore()).thenReturn(typeStore);
         when(context.getRenderFlags()).thenReturn(renderFlags);
         when(context.getTrees()).thenReturn(trees);
-    }
-
-    public ContextMocks() {
-        this(PropsFactory.loadProps(null));
     }
 
     public TypeElementMock typeElement(String qualifiedName) {

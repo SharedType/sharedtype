@@ -17,7 +17,6 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -58,12 +57,11 @@ final class CompositeTypeDefParserTest {
         inOrder.verify(delegate1).parse(typeElement);
         assertThat(typeDef1).isEqualTo(classDef);
         assertThat(classDef.isAnnotated()).isFalse();
+        inOrder.verify(ctxMocks.getContext().getTypeStore()).saveTypeDef("com.github.cuzfrog.Abc", classDef);
 
         var typeDef2 = typeDefs.get(1);
         inOrder.verify(delegate2).parse(typeElement);
         assertThat(typeDef2).isEqualTo(constDef);
-
-        inOrder.verify(ctxMocks.getContext().getTypeStore()).saveTypeDef("com.github.cuzfrog.Abc", classDef);
         inOrder.verify(ctxMocks.getContext().getTypeStore()).saveTypeDef("com.github.cuzfrog.Abc", constDef);
     }
 
@@ -98,7 +96,7 @@ final class CompositeTypeDefParserTest {
 
     @Test
     void ignoreType() {
-        when(ctxMocks.getContext().isTypeIgnored(typeElement)).thenReturn(true);
+        when(ctxMocks.getContext().isIgnored(typeElement)).thenReturn(true);
 
         assertThat(parser.parse(typeElement)).isEmpty();
         verify(delegate1, never()).parse(any());

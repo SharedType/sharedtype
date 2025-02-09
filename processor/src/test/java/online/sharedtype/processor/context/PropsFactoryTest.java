@@ -34,6 +34,7 @@ final class PropsFactoryTest {
             "java.io.Serializable",
             "java.lang.Record"
         );
+        assertThat(props.getIgnoredFieldNames()).containsExactly("serialVersionUID");
 
         Props.Typescript typescriptProps = props.getTypescript();
         assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.d.ts");
