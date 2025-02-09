@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public final class ConstantInfo implements ComponentInfo {
+public final class ConstantField implements ComponentInfo {
     private static final long serialVersionUID = -155863067131290289L;
     private final String name;
     private final TypeInfo type;

@@ -16,7 +16,7 @@ public final class ConstantNamespaceDef implements TypeDef {
     private final String qualifiedName;
     private final String simpleName;
     @Builder.Default
-    private final List<ConstantInfo> constants = new ArrayList<>();
+    private final List<ConstantField> constants = new ArrayList<>();
     @Getter @Setter
     private boolean annotated;
 
@@ -31,13 +31,13 @@ public final class ConstantNamespaceDef implements TypeDef {
     }
 
     @Override
-    public List<? extends ComponentInfo> components() {
+    public List<ConstantField> components() {
         return constants;
     }
 
     @Override
     public boolean resolved() {
-        for (ConstantInfo constant : constants) {
+        for (ConstantField constant : constants) {
             if (!constant.resolved()) {
                 return false;
             }
@@ -67,7 +67,7 @@ public final class ConstantNamespaceDef implements TypeDef {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("const ").append(qualifiedName).append(" {").append(System.lineSeparator());
-        for (ConstantInfo constant : constants) {
+        for (ConstantField constant : constants) {
             sb.append("  ").append(constant).append(";").append(System.lineSeparator());
         }
         sb.append("}");

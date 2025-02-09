@@ -62,7 +62,7 @@ final class EnumTypeDefParser implements TypeDefParser {
 
         EnumDef enumDef = EnumDef.builder()
             .qualifiedName(config.getQualifiedName())
-            .simpleName(config.getName())
+            .simpleName(config.getSimpleName())
             .build();
         enumDef.components().addAll(
             enumValueMarker.marked() ? parseEnumConstants(typeElement, enumConstantElems, enumValueMarker, enumDef) : useEnumConstantNames(enumConstantElems)
