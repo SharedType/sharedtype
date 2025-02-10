@@ -79,6 +79,9 @@ final class ConstantTypeDefParser implements TypeDefParser {
                 constantNamespaceDef.components().add(constantField);
             }
         }
+        if (constantNamespaceDef.components().isEmpty()) {
+            return Collections.emptyList();
+        }
 
         return Collections.singletonList(constantNamespaceDef);
     }

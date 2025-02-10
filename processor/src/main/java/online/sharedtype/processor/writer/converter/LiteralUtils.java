@@ -1,25 +1,24 @@
 package online.sharedtype.processor.writer.converter;
 
+import java.util.regex.Pattern;
+
 final class LiteralUtils {
+    private final static Pattern CAMEL_CASE_PATTERN = Pattern.compile("([a-z])([A-Z]+)");
     private LiteralUtils() {}
 
-    static boolean shouldQuote(Object value) {
+    static String literalValue(Object value) {
+        if (shouldQuote(value)) {
+            return String.format("\"%s\"", value); // TODO: options single or double quotes?
+        } else {
+            return String.valueOf(value);
+        }
+    }
+
+    private static boolean shouldQuote(Object value) {
         return value instanceof CharSequence || value instanceof Character;
     }
 
     static String toSnakeCase(String camelCase) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < camelCase.length(); i++) {
-            char c = camelCase.charAt(i);
-            if (Character.isUpperCase(c)) {
-                if (i > 0) {
-                    sb.append('_');
-                }
-                sb.append(Character.toLowerCase(c));
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
+        return CAMEL_CASE_PATTERN.matcher(camelCase).replaceAll("$1_$2").toLowerCase();
     }
 }

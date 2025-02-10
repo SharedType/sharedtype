@@ -78,7 +78,7 @@ final class LoopTypeResolver implements TypeResolver {
                     }
                 }
             } else {
-                throw new SharedTypeInternalError("Unsupported TypeDef type: " + typeDef.getClass());
+                throw new SharedTypeInternalError(String.format("Unsupported TypeDef type: %s, %s", typeDef.getClass(), typeDef));
             }
 
             resolveTypeInfo(processingDefStack, processingInfoStack);

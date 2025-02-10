@@ -37,7 +37,7 @@ final class PropsFactoryTest {
         assertThat(props.getIgnoredFieldNames()).containsExactly("serialVersionUID");
 
         Props.Typescript typescriptProps = props.getTypescript();
-        assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.d.ts");
+        assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.ts");
         assertThat(typescriptProps.getInterfacePropertyDelimiter()).isEqualTo(';');
         assertThat(typescriptProps.getJavaObjectMapType()).isEqualTo("any");
 

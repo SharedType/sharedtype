@@ -3,6 +3,7 @@ package online.sharedtype.processor.parser;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.ConstantField;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
@@ -48,19 +49,16 @@ final class ConstantTypeDefParserTest {
     }
 
     @Test
-    void ignoreGlobalConfiguredField() {
-        var fieldElement = ctxMocks.primitiveVariable("SHOULD_BE_IGNORED", TypeKind.INT)
-            .withModifiers(Modifier.STATIC).element();
-        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
-            .withEnclosedElements(fieldElement)
-            .element();
-        when(ctxMocks.getContext().isIgnored(fieldElement)).thenReturn(true);
-        var typeDef = parser.parse(typeElement).get(0);
-        assertThat(typeDef.components()).isEmpty();
+    void skipClassWithoutStaticField() {
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc").element();
+        assertThat(parser.parse(typeElement)).isEmpty();
     }
 
     @Test
     void parse() {
+        var ignoredField = ctxMocks.primitiveVariable("SHOULD_BE_IGNORED", TypeKind.INT)
+            .withModifiers(Modifier.STATIC);
+        when(ctxMocks.getContext().isIgnored(ignoredField.element())).thenReturn(true);
         var intStaticField = ctxMocks.primitiveVariable("CONST_INT_VALUE", TypeKind.INT)
             .withModifiers(Modifier.STATIC)
             .ofTree(
@@ -83,6 +81,7 @@ final class ConstantTypeDefParserTest {
             );
         TypeElement typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
             .withEnclosedElements(
+                ignoredField.element(),
                 intStaticField.element(),
                 stringStaticField.element(),
                 nonStaticField.element()

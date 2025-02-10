@@ -48,8 +48,8 @@ final class TemplateTypeFileWriterTest {
     void setUp() throws Exception {
         writer = new TemplateTypeFileWriter(
             ctxMocks.getContext(), renderer, Template.TEMPLATE_TYPESCRIPT_HEADER,
-            Set.of(converter1, converter2, converter3), "types.d.ts");
-        when(ctxMocks.getContext().createSourceOutput("types.d.ts")).thenReturn(fileObject);
+            Set.of(converter1, converter2, converter3), "types.ts");
+        when(ctxMocks.getContext().createSourceOutput("types.ts")).thenReturn(fileObject);
         when(fileObject.openOutputStream()).thenReturn(outputStream);
     }
 
