@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,5 +46,11 @@ final class MustacheTemplateRendererTest {
     void errorIfTemplateNotLoaded() {
         assertThatThrownBy(() -> renderer.render(writer, Collections.singletonList(Tuple.of(template, new HashMap<>()))))
             .hasMessageContaining("Template not found");
+    }
+
+    @Test
+    void skipEmptyTemplate() {
+        renderer.render(writer, Collections.singletonList(Tuple.of(Template.NULL_TEMPLATE, new HashMap<>())));
+        verify(mf, never()).compile(anyString());
     }
 }
