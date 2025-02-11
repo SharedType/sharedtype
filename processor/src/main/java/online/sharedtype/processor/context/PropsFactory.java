@@ -48,6 +48,7 @@ public final class PropsFactory {
                 .outputFileName(properties.getProperty("sharedtype.typescript.output-file-name"))
                 .interfacePropertyDelimiter(properties.getProperty("sharedtype.typescript.interface-property-delimiter").charAt(0))
                 .javaObjectMapType(properties.getProperty("sharedtype.typescript.java-object-map-type"))
+                .constantInline(parseBoolean(properties, "sharedtype.typescript.constant-inlined"))
                 .build())
             .rust(Props.Rust.builder()
                 .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))

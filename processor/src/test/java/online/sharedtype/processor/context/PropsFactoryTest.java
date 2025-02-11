@@ -40,6 +40,7 @@ final class PropsFactoryTest {
         assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.ts");
         assertThat(typescriptProps.getInterfacePropertyDelimiter()).isEqualTo(';');
         assertThat(typescriptProps.getJavaObjectMapType()).isEqualTo("any");
+        assertThat(typescriptProps.isConstantInline()).isEqualTo(false);
 
         Props.Rust rustProps = props.getRust();
         assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");

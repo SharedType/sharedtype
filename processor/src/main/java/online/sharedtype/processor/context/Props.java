@@ -32,6 +32,7 @@ public final class Props {
         private final String outputFileName;
         private final char interfacePropertyDelimiter;
         private final String javaObjectMapType;
+        private final boolean constantInline;
     }
 
     @Builder(access = AccessLevel.PACKAGE)

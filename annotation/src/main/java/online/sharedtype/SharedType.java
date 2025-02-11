@@ -128,17 +128,6 @@ public @interface SharedType {
     String[] rustMacroTraits() default {};
 
     /**
-     * Java constants have to reside in a class.
-     * If this property is set to true, constants will be placed in top level of generated code. When name conflicts occur, an error will be reported.
-     * By default, generated constants will be placed in a namespace same as the Java class name:
-     * <ul>
-     *     <li>Typescript: Constants will be placed in a const object.</li>
-     *     <li>Rust: TODO </li>
-     * </ul>
-     */
-    boolean constantInlined() default false;
-
-    /**
      * Mark a method as an accessor regardless of its name.
      * Getter prefixes are configured in global properties.
      * This annotation will be ignored if {@link #includes()} does not include {@link ComponentType#ACCESSORS}.

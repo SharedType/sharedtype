@@ -3,7 +3,6 @@ package online.sharedtype.processor.parser;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.ConstantField;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
