@@ -39,6 +39,10 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
             classDef.directSupertypes().stream().map(typeInfo1 -> typeExpressionConverter.toTypeExpr(typeInfo1, typeDef)).collect(Collectors.toList()),
             classDef.components().stream().map(field -> toPropertyExpr(field, typeDef)).collect(Collectors.toList())
         );
+
+//        if (value.properties.isEmpty() && !classDef.isDepended()) {
+//            return EMPTY;
+//        }
         return Tuple.of(Template.TEMPLATE_TYPESCRIPT_INTERFACE, value);
     }
 

@@ -23,7 +23,7 @@ final class TypescriptEnumUnionConverter implements TemplateDataConverter {
             values.add(LiteralUtils.literalValue(component.value()));
         }
         if (values.isEmpty()) {
-            return Tuple.of(Template.NULL_TEMPLATE, null);
+            return EMPTY;
         }
         return Tuple.of(Template.TEMPLATE_TYPESCRIPT_ENUM_UNION, new EnumUnionExpr(enumDef.simpleName(), values));
     }

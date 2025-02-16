@@ -84,8 +84,8 @@ public final class ConcreteTypeInfo implements TypeInfo {
     public void markShallowResolved(TypeDef resolvedTypeDef) {
         this.resolved = true;
         this.typeDef = resolvedTypeDef;
-        if (resolvedTypeDef instanceof ClassDef) {
-            ((ClassDef) resolvedTypeDef).linkTypeInfo(this);
+        if (resolvedTypeDef instanceof ConcreteTypeDef) {
+            ((ConcreteTypeDef) resolvedTypeDef).linkTypeInfo(this);
         }
     }
 

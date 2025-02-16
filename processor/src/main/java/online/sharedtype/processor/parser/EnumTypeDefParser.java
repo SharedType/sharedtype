@@ -7,6 +7,7 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
@@ -67,6 +68,8 @@ final class EnumTypeDefParser implements TypeDefParser {
         enumDef.components().addAll(
             enumValueMarker.marked() ? parseEnumConstants(typeElement, enumConstantElems, enumValueMarker, enumDef) : useEnumConstantNames(enumConstantElems)
         );
+        TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), TypeContext.builder().typeDef(enumDef).dependingKind(DependingKind.SELF).build());
+        enumDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);
         ctx.getTypeStore().saveConfig(enumDef, config);
         return Collections.singletonList(enumDef);
     }

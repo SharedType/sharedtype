@@ -2,11 +2,13 @@ package online.sharedtype.processor.parser;
 
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.TestUtils;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TypeElementMock;
+import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.parser.type.TypeContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -35,6 +37,9 @@ final class EnumTypeDefParserTest {
     private final TypeContext typeContext = TypeContext.builder()
         .typeDef(EnumDef.builder().qualifiedName("com.github.cuzfrog.EnumA").build())
         .dependingKind(DependingKind.ENUM_VALUE).build();
+    private final TypeContext selfTypeContext = TypeContext.builder()
+        .typeDef(EnumDef.builder().qualifiedName("com.github.cuzfrog.EnumA").build())
+        .dependingKind(DependingKind.SELF).build();
 
     private final ArgumentCaptor<String> msgCaptor = ArgumentCaptor.forClass(String.class);
 
@@ -54,6 +59,9 @@ final class EnumTypeDefParserTest {
             ctxMocks.declaredTypeVariable("Value2", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element()
         );
 
+        ConcreteTypeInfo typeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").build();
+        when(typeInfoParser.parse(enumType.type(), selfTypeContext)).thenReturn(typeInfo);
+
         EnumDef typeDef = (EnumDef)parser.parse(enumType.element()).getFirst();
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
@@ -67,6 +75,7 @@ final class EnumTypeDefParserTest {
                 assertThat(c2.name()).isEqualTo("Value2");
             }
         );
+        assertThat(typeDef.typeInfoSet()).containsExactly(typeInfo);
 
         verify(ctxMocks.getTypeStore()).saveConfig(eq(typeDef), configCaptor.capture());
         var config = configCaptor.getValue();

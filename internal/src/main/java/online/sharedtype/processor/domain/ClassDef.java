@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(of = "qualifiedName", callSuper = false)
-public final class ClassDef extends AbstractTypeDef {
+public final class ClassDef extends ConcreteTypeDef {
     private static final long serialVersionUID = 9052013791381913516L;
     private final String qualifiedName;
     private final String simpleName;
@@ -58,6 +58,7 @@ public final class ClassDef extends AbstractTypeDef {
         return supertypes;
     }
 
+    @Override
     public Set<ConcreteTypeInfo> typeInfoSet() {
         return typeInfoSet;
     }
@@ -73,6 +74,7 @@ public final class ClassDef extends AbstractTypeDef {
      * Register a counterpart typeInfo.
      * @see #typeInfoSet
      */
+    @Override
     public void linkTypeInfo(ConcreteTypeInfo typeInfo) {
         typeInfoSet.add(typeInfo);
     }
