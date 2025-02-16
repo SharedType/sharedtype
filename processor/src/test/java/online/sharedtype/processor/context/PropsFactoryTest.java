@@ -32,7 +32,8 @@ final class PropsFactoryTest {
             "java.lang.Object",
             "java.lang.Enum",
             "java.io.Serializable",
-            "java.lang.Record"
+            "java.lang.Record",
+            "java.lang.Cloneable"
         );
         assertThat(props.getIgnoredFieldNames()).containsExactly("serialVersionUID");
 

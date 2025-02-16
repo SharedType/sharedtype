@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +31,7 @@ public final class ClassDef extends ConcreteTypeDef {
     private final List<TypeVariableInfo> typeVariables = new ArrayList<>();
     @Builder.Default
     private final List<TypeInfo> supertypes = new ArrayList<>(); // direct supertypes
+    private final Set<TypeDef> subtypes = new HashSet<>(); // direct subtypes
 
     /** Counterpart typeInfos, there can be multiple typeInfo instances with different reified typeArgs relating to the same typeDef. */
     private final Set<ConcreteTypeInfo> typeInfoSet = new HashSet<>();
@@ -58,6 +60,10 @@ public final class ClassDef extends ConcreteTypeDef {
         return supertypes;
     }
 
+    public Set<TypeDef> directSubtypes() {
+        return subtypes;
+    }
+
     @Override
     public Set<ConcreteTypeInfo> typeInfoSet() {
         return typeInfoSet;
@@ -68,6 +74,10 @@ public final class ClassDef extends ConcreteTypeDef {
     }
     public boolean isArrayType() {
         return typeInfoSet.stream().anyMatch(ConcreteTypeInfo::isArrayType);
+    }
+
+    public void addSubtype(TypeDef subtype) {
+        subtypes.add(subtype);
     }
 
     /**

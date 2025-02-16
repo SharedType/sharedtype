@@ -4,7 +4,6 @@ import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
@@ -22,7 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 final class TypescriptInterfaceConverterIntegrationTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypescriptInterfaceConverter converter = new TypescriptInterfaceConverter(
-        ctxMocks.getContext(), TypeExpressionConverter.typescript(ctxMocks.getContext()));
+        ctxMocks.getContext(), TypeExpressionConverter.typescript(ctxMocks.getContext())
+    );
 
     @Test
     void skipMapClassDef() {
@@ -30,6 +30,15 @@ final class TypescriptInterfaceConverterIntegrationTest {
             .build();
         classDef.linkTypeInfo(ConcreteTypeInfo.builder().mapType(true).build());
         assertThat(converter.shouldAccept(classDef)).isFalse();
+    }
+
+    @Test
+    void skipEmptyClassDef() {
+        ClassDef classDef = ClassDef.builder().simpleName("Abc").build();
+        assertThat(converter.shouldAccept(classDef)).isFalse();
+
+        classDef.setDepended(true);
+        assertThat(converter.shouldAccept(classDef)).isTrue();
     }
 
     @Test

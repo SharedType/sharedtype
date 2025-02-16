@@ -47,10 +47,4 @@ final class MustacheTemplateRendererTest {
         assertThatThrownBy(() -> renderer.render(writer, Collections.singletonList(Tuple.of(template, new HashMap<>()))))
             .hasMessageContaining("Template not found");
     }
-
-    @Test
-    void skipEmptyTemplate() {
-        renderer.render(writer, Collections.singletonList(Tuple.of(Template.NULL_TEMPLATE, new HashMap<>())));
-        verify(mf, never()).compile(anyString());
-    }
 }

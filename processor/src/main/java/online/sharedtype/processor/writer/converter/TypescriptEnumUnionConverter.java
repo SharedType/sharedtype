@@ -12,7 +12,7 @@ import java.util.List;
 final class TypescriptEnumUnionConverter implements TemplateDataConverter {
     @Override
     public boolean shouldAccept(TypeDef typeDef) {
-        return typeDef instanceof EnumDef;
+        return typeDef instanceof EnumDef && !((EnumDef) typeDef).components().isEmpty();
     }
 
     @Override
@@ -21,9 +21,6 @@ final class TypescriptEnumUnionConverter implements TemplateDataConverter {
         List<String> values = new ArrayList<>(enumDef.components().size());
         for (EnumValueInfo component : enumDef.components()) {
             values.add(LiteralUtils.literalValue(component.value()));
-        }
-        if (values.isEmpty()) {
-            return EMPTY;
         }
         return Tuple.of(Template.TEMPLATE_TYPESCRIPT_ENUM_UNION, new EnumUnionExpr(enumDef.simpleName(), values));
     }

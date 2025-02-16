@@ -23,10 +23,6 @@ final class MustacheTemplateRenderer implements TemplateRenderer {
     public void render(Writer writer, List<Tuple<Template, Object>> data) {
         for (Tuple<Template, Object> tuple : data) {
             Template template = tuple.a();
-            if (template == Template.NULL_TEMPLATE) {
-                continue;
-            }
-
             Object values = tuple.b();
             Mustache mustache = mf.compile(template.getResourcePath());
             if (mustache == null) {

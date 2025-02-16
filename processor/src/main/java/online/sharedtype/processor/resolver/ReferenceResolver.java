@@ -47,10 +47,11 @@ final class ReferenceResolver implements TypeResolver {
                 ConcreteTypeDef curConcreteTypeDef = (ConcreteTypeDef) cur;
                 List<TypeDef> referencingTypeDefs = curConcreteTypeDef.typeInfoSet().stream()
                     .flatMap(ts -> ts.referencingTypes().stream()).collect(Collectors.toList());
+                if (!referencingTypeDefs.isEmpty()){
+                    curConcreteTypeDef.setDepended(true);
+                }
                 for (TypeDef referencingTypeDef : referencingTypeDefs) {
-                    if (referencingTypeDef != null) {
-                        typeDefStack.push(referencingTypeDef);
-                    }
+                    typeDefStack.push(referencingTypeDef);
                     if (referencingTypeDef instanceof ConcreteTypeDef) {
                         ConcreteTypeDef dependingClassDef = (ConcreteTypeDef) referencingTypeDef;
                         if (dependingClassDef.isAnnotated() || dependingClassDef.isReferencedByAnnotated()) {

@@ -29,6 +29,4 @@ public interface TemplateDataConverter {
         converters.add(new RustEnumConverter(ctx));
         return converters;
     }
-
-    Tuple<Template, Object> EMPTY = Tuple.of(Template.NULL_TEMPLATE, null);
 }

@@ -40,7 +40,6 @@ final class TypescriptEnumUnionConverterTest {
             .simpleName("EnumA")
             .qualifiedName("com.github.cuzfrog.EnumA")
             .build();
-        var data = converter.convert(enumDef);
-        assertThat(data.a()).isEqualTo(Template.NULL_TEMPLATE);
+        assertThat(converter.shouldAccept(enumDef)).isFalse();
     }
 }

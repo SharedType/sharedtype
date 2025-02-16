@@ -13,7 +13,6 @@ import online.sharedtype.processor.context.OutputTarget;
 @EqualsAndHashCode
 @Getter(AccessLevel.PACKAGE)
 public final class Template {
-    public static final Template NULL_TEMPLATE = new Template(); // this is for skipping render
     public static final Template TEMPLATE_TYPESCRIPT_HEADER = new Template(OutputTarget.TYPESCRIPT, "header");
     public static final Template TEMPLATE_TYPESCRIPT_INTERFACE = new Template(OutputTarget.TYPESCRIPT, "interface");
     public static final Template TEMPLATE_TYPESCRIPT_ENUM_UNION = new Template(OutputTarget.TYPESCRIPT, "enum-union");
@@ -25,12 +24,6 @@ public final class Template {
 
     private final OutputTarget outputTarget;
     private final String resourcePath;
-
-    // only for EMPTY_TEMPLATE
-    private Template() {
-        outputTarget = null;
-        resourcePath = null;
-    }
 
     Template(OutputTarget outputTarget, String resourceName) {
         this.outputTarget = outputTarget;
