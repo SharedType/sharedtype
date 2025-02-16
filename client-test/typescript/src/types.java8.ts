@@ -1,4 +1,4 @@
-import type { JavaClass } from "../src/index.java8.d.ts";
+import type { JavaClass } from "./index.java8.js";
 
 export const javaClass: JavaClass = {
   string: "",
