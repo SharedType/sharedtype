@@ -1,11 +1,13 @@
 package online.sharedtype.processor.writer.converter;
 
+import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.Props;
 import online.sharedtype.processor.domain.ConstantField;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.writer.render.Template;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -20,12 +22,19 @@ final class TypescriptConstantConverterTest {
 
     private final ConstantNamespaceDef constantNamespaceDef = ConstantNamespaceDef.builder()
         .simpleName("Abc")
+        .qualifiedName("com.github.cuzfrog.Abc")
         .constants(List.of(
             new ConstantField("VALUE1", Constants.BOOLEAN_TYPE_INFO, true),
             new ConstantField("VALUE2", Constants.STRING_TYPE_INFO, "value2"),
             new ConstantField("VALUE3", Constants.FLOAT_TYPE_INFO, 3.5f)
         ))
         .build();
+    private final Config config = mock(Config.class);
+
+    @BeforeEach
+    void setup() {
+        ctxMocks.getTypeStore().saveConfig("com.github.cuzfrog.Abc", config);
+    }
 
     @Test
     void convertToConstObject() {
@@ -50,9 +59,7 @@ final class TypescriptConstantConverterTest {
 
     @Test
     void useInlineTemplate() {
-        Props.Typescript tsConfig = mock(Props.Typescript.class);
-        when(ctxMocks.getContext().getProps().getTypescript()).thenReturn(tsConfig);
-        when(tsConfig.isConstantInline()).thenReturn(true);
+        when(config.isTypescriptConstantInlined()).thenReturn(true);
         var tuple = converter.convert(constantNamespaceDef);
         assertThat(tuple.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_CONSTANT_INLINE);
     }

@@ -1,10 +1,12 @@
 package online.sharedtype.processor.writer.converter;
 
 import lombok.RequiredArgsConstructor;
+import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ConstantField;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.render.Template;
 
@@ -28,8 +30,12 @@ final class TypescriptConstantConverter implements TemplateDataConverter {
             constantNamespaceDef.components().stream().map(TypescriptConstantConverter::toConstantExpr).collect(Collectors.toList())
         );
 
+        Config config = ctx.getTypeStore().getConfig(typeDef.qualifiedName());
+        if (config == null) {
+            throw new SharedTypeInternalError("No config found for: " + typeDef.qualifiedName());
+        }
         return Tuple.of(
-            ctx.getProps().getTypescript().isConstantInline() ? Template.TEMPLATE_TYPESCRIPT_CONSTANT_INLINE : Template.TEMPLATE_TYPESCRIPT_CONSTANT,
+            config.isTypescriptConstantInlined() ? Template.TEMPLATE_TYPESCRIPT_CONSTANT_INLINE : Template.TEMPLATE_TYPESCRIPT_CONSTANT,
             value
         );
     }

@@ -70,8 +70,8 @@ public final class TypeStore {
         return typeDefByQualifiedName.containsKey(qualifiedName);
     }
 
-    public void saveConfig(TypeDef typeDef, Config config) {
-        typeConfig.put(typeDef.qualifiedName(), config);
+    public void saveConfig(String qualifiedName, Config config) {
+        typeConfig.put(qualifiedName, config);
     }
     @Nullable
     public Config getConfig(String qualifiedName) {

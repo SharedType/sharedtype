@@ -77,7 +77,7 @@ final class EnumTypeDefParserTest {
         );
         assertThat(typeDef.typeInfoSet()).containsExactly(typeInfo);
 
-        verify(ctxMocks.getTypeStore()).saveConfig(eq(typeDef), configCaptor.capture());
+        verify(ctxMocks.getTypeStore()).saveConfig(eq(typeDef.qualifiedName()), configCaptor.capture());
         var config = configCaptor.getValue();
         assertThat(config.getQualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(config.getAnno()).isSameAs(anno);

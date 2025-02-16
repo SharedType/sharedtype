@@ -2,7 +2,6 @@ package online.sharedtype.processor.parser;
 
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.LiteralTree;
-import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
@@ -49,13 +48,15 @@ final class ConstantTypeDefParser implements TypeDefParser {
         if (cachedDefs == null || cachedDefs.isEmpty()) {
             throw new SharedTypeInternalError("No main type def found for: " + qualifiedName);
         }
-        if (shouldSkip(cachedDefs.get(0))) {
+        TypeDef mainTypeDef = cachedDefs.get(0);
+        if (shouldSkip(mainTypeDef)) {
             return Collections.emptyList();
         }
 
         Config config = ctx.getTypeStore().getConfig(qualifiedName);
         if (config == null) {
-            config = new Config(typeElement);
+            config = new Config(typeElement, ctx);
+            ctx.getTypeStore().saveConfig(qualifiedName, config);
         }
         if (!config.includes(SharedType.ComponentType.CONSTANTS)) {
             return Collections.emptyList();

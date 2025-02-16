@@ -119,6 +119,15 @@ public @interface SharedType {
     ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS, ComponentType.CONSTANTS};
 
     /**
+     * Java fields have to reside in a class, which provides a natural namespace.
+     * By default, the generated typescript constants will be put in a const object with the same name as the class.
+     * This can be configured via global properties.
+     *
+     * @return Whether to inline typescript constants to top level without an object as namespace.
+     */
+    OptionalBool typescriptConstantInlined() default OptionalBool.DEFAULT;
+
+    /**
      * Macros to be added to the type in generated Rust code. E.g. "Debug" will generate {@code #[derive](Debug)}.
      * This property only affects this annotated type. By default, "Debug" and "PartialEq" are added to all types, which can be configured via global properties.
      * Resulted macros contain both global default and this property.
@@ -223,5 +232,11 @@ public @interface SharedType {
          * @implNote not implement yet.
          */
         CONSTANTS,
+    }
+
+    enum OptionalBool {
+        TRUE,
+        FALSE,
+        DEFAULT,
     }
 }

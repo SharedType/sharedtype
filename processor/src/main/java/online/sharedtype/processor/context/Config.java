@@ -25,6 +25,8 @@ public final class Config {
     @Getter
     private final String qualifiedName;
     private final Set<SharedType.ComponentType> includedComponentTypes;
+    @Getter
+    private final boolean typescriptConstantInlined;
 
     @Retention(RetentionPolicy.RUNTIME)
     @interface AnnoContainer {
@@ -35,7 +37,7 @@ public final class Config {
     static final class DummyDefault {
     }
 
-    public Config(TypeElement typeElement) {
+    public Config(TypeElement typeElement, Context ctx) {
         String simpleName = typeElement.getSimpleName().toString();
         SharedType annoFromType = typeElement.getAnnotation(SharedType.class);
         this.anno = annoFromType == null ? DummyDefault.class.getAnnotation(AnnoContainer.class).anno() : annoFromType;
@@ -43,9 +45,21 @@ public final class Config {
         this.qualifiedName = typeElement.getQualifiedName().toString();
         List<SharedType.ComponentType> includedCompTypes = Arrays.asList(anno.includes());
         this.includedComponentTypes = includedCompTypes.isEmpty() ? Collections.emptySet() : EnumSet.copyOf(includedCompTypes);
+        typescriptConstantInlined = evaluateOptionalBool(anno.typescriptConstantInlined(), ctx.getProps().getTypescript().isConstantInline());
     }
 
     public boolean includes(SharedType.ComponentType componentType) {
         return includedComponentTypes.contains(componentType);
+    }
+
+
+    private static boolean evaluateOptionalBool(SharedType.OptionalBool optionalBool, boolean defaultValue) {
+        if (optionalBool == SharedType.OptionalBool.TRUE) {
+            return true;
+        } else if (optionalBool == SharedType.OptionalBool.FALSE) {
+            return false;
+        } else {
+            return defaultValue;
+        }
     }
 }

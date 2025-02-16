@@ -46,7 +46,7 @@ final class EnumTypeDefParser implements TypeDefParser {
             return Collections.emptyList();
         }
 
-        Config config = new Config(typeElement);
+        Config config = new Config(typeElement, ctx);
         List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
         List<VariableElement> enumConstantElems = new ArrayList<>(enclosedElements.size());
 
@@ -70,7 +70,7 @@ final class EnumTypeDefParser implements TypeDefParser {
         );
         TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), TypeContext.builder().typeDef(enumDef).dependingKind(DependingKind.SELF).build());
         enumDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);
-        ctx.getTypeStore().saveConfig(enumDef, config);
+        ctx.getTypeStore().saveConfig(enumDef.qualifiedName(), config);
         return Collections.singletonList(enumDef);
     }
 

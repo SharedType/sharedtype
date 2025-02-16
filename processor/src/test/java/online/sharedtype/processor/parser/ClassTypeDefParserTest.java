@@ -142,7 +142,7 @@ final class ClassTypeDefParserTest {
         assertThat(classDef.typeInfoSet()).satisfiesExactly(typeInfo -> assertThat(typeInfo).isSameAs(parsedSelfTypeInfo));
 
         // config
-        verify(ctxMocks.getTypeStore()).saveConfig(eq(classDef), configCaptor.capture());
+        verify(ctxMocks.getTypeStore()).saveConfig(eq(classDef.qualifiedName()), configCaptor.capture());
         var config = configCaptor.getValue();
         assertThat(config.getAnno()).isSameAs(anno);
     }

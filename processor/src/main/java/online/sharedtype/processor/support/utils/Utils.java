@@ -1,8 +1,7 @@
 package online.sharedtype.processor.support.utils;
 
 import lombok.experimental.UtilityClass;
-
-import java.lang.reflect.Array;
+import online.sharedtype.SharedType;
 
 /**
  * @author Cause Chung

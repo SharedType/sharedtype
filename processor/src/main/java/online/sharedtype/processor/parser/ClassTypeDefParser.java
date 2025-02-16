@@ -67,7 +67,7 @@ final class ClassTypeDefParser implements TypeDefParser {
         if (!isValidClassTypeElement(typeElement)) {
             return Collections.emptyList();
         }
-        Config config = new Config(typeElement);
+        Config config = new Config(typeElement, ctx);
 
         ClassDef classDef = ClassDef.builder()
             .qualifiedName(config.getQualifiedName()).simpleName(config.getSimpleName())
@@ -75,7 +75,7 @@ final class ClassTypeDefParser implements TypeDefParser {
         classDef.typeVariables().addAll(parseTypeVariables(typeElement));
         classDef.components().addAll(parseComponents(typeElement, config, TypeContext.builder().typeDef(classDef).dependingKind(COMPONENTS).build()));
         classDef.directSupertypes().addAll(parseSupertypes(typeElement, TypeContext.builder().typeDef(classDef).dependingKind(SUPER_TYPE).build()));
-        ctx.getTypeStore().saveConfig(classDef, config);
+        ctx.getTypeStore().saveConfig(classDef.qualifiedName(), config);
 
         TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), TypeContext.builder().typeDef(classDef).dependingKind(SELF).build());
         classDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);

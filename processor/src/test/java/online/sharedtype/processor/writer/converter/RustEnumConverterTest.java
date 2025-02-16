@@ -51,7 +51,8 @@ final class RustEnumConverterTest {
         Config config = new Config(
             ctxMocks.typeElement("com.github.cuzfrog.EnumA")
                 .withAnnotation(SharedType.class, anno -> when(anno.rustMacroTraits()).thenReturn(new String[]{"PartialEq", "Clone"}))
-                .element()
+                .element(),
+            ctxMocks.getContext()
         );
         when(ctxMocks.getTypeStore().getConfig(enumDef.qualifiedName())).thenReturn(config);
 
