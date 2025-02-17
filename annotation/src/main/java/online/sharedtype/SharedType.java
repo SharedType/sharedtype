@@ -55,6 +55,7 @@ import java.lang.annotation.Target;
  * <p>
  * <b>Constants:</b><br>
  * Static fields are treated as constants. Only compile-time resolvable values are supported.
+ * Only constants in explicitly annotated types will be emitted.
  * </p>
  *
  * <p>
@@ -120,12 +121,16 @@ public @interface SharedType {
 
     /**
      * Java fields have to reside in a class, which provides a natural namespace.
-     * By default, the generated typescript constants will be put in a const object with the same name as the class.
-     * This can be configured via global properties.
+     * By default, the generated constants will be put in a namespace with the same name as the class.
+     * <ul>
+     *     <li>Typescript - constants be put in a const object</li>
+     *     <li>Rust - constants be put in a mod</li>
+     * </ul>
+     * This default can be configured via global properties.
      *
      * @return Whether to inline typescript constants to top level without an object as namespace.
      */
-    OptionalBool typescriptConstantInlined() default OptionalBool.DEFAULT;
+    OptionalBool constantNamespaced() default OptionalBool.DEFAULT;
 
     /**
      * Macros to be added to the type in generated Rust code. E.g. "Debug" will generate {@code #[derive](Debug)}.

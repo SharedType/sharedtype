@@ -2,10 +2,11 @@ package online.sharedtype.processor.writer.converter;
 
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.context.Props;
+import online.sharedtype.processor.context.OutputTarget;
 import online.sharedtype.processor.domain.ConstantField;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-final class TypescriptConstantConverterTest {
+final class ConstantConverterTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final TypescriptConstantConverter converter = new TypescriptConstantConverter(ctxMocks.getContext());
+    private final TypeExpressionConverter typeExpressionConverter = mock(TypeExpressionConverter.class);
+    private final ConstantConverter converter = new ConstantConverter(ctxMocks.getContext(), typeExpressionConverter, OutputTarget.TYPESCRIPT);
 
     private final ConstantNamespaceDef constantNamespaceDef = ConstantNamespaceDef.builder()
         .simpleName("Abc")
@@ -34,12 +36,13 @@ final class TypescriptConstantConverterTest {
     @BeforeEach
     void setup() {
         ctxMocks.getTypeStore().saveConfig("com.github.cuzfrog.Abc", config);
+        when(config.isConstantNamespaced()).thenReturn(true);
     }
 
     @Test
     void convertToConstObject() {
         var tuple = converter.convert(constantNamespaceDef);
-        var value = (TypescriptConstantConverter.ConstantNamespaceExpr)tuple.b();
+        var value = (ConstantConverter.ConstantNamespaceExpr)tuple.b();
         assertThat(value.name).isEqualTo("Abc");
         assertThat(value.constants).hasSize(3).satisfiesExactly(
             constantExpr -> {
@@ -55,12 +58,17 @@ final class TypescriptConstantConverterTest {
                 assertThat(constantExpr.value).isEqualTo("3.5");
             }
         );
+        var template = tuple.a();
+        assertThat(template.getOutputTarget()).isEqualTo(OutputTarget.TYPESCRIPT);
+        assertThat(template.getResourcePath()).contains("constant.mustache");
     }
 
     @Test
     void useInlineTemplate() {
-        when(config.isTypescriptConstantInlined()).thenReturn(true);
+        when(config.isConstantNamespaced()).thenReturn(false);
         var tuple = converter.convert(constantNamespaceDef);
-        assertThat(tuple.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_CONSTANT_INLINE);
+        var template = tuple.a();
+        assertThat(template.getOutputTarget()).isEqualTo(OutputTarget.TYPESCRIPT);
+        assertThat(template.getResourcePath()).contains("constant-inline");
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@SharedType
+@SharedType(constantNamespaced = SharedType.OptionalBool.FALSE)
 public record JavaRecord<T>(
     String string,
     byte primitiveByte,
@@ -53,7 +53,7 @@ public record JavaRecord<T>(
     String duplicateAccessor,
     @SharedType.Ignore String explicitlyIgnored
 ) implements InterfaceA<T> {
-    static final int STATIC_FIELD = 888;
+    static final int STATIC_FIELD_FROM_JAVA_RECORD = 888;
 
     @SharedType.Accessor
     String getDuplicateAccessor() {

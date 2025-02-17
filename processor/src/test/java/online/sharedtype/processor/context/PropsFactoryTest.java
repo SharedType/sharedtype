@@ -36,12 +36,12 @@ final class PropsFactoryTest {
             "java.lang.Cloneable"
         );
         assertThat(props.getIgnoredFieldNames()).containsExactly("serialVersionUID");
+        assertThat(props.isConstantNamespaced()).isTrue();
 
         Props.Typescript typescriptProps = props.getTypescript();
         assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.ts");
         assertThat(typescriptProps.getInterfacePropertyDelimiter()).isEqualTo(';');
         assertThat(typescriptProps.getJavaObjectMapType()).isEqualTo("any");
-        assertThat(typescriptProps.isConstantInline()).isEqualTo(false);
 
         Props.Rust rustProps = props.getRust();
         assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");

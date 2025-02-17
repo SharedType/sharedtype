@@ -74,4 +74,8 @@ mod tests {
         print!("{}", &json);
         assert_eq!(&json, r#"{"mapField":{"33":"v1"},"enumKeyMapField":{},"customMapField":{},"nestedMapField":{"m1":{}}}"#);
     }
+
+    #[test]
+    fn constants() {
+    }
 }

@@ -26,7 +26,7 @@ public final class Config {
     private final String qualifiedName;
     private final Set<SharedType.ComponentType> includedComponentTypes;
     @Getter
-    private final boolean typescriptConstantInlined;
+    private final boolean constantNamespaced;
 
     @Retention(RetentionPolicy.RUNTIME)
     @interface AnnoContainer {
@@ -45,7 +45,7 @@ public final class Config {
         this.qualifiedName = typeElement.getQualifiedName().toString();
         List<SharedType.ComponentType> includedCompTypes = Arrays.asList(anno.includes());
         this.includedComponentTypes = includedCompTypes.isEmpty() ? Collections.emptySet() : EnumSet.copyOf(includedCompTypes);
-        typescriptConstantInlined = evaluateOptionalBool(anno.typescriptConstantInlined(), ctx.getProps().getTypescript().isConstantInline());
+        constantNamespaced = evaluateOptionalBool(anno.constantNamespaced(), ctx.getProps().isConstantNamespaced());
     }
 
     public boolean includes(SharedType.ComponentType componentType) {

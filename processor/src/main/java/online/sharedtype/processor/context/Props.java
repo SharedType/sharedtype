@@ -25,6 +25,7 @@ public final class Props {
     private final Set<String> maplikeTypeQualifiedNames;
     private final Set<String> ignoredTypeQualifiedNames;
     private final Set<String> ignoredFieldNames;
+    private final boolean constantNamespaced;
 
     @Builder(access = AccessLevel.PACKAGE)
     @Getter
@@ -32,7 +33,6 @@ public final class Props {
         private final String outputFileName;
         private final char interfacePropertyDelimiter;
         private final String javaObjectMapType;
-        private final boolean constantInline;
     }
 
     @Builder(access = AccessLevel.PACKAGE)
