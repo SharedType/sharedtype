@@ -19,6 +19,15 @@ final class RustEnumConverterTest {
     private final RustEnumConverter converter = new RustEnumConverter(ctxMocks.getContext());
 
     @Test
+    void skipEmptyEnum() {
+        EnumDef enumDef = EnumDef.builder()
+            .simpleName("EnumA")
+            .qualifiedName("com.github.cuzfrog.EnumA")
+            .build();
+        assertThat(converter.shouldAccept(enumDef)).isFalse();
+    }
+
+    @Test
     void convert() {
         EnumDef enumDef = EnumDef.builder()
             .simpleName("EnumA")

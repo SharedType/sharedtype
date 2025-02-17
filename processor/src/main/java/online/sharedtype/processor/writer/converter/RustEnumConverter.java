@@ -19,7 +19,7 @@ final class RustEnumConverter extends AbstractRustConverter {
 
     @Override
     public boolean shouldAccept(TypeDef typeDef) {
-        return typeDef instanceof EnumDef;
+        return typeDef instanceof EnumDef && !((EnumDef) typeDef).components().isEmpty();
     }
 
     @Override
