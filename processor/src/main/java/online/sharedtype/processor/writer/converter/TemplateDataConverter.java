@@ -18,19 +18,17 @@ public interface TemplateDataConverter {
 
     static Set<TemplateDataConverter> typescript(Context ctx) {
         Set<TemplateDataConverter> converters = new HashSet<>(3);
-        TypeExpressionConverter typescriptExprConverter = TypeExpressionConverter.typescript(ctx);
-        converters.add(new TypescriptInterfaceConverter(ctx, typescriptExprConverter));
+        converters.add(new TypescriptInterfaceConverter(ctx, TypeExpressionConverter.typescript(ctx)));
         converters.add(new TypescriptEnumUnionConverter());
-        converters.add(new ConstantConverter(ctx, typescriptExprConverter, OutputTarget.TYPESCRIPT));
+        converters.add(new ConstantConverter(ctx, null, OutputTarget.TYPESCRIPT));
         return converters;
     }
 
     static Set<TemplateDataConverter> rust(Context ctx) {
         Set<TemplateDataConverter> converters = new HashSet<>(3);
-        TypeExpressionConverter rustExprConverter = TypeExpressionConverter.rust(ctx);
-        converters.add(new RustStructConverter(ctx, rustExprConverter));
+        converters.add(new RustStructConverter(ctx, TypeExpressionConverter.rust(ctx)));
         converters.add(new RustEnumConverter(ctx));
-        converters.add(new ConstantConverter(ctx, rustExprConverter, OutputTarget.RUST));
+        converters.add(new ConstantConverter(ctx, TypeExpressionConverter.rustLiteral(), OutputTarget.RUST));
         return converters;
     }
 }

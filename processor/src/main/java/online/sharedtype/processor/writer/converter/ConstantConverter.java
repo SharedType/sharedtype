@@ -12,12 +12,14 @@ import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 final class ConstantConverter implements TemplateDataConverter {
     private final Context ctx;
+    @Nullable
     private final TypeExpressionConverter typeExpressionConverter;
     private final OutputTarget outputTarget;
 
@@ -44,7 +46,7 @@ final class ConstantConverter implements TemplateDataConverter {
     private ConstantExpr toConstantExpr(ConstantField constantField, TypeDef contextTypeDef) {
         return new ConstantExpr(
             constantField.name(),
-            typeExpressionConverter.toTypeExpr(constantField.type(), contextTypeDef),
+            typeExpressionConverter == null ? null : typeExpressionConverter.toTypeExpr(constantField.type(), contextTypeDef),
             LiteralUtils.literalValue(constantField.value())
         );
     }

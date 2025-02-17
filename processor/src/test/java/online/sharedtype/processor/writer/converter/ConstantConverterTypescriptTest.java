@@ -7,7 +7,6 @@ import online.sharedtype.processor.domain.ConstantField;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
-import online.sharedtype.processor.writer.render.Template;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,10 +16,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-final class ConstantConverterTest {
+final class ConstantConverterTypescriptTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeExpressionConverter typeExpressionConverter = mock(TypeExpressionConverter.class);
-    private final ConstantConverter converter = new ConstantConverter(ctxMocks.getContext(), typeExpressionConverter, OutputTarget.TYPESCRIPT);
+    private final ConstantConverter typescriptConverter = new ConstantConverter(ctxMocks.getContext(), null, OutputTarget.TYPESCRIPT);
 
     private final ConstantNamespaceDef constantNamespaceDef = ConstantNamespaceDef.builder()
         .simpleName("Abc")
@@ -41,7 +40,7 @@ final class ConstantConverterTest {
 
     @Test
     void convertToConstObject() {
-        var tuple = converter.convert(constantNamespaceDef);
+        var tuple = typescriptConverter.convert(constantNamespaceDef);
         var value = (ConstantConverter.ConstantNamespaceExpr)tuple.b();
         assertThat(value.name).isEqualTo("Abc");
         assertThat(value.constants).hasSize(3).satisfiesExactly(
@@ -66,7 +65,7 @@ final class ConstantConverterTest {
     @Test
     void useInlineTemplate() {
         when(config.isConstantNamespaced()).thenReturn(false);
-        var tuple = converter.convert(constantNamespaceDef);
+        var tuple = typescriptConverter.convert(constantNamespaceDef);
         var template = tuple.a();
         assertThat(template.getOutputTarget()).isEqualTo(OutputTarget.TYPESCRIPT);
         assertThat(template.getResourcePath()).contains("constant-inline");
