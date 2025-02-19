@@ -77,12 +77,13 @@ import java.lang.annotation.Target;
  * Custom map types are supported, e.g. a class that extends HashMap. But the type itself is treated as a mapType, so its structure will not be emitted.
  * <ul>
  *     <li>Typescript: e.g. {@code Record<string, T>} where {@code T} can be a reified type. If the key is enum, it will be a {@code Partial<Record<?, ?>>}</li>
+ *     <li>Rust: e.g. {@code HashMap<String, T>}, {@code HashMap<EnumType, T>}</li>
  * </ul>
  *
- * <p><a href="https://github.com/cuzfrog/SharedType">SharedType Website</a></p>
+ * <p><a href="https://github.com/SharedType/sharedtype">SharedType Website</a></p>
  *
  * @author Cause Chung
- * @implNote generics type bounds are not supported yet, Map is not supported yet.
+ * @implNote generics type bounds are not supported yet.
  */
 // TODO: test user-defined array-like types
 @Retention(RetentionPolicy.SOURCE)
@@ -242,6 +243,7 @@ public @interface SharedType {
     enum OptionalBool {
         TRUE,
         FALSE,
+        /** Fallback to global default. */
         DEFAULT,
     }
 }
