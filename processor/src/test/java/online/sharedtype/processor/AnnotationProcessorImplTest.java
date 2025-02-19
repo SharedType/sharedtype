@@ -10,6 +10,7 @@ import online.sharedtype.processor.parser.TypeDefParser;
 import online.sharedtype.processor.resolver.TypeResolver;
 import online.sharedtype.processor.writer.TypeWriter;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -41,8 +42,8 @@ class AnnotationProcessorImplTest {
         var typeElement1 = ctxMocks.typeElement("com.github.cuzfrog.Abc").element();
         var typeElement2 = ctxMocks.typeElement("com.github.cuzfrog.IgnoredClass").element();
         var classDef1 = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").simpleName("Abc").build();
-        when(typeDefParser.parse(typeElement1)).thenReturn(classDef1);
-        when(typeDefParser.parse(typeElement2)).thenReturn(null);
+        when(typeDefParser.parse(typeElement1)).thenReturn(Collections.singletonList(classDef1));
+        when(typeDefParser.parse(typeElement2)).thenReturn(Collections.emptyList());
 
         var dependencyDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Dependency").simpleName("Dependency").build();
         when(typeResolver.resolve(List.of(classDef1))).thenReturn(List.of(classDef1, dependencyDef));

@@ -103,7 +103,9 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
         Queue<ConcreteTypeInfo> queue = new ArrayDeque<>();
         ConcreteTypeInfo baseMapType = concreteTypeInfo;
         while (!ctx.getProps().getMaplikeTypeQualifiedNames().contains(baseMapType.qualifiedName())) {
-            ClassDef typeDef = (ClassDef)requireNonNull(baseMapType.typeDef(), "Custom Map type must have a type definition, concrete type: %s", concreteTypeInfo);
+            ClassDef typeDef = (ClassDef)requireNonNull(baseMapType.typeDef(),
+                "Custom Map type must have a type definition, concrete type: %s, current supertype: %s does not have a type definition.",
+                concreteTypeInfo, baseMapType);
             typeDef = typeDef.reify(baseMapType.typeArgs());
             for (TypeInfo supertype : typeDef.directSupertypes()) {
                 if (supertype instanceof ConcreteTypeInfo) {

@@ -1,6 +1,5 @@
 package online.sharedtype.processor.writer.render;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import online.sharedtype.processor.context.OutputTarget;
@@ -11,7 +10,7 @@ import online.sharedtype.processor.context.OutputTarget;
  * @author Cause Chung
  */
 @EqualsAndHashCode
-@Getter(AccessLevel.PACKAGE)
+@Getter
 public final class Template {
     public static final Template TEMPLATE_TYPESCRIPT_HEADER = new Template(OutputTarget.TYPESCRIPT, "header");
     public static final Template TEMPLATE_TYPESCRIPT_INTERFACE = new Template(OutputTarget.TYPESCRIPT, "interface");
@@ -26,6 +25,10 @@ public final class Template {
     Template(OutputTarget outputTarget, String resourceName) {
         this.outputTarget = outputTarget;
         this.resourcePath = String.format("templates/%s/%s.mustache", outputTarget.name().toLowerCase(), resourceName);
+    }
+
+    public static Template forConstant(OutputTarget outputTarget, boolean constantNamespaced) {
+        return new Template(outputTarget, constantNamespaced ? "constant" : "constant-inline");
     }
 
     @Override

@@ -1,6 +1,6 @@
 package online.sharedtype.processor.resolver;
 
-import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.ConcreteTypeDef;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.support.annotation.SideEffect;
 
@@ -43,16 +43,17 @@ final class ReferenceResolver implements TypeResolver {
                 visited.add(cur);
             }
 
-            if (cur instanceof ClassDef) {
-                ClassDef curClassDef = (ClassDef) cur;
-                List<TypeDef> referencingTypeDefs = curClassDef.typeInfoSet().stream()
+            if (cur instanceof ConcreteTypeDef) {
+                ConcreteTypeDef curConcreteTypeDef = (ConcreteTypeDef) cur;
+                List<TypeDef> referencingTypeDefs = curConcreteTypeDef.typeInfoSet().stream()
                     .flatMap(ts -> ts.referencingTypes().stream()).collect(Collectors.toList());
+                if (!referencingTypeDefs.isEmpty()){
+                    curConcreteTypeDef.setDepended(true);
+                }
                 for (TypeDef referencingTypeDef : referencingTypeDefs) {
-                    if (referencingTypeDef != null) {
-                        typeDefStack.push(referencingTypeDef);
-                    }
-                    if (referencingTypeDef instanceof ClassDef) {
-                        ClassDef dependingClassDef = (ClassDef) referencingTypeDef;
+                    typeDefStack.push(referencingTypeDef);
+                    if (referencingTypeDef instanceof ConcreteTypeDef) {
+                        ConcreteTypeDef dependingClassDef = (ConcreteTypeDef) referencingTypeDef;
                         if (dependingClassDef.isAnnotated() || dependingClassDef.isReferencedByAnnotated()) {
                             cur.setReferencedByAnnotated(true);
                             referencedByAnnotated = true;

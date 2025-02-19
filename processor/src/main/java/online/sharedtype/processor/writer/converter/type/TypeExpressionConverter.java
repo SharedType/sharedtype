@@ -16,6 +16,10 @@ public interface TypeExpressionConverter {
         return new RustTypeExpressionConverter(ctx);
     }
 
+    static TypeExpressionConverter rustLiteral() {
+        return new RustLiteralTypeExpressionConverter();
+    }
+
     @RequiredArgsConstructor
     final class ArraySpec {
         final String prefix;

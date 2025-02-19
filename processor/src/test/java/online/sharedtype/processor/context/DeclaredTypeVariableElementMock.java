@@ -18,9 +18,4 @@ public final class DeclaredTypeVariableElementMock extends AbstractElementMock<V
         when(type.getKind()).thenReturn(typeKind);
         return this;
     }
-
-    public DeclaredTypeVariableElementMock ofTree(VariableTreeMock tree) {
-        tree.fromElement(element);
-        return this;
-    }
 }

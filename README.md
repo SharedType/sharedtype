@@ -35,7 +35,7 @@ pub struct User {
 ## Features
 * Java8 support.
 * Generics support.
-* (Planed) Constant support.
+* Constant support.
 * Client source dependency is only `@SharedType` retained at source code level.
 * SharedType AP jar <150KB, only 2 small dependencies: jsr305 annotations and [mustache](https://github.com/spullara/mustache.java).
 * Parsing takes milliseconds with `-proc:only`.

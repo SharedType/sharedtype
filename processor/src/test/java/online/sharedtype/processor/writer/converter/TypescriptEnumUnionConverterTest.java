@@ -33,4 +33,13 @@ final class TypescriptEnumUnionConverterTest {
         assertThat(model.name).isEqualTo("EnumA");
         assertThat(model.values).containsExactly("\"Value1\"", "123", "null");
     }
+
+    @Test
+    void skipEnumWithNoValues() {
+        EnumDef enumDef = EnumDef.builder()
+            .simpleName("EnumA")
+            .qualifiedName("com.github.cuzfrog.EnumA")
+            .build();
+        assertThat(converter.shouldAccept(enumDef)).isFalse();
+    }
 }

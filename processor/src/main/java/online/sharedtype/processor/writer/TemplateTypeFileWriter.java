@@ -2,6 +2,7 @@ package online.sharedtype.processor.writer;
 
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.writer.adaptor.RenderDataAdaptor;
 import online.sharedtype.processor.writer.converter.TemplateDataConverter;
@@ -39,11 +40,10 @@ final class TemplateTypeFileWriter implements TypeWriter {
 
         Map<String, TypeDef> simpleNames = new HashMap<>(typeDefs.size());
         for (TypeDef typeDef : typeDefs) {
-            TypeDef duplicate = simpleNames.get(typeDef.simpleName());
+            TypeDef duplicate = typeDef instanceof ConstantNamespaceDef ? null : simpleNames.get(typeDef.simpleName()); // todo: split class/enum and constant duplication checks
             if (duplicate != null) {
-                ctx.error("Duplicate names found: %s and %s, which is not allowed in output code." +
+                ctx.warn("Duplicate names found: %s and %s, which is not allowed in output code." +
                     " You may use @SharedType(name=\"...\") to rename a type.", typeDef.qualifiedName(), duplicate.qualifiedName());
-                return;
             }
             simpleNames.put(typeDef.simpleName(), typeDef);
             for (TemplateDataConverter converter : converters) {

@@ -98,7 +98,8 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                 .simpleName(simpleName)
                 .typeArgs(parsedTypeArgs)
                 .enumType(ctx.isEnumType(currentType))
-                .mapType(ctx.isMaplike(currentType))
+                .mapType(ctx.isMaplike(currentType)) // TODO: use enum
+                .arrayType(ctx.isArraylike(currentType))
                 .baseMapType(ctx.getProps().getMaplikeTypeQualifiedNames().contains(qualifiedName))
                 .resolved(resolved)
                 .build();

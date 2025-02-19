@@ -81,10 +81,9 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
         for (Element element : elements) {
             if (element instanceof TypeElement) {
                 TypeElement typeElement = (TypeElement) element;
-                TypeDef typeDef = parser.parse(typeElement);
-                if (typeDef != null) {
-                    discoveredDefs.add(typeDef);
-                } else {
+                List<TypeDef> typeDefs = parser.parse(typeElement);
+                discoveredDefs.addAll(typeDefs);
+                if (typeDefs.isEmpty()){
                     ctx.warn("Type '%s' is ignored or invalid, but annotated with '%s'.", typeElement.getQualifiedName().toString(), ANNOTATION_QUALIFIED_NAME);
                 }
             } else {

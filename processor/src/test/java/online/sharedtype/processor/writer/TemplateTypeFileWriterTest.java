@@ -2,6 +2,7 @@ package online.sharedtype.processor.writer;
 
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.writer.adaptor.RenderDataAdaptor;
 import online.sharedtype.processor.writer.converter.TemplateDataConverter;
 import online.sharedtype.processor.writer.render.Template;
@@ -47,8 +48,8 @@ final class TemplateTypeFileWriterTest {
     void setUp() throws Exception {
         writer = new TemplateTypeFileWriter(
             ctxMocks.getContext(), renderer, Template.TEMPLATE_TYPESCRIPT_HEADER,
-            Set.of(converter1, converter2, converter3), "types.d.ts");
-        when(ctxMocks.getContext().createSourceOutput("types.d.ts")).thenReturn(fileObject);
+            Set.of(converter1, converter2, converter3), "types.ts");
+        when(ctxMocks.getContext().createSourceOutput("types.ts")).thenReturn(fileObject);
         when(fileObject.openOutputStream()).thenReturn(outputStream);
     }
 
@@ -91,13 +92,25 @@ final class TemplateTypeFileWriterTest {
 
     @MockitoSettings(strictness = Strictness.LENIENT)
     @Test
-    void failOnDuplicateSimpleName() throws Exception {
+    void warnOnDuplicateSimpleName() throws Exception {
         writer.write(List.of(
             ClassDef.builder().qualifiedName("com.github.cuzfrog.ClassA").simpleName("ClassA").build(),
             ClassDef.builder().qualifiedName("com.github.cuzfrog.another.ClassA").simpleName("ClassA").build()
         ));
 
-        verify(ctxMocks.getContext()).error(any(), any(Object[].class));
-        verify(renderer, never()).render(any(), any());
+        verify(ctxMocks.getContext()).warn(any(), any(Object[].class));
+        verify(renderer).render(any(), any());
+    }
+
+    @MockitoSettings(strictness = Strictness.LENIENT)
+    @Test
+    void constantNamespaceDefDoesNotCountDuplicateName() throws Exception {
+        writer.write(List.of(
+            ClassDef.builder().qualifiedName("com.github.cuzfrog.ClassA").simpleName("ClassA").build(),
+            ConstantNamespaceDef.builder().qualifiedName("com.github.cuzfrog.ClassA").simpleName("ClassA").build()
+        ));
+
+        verify(ctxMocks.getContext(), never()).warn(any(), any(Object[].class));
+        verify(renderer).render(any(), any());
     }
 }

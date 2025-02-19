@@ -24,9 +24,13 @@ public interface TypeResolver {
     List<TypeDef> resolve(List<TypeDef> typeDefs);
 
     static TypeResolver create(Context ctx, TypeDefParser typeDefParser) {
+        // order matters
+        // TypeInfo and TypeDef resolution is completed in LoopTypeResolver,
+        // Other resolvers may depend on the result.
         return new CompositeTypeResolver(
             new LoopTypeResolver(ctx, typeDefParser),
-            new ReferenceResolver()
+            new ReferenceResolver(),
+            new SubtypeResolver()
         );
     }
 }

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(of = "qualifiedName", callSuper = false)
-public final class ClassDef extends AbstractTypeDef {
+public final class ClassDef extends ConcreteTypeDef {
     private static final long serialVersionUID = 9052013791381913516L;
     private final String qualifiedName;
     private final String simpleName;
@@ -30,6 +30,7 @@ public final class ClassDef extends AbstractTypeDef {
     private final List<TypeVariableInfo> typeVariables = new ArrayList<>();
     @Builder.Default
     private final List<TypeInfo> supertypes = new ArrayList<>(); // direct supertypes
+    private final Set<TypeDef> subtypes = new HashSet<>(); // direct subtypes
 
     /** Counterpart typeInfos, there can be multiple typeInfo instances with different reified typeArgs relating to the same typeDef. */
     private final Set<ConcreteTypeInfo> typeInfoSet = new HashSet<>();
@@ -58,6 +59,11 @@ public final class ClassDef extends AbstractTypeDef {
         return supertypes;
     }
 
+    public Set<TypeDef> directSubtypes() {
+        return subtypes;
+    }
+
+    @Override
     public Set<ConcreteTypeInfo> typeInfoSet() {
         return typeInfoSet;
     }
@@ -65,11 +71,19 @@ public final class ClassDef extends AbstractTypeDef {
     public boolean isMapType() {
         return typeInfoSet.stream().anyMatch(ConcreteTypeInfo::isMapType);
     }
+    public boolean isArrayType() {
+        return typeInfoSet.stream().anyMatch(ConcreteTypeInfo::isArrayType);
+    }
+
+    public void addSubtype(TypeDef subtype) {
+        subtypes.add(subtype);
+    }
 
     /**
      * Register a counterpart typeInfo.
      * @see #typeInfoSet
      */
+    @Override
     public void linkTypeInfo(ConcreteTypeInfo typeInfo) {
         typeInfoSet.add(typeInfo);
     }

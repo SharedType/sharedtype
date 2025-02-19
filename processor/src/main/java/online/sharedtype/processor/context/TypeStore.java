@@ -9,10 +9,15 @@ import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import static online.sharedtype.processor.domain.Constants.PREDEFINED_OBJECT_TYPES;
 
@@ -27,9 +32,9 @@ import static online.sharedtype.processor.domain.Constants.PREDEFINED_OBJECT_TYP
  * @author Cause Chung
  */
 public final class TypeStore {
-    private final Map<String, TypeDef> typeDefByQualifiedName = new HashMap<>();
+    private final Map<String, List<TypeDef>> typeDefByQualifiedName = new HashMap<>();
     private final Map<TypeInfoKey, TypeInfo> typeInfoByKey = new HashMap<>();
-    private final Map<TypeDef, Config> typeConfig = new HashMap<>();
+    private final Map<String, Config> typeConfig = new HashMap<>();
 
     TypeStore() {
         for (Map.Entry<String, ConcreteTypeInfo> entry : PREDEFINED_OBJECT_TYPES.entrySet()) {
@@ -38,14 +43,23 @@ public final class TypeStore {
     }
 
     public void saveTypeDef(String qualifiedName, TypeDef typeDef) {
-        typeDefByQualifiedName.put(qualifiedName, typeDef);
+        typeDefByQualifiedName.compute(qualifiedName, (k, v) -> {
+            if (v == null) {
+                v = new ArrayList<>();
+            }
+            if (!v.contains(typeDef)) {
+                v.add(typeDef);
+            }
+            return v;
+        });
     }
 
     public void saveTypeInfo(String qualifiedName, List<? extends TypeInfo> typeArgs, TypeInfo typeInfo) {
         typeInfoByKey.put(new TypeInfoKey(qualifiedName, typeArgs), typeInfo);
     }
 
-    public TypeDef getTypeDef(String qualifiedName) {
+    @Nullable
+    public List<TypeDef> getTypeDefs(String qualifiedName) {
         return typeDefByQualifiedName.get(qualifiedName);
     }
     public TypeInfo getTypeInfo(String qualifiedName, List<? extends TypeInfo> typeArgs) {
@@ -56,12 +70,12 @@ public final class TypeStore {
         return typeDefByQualifiedName.containsKey(qualifiedName);
     }
 
-    public void saveConfig(TypeDef typeDef, Config config) {
-        typeConfig.put(typeDef, config);
+    public void saveConfig(String qualifiedName, Config config) {
+        typeConfig.put(qualifiedName, config);
     }
     @Nullable
-    public Config getConfig(TypeDef typeDef) {
-        return typeConfig.get(typeDef);
+    public Config getConfig(String qualifiedName) {
+        return typeConfig.get(qualifiedName);
     }
 
     @EqualsAndHashCode

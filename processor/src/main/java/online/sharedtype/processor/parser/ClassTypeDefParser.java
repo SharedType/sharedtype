@@ -30,6 +30,7 @@ import javax.lang.model.util.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +44,11 @@ import static online.sharedtype.processor.domain.DependingKind.SUPER_TYPE;
  * @author Cause Chung
  */
 final class ClassTypeDefParser implements TypeDefParser {
+    private static final Set<String> SUPPORTED_ELEMENT_KINDS = new HashSet<String>(3){{
+        add(ElementKind.CLASS.name());
+        add(ElementKind.INTERFACE.name());
+        add("RECORD");
+    }};
     private final Context ctx;
     private final Types types;
     private final TypeInfoParser typeInfoParser;
@@ -54,23 +60,26 @@ final class ClassTypeDefParser implements TypeDefParser {
     }
 
     @Override
-    public TypeDef parse(TypeElement typeElement) {
-        if (!isValidClassTypeElement(typeElement)) {
-            return null;
+    public List<TypeDef> parse(TypeElement typeElement) {
+        if (!SUPPORTED_ELEMENT_KINDS.contains(typeElement.getKind().name())) {
+            return Collections.emptyList();
         }
-        Config config = new Config(typeElement);
+        if (!isValidClassTypeElement(typeElement)) {
+            return Collections.emptyList();
+        }
+        Config config = new Config(typeElement, ctx);
 
         ClassDef classDef = ClassDef.builder()
-            .qualifiedName(config.getQualifiedName()).simpleName(config.getName())
+            .qualifiedName(config.getQualifiedName()).simpleName(config.getSimpleName())
             .build();
         classDef.typeVariables().addAll(parseTypeVariables(typeElement));
         classDef.components().addAll(parseComponents(typeElement, config, TypeContext.builder().typeDef(classDef).dependingKind(COMPONENTS).build()));
         classDef.directSupertypes().addAll(parseSupertypes(typeElement, TypeContext.builder().typeDef(classDef).dependingKind(SUPER_TYPE).build()));
-        ctx.getTypeStore().saveConfig(classDef, config);
+        ctx.getTypeStore().saveConfig(classDef.qualifiedName(), config);
 
         TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), TypeContext.builder().typeDef(classDef).dependingKind(SELF).build());
         classDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);
-        return classDef;
+        return Collections.singletonList(classDef);
     }
 
     private boolean isValidClassTypeElement(TypeElement typeElement) {
@@ -109,7 +118,7 @@ final class ClassTypeDefParser implements TypeDefParser {
 
         List<TypeInfo> res = new ArrayList<>(supertypes.size());
         for (DeclaredType supertype : supertypes) {
-            if (!ctx.isTypeIgnored((TypeElement) supertype.asElement())) {
+            if (!ctx.isIgnored((TypeElement) supertype.asElement())) {
                 res.add(typeInfoParser.parse(supertype, typeContext));
             }
         }
@@ -147,20 +156,22 @@ final class ClassTypeDefParser implements TypeDefParser {
             .collect(Collectors.toSet());
 
         for (Element enclosedElement : enclosedElements) {
-            if (enclosedElement.getAnnotation(SharedType.Ignore.class) != null) {
+            if (ctx.isIgnored(enclosedElement)) {
                 continue;
             }
 
             TypeMirror type = enclosedElement.asType();
             String name = enclosedElement.getSimpleName().toString();
 
-            if (includeFields && enclosedElement.getKind() == ElementKind.FIELD && enclosedElement instanceof VariableElement) {
+            if (enclosedElement.getKind() == ElementKind.FIELD && enclosedElement instanceof VariableElement) {
                 VariableElement variableElem = (VariableElement) enclosedElement;
-                if (uniqueNamesOfTypes.contains(name, type) || !instanceFieldNames.contains(name)) {
+                if (uniqueNamesOfTypes.contains(name, type)) {
                     continue;
                 }
-                res.add(Tuple.of(variableElem, name));
-                uniqueNamesOfTypes.add(name, type);
+                if ((includeFields && instanceFieldNames.contains(name))) {
+                    res.add(Tuple.of(variableElem, name));
+                    uniqueNamesOfTypes.add(name, type);
+                }
             } else if (includeAccessors && enclosedElement instanceof ExecutableElement) {
                 ExecutableElement methodElem = (ExecutableElement) enclosedElement;
                 boolean explicitAccessor = methodElem.getAnnotation(SharedType.Accessor.class) != null;
@@ -181,8 +192,6 @@ final class ClassTypeDefParser implements TypeDefParser {
                 res.add(Tuple.of(methodElem, baseName));
                 uniqueNamesOfTypes.add(baseName, returnType);
             }
-
-            // TODO: CONSTANTS
 
             if (uniqueNamesOfTypes.ignoredType != null) {
                 ctx.error("%s.%s references to explicitly ignored type %s, which is not allowed." +

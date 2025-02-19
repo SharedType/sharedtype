@@ -24,6 +24,8 @@ public final class Props {
     private final Set<String> arraylikeTypeQualifiedNames;
     private final Set<String> maplikeTypeQualifiedNames;
     private final Set<String> ignoredTypeQualifiedNames;
+    private final Set<String> ignoredFieldNames;
+    private final boolean constantNamespaced;
 
     @Builder(access = AccessLevel.PACKAGE)
     @Getter

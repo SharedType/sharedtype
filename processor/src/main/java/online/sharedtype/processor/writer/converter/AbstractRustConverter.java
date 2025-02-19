@@ -19,7 +19,7 @@ abstract class AbstractRustConverter implements TemplateDataConverter {
     }
 
     final Set<String> macroTraits(TypeDef typeDef) {
-        Config config = ctx.getTypeStore().getConfig(typeDef);
+        Config config = ctx.getTypeStore().getConfig(typeDef.qualifiedName());
         String[] typeMacroTraits = config != null ? config.getAnno().rustMacroTraits() : Utils.emptyStringArray();
         Set<String> traits = new LinkedHashSet<>(typeMacroTraits.length + defaultTraits.size());
         traits.addAll(defaultTraits);

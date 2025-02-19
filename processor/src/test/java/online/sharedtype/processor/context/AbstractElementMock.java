@@ -2,6 +2,7 @@ package online.sharedtype.processor.context;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -11,6 +12,7 @@ import javax.lang.model.util.Types;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -59,6 +61,16 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
     }
     public final <A extends Annotation> M withAnnotation(Class<A> annotationClazz, Supplier<A> supplier) {
         when(element.getAnnotation(annotationClazz)).thenReturn(supplier.get());
+        return returnThis();
+    }
+
+    public final M withModifiers(Modifier... modifiers) {
+        when(element.getModifiers()).thenReturn(Set.of(modifiers));
+        return returnThis();
+    }
+
+    public final M ofTree(VariableTreeMock tree) {
+        tree.fromElement(element);
         return returnThis();
     }
 

@@ -12,12 +12,20 @@ import java.util.Arrays;
 import static online.sharedtype.processor.domain.Constants.INT_TYPE_INFO;
 import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 final class RustEnumConverterTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final RustEnumConverter converter = new RustEnumConverter(ctxMocks.getContext());
+
+    @Test
+    void skipEmptyEnum() {
+        EnumDef enumDef = EnumDef.builder()
+            .simpleName("EnumA")
+            .qualifiedName("com.github.cuzfrog.EnumA")
+            .build();
+        assertThat(converter.shouldAccept(enumDef)).isFalse();
+    }
 
     @Test
     void convert() {
@@ -52,9 +60,10 @@ final class RustEnumConverterTest {
         Config config = new Config(
             ctxMocks.typeElement("com.github.cuzfrog.EnumA")
                 .withAnnotation(SharedType.class, anno -> when(anno.rustMacroTraits()).thenReturn(new String[]{"PartialEq", "Clone"}))
-                .element()
+                .element(),
+            ctxMocks.getContext()
         );
-        when(ctxMocks.getTypeStore().getConfig(enumDef)).thenReturn(config);
+        when(ctxMocks.getTypeStore().getConfig(enumDef.qualifiedName())).thenReturn(config);
 
         var data = converter.convert(enumDef);
         var model = (RustEnumConverter.EnumExpr) data.b();

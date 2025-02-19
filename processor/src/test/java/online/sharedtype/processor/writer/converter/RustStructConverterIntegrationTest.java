@@ -26,6 +26,11 @@ final class RustStructConverterIntegrationTest {
     }
 
     @Test
+    void skipAnnotatedEmptyClassDef() {
+        assertThat(converter.shouldAccept(ClassDef.builder().annotated(true).build())).isFalse();
+    }
+
+    @Test
     void skipMapClassDef() {
         ClassDef classDef = ClassDef.builder()
             .build();
@@ -36,7 +41,9 @@ final class RustStructConverterIntegrationTest {
     @Test
     void shouldAcceptClassDefAnnotated() {
         assertThat(converter.shouldAccept(ClassDef.builder().build())).isFalse();
-        assertThat(converter.shouldAccept(ClassDef.builder().annotated(true).build())).isTrue();
+        assertThat(converter.shouldAccept(ClassDef.builder().annotated(true).components(
+            List.of(FieldComponentInfo.builder().build())
+        ).build())).isTrue();
         assertThat(converter.shouldAccept(ClassDef.builder().referencedByAnnotated(true).build())).isTrue();
     }
 

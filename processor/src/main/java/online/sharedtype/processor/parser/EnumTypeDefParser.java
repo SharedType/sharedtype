@@ -7,6 +7,7 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
@@ -40,8 +41,12 @@ final class EnumTypeDefParser implements TypeDefParser {
     private final TypeInfoParser typeInfoParser;
 
     @Override
-    public TypeDef parse(TypeElement typeElement) {
-        Config config = new Config(typeElement);
+    public List<TypeDef> parse(TypeElement typeElement) {
+        if (typeElement.getKind() != ElementKind.ENUM) {
+            return Collections.emptyList();
+        }
+
+        Config config = new Config(typeElement, ctx);
         List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
         List<VariableElement> enumConstantElems = new ArrayList<>(enclosedElements.size());
 
@@ -58,13 +63,15 @@ final class EnumTypeDefParser implements TypeDefParser {
 
         EnumDef enumDef = EnumDef.builder()
             .qualifiedName(config.getQualifiedName())
-            .simpleName(config.getName())
+            .simpleName(config.getSimpleName())
             .build();
         enumDef.components().addAll(
             enumValueMarker.marked() ? parseEnumConstants(typeElement, enumConstantElems, enumValueMarker, enumDef) : useEnumConstantNames(enumConstantElems)
         );
-        ctx.getTypeStore().saveConfig(enumDef, config);
-        return enumDef;
+        TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), TypeContext.builder().typeDef(enumDef).dependingKind(DependingKind.SELF).build());
+        enumDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);
+        ctx.getTypeStore().saveConfig(enumDef.qualifiedName(), config);
+        return Collections.singletonList(enumDef);
     }
 
     private static List<EnumValueInfo> useEnumConstantNames(List<VariableElement> enumConstants) {

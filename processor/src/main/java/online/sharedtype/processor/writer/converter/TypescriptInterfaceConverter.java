@@ -25,7 +25,10 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
     public boolean shouldAccept(TypeDef typeDef) {
         if (typeDef instanceof ClassDef) {
             ClassDef classDef = (ClassDef) typeDef;
-            return !classDef.isMapType();
+            if (classDef.isMapType()) {
+                return false;
+            }
+            return !classDef.components().isEmpty() || classDef.isDepended();
         }
         return false;
     }
@@ -39,6 +42,7 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
             classDef.directSupertypes().stream().map(typeInfo1 -> typeExpressionConverter.toTypeExpr(typeInfo1, typeDef)).collect(Collectors.toList()),
             classDef.components().stream().map(field -> toPropertyExpr(field, typeDef)).collect(Collectors.toList())
         );
+
         return Tuple.of(Template.TEMPLATE_TYPESCRIPT_INTERFACE, value);
     }
 

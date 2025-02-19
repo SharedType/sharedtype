@@ -2,21 +2,22 @@ package online.sharedtype.processor.parser;
 
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
+import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TestUtils;
+import online.sharedtype.processor.context.TypeElementMock;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.context.TypeElementMock;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.parser.type.TypeContext;
+import online.sharedtype.processor.parser.type.TypeInfoParser;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
-import online.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,6 +44,8 @@ final class ClassTypeDefParserTest {
 
     @Test
     void parseComplexClass() {
+        var staticField1 = ctxMocks.primitiveVariable("CONST_VALUE", TypeKind.INT)
+            .withModifiers(Modifier.STATIC); // will be ignored
         var field1 = ctxMocks.primitiveVariable("field1", TypeKind.BOOLEAN);
         var field2 = ctxMocks.declaredTypeVariable("field2", string.type()).withElementKind(ElementKind.FIELD).withAnnotation(Nullable.class);
         var method1 = ctxMocks.executable("method1").withElementKind(ElementKind.METHOD);
@@ -54,6 +57,7 @@ final class ClassTypeDefParserTest {
         var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc")
             .withAnnotation(SharedType.class, () -> anno)
             .withEnclosedElements(
+                staticField1.element(),
                 field1.element(),
                 field2.element(),
                 method1.element(),
@@ -92,24 +96,28 @@ final class ClassTypeDefParserTest {
         when(typeInfoParser.parse(clazz.asType(), typeContextForSelf)).thenReturn(parsedSelfTypeInfo);
         InOrder inOrder = inOrder(typeInfoParser);
 
-        var classDef = (ClassDef) parser.parse(clazz);
-        assert classDef != null;
+        var classDefs = parser.parse(clazz);
+        var classDef = (ClassDef)classDefs.get(0);
         assertThat(classDef.simpleName()).isEqualTo("Abc");
 
         // components
-        assertThat(classDef.components()).hasSize(3);
-        var field1Def = classDef.components().get(0);
-        assertThat(field1Def.name()).isEqualTo("field1");
-        assertThat(field1Def.type()).isEqualTo(parsedField1Type);
-        assertThat(field1Def.optional()).isFalse();
-        var field2Def = classDef.components().get(1);
-        assertThat(field2Def.name()).isEqualTo("field2");
-        assertThat(field2Def.type()).isEqualTo(parsedField2Type);
-        assertThat(field2Def.optional()).isTrue();
-        var method2Def = classDef.components().get(2);
-        assertThat(method2Def.name()).isEqualTo("value");
-        assertThat(method2Def.type()).isEqualTo(parsedMethod2Type);
-        assertThat(method2Def.optional()).isFalse();
+        assertThat(classDef.components()).hasSize(3).satisfiesExactly(
+            component -> {
+                assertThat(component.name()).isEqualTo("field1");
+                assertThat(component.type()).isEqualTo(parsedField1Type);
+                assertThat(component.optional()).isFalse();
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("field2");
+                assertThat(component.type()).isEqualTo(parsedField2Type);
+                assertThat(component.optional()).isTrue();
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("value");
+                assertThat(component.type()).isEqualTo(parsedMethod2Type);
+                assertThat(component.optional()).isFalse();
+            }
+        );
 
         // type variables
         assertThat(classDef.typeVariables()).hasSize(2);
@@ -134,8 +142,22 @@ final class ClassTypeDefParserTest {
         assertThat(classDef.typeInfoSet()).satisfiesExactly(typeInfo -> assertThat(typeInfo).isSameAs(parsedSelfTypeInfo));
 
         // config
-        verify(ctxMocks.getTypeStore()).saveConfig(eq(classDef), configCaptor.capture());
+        verify(ctxMocks.getTypeStore()).saveConfig(eq(classDef.qualifiedName()), configCaptor.capture());
         var config = configCaptor.getValue();
         assertThat(config.getAnno()).isSameAs(anno);
+    }
+
+    @Test
+    void ignoreGlobalConfiguredField() {
+        var fieldElement = ctxMocks.declaredTypeVariable("field333", string.type()).withElementKind(ElementKind.FIELD).element();
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withEnclosedElements(
+
+            )
+            .element();
+        when(ctxMocks.getContext().isIgnored(fieldElement)).thenReturn(true);
+
+        var classDef = parser.parse(typeElement).get(0);
+        assertThat(classDef.components()).isEmpty();
     }
 }

@@ -1,5 +1,6 @@
 package online.sharedtype.processor.context;
 
+import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.VariableTree;
 
 import static org.mockito.Mockito.mock;
@@ -10,8 +11,8 @@ public final class VariableTreeMock extends AbstractTreeMock<VariableTree, Varia
         super(mock(VariableTree.class), ctx);
     }
 
-    public VariableTreeMock withInitializer(NewClassTreeMock initializer) {
-        when(tree.getInitializer()).thenReturn(initializer.tree);
+    public VariableTreeMock withInitializer(ExpressionTree initializer) {
+        when(tree.getInitializer()).thenReturn(initializer);
         return this;
     }
 }

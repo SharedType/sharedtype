@@ -1,4 +1,7 @@
-import type { DependencyClassA, DependencyClassB, DependencyClassC, EnumGalaxy, EnumSize, EnumTShirt, JavaRecord, AnotherJavaClass, RecursiveClass, MapClass } from "../src/index.java17.js";
+import {
+    type DependencyClassA, type DependencyClassB, type DependencyClassC, type EnumGalaxy, type EnumSize,
+    type EnumTShirt, type JavaRecord, type AnotherJavaClass, type RecursiveClass, type MapClass,
+} from "./index.java17";
 
 export const list1: EnumGalaxy[] = ["Andromeda", "MilkyWay", "Triangulum"];
 export const record1: Record<EnumTShirt, number> = {
@@ -83,3 +86,4 @@ export const mapClass: MapClass = {
         }
     }
 }
+

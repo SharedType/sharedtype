@@ -28,12 +28,19 @@ public final class ConcreteTypeInfo implements TypeInfo {
     private final String simpleName;
     @Builder.Default
     private final List<? extends TypeInfo> typeArgs = Collections.emptyList();
+
     /** If this type is an Enum */
     @Getter
     private final boolean enumType;
+
     /** If this type is map-like. */
     @Getter
     private final boolean mapType;
+
+    /** If this type is array-like. */
+    @Getter
+    private final boolean arrayType;
+
     /** If this type is defined in global config as base Map type */
     @Getter
     private final boolean baseMapType;
@@ -77,8 +84,8 @@ public final class ConcreteTypeInfo implements TypeInfo {
     public void markShallowResolved(TypeDef resolvedTypeDef) {
         this.resolved = true;
         this.typeDef = resolvedTypeDef;
-        if (resolvedTypeDef instanceof ClassDef) {
-            ((ClassDef) resolvedTypeDef).linkTypeInfo(this);
+        if (resolvedTypeDef instanceof ConcreteTypeDef) {
+            ((ConcreteTypeDef) resolvedTypeDef).linkTypeInfo(this);
         }
     }
 

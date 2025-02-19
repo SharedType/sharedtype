@@ -78,7 +78,7 @@ final class LoopTypeResolver implements TypeResolver {
                     }
                 }
             } else {
-                throw new SharedTypeInternalError("Unsupported TypeDef type: " + typeDef.getClass());
+                throw new SharedTypeInternalError(String.format("Unsupported TypeDef type: %s, %s", typeDef.getClass(), typeDef));
             }
 
             resolveTypeInfo(processingDefStack, processingInfoStack);
@@ -95,10 +95,11 @@ final class LoopTypeResolver implements TypeResolver {
                 ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
                 if (!concreteTypeInfo.shallowResolved()) {
                     TypeElement typeElement = ctx.getProcessingEnv().getElementUtils().getTypeElement(concreteTypeInfo.qualifiedName());
-                    TypeDef parsed = typeDefParser.parse(typeElement);
-                    if (parsed != null) {
-                        concreteTypeInfo.markShallowResolved(parsed);
-                        processingDefStack.push(parsed);
+                    List<TypeDef> parsed = typeDefParser.parse(typeElement);
+                    if (!parsed.isEmpty()) {
+                        TypeDef mainTypeDef = parsed.get(0);
+                        concreteTypeInfo.markShallowResolved(mainTypeDef);
+                        processingDefStack.push(mainTypeDef);
                     }
                 }
                 for (TypeInfo typeArg : concreteTypeInfo.typeArgs()) {

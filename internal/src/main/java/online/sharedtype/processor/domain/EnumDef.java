@@ -5,8 +5,9 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -16,12 +17,17 @@ import java.util.stream.Collectors;
  */
 @EqualsAndHashCode(of = "qualifiedName", callSuper = false)
 @SuperBuilder
-public final class EnumDef extends AbstractTypeDef {
+public final class EnumDef extends ConcreteTypeDef {
     private static final long serialVersionUID = 9158463705652816935L;
     private final String qualifiedName;
     private final String simpleName;
     @Builder.Default
     private final List<EnumValueInfo> enumValueInfos = new ArrayList<>();
+
+    /**
+     * Corresponding typeInfo, since Enum cannot have type parameters, there can only be 1 typeInfo.
+     */
+    private ConcreteTypeInfo typeInfo;
 
     @Override
     public String qualifiedName() {
@@ -39,8 +45,15 @@ public final class EnumDef extends AbstractTypeDef {
     }
 
     @Override
-    public List<TypeInfo> directSupertypes() {
-        return Collections.emptyList();
+    public Set<ConcreteTypeInfo> typeInfoSet() {
+        Set<ConcreteTypeInfo> typeInfoSet = new HashSet<>(1);
+        typeInfoSet.add(typeInfo);
+        return typeInfoSet;
+    }
+
+    @Override
+    public void linkTypeInfo(ConcreteTypeInfo typeInfo) {
+        this.typeInfo = typeInfo;
     }
 
     @Override

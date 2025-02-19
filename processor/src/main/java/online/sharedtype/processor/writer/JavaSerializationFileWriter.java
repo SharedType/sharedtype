@@ -1,5 +1,6 @@
 package online.sharedtype.processor.writer;
 
+import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.support.exception.SharedTypeException;
@@ -28,7 +29,7 @@ final class JavaSerializationFileWriter implements TypeWriter {
     public void write(List<TypeDef> typeDefs) {
         try {
             for (TypeDef typeDef : typeDefs) {
-                FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", typeDef.qualifiedName() + ".ser");
+                FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", getTypeName(typeDef) + ".ser");
                 try(OutputStream outputStream = file.openOutputStream();
                     ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {
                     oos.writeObject(typeDef);
@@ -37,5 +38,12 @@ final class JavaSerializationFileWriter implements TypeWriter {
         } catch (IOException e) {
             throw new SharedTypeException("Failed to write to file,", e);
         }
+    }
+
+    private String getTypeName(TypeDef typeDef) {
+        if (typeDef instanceof ConstantNamespaceDef) {
+            return String.format("$%s", typeDef.qualifiedName());
+        }
+        return typeDef.qualifiedName();
     }
 }

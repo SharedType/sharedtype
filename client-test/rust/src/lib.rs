@@ -74,4 +74,14 @@ mod tests {
         print!("{}", &json);
         assert_eq!(&json, r#"{"mapField":{"33":"v1"},"enumKeyMapField":{},"customMapField":{},"nestedMapField":{"m1":{}}}"#);
     }
+
+    #[test]
+    fn constants() {
+        assert_eq!(STATIC_FIELD_FROM_JAVA_RECORD, 888);
+        assert_eq!(FLOAT_VALUE, 1.888);
+        assert_eq!(LONG_VALUE, 999);
+
+        assert_eq!(MyEnumConstants::INT_VALUE, 1);
+        assert_eq!(MyEnumConstants::STR_VALUE, "abc");
+    }
 }

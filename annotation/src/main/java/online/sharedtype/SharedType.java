@@ -54,7 +54,8 @@ import java.lang.annotation.Target;
  *
  * <p>
  * <b>Constants:</b><br>
- * Support is planned in upcoming versions. Only compile-time resolvable values or their combinations are supported.
+ * Static fields are treated as constants. Only compile-time resolvable values are supported.
+ * Only constants in explicitly annotated types will be emitted.
  * </p>
  *
  * <p>
@@ -73,14 +74,16 @@ import java.lang.annotation.Target;
  * <p>
  * <b>Maps:</b>
  * Key must be String or numeric types. Enum is support given that its value is a literal.
+ * Custom map types are supported, e.g. a class that extends HashMap. But the type itself is treated as a mapType, so its structure will not be emitted.
  * <ul>
  *     <li>Typescript: e.g. {@code Record<string, T>} where {@code T} can be a reified type. If the key is enum, it will be a {@code Partial<Record<?, ?>>}</li>
+ *     <li>Rust: e.g. {@code HashMap<String, T>}, {@code HashMap<EnumType, T>}</li>
  * </ul>
  *
- * <p><a href="https://github.com/cuzfrog/SharedType">SharedType Website</a></p>
+ * <p><a href="https://github.com/SharedType/sharedtype">SharedType Website</a></p>
  *
  * @author Cause Chung
- * @implNote generics type bounds are not supported yet, Map is not supported yet.
+ * @implNote generics type bounds are not supported yet.
  */
 // TODO: test user-defined array-like types
 @Retention(RetentionPolicy.SOURCE)
@@ -116,6 +119,19 @@ public @interface SharedType {
      * @see ComponentType#CONSTANTS
      */
     ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS, ComponentType.CONSTANTS};
+
+    /**
+     * Java fields have to reside in a class, which provides a natural namespace.
+     * By default, the generated constants will be put in a namespace with the same name as the class.
+     * <ul>
+     *     <li>Typescript - constants be put in a const object</li>
+     *     <li>Rust - constants be put in a mod</li>
+     * </ul>
+     * This default can be configured via global properties.
+     *
+     * @return Whether to inline typescript constants to top level without an object as namespace.
+     */
+    OptionalBool constantNamespaced() default OptionalBool.DEFAULT;
 
     /**
      * Macros to be added to the type in generated Rust code. E.g. "Debug" will generate {@code #[derive](Debug)}.
@@ -222,5 +238,12 @@ public @interface SharedType {
          * @implNote not implement yet.
          */
         CONSTANTS,
+    }
+
+    enum OptionalBool {
+        TRUE,
+        FALSE,
+        /** Fallback to global default. */
+        DEFAULT,
     }
 }

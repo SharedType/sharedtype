@@ -32,11 +32,14 @@ final class PropsFactoryTest {
             "java.lang.Object",
             "java.lang.Enum",
             "java.io.Serializable",
-            "java.lang.Record"
+            "java.lang.Record",
+            "java.lang.Cloneable"
         );
+        assertThat(props.getIgnoredFieldNames()).containsExactly("serialVersionUID");
+        assertThat(props.isConstantNamespaced()).isTrue();
 
         Props.Typescript typescriptProps = props.getTypescript();
-        assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.d.ts");
+        assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.ts");
         assertThat(typescriptProps.getInterfacePropertyDelimiter()).isEqualTo(';');
         assertThat(typescriptProps.getJavaObjectMapType()).isEqualTo("any");
 

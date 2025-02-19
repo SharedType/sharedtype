@@ -2,11 +2,13 @@ package online.sharedtype.processor.parser;
 
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.TestUtils;
+import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TypeElementMock;
+import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.parser.type.TypeContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -35,8 +37,17 @@ final class EnumTypeDefParserTest {
     private final TypeContext typeContext = TypeContext.builder()
         .typeDef(EnumDef.builder().qualifiedName("com.github.cuzfrog.EnumA").build())
         .dependingKind(DependingKind.ENUM_VALUE).build();
+    private final TypeContext selfTypeContext = TypeContext.builder()
+        .typeDef(EnumDef.builder().qualifiedName("com.github.cuzfrog.EnumA").build())
+        .dependingKind(DependingKind.SELF).build();
 
     private final ArgumentCaptor<String> msgCaptor = ArgumentCaptor.forClass(String.class);
+
+    @Test
+    void skipIfNotEnum() {
+        var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc").withElementKind(ElementKind.CLASS);
+        assertThat(parser.parse(clazz.element())).isEmpty();
+    }
 
     @Test
     void simpleEnum() {
@@ -48,7 +59,10 @@ final class EnumTypeDefParserTest {
             ctxMocks.declaredTypeVariable("Value2", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element()
         );
 
-        EnumDef typeDef = (EnumDef)parser.parse(enumType.element());
+        ConcreteTypeInfo typeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").build();
+        when(typeInfoParser.parse(enumType.type(), selfTypeContext)).thenReturn(typeInfo);
+
+        EnumDef typeDef = (EnumDef)parser.parse(enumType.element()).getFirst();
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
         assertThat(typeDef.components()).satisfiesExactly(
@@ -61,8 +75,9 @@ final class EnumTypeDefParserTest {
                 assertThat(c2.name()).isEqualTo("Value2");
             }
         );
+        assertThat(typeDef.typeInfoSet()).containsExactly(typeInfo);
 
-        verify(ctxMocks.getTypeStore()).saveConfig(eq(typeDef), configCaptor.capture());
+        verify(ctxMocks.getTypeStore()).saveConfig(eq(typeDef.qualifiedName()), configCaptor.capture());
         var config = configCaptor.getValue();
         assertThat(config.getQualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(config.getAnno()).isSameAs(anno);
@@ -84,7 +99,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -94,7 +109,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(200), ctxMocks.literalTree('b')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -103,7 +118,7 @@ final class EnumTypeDefParserTest {
         );
         when(typeInfoParser.parse(field2.type(), typeContext)).thenReturn(Constants.CHAR_TYPE_INFO);
 
-        EnumDef typeDef = (EnumDef)parser.parse(enumType.element());
+        EnumDef typeDef = (EnumDef)parser.parse(enumType.element()).getFirst();
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
         assertThat(typeDef.components()).satisfiesExactly(
@@ -135,7 +150,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -145,7 +160,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(200), ctxMocks.literalTree('b')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -153,7 +168,7 @@ final class EnumTypeDefParserTest {
             ctxMocks.primitiveVariable("field2", TypeKind.CHAR).element()
         );
 
-        var typeDef = (EnumDef)parser.parse(enumType.element());
+        var typeDef = (EnumDef)parser.parse(enumType.element()).getFirst();
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
         assertThat(typeDef.components()).satisfiesExactly(
@@ -177,7 +192,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -205,7 +220,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -233,7 +248,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -256,7 +271,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),
@@ -283,7 +298,7 @@ final class EnumTypeDefParserTest {
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
                             ctxMocks.identifierTree("FOO")
-                        )
+                        ).getTree()
                     )
                 )
                 .element(),

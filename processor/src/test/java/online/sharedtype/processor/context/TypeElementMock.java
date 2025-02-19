@@ -34,11 +34,6 @@ public final class TypeElementMock extends AbstractElementMock<TypeElement, Decl
         return this;
     }
 
-    public TypeElementMock withModifiers(Modifier... modifiers) {
-        when(element.getModifiers()).thenReturn(Set.of(modifiers));
-        return this;
-    }
-
     public TypeElementMock withEnclosedElements(Element... enclosedElements) {
         when(element.getEnclosedElements()).then(invoc -> Arrays.asList(enclosedElements));
         return this;

@@ -2,10 +2,11 @@
   "compilerOptions": {
     "outDir": "./dist",
     "target": "ES2022",
-    "module": "Node16",
+    "module": "ES2022",
     "lib": [
       "esnext"
     ],
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
@@ -13,11 +14,11 @@
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true
   },
   "include": [
-    "src", "tests"
+    "src"
   ]
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import online.sharedtype.SharedType;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -85,9 +86,17 @@ public final class Context {
         return types.asElement(typeMirror).getKind() == ElementKind.ENUM;
     }
 
-    public boolean isTypeIgnored(TypeElement typeElement) {
-        boolean ignored = typeElement.getAnnotation(SharedType.Ignore.class) != null;
-        return ignored || props.getIgnoredTypeQualifiedNames().contains(typeElement.getQualifiedName().toString());
+    public boolean isIgnored(Element element) {
+        if (element.getAnnotation(SharedType.Ignore.class) != null) {
+            return true;
+        }
+        if (element.getKind() == ElementKind.FIELD) {
+            return props.getIgnoredFieldNames().contains(element.getSimpleName().toString());
+        } else if (element instanceof TypeElement) {
+            TypeElement typeElement = (TypeElement) element;
+            return props.getIgnoredTypeQualifiedNames().contains(typeElement.getQualifiedName().toString());
+        }
+        return false;
     }
 
     public FileObject createSourceOutput(String filename) throws IOException {

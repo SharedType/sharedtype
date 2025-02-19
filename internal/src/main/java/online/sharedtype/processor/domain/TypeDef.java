@@ -1,6 +1,7 @@
 package online.sharedtype.processor.domain;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,7 +19,9 @@ public interface TypeDef extends Serializable {
 
     List<? extends ComponentInfo> components();
 
-    List<TypeInfo> directSupertypes();
+    default List<TypeInfo> directSupertypes() {
+        return Collections.emptyList();
+    }
 
     /**
      * @return true if all required types are resolved.
