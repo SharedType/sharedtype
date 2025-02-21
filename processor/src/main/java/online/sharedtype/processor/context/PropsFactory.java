@@ -38,7 +38,8 @@ public final class PropsFactory {
     private static Props loadProps(Properties properties) throws Exception {
         return Props.builder()
             .targets(parseEnumSet(properties.getProperty("sharedtype.targets"), OutputTarget.class))
-            .optionalAnno(parseAnnotationClass(properties.getProperty("sharedtype.optional-annotations")))
+            .optionalAnnotations(parseClassSet(properties, "sharedtype.optional-annotations"))
+            .optionalContainerTypes(parseClassSet(properties, "sharedtype.optional-container-types"))
             .accessorGetterPrefixes(splitArray(properties.getProperty("sharedtype.accessor.getter-prefixes")))
             .arraylikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.array-like-types")))
             .maplikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.map-like-types")))
@@ -91,8 +92,22 @@ public final class PropsFactory {
         throw new SharedTypeException(String.format("property '%s', can only be 'true' or 'false'.", key));
     }
 
+    private static <T> Set<Class<? extends T>> parseClassSet(Properties properties, String propertyName) {
+        String value = properties.getProperty(propertyName);
+        Set<String> propertyValues = splitArray(value);
+        Set<Class<? extends T>> annotations = new LinkedHashSet<>(propertyValues.size());
+        for (String propertyValue : propertyValues) {
+            try {
+                annotations.add(parseClass(propertyValue));
+            } catch (ClassNotFoundException e) {
+                throw new SharedTypeException(String.format("Invalid property %s=%s", propertyName, value), e);
+            }
+        }
+        return annotations;
+    }
+
     @SuppressWarnings("unchecked")
-    private static Class<? extends Annotation> parseAnnotationClass(String className) throws ClassNotFoundException {
-        return (Class<? extends Annotation>) Class.forName(className);
+    private static <T> Class<? extends T> parseClass(String className) throws ClassNotFoundException {
+        return (Class<? extends T>) Class.forName(className);
     }
 }

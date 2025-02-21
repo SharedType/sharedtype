@@ -16,7 +16,7 @@ final class PropsFactoryTest {
     void loadUserProps() {
         Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-user.properties"));
         assertThat(props.getTargets()).containsExactly(OutputTarget.CONSOLE, OutputTarget.TYPESCRIPT);
-        assertThat(props.getOptionalAnno()).isEqualTo(Override.class);
+        assertThat(props.getOptionalAnnotations()).containsExactly(Override.class);
         assertThat(props.getTypescript().getJavaObjectMapType()).isEqualTo("unknown");
     }
 
@@ -24,7 +24,8 @@ final class PropsFactoryTest {
     void loadDefaultProps() {
         Props props = PropsFactory.loadProps(Paths.get("not-exist"));
         assertThat(props.getTargets()).containsExactly(OutputTarget.TYPESCRIPT);
-        assertThat(props.getOptionalAnno()).isEqualTo(Nullable.class);
+        assertThat(props.getOptionalAnnotations()).containsExactly(Nullable.class);
+        assertThat(props.getOptionalContainerTypes()).containsExactly(java.util.Optional.class);
         assertThat(props.getAccessorGetterPrefixes()).containsExactly("get", "is");
         assertThat(props.getArraylikeTypeQualifiedNames()).containsExactly("java.lang.Iterable");
         assertThat(props.getMaplikeTypeQualifiedNames()).containsExactly("java.util.Map");

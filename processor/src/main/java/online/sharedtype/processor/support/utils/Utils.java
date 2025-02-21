@@ -11,7 +11,11 @@ public final class Utils {
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     public static String substringAndUncapitalize(String str, int beginIndex) {
-        return Character.toLowerCase(str.charAt(beginIndex)) + str.substring(beginIndex + 1); // TODO: see if can optimize
+        try{
+            return Character.toLowerCase(str.charAt(beginIndex)) + str.substring(beginIndex + 1); // TODO: see if can optimize
+        } catch (IndexOutOfBoundsException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String[] emptyStringArray() {
