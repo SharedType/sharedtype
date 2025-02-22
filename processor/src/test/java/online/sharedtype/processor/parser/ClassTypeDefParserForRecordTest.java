@@ -58,7 +58,8 @@ final class ClassTypeDefParserForRecordTest {
             field1.element(),
             method1get.element(),
             method1.element(),
-            method2.element()
+            method2.element(),
+            ctxMocks.executable("get").withElementKind(ElementKind.METHOD).withReturnType(string.type()).element() // should be ignored
         )
         .withRecordComponentElements(
             recordComponent1.element()

@@ -2,6 +2,7 @@ package online.sharedtype.processor.support.utils;
 
 import lombok.experimental.UtilityClass;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 /**
  * @author Cause Chung
@@ -14,7 +15,7 @@ public final class Utils {
         try{
             return Character.toLowerCase(str.charAt(beginIndex)) + str.substring(beginIndex + 1); // TODO: see if can optimize
         } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException(e);
+            throw new SharedTypeInternalError(String.format("Failed to substringAndUncapitalize string: '%s'", str) ,e);
         }
     }
 

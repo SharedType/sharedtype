@@ -217,6 +217,9 @@ final class ClassTypeDefParser implements TypeDefParser {
         }
         for (String accessorGetterPrefix : ctx.getProps().getAccessorGetterPrefixes()) {
             if (name.startsWith(accessorGetterPrefix)) {
+                if (name.length() == accessorGetterPrefix.length()) {
+                    return null;
+                }
                 return Utils.substringAndUncapitalize(name, accessorGetterPrefix.length());
             }
         }
