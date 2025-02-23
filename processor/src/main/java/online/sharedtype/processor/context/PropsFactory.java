@@ -39,7 +39,7 @@ public final class PropsFactory {
         return Props.builder()
             .targets(parseEnumSet(properties.getProperty("sharedtype.targets"), OutputTarget.class))
             .optionalAnnotations(parseClassSet(properties, "sharedtype.optional-annotations"))
-            .optionalContainerTypes(parseClassSet(properties, "sharedtype.optional-container-types"))
+            .optionalContainerTypes(splitArray(properties.getProperty("sharedtype.optional-container-types")))
             .accessorGetterPrefixes(splitArray(properties.getProperty("sharedtype.accessor.getter-prefixes")))
             .arraylikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.array-like-types")))
             .maplikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.map-like-types")))

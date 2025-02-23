@@ -2,6 +2,7 @@ package online.sharedtype.processor.parser.type;
 
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
@@ -242,6 +243,16 @@ class TypeInfoParserImplTest {
             softly.assertThat(typeInfo.resolved()).isTrue();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
+    }
+
+    @Test
+    void parseOptionalType() {
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("java.util.Optional").type())
+            .withTypeKind(TypeKind.DECLARED)
+            .withTypeArguments(ctxMocks.typeElement("java.lang.String").type())
+            .type();
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
+        assertThat(typeInfo).isEqualTo(Constants.OPTIONAL_TYPE_INFO);
     }
 
     @Test

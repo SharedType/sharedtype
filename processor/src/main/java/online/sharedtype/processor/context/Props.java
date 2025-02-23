@@ -20,7 +20,7 @@ public final class Props {
     private final Rust rust;
 
     private final Set<Class<? extends Annotation>> optionalAnnotations;
-    private final Set<Class<?>> optionalContainerTypes;
+    private final Set<String> optionalContainerTypes;
     private final Set<String> accessorGetterPrefixes;
     private final Set<String> arraylikeTypeQualifiedNames;
     private final Set<String> maplikeTypeQualifiedNames;

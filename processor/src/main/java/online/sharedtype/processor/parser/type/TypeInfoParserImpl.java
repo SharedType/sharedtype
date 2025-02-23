@@ -4,6 +4,7 @@ import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.TypeStore;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
@@ -89,6 +90,10 @@ final class TypeInfoParserImpl implements TypeInfoParser {
 
         if (typeInfo == null) {
             typeInfo = typeStore.getTypeInfo(qualifiedName, parsedTypeArgs);
+        }
+
+        if (typeInfo == null && ctx.getProps().getOptionalContainerTypes().contains(qualifiedName)) {
+            typeInfo = Constants.OPTIONAL_TYPE_INFO;
         }
 
         if (typeInfo == null) {

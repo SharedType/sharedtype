@@ -25,7 +25,7 @@ final class PropsFactoryTest {
         Props props = PropsFactory.loadProps(Paths.get("not-exist"));
         assertThat(props.getTargets()).containsExactly(OutputTarget.TYPESCRIPT);
         assertThat(props.getOptionalAnnotations()).containsExactly(Nullable.class);
-        assertThat(props.getOptionalContainerTypes()).containsExactly(java.util.Optional.class);
+        assertThat(props.getOptionalContainerTypes()).containsExactly("java.util.Optional");
         assertThat(props.getAccessorGetterPrefixes()).containsExactly("get", "is");
         assertThat(props.getArraylikeTypeQualifiedNames()).containsExactly("java.lang.Iterable");
         assertThat(props.getMaplikeTypeQualifiedNames()).containsExactly("java.util.Map");
