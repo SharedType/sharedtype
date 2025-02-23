@@ -37,13 +37,6 @@ public final class Constants {
     public static final ConcreteTypeInfo CLASS_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Class", "Class");
     public static final ConcreteTypeInfo ENUM_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Enum", "Enum");
 
-    /**
-     * The virtual type representing the optional types, nested optional types will be flattened,
-     * outermost optional type will be converted to the optional marker.
-     * @see SharedType
-     */
-    public static final ConcreteTypeInfo OPTIONAL_TYPE_INFO = ConcreteTypeInfo.ofPredefined("virtual-Optional", "vOptional");
-
     public static final Map<TypeKind, ConcreteTypeInfo> PRIMITIVES = new HashMap<>(8);
     static {
         PRIMITIVES.put(TypeKind.BOOLEAN, BOOLEAN_TYPE_INFO);

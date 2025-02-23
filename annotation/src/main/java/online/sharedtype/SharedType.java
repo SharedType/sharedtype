@@ -75,7 +75,7 @@ import java.lang.annotation.Target;
  * <b>Optional:</b><br>
  * Optionals can be marked by either annotations or an optional types, both can be configured via global properties.
  * Optional types have a more complicated mapping, where only the outermost optional is recognized as the optional marker,
- * any nested optional types are ignored, similar to Jackson's serialization behavior.
+ * any nested optional types are flattened, similar to Jackson's serialization behavior.
  * E.g. a type {@code Optional<Optional<List<Optional<String>>>} can be emitted as:
  * <ul>
  *     <li>Typescript: {@code String[] | undefined}</li>

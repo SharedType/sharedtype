@@ -247,12 +247,15 @@ class TypeInfoParserImplTest {
 
     @Test
     void parseOptionalType() {
+        when(ctxMocks.getContext().isOptionalType("java.util.Optional")).thenReturn(true);
         var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("java.util.Optional").type())
             .withTypeKind(TypeKind.DECLARED)
             .withTypeArguments(ctxMocks.typeElement("java.lang.String").type())
             .type();
         var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
-        assertThat(typeInfo).isEqualTo(Constants.OPTIONAL_TYPE_INFO);
+        assertThat(typeInfo.qualifiedName()).isEqualTo("java.util.Optional");
+        assertThat(typeInfo.typeArgs()).hasSize(1);
+        assertThat(typeInfo.resolved()).isTrue();
     }
 
     @Test

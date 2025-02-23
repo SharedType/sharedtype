@@ -92,12 +92,8 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             typeInfo = typeStore.getTypeInfo(qualifiedName, parsedTypeArgs);
         }
 
-        if (typeInfo == null && ctx.getProps().getOptionalContainerTypes().contains(qualifiedName)) {
-            typeInfo = Constants.OPTIONAL_TYPE_INFO;
-        }
-
         if (typeInfo == null) {
-            boolean resolved = typeStore.containsTypeDef(qualifiedName);
+            boolean resolved = typeStore.containsTypeDef(qualifiedName) || ctx.isOptionalType(qualifiedName);
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)

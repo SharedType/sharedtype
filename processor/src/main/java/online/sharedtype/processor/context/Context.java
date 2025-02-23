@@ -99,6 +99,10 @@ public final class Context {
         return false;
     }
 
+    public boolean isOptionalType(String qualifiedName) {
+        return props.getOptionalContainerTypes().contains(qualifiedName);
+    }
+
     public FileObject createSourceOutput(String filename) throws IOException {
         return processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", filename);
     }
