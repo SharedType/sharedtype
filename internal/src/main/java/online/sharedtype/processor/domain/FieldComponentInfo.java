@@ -1,6 +1,7 @@
 package online.sharedtype.processor.domain;
 
 import lombok.Builder;
+import lombok.Setter;
 
 import javax.lang.model.element.Modifier;
 import java.util.Set;
@@ -15,8 +16,10 @@ public final class FieldComponentInfo implements ComponentInfo {
     private static final long serialVersionUID = -155863067131290289L;
     private final String name;
     private final Set<Modifier> modifiers;
-    private final boolean optional;
-    private final TypeInfo type;
+    @Setter
+    private TypeInfo type;
+    @Setter
+    private boolean optional;
 
     public String name() {
         return name;

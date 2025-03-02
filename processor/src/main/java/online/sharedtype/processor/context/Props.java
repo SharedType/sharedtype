@@ -19,7 +19,8 @@ public final class Props {
     private final Typescript typescript;
     private final Rust rust;
 
-    private final Class<? extends Annotation> optionalAnno;
+    private final Set<Class<? extends Annotation>> optionalAnnotations;
+    private final Set<String> optionalContainerTypes;
     private final Set<String> accessorGetterPrefixes;
     private final Set<String> arraylikeTypeQualifiedNames;
     private final Set<String> maplikeTypeQualifiedNames;

@@ -4,6 +4,7 @@ import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.TypeStore;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
@@ -92,7 +93,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
         }
 
         if (typeInfo == null) {
-            boolean resolved = typeStore.containsTypeDef(qualifiedName);
+            boolean resolved = typeStore.containsTypeDef(qualifiedName) || ctx.isOptionalType(qualifiedName);
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)

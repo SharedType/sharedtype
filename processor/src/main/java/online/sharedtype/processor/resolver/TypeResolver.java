@@ -29,6 +29,7 @@ public interface TypeResolver {
         // Other resolvers may depend on the result.
         return new CompositeTypeResolver(
             new LoopTypeResolver(ctx, typeDefParser),
+            new OptionalTypeResolver(ctx),
             new ReferenceResolver(),
             new SubtypeResolver()
         );

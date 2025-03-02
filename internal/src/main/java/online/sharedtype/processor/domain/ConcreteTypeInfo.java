@@ -27,7 +27,7 @@ public final class ConcreteTypeInfo implements TypeInfo {
     private final String qualifiedName;
     private final String simpleName;
     @Builder.Default
-    private final List<? extends TypeInfo> typeArgs = Collections.emptyList();
+    private final List<TypeInfo> typeArgs = Collections.emptyList();
 
     /** If this type is an Enum */
     @Getter
@@ -109,7 +109,7 @@ public final class ConcreteTypeInfo implements TypeInfo {
         return referencingTypes;
     }
 
-    public List<? extends TypeInfo> typeArgs() {
+    public List<TypeInfo> typeArgs() {
         return typeArgs;
     }
 

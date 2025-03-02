@@ -36,7 +36,6 @@ public final class Constants {
     public static final ConcreteTypeInfo OBJECT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Object", "Object");
     public static final ConcreteTypeInfo CLASS_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Class", "Class");
     public static final ConcreteTypeInfo ENUM_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Enum", "Enum");
-    public static final ConcreteTypeInfo OPTIONAL_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.util.Optional", "Optional");
 
     public static final Map<TypeKind, ConcreteTypeInfo> PRIMITIVES = new HashMap<>(8);
     static {
@@ -65,7 +64,6 @@ public final class Constants {
         PREDEFINED_OBJECT_TYPES.put("java.lang.Object", OBJECT_TYPE_INFO);
         PREDEFINED_OBJECT_TYPES.put("java.lang.Class", CLASS_TYPE_INFO);
         PREDEFINED_OBJECT_TYPES.put("java.lang.Enum", ENUM_TYPE_INFO);
-        PREDEFINED_OBJECT_TYPES.put("java.util.Optional", OPTIONAL_TYPE_INFO);
     }
 
     public static final Set<TypeInfo> STRING_AND_NUMBER_TYPES = new HashSet<>(14);

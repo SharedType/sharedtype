@@ -72,6 +72,17 @@ import java.lang.annotation.Target;
  * </ul>
  *
  * <p>
+ * <b>Optional:</b><br>
+ * Optionals can be marked by either annotations or an optional types, both can be configured via global properties.
+ * Optional types have a more complicated mapping, where only the outermost optional is recognized as the optional marker,
+ * any nested optional types are flattened, similar to Jackson's serialization behavior.
+ * E.g. a type {@code Optional<Optional<List<Optional<String>>>} can be emitted as:
+ * <ul>
+ *     <li>Typescript: {@code String[] | undefined}</li>
+ *     <li>Rust: {@code Option<Vec<String>>}</li>
+ * </ul>
+ *
+ * <p>
  * <b>Maps:</b>
  * Key must be String or numeric types. Enum is support given that its value is a literal.
  * Custom map types are supported, e.g. a class that extends HashMap. But the type itself is treated as a mapType, so its structure will not be emitted.

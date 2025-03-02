@@ -134,7 +134,7 @@ final class ClassTypeDefParser implements TypeDefParser {
             FieldComponentInfo fieldInfo = FieldComponentInfo.builder()
                 .name(tuple.b())
                 .modifiers(element.getModifiers())
-                .optional(element.getAnnotation(ctx.getProps().getOptionalAnno()) != null)
+                .optional(ctx.getProps().getOptionalAnnotations().stream().anyMatch(e -> element.getAnnotation(e) != null))
                 .type(typeInfoParser.parse(element.asType(), typeContext))
                 .build();
             fields.add(fieldInfo);
@@ -217,6 +217,9 @@ final class ClassTypeDefParser implements TypeDefParser {
         }
         for (String accessorGetterPrefix : ctx.getProps().getAccessorGetterPrefixes()) {
             if (name.startsWith(accessorGetterPrefix)) {
+                if (name.length() == accessorGetterPrefix.length()) {
+                    return null;
+                }
                 return Utils.substringAndUncapitalize(name, accessorGetterPrefix.length());
             }
         }

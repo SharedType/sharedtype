@@ -37,10 +37,10 @@ Enable this profile to enable `it` modules in IDE, and disable it when developin
 ## Development
 ### Run test
 If you encounter compilation problems with your IDE, delegate compilation to maven.
-Before run test in IDE/individual module, run `./mvnw clean test-compile` to build dependency classes.
+Before run test in IDE/individual module, run `./mvnw clean install -DskipTests` to build dependency classes.
 #### E.g. run integration test locally:
 ```bash
-./mvnw clean test-compile && ./mvnw test -pl it/java17 -pl it/java8
+./mvnw clean install -DskipTests && ./mvnw test -pl it/java17 -pl it/java8
 ```
 #### Run local verification with all java tests:
 ```bash
