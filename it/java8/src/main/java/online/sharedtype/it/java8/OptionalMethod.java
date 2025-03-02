@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-@SharedType
+@SharedType(rustMacroTraits = {"PartialEq", "serde::Serialize", "serde::Deserialize"})
 @Setter
 public class OptionalMethod {
     @SharedType.Ignore

@@ -12,10 +12,10 @@ mod tests {
             b: Some(Box::new(DependencyClassB {
                 c: Some(Box::new(DependencyClassC {
                     a: Some(Box::new(DependencyClassA {
-                      b: None,
-                      a: 6,
-                      value: 33,
-                      notIgnoredImplementedMethod: 999,
+                        b: None,
+                        a: 6,
+                        value: 33,
+                        notIgnoredImplementedMethod: 999,
                     })),
                 })),
             })),
@@ -29,7 +29,10 @@ mod tests {
         assert_eq!(dep_a_deser, dep_a);
 
         print!("{}", &json);
-        assert_eq!(&json, r#"{"b":{"c":{"a":{"b":null,"a":6,"value":33,"notIgnoredImplementedMethod":999}}},"a":5,"value":4,"notIgnoredImplementedMethod":5}"#);
+        assert_eq!(
+            &json,
+            r#"{"b":{"c":{"a":{"b":null,"a":6,"value":33,"notIgnoredImplementedMethod":999}}},"a":5,"value":4,"notIgnoredImplementedMethod":5}"#
+        );
     }
 
     #[test]
@@ -51,7 +54,10 @@ mod tests {
         assert_eq!(recusive_class_deser, recusive_class);
 
         print!("{}", &json);
-        assert_eq!(&json, r#"{"directRef":{"directRef":null,"arrayRef":[]},"arrayRef":[{"directRef":null,"arrayRef":[]}]}"#);
+        assert_eq!(
+            &json,
+            r#"{"directRef":{"directRef":null,"arrayRef":[]},"arrayRef":[{"directRef":null,"arrayRef":[]}]}"#
+        );
     }
 
     #[test]
@@ -64,7 +70,9 @@ mod tests {
         };
 
         map_class.mapField.insert(33, String::from("v1"));
-        map_class.nestedMapField.insert(String::from("m1"), HashMap::new());
+        map_class
+            .nestedMapField
+            .insert(String::from("m1"), HashMap::new());
 
         let json = serde_json::to_string(&map_class).unwrap();
 
@@ -72,7 +80,10 @@ mod tests {
         assert_eq!(map_class_deser, map_class);
 
         print!("{}", &json);
-        assert_eq!(&json, r#"{"mapField":{"33":"v1"},"enumKeyMapField":{},"customMapField":{},"nestedMapField":{"m1":{}}}"#);
+        assert_eq!(
+            &json,
+            r#"{"mapField":{"33":"v1"},"enumKeyMapField":{},"customMapField":{},"nestedMapField":{"m1":{}}}"#
+        );
     }
 
     #[test]
@@ -83,5 +94,29 @@ mod tests {
 
         assert_eq!(MyEnumConstants::INT_VALUE, 1);
         assert_eq!(MyEnumConstants::STR_VALUE, "abc");
+    }
+
+    #[test]
+    fn optional_methods() {
+        let mut optional_methods: OptionalMethod = OptionalMethod {
+            valueOptional: None,
+            nestedValueOptional: None,
+            setNestedValueOptional: None,
+            mapNestedValueOptional: None,
+        };
+        optional_methods.mapNestedValueOptional =
+            Some(HashMap::from_iter([(1, String::from("foo"))]));
+        optional_methods.valueOptional = Some(String::from("foo"));
+
+        let json = serde_json::to_string(&optional_methods).unwrap();
+
+        let optional_methods_deser: OptionalMethod = serde_json::from_str(&json).unwrap();
+        assert_eq!(optional_methods_deser, optional_methods);
+
+        print!("{}", &json);
+        assert_eq!(
+            &json,
+            r#"{"valueOptional":"foo","nestedValueOptional":null,"setNestedValueOptional":null,"mapNestedValueOptional":{"1":"foo"}}"#
+        );
     }
 }
