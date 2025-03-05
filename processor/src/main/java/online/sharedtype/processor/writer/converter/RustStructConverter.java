@@ -87,21 +87,10 @@ final class RustStructConverter extends AbstractRustConverter {
 
     private PropertyExpr toPropertyExpr(FieldComponentInfo field, TypeDef contextTypeDef) {
         return new PropertyExpr(
-            ctx.getProps().getRust().isConvertToSnakeCase() ? LiteralUtils.toSnakeCase(field.name()) : field.name(),
+            ctx.getProps().getRust().isConvertToSnakeCase() ? ConversionUtils.toSnakeCase(field.name()) : field.name(),
             typeExpressionConverter.toTypeExpr(field.type(), contextTypeDef),
-            isOptionalField(field)
+            ConversionUtils.isOptionalField(field)
         );
-    }
-
-    private static boolean isOptionalField(FieldComponentInfo field) {
-        if (field.optional()) {
-            return true;
-        }
-        if (field.type() instanceof ConcreteTypeInfo) {
-            ConcreteTypeInfo type = (ConcreteTypeInfo) field.type();
-            return type.typeDef() != null && type.typeDef().isCyclicReferenced();
-        }
-        return false;
     }
 
     @SuppressWarnings("unused")

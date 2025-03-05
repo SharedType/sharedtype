@@ -20,7 +20,7 @@ final class TypescriptEnumUnionConverter implements TemplateDataConverter {
         EnumDef enumDef = (EnumDef) typeDef;
         List<String> values = new ArrayList<>(enumDef.components().size());
         for (EnumValueInfo component : enumDef.components()) {
-            values.add(LiteralUtils.literalValue(component.value()));
+            values.add(ConversionUtils.literalValue(component.value()));
         }
         return Tuple.of(Template.TEMPLATE_TYPESCRIPT_ENUM_UNION, new EnumUnionExpr(enumDef.simpleName(), values));
     }

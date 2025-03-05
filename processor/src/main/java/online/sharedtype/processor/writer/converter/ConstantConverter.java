@@ -47,7 +47,7 @@ final class ConstantConverter implements TemplateDataConverter {
         return new ConstantExpr(
             constantField.name(),
             typeExpressionConverter == null ? null : typeExpressionConverter.toTypeExpr(constantField.type(), contextTypeDef),
-            LiteralUtils.literalValue(constantField.value())
+            ConversionUtils.literalValue(constantField.value())
         );
     }
 
