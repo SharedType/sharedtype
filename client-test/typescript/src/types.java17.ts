@@ -13,7 +13,6 @@ export const record1: Record<EnumTShirt, number> = {
 export const size1: EnumSize = 1;
 
 export const dependencyClassC: DependencyClassC = {
-    a: {} as DependencyClassA, // TODO: optional for cyclic dependency
 };
 
 export const dependencyClassB: DependencyClassB = {
@@ -67,11 +66,15 @@ export const anotherJavaClass: AnotherJavaClass = {
 
 export const recursiveClass: RecursiveClass = {
     directRef: {
-        directRef: {} as RecursiveClass, // TODO: optional for cyclic dependency
+        directRef: undefined,
         arrayRef: [],
     },
     arrayRef: [],
 }
+recursiveClass.directRef = {
+    directRef: undefined,
+    arrayRef: [],
+};
 
 export const mapClass: MapClass = {
     mapField: {},

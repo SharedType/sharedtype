@@ -51,7 +51,7 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
             field.name(),
             typeExpressionConverter.toTypeExpr(field.type(), contextTypeDef),
             interfacePropertyDelimiter,
-            field.optional(),
+            ConversionUtils.isOptionalField(field),
             false,
             false // TODO: more options
         );
