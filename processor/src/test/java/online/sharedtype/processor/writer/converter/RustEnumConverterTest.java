@@ -63,7 +63,7 @@ final class RustEnumConverterTest {
                 .element(),
             ctxMocks.getContext()
         );
-        when(ctxMocks.getTypeStore().getConfig(enumDef.qualifiedName())).thenReturn(config);
+        when(ctxMocks.getTypeStore().getConfig(enumDef)).thenReturn(config);
 
         var data = converter.convert(enumDef);
         var model = (RustEnumConverter.EnumExpr) data.b();
