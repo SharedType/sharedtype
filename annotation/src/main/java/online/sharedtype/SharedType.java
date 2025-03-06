@@ -154,6 +154,12 @@ public @interface SharedType {
     String[] rustMacroTraits() default {};
 
     /**
+     * How to render optional fields in Typescript.
+     * @return combination of "?", "null", "undefined", the latter 2 are rendered as union types. If empty, fallback to global default.
+     */
+    String[] typescriptOptionalFieldFormat() default {};
+
+    /**
      * Mark a method as an accessor regardless of its name.
      * Getter prefixes are configured in global properties.
      * This annotation will be ignored if {@link #includes()} does not include {@link ComponentType#ACCESSORS}.

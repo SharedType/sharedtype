@@ -4,13 +4,13 @@ import online.sharedtype.processor.support.exception.SharedTypeException;
 
 import javax.annotation.Nullable;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Global properties loader.
@@ -29,15 +29,19 @@ public final class PropsFactory {
             if (userPropsInputstream != null) {
                 properties.load(userPropsInputstream);
             }
-            return loadProps(properties);
+            Props props = loadProps(properties);
+            if (props.getTypescript().getOptionalFieldFormats().isEmpty()) {
+                throw new IllegalArgumentException("Props 'typescript.optional-field-format' cannot be empty.");
+            }
+            return props;
         } catch (Exception e) {
             throw new SharedTypeException("Failed to load properties.", e);
         }
     }
 
-    private static Props loadProps(Properties properties) throws Exception {
+    private static Props loadProps(Properties properties) {
         return Props.builder()
-            .targets(parseEnumSet(properties.getProperty("sharedtype.targets"), OutputTarget.class))
+            .targets(parseEnumSet(properties, "sharedtype.targets", OutputTarget.class, OutputTarget::valueOf))
             .optionalAnnotations(parseClassSet(properties, "sharedtype.optional-annotations"))
             .optionalContainerTypes(splitArray(properties.getProperty("sharedtype.optional-container-types")))
             .accessorGetterPrefixes(splitArray(properties.getProperty("sharedtype.accessor.getter-prefixes")))
@@ -50,6 +54,8 @@ public final class PropsFactory {
                 .outputFileName(properties.getProperty("sharedtype.typescript.output-file-name"))
                 .interfacePropertyDelimiter(properties.getProperty("sharedtype.typescript.interface-property-delimiter").charAt(0))
                 .javaObjectMapType(properties.getProperty("sharedtype.typescript.java-object-map-type"))
+                .optionalFieldFormats(parseEnumSet(properties,"sharedtype.typescript.optional-field-format",
+                    Props.Typescript.OptionalFieldFormat.class, Props.Typescript.OptionalFieldFormat::fromString))
                 .build())
             .rust(Props.Rust.builder()
                 .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))
@@ -60,11 +66,15 @@ public final class PropsFactory {
             .build();
     }
 
-    private static <T extends Enum<T>> Set<T> parseEnumSet(String value, Class<T> type) {
-        Set<String> trimmedElems = splitArray(value);
+    private static <T extends Enum<T>> Set<T> parseEnumSet(Properties properties, String propertyName, Class<T> type, Function<String, T> enumValueOf) {
+        Set<String> trimmedElems = splitArray(properties.getProperty(propertyName));
         Set<T> set = EnumSet.noneOf(type);
-        for (String trimmed : trimmedElems) {
-            set.add(Enum.valueOf(type, trimmed));
+        try {
+            for (String trimmed : trimmedElems) {
+                set.add(enumValueOf.apply(trimmed));
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException(String.format("Failed to parse property '%s'", propertyName), e);
         }
         return set;
     }
