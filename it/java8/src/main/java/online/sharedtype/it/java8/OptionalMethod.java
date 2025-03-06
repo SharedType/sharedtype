@@ -9,7 +9,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-@SharedType(rustMacroTraits = {"PartialEq", "serde::Serialize", "serde::Deserialize"})
+@SharedType(
+    rustMacroTraits = {"PartialEq", "serde::Serialize", "serde::Deserialize"},
+    typescriptOptionalFieldFormat = {"undefined", "null"}
+)
 @Setter
 public class OptionalMethod {
     @SharedType.Ignore
