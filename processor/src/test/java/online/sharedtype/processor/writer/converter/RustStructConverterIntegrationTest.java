@@ -1,6 +1,8 @@
 package online.sharedtype.processor.writer.converter;
 
+import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
+import online.sharedtype.processor.context.TestUtils;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
@@ -14,11 +16,15 @@ import org.junit.jupiter.api.TestInstance;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class RustStructConverterIntegrationTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final RustStructConverter converter = new RustStructConverter(ctxMocks.getContext(), TypeExpressionConverter.rust(ctxMocks.getContext()));
+
+    private final Config config = mock(Config.class);
 
     @Test
     void skipNonClassDef() {
@@ -125,6 +131,9 @@ final class RustStructConverterIntegrationTest {
                     .build()
             ))
             .build();
+        when(ctxMocks.getTypeStore().getConfig(classDef)).thenReturn(config);
+        when(config.getAnno()).thenReturn(TestUtils.defaultSharedTypeAnnotation());
+
         var data = converter.convert(classDef);
         assertThat(data).isNotNull();
         var model = (RustStructConverter.StructExpr) data.b();
