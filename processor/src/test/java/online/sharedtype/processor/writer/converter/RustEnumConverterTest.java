@@ -3,6 +3,7 @@ package online.sharedtype.processor.writer.converter;
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
+import online.sharedtype.processor.context.TestUtils;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
 import org.junit.jupiter.api.Test;
@@ -12,11 +13,14 @@ import java.util.Arrays;
 import static online.sharedtype.processor.domain.Constants.INT_TYPE_INFO;
 import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 final class RustEnumConverterTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final RustEnumConverter converter = new RustEnumConverter(ctxMocks.getContext());
+
+    private final Config config = mock(Config.class);
 
     @Test
     void skipEmptyEnum() {
@@ -38,6 +42,9 @@ final class RustEnumConverterTest {
                 new EnumValueInfo("Value3", INT_TYPE_INFO, null)
             ))
             .build();
+        when(ctxMocks.getTypeStore().getConfig(enumDef)).thenReturn(config);
+        when(config.getAnno()).thenReturn(TestUtils.defaultSharedTypeAnnotation());
+
         var data = converter.convert(enumDef);
         assertThat(data).isNotNull();
 
@@ -63,7 +70,7 @@ final class RustEnumConverterTest {
                 .element(),
             ctxMocks.getContext()
         );
-        when(ctxMocks.getTypeStore().getConfig(enumDef.qualifiedName())).thenReturn(config);
+        when(ctxMocks.getTypeStore().getConfig(enumDef)).thenReturn(config);
 
         var data = converter.convert(enumDef);
         var model = (RustEnumConverter.EnumExpr) data.b();

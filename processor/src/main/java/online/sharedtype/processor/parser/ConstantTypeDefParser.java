@@ -53,11 +53,7 @@ final class ConstantTypeDefParser implements TypeDefParser {
             return Collections.emptyList();
         }
 
-        Config config = ctx.getTypeStore().getConfig(qualifiedName);
-        if (config == null) {
-            config = new Config(typeElement, ctx);
-            ctx.getTypeStore().saveConfig(qualifiedName, config);
-        }
+        Config config = ctx.getTypeStore().getConfig(mainTypeDef);
         if (!config.includes(SharedType.ComponentType.CONSTANTS)) {
             return Collections.emptyList();
         }

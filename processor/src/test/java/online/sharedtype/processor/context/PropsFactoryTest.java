@@ -43,6 +43,7 @@ final class PropsFactoryTest {
         assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.ts");
         assertThat(typescriptProps.getInterfacePropertyDelimiter()).isEqualTo(';');
         assertThat(typescriptProps.getJavaObjectMapType()).isEqualTo("any");
+        assertThat(typescriptProps.getOptionalFieldFormats()).containsExactly(Props.Typescript.OptionalFieldFormat.QUESTION_MARK);
 
         Props.Rust rustProps = props.getRust();
         assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");
@@ -55,6 +56,14 @@ final class PropsFactoryTest {
     void wrongTarget() {
         assertThatThrownBy(() -> PropsFactory.loadProps(resolveResource("test-sharedtype-wrong-target.properties")))
             .isInstanceOf(SharedTypeException.class);
+    }
+
+    @Test
+    void wrongTypescriptOptionalFieldFormat() {
+        assertThatThrownBy(() -> PropsFactory.loadProps(resolveResource("test-sharedtype-wrong-ts-optional-field-format.properties")))
+            .isInstanceOf(SharedTypeException.class)
+            .cause().cause()
+            .hasMessageContaining("Unknown optional field format: 'abc', only '?', 'null', 'undefined' are allowed");
     }
 
     private static Path resolveResource(String resource) {

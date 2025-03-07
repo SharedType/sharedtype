@@ -3,21 +3,16 @@ package online.sharedtype.processor.context;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.TypeVariableInfo;
-import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.TypeVariableInfo;
+import online.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import static online.sharedtype.processor.domain.Constants.PREDEFINED_OBJECT_TYPES;
 
@@ -73,9 +68,12 @@ public final class TypeStore {
     public void saveConfig(String qualifiedName, Config config) {
         typeConfig.put(qualifiedName, config);
     }
-    @Nullable
-    public Config getConfig(String qualifiedName) {
-        return typeConfig.get(qualifiedName);
+
+    /**
+     * @return Config for a typeDef. A typeDef must have a config.
+     */
+    public Config getConfig(TypeDef typeDef) {
+        return typeConfig.get(typeDef.qualifiedName());
     }
 
     @EqualsAndHashCode

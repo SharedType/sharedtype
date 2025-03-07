@@ -34,6 +34,27 @@ public final class Props {
         private final String outputFileName;
         private final char interfacePropertyDelimiter;
         private final String javaObjectMapType;
+        private final Set<OptionalFieldFormat> optionalFieldFormats;
+
+        @Getter
+        public enum OptionalFieldFormat {
+            QUESTION_MARK("?"),
+            NULL("null"),
+            UNDEFINED("undefined"),
+            ;
+            private final String value;
+            OptionalFieldFormat(String value) {
+                this.value = value;
+            }
+            public static OptionalFieldFormat fromString(String value) {
+                for (OptionalFieldFormat format : OptionalFieldFormat.values()) {
+                    if (format.value.equals(value)) {
+                        return format;
+                    }
+                }
+                throw new IllegalArgumentException(String.format("Unknown optional field format: '%s', only '?', 'null', 'undefined' are allowed", value));
+            }
+        }
     }
 
     @Builder(access = AccessLevel.PACKAGE)

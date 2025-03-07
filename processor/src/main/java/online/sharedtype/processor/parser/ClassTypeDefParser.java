@@ -118,7 +118,7 @@ final class ClassTypeDefParser implements TypeDefParser {
 
         List<TypeInfo> res = new ArrayList<>(supertypes.size());
         for (DeclaredType supertype : supertypes) {
-            if (!ctx.isIgnored((TypeElement) supertype.asElement())) {
+            if (!ctx.isIgnored(supertype.asElement())) {
                 res.add(typeInfoParser.parse(supertype, typeContext));
             }
         }

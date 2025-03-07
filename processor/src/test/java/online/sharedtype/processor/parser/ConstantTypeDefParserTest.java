@@ -1,5 +1,7 @@
 package online.sharedtype.processor.parser;
 
+import online.sharedtype.SharedType;
+import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
@@ -29,10 +31,12 @@ final class ConstantTypeDefParserTest {
         .typeDef(ConstantNamespaceDef.builder().qualifiedName("com.github.cuzfrog.Abc").build())
         .dependingKind(DependingKind.COMPONENTS).build();
     private final ClassDef mainTypeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build();
+    private final Config config = mock(Config.class);
 
     @BeforeEach
     void setup() {
         ctxMocks.getTypeStore().saveTypeDef("com.github.cuzfrog.Abc", mainTypeDef);
+        ctxMocks.getTypeStore().saveConfig(mainTypeDef.qualifiedName(), config);
     }
 
     @Test
@@ -54,7 +58,14 @@ final class ConstantTypeDefParserTest {
     }
 
     @Test
+    void skipIfConfigNotIncludeConstants() {
+        when(config.includes(SharedType.ComponentType.CONSTANTS)).thenReturn(false);
+        assertThat(parser.parse(ctxMocks.typeElement("com.github.cuzfrog.Abc").element())).isEmpty();
+    }
+
+    @Test
     void parse() {
+        when(config.includes(SharedType.ComponentType.CONSTANTS)).thenReturn(true);
         var ignoredField = ctxMocks.primitiveVariable("SHOULD_BE_IGNORED", TypeKind.INT)
             .withModifiers(Modifier.STATIC);
         when(ctxMocks.getContext().isIgnored(ignoredField.element())).thenReturn(true);

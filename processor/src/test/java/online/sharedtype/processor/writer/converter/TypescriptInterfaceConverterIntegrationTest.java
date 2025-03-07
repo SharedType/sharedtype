@@ -1,5 +1,6 @@
 package online.sharedtype.processor.writer.converter;
 
+import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
@@ -13,16 +14,23 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
+import static online.sharedtype.processor.context.Props.Typescript.OptionalFieldFormat.NULL;
+import static online.sharedtype.processor.context.Props.Typescript.OptionalFieldFormat.QUESTION_MARK;
+import static online.sharedtype.processor.context.Props.Typescript.OptionalFieldFormat.UNDEFINED;
 import static online.sharedtype.processor.domain.Constants.INT_TYPE_INFO;
 import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 final class TypescriptInterfaceConverterIntegrationTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypescriptInterfaceConverter converter = new TypescriptInterfaceConverter(
         ctxMocks.getContext(), TypeExpressionConverter.typescript(ctxMocks.getContext())
     );
+    private final Config config = mock(Config.class);
 
     @Test
     void skipMapClassDef() {
@@ -97,6 +105,10 @@ final class TypescriptInterfaceConverterIntegrationTest {
                     .build()
             ))
             .build();
+
+        when(config.getTypescriptOptionalFieldFormats()).thenReturn(Set.of(QUESTION_MARK));
+        when(ctxMocks.getContext().getTypeStore().getConfig(classDef)).thenReturn(config);
+
         var tuple = converter.convert(classDef);
         assertThat(tuple).isNotNull();
         assertThat(tuple.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_INTERFACE);
@@ -109,6 +121,8 @@ final class TypescriptInterfaceConverterIntegrationTest {
         assertThat(prop1.name).isEqualTo("field1");
         assertThat(prop1.type).isEqualTo("number");
         assertThat(prop1.optional).isTrue();
+        assertThat(prop1.unionNull).isFalse();
+        assertThat(prop1.unionUndefined).isFalse();
 
         TypescriptInterfaceConverter.PropertyExpr prop2 = model.properties.get(1);
         assertThat(prop2.name).isEqualTo("field2");
@@ -132,5 +146,27 @@ final class TypescriptInterfaceConverterIntegrationTest {
         TypescriptInterfaceConverter.PropertyExpr prop6 = model.properties.get(5);
         assertThat(prop6.name).isEqualTo("mapFieldEnumKey");
         assertThat(prop6.type).isEqualTo("Partial<Record<MyEnum, number>>");
+    }
+
+    @Test
+    void optionalFieldUnionNullAndUndefined() {
+        ClassDef classDef = ClassDef.builder()
+            .qualifiedName("com.github.cuzfrog.ClassA")
+            .simpleName("ClassA")
+            .components(Collections.singletonList(
+                FieldComponentInfo.builder().name("field1").type(INT_TYPE_INFO).optional(true).build()
+            ))
+            .build();
+
+        when(config.getTypescriptOptionalFieldFormats()).thenReturn(Set.of(NULL, UNDEFINED));
+        when(ctxMocks.getContext().getTypeStore().getConfig(classDef)).thenReturn(config);
+
+        var tuple = converter.convert(classDef);
+        assertThat(tuple).isNotNull();
+        TypescriptInterfaceConverter.InterfaceExpr model = (TypescriptInterfaceConverter.InterfaceExpr) tuple.b();
+        TypescriptInterfaceConverter.PropertyExpr prop1 = model.properties.get(0);
+        assertThat(prop1.optional).isFalse();
+        assertThat(prop1.unionNull).isTrue();
+        assertThat(prop1.unionUndefined).isTrue();
     }
 }

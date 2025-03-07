@@ -7,7 +7,6 @@ import online.sharedtype.processor.context.OutputTarget;
 import online.sharedtype.processor.domain.ConstantField;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
@@ -36,10 +35,7 @@ final class ConstantConverter implements TemplateDataConverter {
             constantNamespaceDef.components().stream().map(field -> toConstantExpr(field, typeDef)).collect(Collectors.toList())
         );
 
-        Config config = ctx.getTypeStore().getConfig(typeDef.qualifiedName());
-        if (config == null) {
-            throw new SharedTypeInternalError("No config found for: " + typeDef.qualifiedName());
-        }
+        Config config = ctx.getTypeStore().getConfig(typeDef);
         return Tuple.of(Template.forConstant(outputTarget, config.isConstantNamespaced()), value);
     }
 

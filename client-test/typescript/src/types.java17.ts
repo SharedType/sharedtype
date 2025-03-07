@@ -91,7 +91,12 @@ export const mapClass: MapClass = {
     }
 }
 
-export const optionalMethods: OptionalMethod = {};
+export const optionalMethods: OptionalMethod = {
+    valueOptional: undefined,
+    nestedValueOptional: null,
+    setNestedValueOptional: null,
+    mapNestedValueOptional: undefined
+};
 optionalMethods.mapNestedValueOptional = { 1: "foo" };
 optionalMethods.setNestedValueOptional = ["foo"];
 optionalMethods.nestedValueOptional = "bar";

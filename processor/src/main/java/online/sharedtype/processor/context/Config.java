@@ -2,6 +2,7 @@ package online.sharedtype.processor.context;
 
 import lombok.Getter;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.support.exception.SharedTypeException;
 
 import javax.lang.model.element.TypeElement;
 import java.lang.annotation.Retention;
@@ -27,6 +28,8 @@ public final class Config {
     private final Set<SharedType.ComponentType> includedComponentTypes;
     @Getter
     private final boolean constantNamespaced;
+    @Getter
+    private final Set<Props.Typescript.OptionalFieldFormat> typescriptOptionalFieldFormats;
 
     @Retention(RetentionPolicy.RUNTIME)
     @interface AnnoContainer {
@@ -46,6 +49,7 @@ public final class Config {
         List<SharedType.ComponentType> includedCompTypes = Arrays.asList(anno.includes());
         this.includedComponentTypes = includedCompTypes.isEmpty() ? Collections.emptySet() : EnumSet.copyOf(includedCompTypes);
         constantNamespaced = evaluateOptionalBool(anno.constantNamespaced(), ctx.getProps().isConstantNamespaced());
+        typescriptOptionalFieldFormats = parseTsOptionalFieldFormats(anno, ctx);
     }
 
     public boolean includes(SharedType.ComponentType componentType) {
@@ -61,5 +65,20 @@ public final class Config {
         } else {
             return defaultValue;
         }
+    }
+
+    private static Set<Props.Typescript.OptionalFieldFormat> parseTsOptionalFieldFormats(SharedType anno, Context ctx) {
+        if (anno.typescriptOptionalFieldFormat().length > 0) {
+            EnumSet<Props.Typescript.OptionalFieldFormat> formats = EnumSet.noneOf(Props.Typescript.OptionalFieldFormat.class);
+            for (String value : anno.typescriptOptionalFieldFormat()) {
+                try {
+                    formats.add(Props.Typescript.OptionalFieldFormat.fromString(value));
+                } catch (IllegalArgumentException e) {
+                    throw new SharedTypeException(String.format("Invalid value for SharedType.typescriptOptionalFieldFormat: '%s', only '?', 'null', 'undefined' are allowed.", value), e);
+                }
+            }
+            return formats;
+        }
+        return ctx.getProps().getTypescript().getOptionalFieldFormats();
     }
 }

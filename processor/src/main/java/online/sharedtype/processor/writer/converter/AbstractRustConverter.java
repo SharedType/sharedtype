@@ -3,7 +3,6 @@ package online.sharedtype.processor.writer.converter;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.support.utils.Utils;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -19,8 +18,8 @@ abstract class AbstractRustConverter implements TemplateDataConverter {
     }
 
     final Set<String> macroTraits(TypeDef typeDef) {
-        Config config = ctx.getTypeStore().getConfig(typeDef.qualifiedName());
-        String[] typeMacroTraits = config != null ? config.getAnno().rustMacroTraits() : Utils.emptyStringArray();
+        Config config = ctx.getTypeStore().getConfig(typeDef);
+        String[] typeMacroTraits = config.getAnno().rustMacroTraits();
         Set<String> traits = new LinkedHashSet<>(typeMacroTraits.length + defaultTraits.size());
         traits.addAll(defaultTraits);
         Collections.addAll(traits, typeMacroTraits);
