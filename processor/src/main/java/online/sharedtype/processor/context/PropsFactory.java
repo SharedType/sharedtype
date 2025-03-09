@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -54,8 +53,9 @@ public final class PropsFactory {
                 .outputFileName(properties.getProperty("sharedtype.typescript.output-file-name"))
                 .interfacePropertyDelimiter(properties.getProperty("sharedtype.typescript.interface-property-delimiter").charAt(0))
                 .javaObjectMapType(properties.getProperty("sharedtype.typescript.java-object-map-type"))
-                .optionalFieldFormats(parseEnumSet(properties,"sharedtype.typescript.optional-field-format",
+                .optionalFieldFormats(parseEnumSet(properties, "sharedtype.typescript.optional-field-format",
                     Props.Typescript.OptionalFieldFormat.class, Props.Typescript.OptionalFieldFormat::fromString))
+                .enumFormat(parseEnum(properties, "sharedtype.typescript.enum-format", Props.Typescript.EnumFormat::fromString))
                 .build())
             .rust(Props.Rust.builder()
                 .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))
@@ -68,15 +68,11 @@ public final class PropsFactory {
 
     private static <T extends Enum<T>> Set<T> parseEnumSet(Properties properties, String propertyName, Class<T> type, Function<String, T> enumValueOf) {
         Set<String> trimmedElems = splitArray(properties.getProperty(propertyName));
-        Set<T> set = EnumSet.noneOf(type);
         try {
-            for (String trimmed : trimmedElems) {
-                set.add(enumValueOf.apply(trimmed));
-            }
+            return EnumParsingUtils.parseEnumSet(trimmedElems, type, enumValueOf);
         } catch (Exception e) {
             throw new IllegalArgumentException(String.format("Failed to parse property '%s'", propertyName), e);
         }
-        return set;
     }
 
     private static Set<String> splitArray(String value) {
@@ -99,7 +95,7 @@ public final class PropsFactory {
         if ("false".equals(value)) {
             return false;
         }
-        throw new SharedTypeException(String.format("property '%s', can only be 'true' or 'false'.", key));
+        throw new IllegalArgumentException(String.format("property '%s', can only be 'true' or 'false'.", key));
     }
 
     private static <T> Set<Class<? extends T>> parseClassSet(Properties properties, String propertyName) {
@@ -110,10 +106,19 @@ public final class PropsFactory {
             try {
                 annotations.add(parseClass(propertyValue));
             } catch (ClassNotFoundException e) {
-                throw new SharedTypeException(String.format("Invalid property %s=%s", propertyName, value), e);
+                throw new IllegalArgumentException(String.format("Invalid property %s=%s", propertyName, value), e);
             }
         }
         return annotations;
+    }
+
+    private static <T extends Enum<T>> T parseEnum(Properties properties, String propertyName, Function<String, T> fromString) {
+        String value = properties.getProperty(propertyName);
+        try {
+            return fromString.apply(value);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(String.format("Invalid property %s=%s", propertyName, value), e);
+        }
     }
 
     @SuppressWarnings("unchecked")

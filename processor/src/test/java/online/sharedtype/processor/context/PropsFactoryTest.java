@@ -44,6 +44,7 @@ final class PropsFactoryTest {
         assertThat(typescriptProps.getInterfacePropertyDelimiter()).isEqualTo(';');
         assertThat(typescriptProps.getJavaObjectMapType()).isEqualTo("any");
         assertThat(typescriptProps.getOptionalFieldFormats()).containsExactly(Props.Typescript.OptionalFieldFormat.QUESTION_MARK);
+        assertThat(typescriptProps.getEnumFormat()).isEqualTo(Props.Typescript.EnumFormat.UNION);
 
         Props.Rust rustProps = props.getRust();
         assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");

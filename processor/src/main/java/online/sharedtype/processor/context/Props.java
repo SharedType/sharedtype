@@ -35,6 +35,7 @@ public final class Props {
         private final char interfacePropertyDelimiter;
         private final String javaObjectMapType;
         private final Set<OptionalFieldFormat> optionalFieldFormats;
+        private final EnumFormat enumFormat;
 
         @Getter
         public enum OptionalFieldFormat {
@@ -53,6 +54,14 @@ public final class Props {
                     }
                 }
                 throw new IllegalArgumentException(String.format("Unknown optional field format: '%s', only '?', 'null', 'undefined' are allowed", value));
+            }
+        }
+
+        public enum EnumFormat {
+            UNION, CONST_ENUM,
+            ;
+            public static EnumFormat fromString(String value) {
+                return EnumFormat.valueOf(value.toUpperCase());
             }
         }
     }

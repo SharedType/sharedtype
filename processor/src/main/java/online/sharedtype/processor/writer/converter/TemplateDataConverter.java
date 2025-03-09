@@ -19,7 +19,7 @@ public interface TemplateDataConverter {
     static Set<TemplateDataConverter> typescript(Context ctx) {
         Set<TemplateDataConverter> converters = new HashSet<>(3);
         converters.add(new TypescriptInterfaceConverter(ctx, TypeExpressionConverter.typescript(ctx)));
-        converters.add(new TypescriptEnumUnionConverter());
+        converters.add(new TypescriptEnumConverter(ctx));
         converters.add(new ConstantConverter(ctx, null, OutputTarget.TYPESCRIPT));
         return converters;
     }
