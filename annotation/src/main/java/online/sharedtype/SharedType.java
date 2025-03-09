@@ -160,8 +160,8 @@ public @interface SharedType {
     String[] typescriptOptionalFieldFormat() default {};
 
     /**
-     * How to render enum in Typescript.
-     * @return either "union" (union types) or "enum" (const enum). If empty, fallback to global default.
+     * Format of enum in Typescript.
+     * @return either "union" (union types) or "const_enum" (const enum). If empty, fallback to global default.
      */
     String typescriptEnumFormat() default "";
 

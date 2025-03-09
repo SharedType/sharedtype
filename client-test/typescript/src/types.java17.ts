@@ -1,6 +1,6 @@
 import {
     type DependencyClassA, type DependencyClassB, type DependencyClassC, type EnumGalaxy, type EnumSize,
-    type EnumTShirt, type JavaRecord, type AnotherJavaClass, type RecursiveClass, type MapClass,
+    EnumTShirt, type JavaRecord, type AnotherJavaClass, type RecursiveClass, type MapClass,
     type OptionalMethod,
 } from "./index.java17";
 
@@ -11,6 +11,7 @@ export const record1: Record<EnumTShirt, number> = {
     L: 3,
 }
 export const size1: EnumSize = 1;
+export const tshirtSize1: EnumTShirt = EnumTShirt.S;
 
 export const dependencyClassC: DependencyClassC = {
 };

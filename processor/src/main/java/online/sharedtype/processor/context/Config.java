@@ -90,7 +90,7 @@ public final class Config {
                 return Props.Typescript.EnumFormat.fromString(anno.typescriptEnumFormat());
             } catch (IllegalArgumentException e) {
                 throw new SharedTypeException(String.format(
-                    "Invalid value for SharedType.typescriptEnumFormat: '%s', only 'union' or 'enum' is allowed.", anno.typescriptEnumFormat()), e);
+                    "Invalid value for SharedType.typescriptEnumFormat: '%s', only 'union' or 'const_enum' is allowed.", anno.typescriptEnumFormat()), e);
             }
         }
         return ctx.getProps().getTypescript().getEnumFormat();
