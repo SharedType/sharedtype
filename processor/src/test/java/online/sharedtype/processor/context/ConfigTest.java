@@ -53,6 +53,25 @@ final class ConfigTest {
 
         assertThatThrownBy(() -> new Config(typeElement, ctxMocks.getContext()))
             .isInstanceOf(SharedTypeException.class)
-            .hasMessageContaining("'abc', only '?', 'null', 'undefined' are allowed");
+            .hasMessageContaining("[abc], only '?', 'null', 'undefined' are allowed");
+    }
+
+    @Test
+    void parseTsEnumFormat() {
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.class, m -> when(m.typescriptEnumFormat()).thenReturn("enum"))
+            .element();
+        Config config = new Config(typeElement, ctxMocks.getContext());
+        assertThat(config.getTypescriptEnumFormat()).isEqualTo(Props.Typescript.EnumFormat.ENUM);
+    }
+
+    @Test
+    void invalidTsEnumFormat() {
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.class, m -> when(m.typescriptEnumFormat()).thenReturn("abc"))
+            .element();
+        assertThatThrownBy(() -> new Config(typeElement, ctxMocks.getContext()))
+            .isInstanceOf(SharedTypeException.class)
+            .hasMessageContaining("Invalid value for SharedType.typescriptEnumFormat: 'abc', only 'union' or 'enum' is allowed.");
     }
 }

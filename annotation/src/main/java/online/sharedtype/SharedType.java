@@ -160,6 +160,12 @@ public @interface SharedType {
     String[] typescriptOptionalFieldFormat() default {};
 
     /**
+     * How to render enum in Typescript.
+     * @return either "union" (union types) or "enum" (const enum). If empty, fallback to global default.
+     */
+    String typescriptEnumFormat() default "";
+
+    /**
      * Mark a method as an accessor regardless of its name.
      * Getter prefixes are configured in global properties.
      * This annotation will be ignored if {@link #includes()} does not include {@link ComponentType#ACCESSORS}.
