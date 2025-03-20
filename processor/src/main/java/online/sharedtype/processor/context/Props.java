@@ -36,7 +36,7 @@ public final class Props {
         private final String javaObjectMapType;
         private final Set<OptionalFieldFormat> optionalFieldFormats;
         private final EnumFormat enumFormat;
-        private final boolean fieldReadonly;
+        private final FieldReadonlyType fieldReadonlyType;
 
         @Getter
         public enum OptionalFieldFormat {
@@ -63,6 +63,14 @@ public final class Props {
             ;
             public static EnumFormat fromString(String value) {
                 return EnumFormat.valueOf(value.toUpperCase());
+            }
+        }
+
+        public enum FieldReadonlyType {
+            ALL, ACYCLIC, NONE,
+            ;
+            public static FieldReadonlyType fromString(String value) {
+                return FieldReadonlyType.valueOf(value.toUpperCase());
             }
         }
     }

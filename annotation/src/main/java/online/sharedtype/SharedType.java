@@ -165,9 +165,13 @@ public @interface SharedType {
     String typescriptEnumFormat() default "";
 
     /**
-     * Whether to mark a type field as readonly. Default fallback to global properties.
+     * Whether to mark generated type fields as readonly. Default fallback to global properties.
+     * @return value can be one of:
+     *         "all" - all fields are readonly
+     *         "acyclic" - only fields of not cyclic-referenced types are readonly
+     *         "none" - no fields are readonly
      */
-    OptionalBool typescriptFieldReadonly() default OptionalBool.DEFAULT;
+    String typescriptFieldReadonlyType() default "";
 
     /**
      * Mark a method as an accessor regardless of its name.

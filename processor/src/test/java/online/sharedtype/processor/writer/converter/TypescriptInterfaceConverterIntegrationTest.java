@@ -2,6 +2,7 @@ package online.sharedtype.processor.writer.converter;
 
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
+import online.sharedtype.processor.context.Props;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
@@ -102,11 +103,20 @@ final class TypescriptInterfaceConverterIntegrationTest {
                             ))
                             .build()
                     )
+                    .build(),
+                FieldComponentInfo.builder().name("cyclicReferencedField")
+                    .type(
+                        ConcreteTypeInfo.builder()
+                            .qualifiedName("com.github.cuzfrog.CyclicA").simpleName("CyclicA")
+                            .typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.CyclicA").simpleName("CyclicA").cyclicReferenced(true).build())
+                            .build()
+                    )
                     .build()
             ))
             .build();
 
         when(config.getTypescriptOptionalFieldFormats()).thenReturn(Set.of(QUESTION_MARK));
+        when(config.getTypescriptFieldReadonly()).thenReturn(Props.Typescript.FieldReadonlyType.ACYCLIC);
         when(ctxMocks.getContext().getTypeStore().getConfig(classDef)).thenReturn(config);
 
         var tuple = converter.convert(classDef);
@@ -116,13 +126,14 @@ final class TypescriptInterfaceConverterIntegrationTest {
         assertThat(model.name).isEqualTo("ClassA");
         assertThat(model.typeParameters).containsExactly("T", "U");
         assertThat(model.supertypes).containsExactly("SuperClassA<U>");
-        assertThat(model.properties).hasSize(6);
+        assertThat(model.properties).hasSize(7);
         TypescriptInterfaceConverter.PropertyExpr prop1 = model.properties.get(0);
         assertThat(prop1.name).isEqualTo("field1");
         assertThat(prop1.type).isEqualTo("number");
         assertThat(prop1.optional).isTrue();
         assertThat(prop1.unionNull).isFalse();
         assertThat(prop1.unionUndefined).isFalse();
+        assertThat(prop1.readonly).isTrue();
 
         TypescriptInterfaceConverter.PropertyExpr prop2 = model.properties.get(1);
         assertThat(prop2.name).isEqualTo("field2");
@@ -146,6 +157,11 @@ final class TypescriptInterfaceConverterIntegrationTest {
         TypescriptInterfaceConverter.PropertyExpr prop6 = model.properties.get(5);
         assertThat(prop6.name).isEqualTo("mapFieldEnumKey");
         assertThat(prop6.type).isEqualTo("Partial<Record<MyEnum, number>>");
+
+        TypescriptInterfaceConverter.PropertyExpr prop7 = model.properties.get(6);
+        assertThat(prop7.name).isEqualTo("cyclicReferencedField");
+        assertThat(prop7.type).isEqualTo("CyclicA");
+        assertThat(prop7.readonly).isFalse();
     }
 
     @Test
@@ -159,6 +175,7 @@ final class TypescriptInterfaceConverterIntegrationTest {
             .build();
 
         when(config.getTypescriptOptionalFieldFormats()).thenReturn(Set.of(NULL, UNDEFINED));
+        when(config.getTypescriptFieldReadonly()).thenReturn(Props.Typescript.FieldReadonlyType.NONE);
         when(ctxMocks.getContext().getTypeStore().getConfig(classDef)).thenReturn(config);
 
         var tuple = converter.convert(classDef);
@@ -168,5 +185,6 @@ final class TypescriptInterfaceConverterIntegrationTest {
         assertThat(prop1.optional).isFalse();
         assertThat(prop1.unionNull).isTrue();
         assertThat(prop1.unionUndefined).isTrue();
+        assertThat(prop1.readonly).isFalse();
     }
 }

@@ -11,7 +11,8 @@ import java.util.Set;
 
 @SharedType(
     rustMacroTraits = {"PartialEq", "serde::Serialize", "serde::Deserialize"},
-    typescriptOptionalFieldFormat = {"undefined", "null"}
+    typescriptOptionalFieldFormat = {"undefined", "null"},
+    typescriptFieldReadonlyType = "none"
 )
 @Setter
 public class OptionalMethod {

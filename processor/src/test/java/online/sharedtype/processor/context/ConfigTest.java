@@ -78,9 +78,9 @@ final class ConfigTest {
     @Test
     void overrideTsFieldReadonly() {
         var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
-            .withAnnotation(SharedType.class, m -> when(m.typescriptFieldReadonly()).thenReturn(SharedType.OptionalBool.FALSE))
+            .withAnnotation(SharedType.class, m -> when(m.typescriptFieldReadonlyType()).thenReturn("all"))
             .element();
         Config config = new Config(typeElement, ctxMocks.getContext());
-        assertThat(config.isTypescriptFieldReadonly()).isFalse();
+        assertThat(config.getTypescriptFieldReadonly()).isEqualTo(Props.Typescript.FieldReadonlyType.ALL);
     }
 }

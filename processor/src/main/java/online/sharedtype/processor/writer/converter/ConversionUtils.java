@@ -2,6 +2,7 @@ package online.sharedtype.processor.writer.converter;
 
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
+import online.sharedtype.processor.domain.TypeDef;
 
 import java.util.regex.Pattern;
 
@@ -25,6 +26,10 @@ final class ConversionUtils {
         if (field.optional()) {
             return true;
         }
+        return isOfCyclicReferencedType(field);
+    }
+
+    static boolean isOfCyclicReferencedType(FieldComponentInfo field) {
         if (field.type() instanceof ConcreteTypeInfo) {
             ConcreteTypeInfo type = (ConcreteTypeInfo) field.type();
             return type.typeDef() != null && type.typeDef().isCyclicReferenced();

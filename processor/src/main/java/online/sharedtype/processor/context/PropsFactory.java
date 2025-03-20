@@ -56,7 +56,7 @@ public final class PropsFactory {
                 .optionalFieldFormats(parseEnumSet(properties, "sharedtype.typescript.optional-field-format",
                     Props.Typescript.OptionalFieldFormat.class, Props.Typescript.OptionalFieldFormat::fromString))
                 .enumFormat(parseEnum(properties, "sharedtype.typescript.enum-format", Props.Typescript.EnumFormat::fromString))
-                .fieldReadonly(parseBoolean(properties, "sharedtype.typescript.field-readonly"))
+                .fieldReadonlyType(parseEnum(properties, "sharedtype.typescript.field-readonly-type", Props.Typescript.FieldReadonlyType::fromString))
                 .build())
             .rust(Props.Rust.builder()
                 .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))
