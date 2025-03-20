@@ -74,4 +74,13 @@ final class ConfigTest {
             .isInstanceOf(SharedTypeException.class)
             .hasMessageContaining("Invalid value for SharedType.typescriptEnumFormat: 'abc', only 'union' or 'const_enum' is allowed.");
     }
+
+    @Test
+    void overrideTsFieldReadonly() {
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.class, m -> when(m.typescriptFieldReadonlyType()).thenReturn("all"))
+            .element();
+        Config config = new Config(typeElement, ctxMocks.getContext());
+        assertThat(config.getTypescriptFieldReadonly()).isEqualTo(Props.Typescript.FieldReadonlyType.ALL);
+    }
 }

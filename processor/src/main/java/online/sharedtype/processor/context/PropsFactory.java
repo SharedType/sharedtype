@@ -56,6 +56,7 @@ public final class PropsFactory {
                 .optionalFieldFormats(parseEnumSet(properties, "sharedtype.typescript.optional-field-format",
                     Props.Typescript.OptionalFieldFormat.class, Props.Typescript.OptionalFieldFormat::fromString))
                 .enumFormat(parseEnum(properties, "sharedtype.typescript.enum-format", Props.Typescript.EnumFormat::fromString))
+                .fieldReadonlyType(parseEnum(properties, "sharedtype.typescript.field-readonly-type", Props.Typescript.FieldReadonlyType::fromString))
                 .build())
             .rust(Props.Rust.builder()
                 .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))
@@ -95,7 +96,7 @@ public final class PropsFactory {
         if ("false".equals(value)) {
             return false;
         }
-        throw new IllegalArgumentException(String.format("property '%s', can only be 'true' or 'false'.", key));
+        throw new IllegalArgumentException(String.format("property '%s', can only be 'true' or 'false', but it is '%s'.", key, value));
     }
 
     private static <T> Set<Class<? extends T>> parseClassSet(Properties properties, String propertyName) {

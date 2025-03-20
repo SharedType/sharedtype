@@ -3,9 +3,11 @@ package online.sharedtype.processor.writer.converter;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.context.Props;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
@@ -62,8 +64,22 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
             interfacePropertyDelimiter,
             isFieldOptional && config.getTypescriptOptionalFieldFormats().contains(QUESTION_MARK),
             isFieldOptional && config.getTypescriptOptionalFieldFormats().contains(NULL),
-            isFieldOptional && config.getTypescriptOptionalFieldFormats().contains(UNDEFINED)
+            isFieldOptional && config.getTypescriptOptionalFieldFormats().contains(UNDEFINED),
+            isFieldReadonly(field, config)
         );
+    }
+
+    private static boolean isFieldReadonly(FieldComponentInfo field, Config config) {
+        if (config.getTypescriptFieldReadonly() == Props.Typescript.FieldReadonlyType.NONE) {
+            return false;
+        }
+        if (config.getTypescriptFieldReadonly() == Props.Typescript.FieldReadonlyType.ALL) {
+            return true;
+        }
+        if (config.getTypescriptFieldReadonly() == Props.Typescript.FieldReadonlyType.ACYCLIC) {
+            return !ConversionUtils.isOfCyclicReferencedType(field);
+        }
+        throw new SharedTypeInternalError("Unknown typescriptFieldReadonlyType: " + config.getTypescriptFieldReadonly());
     }
 
     @RequiredArgsConstructor
@@ -98,5 +114,6 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
         final boolean optional;
         final boolean unionNull;
         final boolean unionUndefined;
+        final boolean readonly;
     }
 }
