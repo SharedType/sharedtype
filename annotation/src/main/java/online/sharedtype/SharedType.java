@@ -96,7 +96,6 @@ import java.lang.annotation.Target;
  * @author Cause Chung
  * @implNote generics type bounds are not supported yet.
  */
-// TODO: test user-defined array-like types
 @Retention(RetentionPolicy.SOURCE)
 @Target({java.lang.annotation.ElementType.TYPE})
 @Documented
@@ -164,6 +163,11 @@ public @interface SharedType {
      * @return either "union" (union types) or "const_enum" (const enum). If empty, fallback to global default.
      */
     String typescriptEnumFormat() default "";
+
+    /**
+     * Whether to mark a type field as readonly. Default fallback to global properties.
+     */
+    OptionalBool typescriptFieldReadonly() default OptionalBool.DEFAULT;
 
     /**
      * Mark a method as an accessor regardless of its name.

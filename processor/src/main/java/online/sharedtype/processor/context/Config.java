@@ -12,27 +12,22 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 /**
  * Config wrappers.
  *
  * @author Cause Chung
  */
+@Getter
 public final class Config {
-    @Getter
     private final SharedType anno;
-    @Getter
     private final String simpleName;
-    @Getter
     private final String qualifiedName;
     private final Set<SharedType.ComponentType> includedComponentTypes;
-    @Getter
     private final boolean constantNamespaced;
-    @Getter
     private final Set<Props.Typescript.OptionalFieldFormat> typescriptOptionalFieldFormats;
-    @Getter
     private final Props.Typescript.EnumFormat typescriptEnumFormat;
+    private final boolean typescriptFieldReadonly;
 
     @Retention(RetentionPolicy.RUNTIME)
     @interface AnnoContainer {
@@ -54,6 +49,7 @@ public final class Config {
         constantNamespaced = evaluateOptionalBool(anno.constantNamespaced(), ctx.getProps().isConstantNamespaced());
         typescriptOptionalFieldFormats = parseTsOptionalFieldFormats(anno, ctx);
         typescriptEnumFormat = parseTsEnumFormat(anno, ctx);
+        typescriptFieldReadonly = evaluateOptionalBool(anno.typescriptFieldReadonly(), ctx.getProps().getTypescript().isFieldReadonly());
     }
 
     public boolean includes(SharedType.ComponentType componentType) {
