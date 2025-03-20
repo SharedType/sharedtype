@@ -73,6 +73,16 @@ public final class Context {
         return false;
     }
 
+    /** Check if the type is directly the same type as one of the defined arraylike types */
+    public boolean isTopArrayType(TypeMirror typeMirror) {
+        for (TypeMirror toArrayType : arraylikeTypes) {
+            if (types.isSameType(types.erasure(typeMirror), toArrayType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isMaplike(TypeMirror typeMirror) {
         for (TypeMirror maplikeType : maplikeTypes) {
             if (types.isSubtype(types.erasure(typeMirror), maplikeType)) {
