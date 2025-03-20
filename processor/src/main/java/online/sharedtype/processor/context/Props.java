@@ -36,6 +36,7 @@ public final class Props {
         private final String javaObjectMapType;
         private final Set<OptionalFieldFormat> optionalFieldFormats;
         private final EnumFormat enumFormat;
+        private final boolean fieldReadonly;
 
         @Getter
         public enum OptionalFieldFormat {

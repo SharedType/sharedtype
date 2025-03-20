@@ -45,6 +45,7 @@ final class PropsFactoryTest {
         assertThat(typescriptProps.getJavaObjectMapType()).isEqualTo("any");
         assertThat(typescriptProps.getOptionalFieldFormats()).containsExactly(Props.Typescript.OptionalFieldFormat.QUESTION_MARK);
         assertThat(typescriptProps.getEnumFormat()).isEqualTo(Props.Typescript.EnumFormat.UNION);
+        assertThat(typescriptProps.isFieldReadonly()).isTrue();
 
         Props.Rust rustProps = props.getRust();
         assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");
