@@ -34,23 +34,24 @@ final class TypescriptEnumConverter implements TemplateDataConverter {
                 values.add(ConversionUtils.literalValue(component.value()));
             }
             return Tuple.of(Template.TEMPLATE_TYPESCRIPT_UNION_TYPE_ENUM, new EnumUnionExpr(enumDef.simpleName(), values));
-        } else if (config.getTypescriptEnumFormat() == Props.Typescript.EnumFormat.CONST_ENUM) {
+        } else {
             EnumExpr value = new EnumExpr(
                 enumDef.simpleName(),
+                config.getTypescriptEnumFormat() == Props.Typescript.EnumFormat.CONST_ENUM,
                 enumDef.components().stream().map(component -> new EnumValueExpr(
                     component.name(),
                     ConversionUtils.literalValue(component.value())
                 )).collect(Collectors.toList())
             );
-            return Tuple.of(Template.TEMPLATE_TYPESCRIPT_CONST_ENUM, value);
+            return Tuple.of(Template.TEMPLATE_TYPESCRIPT_ENUM, value);
         }
-        throw new SharedTypeInternalError("Unknown typescript enum format: " + config.getTypescriptEnumFormat());
     }
 
     @SuppressWarnings("unused")
     @RequiredArgsConstructor
     static final class EnumExpr {
         final String name;
+        final boolean isConst;
         final List<EnumValueExpr> values;
     }
 

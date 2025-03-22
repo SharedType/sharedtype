@@ -160,7 +160,7 @@ public @interface SharedType {
 
     /**
      * Format of enum in Typescript.
-     * @return either "union" (union types) or "const_enum" (const enum). If empty, fallback to global default.
+     * @return one of "const_enum" (const enum), "enum" (enum), or "union" (union types). If empty, fallback to global default.
      */
     String typescriptEnumFormat() default "";
 
