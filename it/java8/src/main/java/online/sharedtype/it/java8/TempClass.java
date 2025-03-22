@@ -1,5 +1,9 @@
 package online.sharedtype.it.java8;
 
-public class TempClass {
+import online.sharedtype.SharedType;
 
+import java.time.LocalDate;
+
+public class TempClass {
+    LocalDate localDate;
 }

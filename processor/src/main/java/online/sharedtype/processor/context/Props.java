@@ -59,7 +59,7 @@ public final class Props {
         }
 
         public enum EnumFormat {
-            UNION, CONST_ENUM,
+            UNION, CONST_ENUM, ENUM,
             ;
             public static EnumFormat fromString(String value) {
                 return EnumFormat.valueOf(value.toUpperCase());

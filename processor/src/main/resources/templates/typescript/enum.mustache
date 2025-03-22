@@ -1,4 +1,4 @@
-export const enum {{name}} {
+export {{#isConst}}const {{/isConst}}enum {{name}} {
 {{#values}}
     {{name}} = {{{value}}},
 {{/values}}

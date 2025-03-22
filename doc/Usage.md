@@ -82,7 +82,7 @@ You can customize the path by config `maven-compiler-plugin`:
 See [Default Properties](../processor/src/main/resources/sharedtype-default.properties) for details.
 
 #### Per annotation options
-See Javadoc on [@SharedType](../annotation/src/main/java/online/sharedtype/annotation/SharedType.java) for details.
+See Javadoc on [@SharedType](../annotation/src/main/java/online/sharedtype/SharedType.java) for details.
 
 ### Limitations
 * Current design only retain `@SharedType` on source level. That means they are not visible if it is in a dependency jar during its dependent's compilation.

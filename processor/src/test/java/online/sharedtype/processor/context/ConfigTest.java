@@ -72,7 +72,7 @@ final class ConfigTest {
             .element();
         assertThatThrownBy(() -> new Config(typeElement, ctxMocks.getContext()))
             .isInstanceOf(SharedTypeException.class)
-            .hasMessageContaining("Invalid value for SharedType.typescriptEnumFormat: 'abc', only 'union' or 'const_enum' is allowed.");
+            .hasMessageContaining("Invalid value for SharedType.typescriptEnumFormat: 'abc', only one of 'union', 'const_enum', 'enum' is allowed.");
     }
 
     @Test

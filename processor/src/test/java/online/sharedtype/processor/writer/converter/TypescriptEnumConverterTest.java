@@ -57,9 +57,10 @@ final class TypescriptEnumConverterTest {
         var data = converter.convert(enumDef);
         assertThat(data).isNotNull();
 
-        assertThat(data.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_CONST_ENUM);
+        assertThat(data.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_ENUM);
         TypescriptEnumConverter.EnumExpr model = (TypescriptEnumConverter.EnumExpr) data.b();
         assertThat(model.name).isEqualTo("EnumA");
+        assertThat(model.isConst).isTrue();
         assertThat(model.values).satisfiesExactly(
             v1 -> {
                 assertThat(v1.name).isEqualTo("Value1");
