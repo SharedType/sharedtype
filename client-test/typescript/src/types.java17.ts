@@ -2,6 +2,7 @@ import {
     type DependencyClassA, type DependencyClassB, type DependencyClassC, type EnumGalaxy, type EnumSize,
     EnumTShirt, type JavaRecord, type AnotherJavaClass, type RecursiveClass, type MapClass,
     type OptionalMethod,
+    type ArrayClass,
 } from "./index.java17";
 
 export const list1: EnumGalaxy[] = ["Andromeda", "MilkyWay", "Triangulum"];
@@ -101,3 +102,7 @@ export const optionalMethods: OptionalMethod = {
 optionalMethods.mapNestedValueOptional = { 1: "foo" };
 optionalMethods.setNestedValueOptional = ["foo"];
 optionalMethods.nestedValueOptional = "bar";
+
+export const arrayClass: ArrayClass = {
+    arr: ["abc"],
+}

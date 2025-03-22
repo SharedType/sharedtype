@@ -4,7 +4,6 @@ import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.TypeStore;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
@@ -17,6 +16,7 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.lang.model.util.Types;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,16 +25,17 @@ import static online.sharedtype.processor.domain.Constants.PRIMITIVES;
 import static online.sharedtype.processor.support.Preconditions.checkArgument;
 
 /**
- *
  * @author Cause Chung
  */
 final class TypeInfoParserImpl implements TypeInfoParser {
     private final Context ctx;
     private final TypeStore typeStore;
+    private final Types types;
 
     TypeInfoParserImpl(Context ctx) {
         this.ctx = ctx;
         this.typeStore = ctx.getTypeStore();
+        this.types = ctx.getProcessingEnv().getTypeUtils();
     }
 
     @Override
@@ -66,9 +67,8 @@ final class TypeInfoParserImpl implements TypeInfoParser {
         TypeMirror currentType = declaredType;
         TypeInfo typeInfo = null;
         while (ctx.isArraylike(currentType)) {
-            checkArgument(typeArgs.size() == 1, "Array type must have exactly one type argument, but got: %s, type: %s", typeArgs.size(), currentType);
             arrayStack++;
-            currentType = typeArgs.get(0);
+            currentType = locateArrayComponentType(currentType);
             if (currentType instanceof DeclaredType) {
                 DeclaredType argDeclaredType = (DeclaredType) currentType;
                 TypeElement element = (TypeElement) argDeclaredType.asElement();
@@ -108,7 +108,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
         }
 
         if (typeContext.getDependingKind() == DependingKind.COMPONENTS && typeInfo instanceof ConcreteTypeInfo) {
-            ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo)typeInfo;
+            ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
             concreteTypeInfo.referencingTypes().add(typeContext.getTypeDef());
         }
 
@@ -125,7 +125,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
         String qualifiedName = TypeVariableInfo.concatQualifiedName(contextTypeQualifiedName, simpleName);
         TypeInfo typeInfo = typeStore.getTypeInfo(qualifiedName, Collections.emptyList());
         if (typeInfo != null) {
-            return (TypeVariableInfo)typeInfo;
+            return (TypeVariableInfo) typeInfo;
         }
         typeInfo = TypeVariableInfo.builder()
             .contextTypeQualifiedName(contextTypeQualifiedName)
@@ -133,6 +133,25 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             .qualifiedName(qualifiedName)
             .build();
         typeStore.saveTypeInfo(qualifiedName, Collections.emptyList(), typeInfo);
-        return (TypeVariableInfo)typeInfo;
+        return (TypeVariableInfo) typeInfo;
+    }
+
+    private TypeMirror locateArrayComponentType(TypeMirror typeMirror) {
+        TypeMirror cur = typeMirror;
+        int depth = 0;
+        while (!ctx.isTopArrayType(cur)) {
+            for (TypeMirror supertype : types.directSupertypes(cur)) {
+                if (ctx.isArraylike(supertype)) {
+                    cur = supertype;
+                    break;
+                }
+            }
+            if (depth++ > 100) {
+                throw new SharedTypeInternalError("Array type hierarchy exceed max depth: " + typeMirror);
+            }
+        }
+        List<? extends TypeMirror> typeArgs = ((DeclaredType)cur).getTypeArguments();
+        checkArgument(typeArgs.size() == 1, "Array type must have exactly one type argument, but got: %s, type: %s", typeArgs.size(), typeMirror);
+        return typeArgs.get(0);
     }
 }
