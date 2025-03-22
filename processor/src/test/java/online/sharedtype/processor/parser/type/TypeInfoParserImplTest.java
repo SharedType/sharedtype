@@ -13,6 +13,7 @@ import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.support.annotation.Issue;
 
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 
 import java.util.Collections;
@@ -36,14 +37,14 @@ class TypeInfoParserImplTest {
 
     @ParameterizedTest
     @CsvSource({
-      "BYTE, byte",
-      "CHAR, char",
-      "DOUBLE, double",
-      "FLOAT, float",
-      "INT, int",
-      "LONG, long",
-      "SHORT, short",
-      "BOOLEAN, boolean",
+        "BYTE, byte",
+        "CHAR, char",
+        "DOUBLE, double",
+        "FLOAT, float",
+        "INT, int",
+        "LONG, long",
+        "SHORT, short",
+        "BOOLEAN, boolean",
     })
     void parsePrimitives(TypeKind typeKind, String expectedName) {
         var type = ctxMocks.primitiveVariable("field1", typeKind).type();
@@ -66,22 +67,22 @@ class TypeInfoParserImplTest {
 
     @ParameterizedTest
     @CsvSource({
-      "java.lang.Boolean",
-      "java.lang.Byte",
-      "java.lang.Character",
-      "java.lang.Double",
-      "java.lang.Float",
-      "java.lang.Integer",
-      "java.lang.Long",
-      "java.lang.Short",
-      "java.lang.String",
-      "java.lang.Void",
-      "java.lang.Object"
+        "java.lang.Boolean",
+        "java.lang.Byte",
+        "java.lang.Character",
+        "java.lang.Double",
+        "java.lang.Float",
+        "java.lang.Integer",
+        "java.lang.Long",
+        "java.lang.Short",
+        "java.lang.String",
+        "java.lang.Void",
+        "java.lang.Object"
     })
     void parsePredefinedObject(String qualifiedName) {
         var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement(qualifiedName).type())
-          .withTypeKind(TypeKind.DECLARED)
-          .type();
+            .withTypeKind(TypeKind.DECLARED)
+            .type();
 
         var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContext);
         SoftAssertions.assertSoftly(softly -> {
@@ -100,10 +101,16 @@ class TypeInfoParserImplTest {
 
     @Test
     void parseArraylikeObject() {
+        DeclaredType arraylikeTopType = ctxMocks.typeElement("java.util.Iterable")
+            .withTypeArguments(ctxMocks.typeElement("java.lang.String").type()).type();
+        when(ctxMocks.getContext().isArraylike(arraylikeTopType)).thenReturn(true);
+        when(ctxMocks.getContext().isTopArrayType(arraylikeTopType)).thenReturn(true);
+
         var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("java.util.List").type())
-          .withTypeKind(TypeKind.DECLARED)
-          .withTypeArguments(ctxMocks.typeElement("java.lang.String").type())
-          .type();
+            .withTypeKind(TypeKind.DECLARED)
+            .withTypeArguments(ctxMocks.typeElement("java.lang.String").type())
+            .withSuperTypes(arraylikeTopType)
+            .type();
         when(ctxMocks.getContext().isArraylike(type)).thenReturn(true);
 
         var arrayTypeInfo = (ArrayTypeInfo) parser.parse(type, typeContext);
@@ -118,17 +125,28 @@ class TypeInfoParserImplTest {
 
     @Test
     void parseNestedArrays() {
+        DeclaredType arraylikeTopTypeOfString = ctxMocks.typeElement("java.util.Iterable")
+            .withTypeArguments(ctxMocks.typeElement("java.lang.String").type()).type();
+        when(ctxMocks.getContext().isArraylike(arraylikeTopTypeOfString)).thenReturn(true);
+        when(ctxMocks.getContext().isTopArrayType(arraylikeTopTypeOfString)).thenReturn(true);
+
         var nestedType = ctxMocks.typeElement("java.lang.Set")
-          .withTypeArguments(
-            ctxMocks.typeElement("java.lang.String").type()
-          )
-          .type();
+            .withTypeArguments(
+                ctxMocks.typeElement("java.lang.String").type()
+            )
+            .withSuperTypes(arraylikeTopTypeOfString)
+            .type();
+
+        DeclaredType arraylikeTopTypeOfSet = ctxMocks.typeElement("java.util.Iterable")
+            .withTypeArguments(nestedType).type();
+        when(ctxMocks.getContext().isArraylike(arraylikeTopTypeOfSet)).thenReturn(true);
+        when(ctxMocks.getContext().isTopArrayType(arraylikeTopTypeOfSet)).thenReturn(true);
+
         var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("java.util.List").type())
-          .withTypeKind(TypeKind.DECLARED)
-          .withTypeArguments(
-            nestedType
-          )
-          .type();
+            .withTypeKind(TypeKind.DECLARED)
+            .withTypeArguments(nestedType)
+            .withSuperTypes(arraylikeTopTypeOfSet)
+            .type();
         when(ctxMocks.getContext().isArraylike(type)).thenReturn(true);
         when(ctxMocks.getContext().isArraylike(nestedType)).thenReturn(true);
 
@@ -146,8 +164,8 @@ class TypeInfoParserImplTest {
     @Test
     void parseObject() {
         var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("com.github.cuzfrog.Abc").type())
-          .withTypeKind(TypeKind.DECLARED)
-          .type();
+            .withTypeKind(TypeKind.DECLARED)
+            .type();
 
         var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
         SoftAssertions.assertSoftly(softly -> {
@@ -180,30 +198,30 @@ class TypeInfoParserImplTest {
     @Test
     void parseGenericObjectWithKnownTypeArgs() {
         var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("com.github.cuzfrog.Tuple").type())
-          .withTypeKind(TypeKind.DECLARED)
-          .withTypeArguments(
-            ctxMocks.typeElement("java.lang.String").type(),
-            ctxMocks.typeElement("com.github.cuzfrog.Abc").type()
-          )
-          .type();
+            .withTypeKind(TypeKind.DECLARED)
+            .withTypeArguments(
+                ctxMocks.typeElement("java.lang.String").type(),
+                ctxMocks.typeElement("com.github.cuzfrog.Abc").type()
+            )
+            .type();
 
         var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Tuple");
             softly.assertThat(typeInfo.resolved()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).map(t -> (ConcreteTypeInfo) t).satisfiesExactly(
-              typeArg -> {
-                  softly.assertThat(typeArg.qualifiedName()).isEqualTo("java.lang.String");
-                  softly.assertThat(typeArg.simpleName()).isEqualTo("String");
-                  softly.assertThat(typeArg.resolved()).isTrue();
-                  softly.assertThat(typeArg.typeArgs()).isEmpty();
-              },
-              typeArg -> {
-                  softly.assertThat(typeArg.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
-                  softly.assertThat(typeArg.simpleName()).isEqualTo("Abc");
-                  softly.assertThat(typeArg.resolved()).isFalse();
-                  softly.assertThat(typeArg.typeArgs()).isEmpty();
-              }
+                typeArg -> {
+                    softly.assertThat(typeArg.qualifiedName()).isEqualTo("java.lang.String");
+                    softly.assertThat(typeArg.simpleName()).isEqualTo("String");
+                    softly.assertThat(typeArg.resolved()).isTrue();
+                    softly.assertThat(typeArg.typeArgs()).isEmpty();
+                },
+                typeArg -> {
+                    softly.assertThat(typeArg.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
+                    softly.assertThat(typeArg.simpleName()).isEqualTo("Abc");
+                    softly.assertThat(typeArg.resolved()).isFalse();
+                    softly.assertThat(typeArg.typeArgs()).isEmpty();
+                }
             );
         });
     }
@@ -211,23 +229,23 @@ class TypeInfoParserImplTest {
     @Test
     void parseGenericObjectWithTypeVar() {
         var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("com.github.cuzfrog.Container").type())
-          .withTypeKind(TypeKind.DECLARED)
-          .withTypeArguments(
-            ctxMocks.typeParameter("T").type()
-          )
-          .type();
+            .withTypeKind(TypeKind.DECLARED)
+            .withTypeArguments(
+                ctxMocks.typeParameter("T").type()
+            )
+            .type();
 
         var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Container");
             softly.assertThat(typeInfo.resolved()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).map(t -> (TypeVariableInfo) t).satisfiesExactly(
-              typeArg -> {
-                  softly.assertThat(typeArg.name()).isEqualTo("T");
-                  softly.assertThat(typeArg.qualifiedName()).isEqualTo("com.github.cuzfrog.Outer@T");
-                  softly.assertThat(typeArg.contextTypeQualifiedName()).isEqualTo("com.github.cuzfrog.Outer");
-                  softly.assertThat(typeArg.resolved()).isTrue();
-              }
+                typeArg -> {
+                    softly.assertThat(typeArg.name()).isEqualTo("T");
+                    softly.assertThat(typeArg.qualifiedName()).isEqualTo("com.github.cuzfrog.Outer@T");
+                    softly.assertThat(typeArg.contextTypeQualifiedName()).isEqualTo("com.github.cuzfrog.Outer");
+                    softly.assertThat(typeArg.resolved()).isTrue();
+                }
             );
         });
     }
@@ -270,14 +288,15 @@ class TypeInfoParserImplTest {
         assertThat(typeInfo).isSameAs(cachedTypeInfo);
     }
 
-    @Test @Issue(44)
+    @Test
+    @Issue(44)
     void shouldCacheTypeInfoWithTypeArgsIfIsGeneric() {
         var type = ctxMocks.typeElement("com.github.cuzfrog.Container")
             .withTypeArguments(ctxMocks.typeElement("java.lang.Integer").type()).type();
         var typeInfo = (ConcreteTypeInfo) parser.parse(type, TypeContext.builder().typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.Container").build()).build());
         assertThat(typeInfo.qualifiedName()).isEqualTo("com.github.cuzfrog.Container");
         assertThat(typeInfo.typeArgs()).hasSize(1);
-        var typeArg = (ConcreteTypeInfo)typeInfo.typeArgs().getFirst();
+        var typeArg = (ConcreteTypeInfo) typeInfo.typeArgs().getFirst();
         assertThat(typeArg.qualifiedName()).isEqualTo("java.lang.Integer");
 
         verify(ctxMocks.getTypeStore()).getTypeInfo("com.github.cuzfrog.Container", Collections.singletonList(typeArg));

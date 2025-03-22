@@ -69,6 +69,11 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
         return returnThis();
     }
 
+    public M withSuperTypes(TypeMirror... superTypes) {
+        when(types.directSupertypes(type)).thenAnswer(invoc -> Arrays.asList(superTypes));
+        return returnThis();
+    }
+
     public final M ofTree(VariableTreeMock tree) {
         tree.fromElement(element);
         return returnThis();

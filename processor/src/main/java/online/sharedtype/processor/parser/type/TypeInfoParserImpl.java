@@ -138,12 +138,16 @@ final class TypeInfoParserImpl implements TypeInfoParser {
 
     private TypeMirror locateArrayComponentType(TypeMirror typeMirror) {
         TypeMirror cur = typeMirror;
+        int depth = 0;
         while (!ctx.isTopArrayType(cur)) {
             for (TypeMirror supertype : types.directSupertypes(cur)) {
                 if (ctx.isArraylike(supertype)) {
                     cur = supertype;
                     break;
                 }
+            }
+            if (depth++ > 100) {
+                throw new SharedTypeInternalError("Array type hierarchy exceed max depth: " + typeMirror);
             }
         }
         List<? extends TypeMirror> typeArgs = ((DeclaredType)cur).getTypeArguments();
