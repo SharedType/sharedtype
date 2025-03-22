@@ -3,7 +3,7 @@ package online.sharedtype.it.java8;
 import lombok.Getter;
 import online.sharedtype.SharedType;
 
-@SharedType(typescriptEnumFormat = "const_enum")
+@SharedType(typescriptEnumFormat = "enum")
 @Getter
 public enum EnumTShirt {
     S(EnumSize.SMALL, "S"),
