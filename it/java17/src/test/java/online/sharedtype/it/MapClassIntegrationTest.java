@@ -16,7 +16,7 @@ final class MapClassIntegrationTest {
             mapField -> {
                 assertThat(mapField.name()).isEqualTo("mapField");
                 ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)mapField.type();
-                assertThat(typeInfo.isMapType()).isTrue();
+                assertThat(typeInfo.getKind()).isEqualTo(ConcreteTypeInfo.Kind.MAP);
                 assertThat(typeInfo.qualifiedName()).isEqualTo("java.util.concurrent.ConcurrentMap");
                 assertThat(typeInfo.typeArgs()).hasSize(2).satisfiesExactly(
                     keyType -> assertThat(keyType).isEqualTo(Constants.BOXED_INT_TYPE_INFO),
@@ -26,7 +26,7 @@ final class MapClassIntegrationTest {
             enumKeyMapField -> {
                 assertThat(enumKeyMapField.name()).isEqualTo("enumKeyMapField");
                 ConcreteTypeInfo typeInfo = (ConcreteTypeInfo) enumKeyMapField.type();
-                assertThat(typeInfo.isMapType()).isTrue();
+                assertThat(typeInfo.getKind()).isEqualTo(ConcreteTypeInfo.Kind.MAP);
                 assertThat(typeInfo.qualifiedName()).isEqualTo("java.util.Map");
                 assertThat(typeInfo.typeArgs()).hasSize(2).satisfiesExactly(
                     keyType -> {
@@ -39,20 +39,20 @@ final class MapClassIntegrationTest {
             customMapField -> {
                 assertThat(customMapField.name()).isEqualTo("customMapField");
                 ConcreteTypeInfo typeInfo = (ConcreteTypeInfo) customMapField.type();
-                assertThat(typeInfo.isMapType()).isTrue();
+                assertThat(typeInfo.getKind()).isEqualTo(ConcreteTypeInfo.Kind.MAP);
                 assertThat(typeInfo.qualifiedName()).isEqualTo("online.sharedtype.it.java8.CustomMap");
                 assertThat(typeInfo.typeArgs()).hasSize(0);
             },
             nestedMapField -> {
                 assertThat(nestedMapField.name()).isEqualTo("nestedMapField");
                 ConcreteTypeInfo typeInfo = (ConcreteTypeInfo) nestedMapField.type();
-                assertThat(typeInfo.isMapType()).isTrue();
+                assertThat(typeInfo.getKind()).isEqualTo(ConcreteTypeInfo.Kind.MAP);
                 assertThat(typeInfo.qualifiedName()).isEqualTo("java.util.Map");
                 assertThat(typeInfo.typeArgs()).hasSize(2).satisfiesExactly(
                     keyType -> assertThat(keyType).isEqualTo(Constants.STRING_TYPE_INFO),
                     valueType -> {
                         ConcreteTypeInfo valueTypeInfo = (ConcreteTypeInfo) valueType;
-                        assertThat(valueTypeInfo.isMapType()).isTrue();
+                        assertThat(typeInfo.getKind()).isEqualTo(ConcreteTypeInfo.Kind.MAP);
                         assertThat(valueTypeInfo.qualifiedName()).isEqualTo("java.util.Map");
                         assertThat(valueTypeInfo.typeArgs()).hasSize(2).satisfiesExactly(
                             nestedKeyType -> assertThat(nestedKeyType).isEqualTo(Constants.STRING_TYPE_INFO),

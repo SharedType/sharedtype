@@ -26,7 +26,7 @@ final class TypescriptTypeExpressionConverterTest {
         ClassDef contextTypeDef = ClassDef.builder().qualifiedName("a.b.Abc").simpleName("Abc").build();
         ConcreteTypeInfo invalidKeyTypeInfo = ConcreteTypeInfo.builder()
             .qualifiedName("java.util.Map").simpleName("Map")
-            .mapType(true)
+            .kind(ConcreteTypeInfo.Kind.MAP)
             .typeArgs(List.of(
                 ConcreteTypeInfo.builder().qualifiedName("a.b.Foo").simpleName("Foo").build(),
                 Constants.INT_TYPE_INFO
@@ -50,7 +50,7 @@ final class TypescriptTypeExpressionConverterTest {
         ClassDef contextTypeDef = ClassDef.builder().qualifiedName("a.b.Abc").simpleName("Abc").build();
         ConcreteTypeInfo invalidMapTypeInfo = ConcreteTypeInfo.builder()
             .qualifiedName("java.util.Map").simpleName("Map")
-            .mapType(true)
+            .kind(ConcreteTypeInfo.Kind.MAP)
             .typeArgs(List.of(
                 Constants.INT_TYPE_INFO,
                 Constants.STRING_TYPE_INFO,

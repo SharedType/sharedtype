@@ -98,9 +98,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)
                 .typeArgs(parsedTypeArgs)
-                .enumType(ctx.isEnumType(currentType))
-                .mapType(ctx.isMaplike(currentType)) // TODO: use enum
-                .arrayType(ctx.isArraylike(currentType))
+                .kind(parseKind(currentType))
                 .baseMapType(ctx.getProps().getMaplikeTypeQualifiedNames().contains(qualifiedName))
                 .resolved(resolved)
                 .build();
@@ -117,6 +115,18 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             arrayStack--;
         }
         return typeInfo;
+    }
+
+    private ConcreteTypeInfo.Kind parseKind(TypeMirror typeMirror) {
+        if (ctx.isMaplike(typeMirror)) {
+            return ConcreteTypeInfo.Kind.MAP;
+        } else if (ctx.isDatetimelike(typeMirror)) {
+            return ConcreteTypeInfo.Kind.DATE_TIME;
+        } else if (ctx.isEnumType(typeMirror)) {
+            return ConcreteTypeInfo.Kind.ENUM;
+        } else {
+            return ConcreteTypeInfo.Kind.OTHER;
+        }
     }
 
     private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable, TypeContext typeContext) {

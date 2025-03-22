@@ -40,7 +40,7 @@ final class RustStructConverterIntegrationTest {
     void skipMapClassDef() {
         ClassDef classDef = ClassDef.builder()
             .build();
-        classDef.linkTypeInfo(ConcreteTypeInfo.builder().mapType(true).build());
+        classDef.linkTypeInfo(ConcreteTypeInfo.builder().kind(ConcreteTypeInfo.Kind.MAP).build());
         assertThat(converter.shouldAccept(classDef)).isFalse();
     }
 
@@ -97,7 +97,7 @@ final class RustStructConverterIntegrationTest {
                     .type(ConcreteTypeInfo.builder()
                         .qualifiedName("java.util.Map")
                         .simpleName("Map")
-                        .mapType(true)
+                        .kind(ConcreteTypeInfo.Kind.MAP)
                         .typeArgs(List.of(
                             Constants.STRING_TYPE_INFO,
                             Constants.INT_TYPE_INFO

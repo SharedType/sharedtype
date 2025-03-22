@@ -43,7 +43,7 @@ final class RustTypeExpressionConverterTest {
         verify(renderFlags).setUseRustAny(true);
 
         verify(renderFlags, never()).setUseRustMap(anyBoolean());
-        converter.beforeVisitTypeInfo(ConcreteTypeInfo.builder().mapType(true).build());
+        converter.beforeVisitTypeInfo(ConcreteTypeInfo.builder().kind(ConcreteTypeInfo.Kind.MAP).build());
         verify(renderFlags).setUseRustMap(true);
     }
 

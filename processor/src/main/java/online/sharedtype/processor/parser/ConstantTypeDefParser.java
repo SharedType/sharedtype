@@ -86,7 +86,7 @@ final class ConstantTypeDefParser implements TypeDefParser {
     private static boolean shouldSkip(TypeDef mainTypeDef) {
         if (mainTypeDef instanceof ClassDef) {
             ClassDef classDef = (ClassDef) mainTypeDef;
-            return classDef.isMapType() || classDef.isArrayType();
+            return classDef.isMapType();
         }
         return false;
     }

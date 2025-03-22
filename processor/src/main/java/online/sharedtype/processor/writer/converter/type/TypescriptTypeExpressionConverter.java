@@ -47,7 +47,7 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
 
     @Override
     MapSpec mapSpec(ConcreteTypeInfo typeInfo) {
-        if (typeInfo.isEnumType()) {
+        if (typeInfo.getKind() == ConcreteTypeInfo.Kind.ENUM) {
             return ENUM_KEY_MAP_SPEC;
         }
         return DEFAULT_MAP_SPEC;

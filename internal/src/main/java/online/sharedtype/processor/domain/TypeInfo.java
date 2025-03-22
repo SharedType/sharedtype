@@ -25,10 +25,6 @@ public interface TypeInfo extends Serializable {
      */
     boolean resolved();
 
-    default boolean isEnumType() {
-        return false;
-    }
-
     /**
      * Replace type variables with type arguments.
      * @param mappings key is a type variable e.g. T

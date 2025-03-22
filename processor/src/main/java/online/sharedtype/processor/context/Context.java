@@ -38,6 +38,7 @@ public final class Context {
     private final Trees trees;
     private final Set<TypeMirror> arraylikeTypes;
     private final Set<TypeMirror> maplikeTypes;
+    private final Set<TypeMirror> datetimelikeTypes;
 
     public Context(ProcessingEnvironment processingEnv, Props props) {
         this.processingEnv = processingEnv;
@@ -51,9 +52,11 @@ public final class Context {
         maplikeTypes = props.getMaplikeTypeQualifiedNames().stream()
                 .map(qualifiedName -> types.erasure(elements.getTypeElement(qualifiedName).asType()))
                 .collect(Collectors.toSet());
+        datetimelikeTypes = props.getDatetimelikeTypeQualifiedNames().stream()
+                .map(qualifiedName -> types.erasure(elements.getTypeElement(qualifiedName).asType()))
+                .collect(Collectors.toSet());
     }
 
-    // TODO: optimize by remove varargs
     public void info(String message, Object... objects) {
         log(Diagnostic.Kind.NOTE, message, objects);
     }
@@ -65,12 +68,7 @@ public final class Context {
     }
 
     public boolean isArraylike(TypeMirror typeMirror) {
-        for (TypeMirror toArrayType : arraylikeTypes) {
-            if (types.isSubtype(types.erasure(typeMirror), toArrayType)) {
-                return true;
-            }
-        }
-        return false;
+        return isSubtypeOfAny(typeMirror, arraylikeTypes);
     }
 
     /** Check if the type is directly the same type as one of the defined arraylike types */
@@ -84,12 +82,11 @@ public final class Context {
     }
 
     public boolean isMaplike(TypeMirror typeMirror) {
-        for (TypeMirror maplikeType : maplikeTypes) {
-            if (types.isSubtype(types.erasure(typeMirror), maplikeType)) {
-                return true;
-            }
-        }
-        return false;
+        return isSubtypeOfAny(typeMirror, maplikeTypes);
+    }
+
+    public boolean isDatetimelike(TypeMirror typeMirror) {
+        return isSubtypeOfAny(typeMirror, datetimelikeTypes);
     }
 
     public boolean isEnumType(TypeMirror typeMirror) {
@@ -119,5 +116,14 @@ public final class Context {
 
     private void log(Diagnostic.Kind level, String message, Object... objects) {
         processingEnv.getMessager().printMessage(level, String.format("[ST] %s", String.format(message, objects)));
+    }
+
+    private boolean isSubtypeOfAny(TypeMirror typeMirror, Set<TypeMirror> typeSet) {
+        for (TypeMirror type : typeSet) {
+            if (types.isSubtype(types.erasure(typeMirror), type)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -24,7 +24,7 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
     void beforeVisitTypeInfo(TypeInfo typeInfo) {
         if (typeInfo.equals(Constants.OBJECT_TYPE_INFO)) {
             renderFlags.setUseRustAny(true);
-        } else if (typeInfo instanceof ConcreteTypeInfo && ((ConcreteTypeInfo) typeInfo).isMapType()) {
+        } else if (typeInfo instanceof ConcreteTypeInfo && ((ConcreteTypeInfo) typeInfo).getKind() == ConcreteTypeInfo.Kind.MAP) {
             renderFlags.setUseRustMap(true);
         }
     }

@@ -29,17 +29,8 @@ public final class ConcreteTypeInfo implements TypeInfo {
     @Builder.Default
     private final List<TypeInfo> typeArgs = Collections.emptyList();
 
-    /** If this type is an Enum */
     @Getter
-    private final boolean enumType;
-
-    /** If this type is map-like. */
-    @Getter
-    private final boolean mapType;
-
-    /** If this type is array-like. */
-    @Getter
-    private final boolean arrayType;
+    private final Kind kind;
 
     /** If this type is defined in global config as base Map type */
     @Getter
@@ -120,5 +111,10 @@ public final class ConcreteTypeInfo implements TypeInfo {
                 typeArgs.isEmpty() ? "" : "<" + typeArgs.stream().map(TypeInfo::toString).collect(Collectors.joining(",")) + ">",
                 resolved ? "" : "?"
         );
+    }
+
+    /** Kind of types ConcreteTypeInfo can represent. Array is represented by ArrayTypeInfo */
+    public enum Kind {
+        ENUM, MAP, DATE_TIME, OTHER
     }
 }

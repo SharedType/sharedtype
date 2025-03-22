@@ -42,7 +42,7 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
         beforeVisitTypeInfo(typeInfo);
         if (typeInfo instanceof ConcreteTypeInfo) {
             ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
-            if (concreteTypeInfo.isMapType()) {
+            if (concreteTypeInfo.getKind() == ConcreteTypeInfo.Kind.MAP) {
                 buildMapType(concreteTypeInfo, exprBuilder, contextTypeDef);
             } else {
                 exprBuilder.append(toTypeExpression(concreteTypeInfo, concreteTypeInfo.simpleName()));
@@ -90,11 +90,23 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
 
     private static ConcreteTypeInfo getKeyType(ConcreteTypeInfo baseMapType, ConcreteTypeInfo concreteTypeInfo, TypeDef contextTypeDef) {
         TypeInfo keyType = baseMapType.typeArgs().get(0);
-        if (!(keyType instanceof ConcreteTypeInfo) || (!Constants.STRING_AND_NUMBER_TYPES.contains(keyType) && !keyType.isEnumType())) {
+        boolean validKey = false;
+        if (keyType instanceof ConcreteTypeInfo && ((ConcreteTypeInfo)keyType).getKind() == ConcreteTypeInfo.Kind.ENUM) {
+            validKey = true;
+        } else if (Constants.STRING_AND_NUMBER_TYPES.contains(keyType)) {
+            validKey = true;
+        }
+        if (!validKey) {
             throw new SharedTypeException(String.format(
                 "Key type of %s must be string or numbers or enum (with EnumValue being string or numbers), but is %s, " +
                 "when trying to build expression for concrete type: %s, context type: %s.",
                 baseMapType.qualifiedName(), keyType, concreteTypeInfo, contextTypeDef));
+        }
+        if (!(keyType instanceof ConcreteTypeInfo)) {
+            throw new SharedTypeInternalError(String.format(
+                "Key type of %s is not a ConcreteTypeInfo, but is %s %s, " +
+                    "when trying to build expression for concrete type: %s, context type: %s.",
+                baseMapType.qualifiedName(), keyType.getClass(), keyType, concreteTypeInfo, contextTypeDef));
         }
         return (ConcreteTypeInfo) keyType;
     }

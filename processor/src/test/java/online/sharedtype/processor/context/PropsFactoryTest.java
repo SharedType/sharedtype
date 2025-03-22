@@ -29,6 +29,7 @@ final class PropsFactoryTest {
         assertThat(props.getAccessorGetterPrefixes()).containsExactly("get", "is");
         assertThat(props.getArraylikeTypeQualifiedNames()).containsExactly("java.lang.Iterable");
         assertThat(props.getMaplikeTypeQualifiedNames()).containsExactly("java.util.Map");
+        assertThat(props.getDatetimelikeTypeQualifiedNames()).containsExactly("java.util.Date", "java.time.temporal.Temporal");
         assertThat(props.getIgnoredTypeQualifiedNames()).containsExactlyInAnyOrder(
             "java.lang.Object",
             "java.lang.Enum",

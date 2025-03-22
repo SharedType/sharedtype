@@ -46,6 +46,7 @@ public final class PropsFactory {
             .accessorGetterPrefixes(splitArray(properties.getProperty("sharedtype.accessor.getter-prefixes")))
             .arraylikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.array-like-types")))
             .maplikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.map-like-types")))
+            .datetimelikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.datetime-like-types")))
             .ignoredTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.ignored-types")))
             .ignoredFieldNames(splitArray(properties.getProperty("sharedtype.ignored-fields")))
             .constantNamespaced(parseBoolean(properties, "sharedtype.constant-namespaced"))

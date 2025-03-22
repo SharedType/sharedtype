@@ -41,13 +41,7 @@ final class ConstantTypeDefParserTest {
 
     @Test
     void skipMapType() {
-        mainTypeDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("java.util.Map").mapType(true).build());
-        assertThat(parser.parse(ctxMocks.typeElement("com.github.cuzfrog.Abc").element())).isEmpty();
-    }
-
-    @Test
-    void skipArrayType() {
-        mainTypeDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("java.util.List").arrayType(true).build());
+        mainTypeDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("java.util.Map").kind(ConcreteTypeInfo.Kind.MAP).build());
         assertThat(parser.parse(ctxMocks.typeElement("com.github.cuzfrog.Abc").element())).isEmpty();
     }
 
