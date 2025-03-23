@@ -6,6 +6,7 @@ import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.DateTimeInfo;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
@@ -34,6 +35,7 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
     }
     abstract ArraySpec arraySpec();
     abstract MapSpec mapSpec(ConcreteTypeInfo typeInfo);
+    abstract String dateTimeTypeExpr();
 
     @Nullable
     abstract String toTypeExpression(ConcreteTypeInfo typeInfo, @Nullable String defaultExpr);
@@ -65,6 +67,8 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
             exprBuilder.append(arraySpec.prefix);
             buildTypeExprRecursively(arrayTypeInfo.component(), exprBuilder, contextTypeDef);
             exprBuilder.append(arraySpec.suffix);
+        } else if (typeInfo instanceof DateTimeInfo) {
+            exprBuilder.append(dateTimeTypeExpr());
         }
     }
 

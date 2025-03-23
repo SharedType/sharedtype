@@ -29,6 +29,16 @@ final class CompositeTypeDefParser implements TypeDefParser {
         if (cachedDef != null) {
             return new ArrayList<>(cachedDef);
         }
+
+        if (ctx.isArraylike(typeElement.asType())) {
+            ctx.warn("Type '%s' is an array type, which cannot be parsed and emitted as a standalone type.", typeElement.getQualifiedName());
+            return Collections.emptyList();
+        }
+        if (ctx.isDatetimelike(typeElement.asType())) {
+            ctx.warn("Type '%s' is a datetime type, which cannot be parsed and emitted as a standalone type.", typeElement.getQualifiedName());
+            return Collections.emptyList();
+        }
+
         ctx.info("Processing: " + typeElement.getQualifiedName());
         List<TypeDef> typeDefs = new ArrayList<>();
         for (TypeDefParser typeDefParser : parsers) {

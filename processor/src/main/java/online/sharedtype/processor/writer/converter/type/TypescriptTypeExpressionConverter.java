@@ -54,6 +54,11 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
     }
 
     @Override
+    String dateTimeTypeExpr() {
+        return "string";
+    }
+
+    @Override
     @Nullable
     String toTypeExpression(ConcreteTypeInfo typeInfo, String defaultExpr) {
         return typeNameMappings.getOrDefault(typeInfo, defaultExpr);

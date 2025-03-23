@@ -4,6 +4,7 @@ import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.DateTimeInfo;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.support.annotation.Issue;
@@ -174,6 +175,17 @@ class TypeInfoParserImplTest {
             softly.assertThat(typeInfo.resolved()).isFalse();
             softly.assertThat(typeInfo.typeArgs()).isEmpty();
         });
+    }
+
+    @Test
+    void parseDateTimeLike() {
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("java.time.LocalDate").type())
+            .withTypeKind(TypeKind.DECLARED)
+            .type();
+        when(ctxMocks.getContext().isDatetimelike(type)).thenReturn(true);
+
+        var typeInfo = (DateTimeInfo) parser.parse(type, typeContextOuter);
+        assertThat(typeInfo.qualifiedName()).isEqualTo("java.time.LocalDate");
     }
 
     @ParameterizedTest

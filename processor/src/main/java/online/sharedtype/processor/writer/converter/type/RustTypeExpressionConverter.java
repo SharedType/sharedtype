@@ -40,6 +40,11 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
     }
 
     @Override
+    String dateTimeTypeExpr() {
+        return "String";
+    }
+
+    @Override
     @Nullable
     String toTypeExpression(ConcreteTypeInfo typeInfo, @Nullable String defaultExpr) {
         String expr = RustTypeNameMappings.getOrDefault(typeInfo, defaultExpr);

@@ -44,11 +44,6 @@ public final class TypeVariableInfo implements TypeInfo {
     }
 
     @Override
-    public boolean resolved() {
-        return true;
-    }
-
-    @Override
     public TypeInfo reify(Map<TypeVariableInfo, TypeInfo> mappings) {
         TypeInfo reifiedType = mappings.get(this);
         return reifiedType == null ? this : reifiedType;

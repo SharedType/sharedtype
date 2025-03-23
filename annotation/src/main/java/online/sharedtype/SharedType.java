@@ -49,6 +49,7 @@ import java.lang.annotation.Target;
  * <p>
  * <b>Cyclic Reference:</b>
  * <ul>
+ *     <li>Typescript: Cyclic referenced field will be optional.</li>
  *     <li>Rust: Cyclic references will be wrapped in {@code Option<Box<T>>}.</li>
  * </ul>
  *
@@ -83,7 +84,7 @@ import java.lang.annotation.Target;
  * </ul>
  *
  * <p>
- * <b>Maps:</b>
+ * <b>Maps:</b><br>
  * Key must be String or numeric types. Enum is support given that its value is a literal.
  * Custom map types are supported, e.g. a class that extends HashMap. But the type itself is treated as a mapType, so its structure will not be emitted.
  * <ul>
@@ -91,6 +92,13 @@ import java.lang.annotation.Target;
  *     <li>Rust: e.g. {@code HashMap<String, T>}, {@code HashMap<EnumType, T>}</li>
  * </ul>
  *
+ * <p>
+ * <b>Date and Time:</b><br>
+ * By default, date and time types are emitted as strings. The default target type can be configured via global properties or via this annotation.
+ * Target type can be any type literal, but SharedType will not verify its validity in emitted code.
+ * </p>
+ *
+ * <br>
  * <p><a href="https://github.com/SharedType/sharedtype">SharedType Website</a></p>
  *
  * @author Cause Chung

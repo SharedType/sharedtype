@@ -9,6 +9,7 @@ import java.util.Map;
  * Represents an array-like type.
  * During parsing, a predefined array-like type and its subtypes is captured as this class.
  * A type will be recognized as this type with higher priority than {@link ConcreteTypeInfo}.
+ * It has no counterpart typeDef, explicitly annotating {@code @SharedType} on an array type is ignored with a warning.
  * <br>
  * Predefined array-like types can be configured in global properties. Default is {@link java.lang.Iterable}.
  *
