@@ -86,7 +86,7 @@ final class ConstantTypeDefParser implements TypeDefParser {
     private static boolean shouldSkip(TypeDef mainTypeDef) {
         if (mainTypeDef instanceof ClassDef) {
             ClassDef classDef = (ClassDef) mainTypeDef;
-            return classDef.isMapType();
+            return classDef.isMapType() || !classDef.isAnnotated();
         }
         return false;
     }
@@ -94,7 +94,9 @@ final class ConstantTypeDefParser implements TypeDefParser {
     private Object parseConstantValue(Element fieldElement, TypeElement ctxTypeElement) {
         VariableTree tree = (VariableTree) ctx.getTrees().getTree(fieldElement);
         if (tree == null) {
-            throw new SharedTypeInternalError(String.format("Cannot parse constant value for field: %s in %s, tree is null from the field element.",
+            throw new SharedTypeInternalError(String.format("Cannot parse constant value for field: %s in %s, tree is null from the field element. " +
+                    "If the type is from a dependency jar/compiled class file, tree is not available at the time of annotation processing. " +
+                    "Check if the type or its custom mapping is correct.",
                 fieldElement.getSimpleName(), ctxTypeElement.getQualifiedName()));
         }
         ExpressionTree valueTree = tree.getInitializer();
