@@ -8,15 +8,18 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Queue;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Annotation processing context state and utils.
@@ -33,28 +36,14 @@ public final class Context {
     @Getter
     private final Props props;
     private final Types types;
-    private final Elements elements;
     @Getter
     private final Trees trees;
-    private final Set<TypeMirror> arraylikeTypes;
-    private final Set<TypeMirror> maplikeTypes;
-    private final Set<TypeMirror> datetimelikeTypes;
 
     public Context(ProcessingEnvironment processingEnv, Props props) {
         this.processingEnv = processingEnv;
         this.props = props;
         types = processingEnv.getTypeUtils();
-        elements = processingEnv.getElementUtils();
         trees = Trees.instance(processingEnv);
-        arraylikeTypes = props.getArraylikeTypeQualifiedNames().stream()
-                .map(qualifiedName -> types.erasure(elements.getTypeElement(qualifiedName).asType()))
-                .collect(Collectors.toSet());
-        maplikeTypes = props.getMaplikeTypeQualifiedNames().stream()
-                .map(qualifiedName -> types.erasure(elements.getTypeElement(qualifiedName).asType()))
-                .collect(Collectors.toSet());
-        datetimelikeTypes = props.getDatetimelikeTypeQualifiedNames().stream()
-                .map(qualifiedName -> types.erasure(elements.getTypeElement(qualifiedName).asType()))
-                .collect(Collectors.toSet());
     }
 
     public void info(String message, Object... objects) {
@@ -68,13 +57,13 @@ public final class Context {
     }
 
     public boolean isArraylike(TypeMirror typeMirror) {
-        return isSubtypeOfAny(typeMirror, arraylikeTypes);
+        return isSubtypeOfAny(typeMirror, props.getArraylikeTypeQualifiedNames());
     }
 
     /** Check if the type is directly the same type as one of the defined arraylike types */
     public boolean isTopArrayType(TypeMirror typeMirror) {
-        for (TypeMirror toArrayType : arraylikeTypes) {
-            if (types.isSameType(types.erasure(typeMirror), toArrayType)) {
+        for (String qualifiedName : props.getArraylikeTypeQualifiedNames()) {
+            if (isSameTypeOf(typeMirror, qualifiedName)) {
                 return true;
             }
         }
@@ -82,11 +71,11 @@ public final class Context {
     }
 
     public boolean isMaplike(TypeMirror typeMirror) {
-        return isSubtypeOfAny(typeMirror, maplikeTypes);
+        return isSubtypeOfAny(typeMirror, props.getMaplikeTypeQualifiedNames());
     }
 
     public boolean isDatetimelike(TypeMirror typeMirror) {
-        return isSubtypeOfAny(typeMirror, datetimelikeTypes);
+        return isSubtypeOfAny(typeMirror, props.getDatetimelikeTypeQualifiedNames());
     }
 
     public boolean isEnumType(TypeMirror typeMirror) {
@@ -118,10 +107,40 @@ public final class Context {
         processingEnv.getMessager().printMessage(level, String.format("[ST] %s", String.format(message, objects)));
     }
 
-    private boolean isSubtypeOfAny(TypeMirror typeMirror, Set<TypeMirror> typeSet) {
-        for (TypeMirror type : typeSet) {
-            if (types.isSubtype(types.erasure(typeMirror), type)) {
+    private boolean isSubtypeOfAny(TypeMirror typeMirror, Set<String> qualifiedNames) {
+        for (String qualifiedName : qualifiedNames) {
+            if (isSubtypeOf(typeMirror, qualifiedName)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isSubtypeOf(TypeMirror typeMirror, String qualifiedName) {
+        Queue<TypeMirror> queue = new ArrayDeque<>();
+        queue.add(typeMirror);
+        Set<TypeMirror> visited = new HashSet<>();
+        while (!queue.isEmpty()) {
+            TypeMirror type = queue.poll();
+            if(isSameTypeOf(type, qualifiedName)) {
+                return true;
+            }
+            for (TypeMirror directSupertype : types.directSupertypes(type)) {
+                if(!visited.contains(directSupertype) && !props.getIgnoredTypeQualifiedNames().contains(directSupertype.toString())) {
+                    queue.add(directSupertype);
+                    visited.add(directSupertype);
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isSameTypeOf(TypeMirror typeMirror, String qualifiedName) {
+        if (typeMirror instanceof DeclaredType) {
+            Element element = ((DeclaredType) typeMirror).asElement();
+            if (element instanceof TypeElement) {
+                TypeElement typeElement = (TypeElement) element;
+                return typeElement.getQualifiedName().contentEquals(qualifiedName);
             }
         }
         return false;

@@ -83,4 +83,13 @@ final class ConfigTest {
         Config config = new Config(typeElement, ctxMocks.getContext());
         assertThat(config.getTypescriptFieldReadonly()).isEqualTo(Props.Typescript.FieldReadonlyType.ALL);
     }
+
+    @Test
+    void overrideRustTargetDatetimeTypeLiteral() {
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.class, m -> when(m.rustTargetDatetimeTypeLiteral()).thenReturn("int64"))
+            .element();
+        Config config = new Config(typeElement, ctxMocks.getContext());
+        assertThat(config.getRustTargetDatetimeTypeLiteral()).isEqualTo("int64");
+    }
 }

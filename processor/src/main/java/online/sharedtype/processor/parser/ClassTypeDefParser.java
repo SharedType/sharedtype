@@ -70,7 +70,7 @@ final class ClassTypeDefParser implements TypeDefParser {
         Config config = new Config(typeElement, ctx);
 
         ClassDef classDef = ClassDef.builder()
-            .qualifiedName(config.getQualifiedName()).simpleName(config.getSimpleName())
+            .qualifiedName(config.getQualifiedName()).simpleName(config.getSimpleName()).annotated(config.isAnnotated())
             .build();
         classDef.typeVariables().addAll(parseTypeVariables(typeElement));
         classDef.components().addAll(parseComponents(typeElement, config, TypeContext.builder().typeDef(classDef).dependingKind(COMPONENTS).build()));
@@ -244,8 +244,8 @@ final class ClassTypeDefParser implements TypeDefParser {
             if (type == null) {
                 return false;
             }
-            if (!types.isSameType(type, componentType)) {
-                ctx.error("Type %s has conflicting components with same name '%s', because they have different types %s and %s, they cannot be merged.",
+            if (!types.isSameType(type, componentType)) { // TODO exception and log at higher level with element context
+                ctx.error("Type %s has conflicting components with same name '%s', because they have different types '%s' and '%s', they cannot be merged.",
                     contextType, name, type, componentType);
             }
             return true;

@@ -1,5 +1,6 @@
 package online.sharedtype.processor.writer.converter.type;
 
+import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.RenderFlags;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
@@ -40,8 +41,8 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
     }
 
     @Override
-    String dateTimeTypeExpr() {
-        return "String";
+    String dateTimeTypeExpr(Config config) {
+        return config.getRustTargetDatetimeTypeLiteral();
     }
 
     @Override

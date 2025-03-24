@@ -13,6 +13,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import static online.sharedtype.processor.support.utils.Utils.notEmptyOrDefault;
+
 /**
  * Config wrappers.
  *
@@ -21,6 +23,7 @@ import java.util.Set;
 @Getter
 public final class Config {
     private final SharedType anno;
+    private final boolean annotated;
     private final String simpleName;
     private final String qualifiedName;
     private final Set<SharedType.ComponentType> includedComponentTypes;
@@ -28,6 +31,8 @@ public final class Config {
     private final Set<Props.Typescript.OptionalFieldFormat> typescriptOptionalFieldFormats;
     private final Props.Typescript.EnumFormat typescriptEnumFormat;
     private final Props.Typescript.FieldReadonlyType typescriptFieldReadonly;
+    private final String rustTargetDatetimeTypeLiteral;
+    private final String typescriptTargetDatetimeTypeLiteral;
 
     @Retention(RetentionPolicy.RUNTIME)
     @interface AnnoContainer {
@@ -41,6 +46,7 @@ public final class Config {
     public Config(TypeElement typeElement, Context ctx) {
         String simpleName = typeElement.getSimpleName().toString();
         SharedType annoFromType = typeElement.getAnnotation(SharedType.class);
+        this.annotated = annoFromType != null;
         this.anno = annoFromType == null ? DummyDefault.class.getAnnotation(AnnoContainer.class).anno() : annoFromType;
         this.simpleName = anno.name().isEmpty() ? simpleName : anno.name();
         this.qualifiedName = typeElement.getQualifiedName().toString();
@@ -50,6 +56,16 @@ public final class Config {
         typescriptOptionalFieldFormats = parseTsOptionalFieldFormats(anno, ctx);
         typescriptEnumFormat = parseTsEnumFormat(anno, ctx);
         typescriptFieldReadonly = parseTsFieldReadonlyType(anno, ctx);
+        rustTargetDatetimeTypeLiteral = notEmptyOrDefault(
+            anno.rustTargetDatetimeTypeLiteral(),
+            ctx.getProps().getRust().getTargetDatetimeTypeLiteral(),
+            () -> String.format("Loading rustTargetDatetimeTypeLiteral failed. Please check your configuration for '%s'", qualifiedName)
+        );
+        typescriptTargetDatetimeTypeLiteral = notEmptyOrDefault(
+            anno.typescriptTargetDatetimeTypeLiteral(),
+            ctx.getProps().getTypescript().getTargetDatetimeTypeLiteral(),
+            () -> String.format("Loading typescriptTargetDatetimeTypeLiteral failed. Please check your configuration for '%s'", qualifiedName)
+        );
     }
 
     public boolean includes(SharedType.ComponentType componentType) {

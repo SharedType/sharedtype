@@ -35,6 +35,7 @@ public final class Props {
         private final String outputFileName;
         private final char interfacePropertyDelimiter;
         private final String javaObjectMapType;
+        private final String targetDatetimeTypeLiteral;
         private final Set<OptionalFieldFormat> optionalFieldFormats;
         private final EnumFormat enumFormat;
         private final FieldReadonlyType fieldReadonlyType;
@@ -83,5 +84,6 @@ public final class Props {
         private final boolean allowDeadcode;
         private final boolean convertToSnakeCase;
         private final Set<String> defaultTypeMacros;
+        private final String targetDatetimeTypeLiteral;
     }
 }

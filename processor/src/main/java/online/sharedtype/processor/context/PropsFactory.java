@@ -54,6 +54,7 @@ public final class PropsFactory {
                 .outputFileName(properties.getProperty("sharedtype.typescript.output-file-name"))
                 .interfacePropertyDelimiter(properties.getProperty("sharedtype.typescript.interface-property-delimiter").charAt(0))
                 .javaObjectMapType(properties.getProperty("sharedtype.typescript.java-object-map-type"))
+                .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.typescript.target-datetime-type"))
                 .optionalFieldFormats(parseEnumSet(properties, "sharedtype.typescript.optional-field-format",
                     Props.Typescript.OptionalFieldFormat.class, Props.Typescript.OptionalFieldFormat::fromString))
                 .enumFormat(parseEnum(properties, "sharedtype.typescript.enum-format", Props.Typescript.EnumFormat::fromString))
@@ -64,6 +65,7 @@ public final class PropsFactory {
                 .allowDeadcode(parseBoolean(properties, "sharedtype.rust.allow-deadcode"))
                 .convertToSnakeCase(parseBoolean(properties, "sharedtype.rust.convert-to-snake-case"))
                 .defaultTypeMacros(splitArray(properties.getProperty("sharedtype.rust.default-macros-traits")))
+                .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.rust.target-datetime-type"))
                 .build())
             .build();
     }

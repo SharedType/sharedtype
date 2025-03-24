@@ -161,6 +161,12 @@ public @interface SharedType {
     String[] rustMacroTraits() default {};
 
     /**
+     * Type literal to be emitted for date/time types. How a java type is considered a date/time type is defined by global properties.
+     * @return any literal, e.g. "String", "chrono::DateTime". When empty, fallback to global default.
+     */
+    String rustTargetDatetimeTypeLiteral() default "";
+
+    /**
      * How to render optional fields in Typescript.
      * @return combination of "?", "null", "undefined", the latter 2 are rendered as union types. If empty, fallback to global default.
      */
@@ -180,6 +186,12 @@ public @interface SharedType {
      *         "none" - no fields are readonly
      */
     String typescriptFieldReadonlyType() default "";
+
+    /**
+     * Type literal to be emitted for date/time types. How a java type is considered a date/time type is defined by global properties.
+     * @return any literal, e.g. "string", "Date". When empty, fallback to global default.
+     */
+    String typescriptTargetDatetimeTypeLiteral() default "";
 
     /**
      * Mark a method as an accessor regardless of its name.

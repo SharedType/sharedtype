@@ -1,5 +1,6 @@
 package online.sharedtype.processor.writer.converter.type;
 
+import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
@@ -54,8 +55,8 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
     }
 
     @Override
-    String dateTimeTypeExpr() {
-        return "string";
+    String dateTimeTypeExpr(Config config) {
+        return config.getTypescriptTargetDatetimeTypeLiteral();
     }
 
     @Override

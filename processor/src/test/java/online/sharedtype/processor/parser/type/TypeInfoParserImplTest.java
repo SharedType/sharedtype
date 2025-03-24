@@ -190,19 +190,17 @@ class TypeInfoParserImplTest {
 
     @ParameterizedTest
     @CsvSource({
-        "false, false, false, OTHER",
-        "true, false, false, ENUM",
-        "false, true, false, MAP",
-        "false, false, true, DATE_TIME",
+        "false, false, OTHER",
+        "true, false, ENUM",
+        "false, true, MAP",
     })
-    void setTypeKind(boolean isEnum, boolean isMaplike, boolean isDatetimelike, ConcreteTypeInfo.Kind expectedKind) {
+    void setTypeKind(boolean isEnum, boolean isMaplike, ConcreteTypeInfo.Kind expectedKind) {
         var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("com.github.cuzfrog.SomeType").type())
             .withTypeKind(TypeKind.DECLARED)
             .type();
 
         when(ctxMocks.getContext().isEnumType(type)).thenReturn(isEnum);
         when(ctxMocks.getContext().isMaplike(type)).thenReturn(isMaplike);
-        when(ctxMocks.getContext().isDatetimelike(type)).thenReturn(isDatetimelike);
         var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
         assertThat(typeInfo.getKind()).isEqualTo(expectedKind);
     }

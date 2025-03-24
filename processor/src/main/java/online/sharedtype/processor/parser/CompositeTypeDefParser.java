@@ -48,12 +48,6 @@ final class CompositeTypeDefParser implements TypeDefParser {
             }
             typeDefs.addAll(parsedTypeDefs);
         }
-
-        for (TypeDef typeDef : typeDefs) {
-            if (typeElement.getAnnotation(SharedType.class) != null) {
-                typeDef.setAnnotated(true);
-            }
-        }
         return typeDefs;
     }
 }
