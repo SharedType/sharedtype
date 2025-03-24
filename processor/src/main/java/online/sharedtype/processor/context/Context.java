@@ -3,6 +3,7 @@ package online.sharedtype.processor.context;
 import com.sun.source.util.Trees;
 import lombok.Getter;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.support.annotation.VisibleForTesting;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
@@ -17,7 +18,6 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Queue;
 import java.util.Set;
 
@@ -43,15 +43,23 @@ public final class Context {
         this.processingEnv = processingEnv;
         this.props = props;
         types = processingEnv.getTypeUtils();
-        trees = Trees.instance(processingEnv);
+        Trees trees = null;
+        try {
+            trees = Trees.instance(processingEnv);
+        } catch (IllegalArgumentException e) {
+            error("The provided processingEnv '%s' does not support Tree API.", processingEnv);
+        }
+        this.trees = trees;
     }
 
     public void info(String message, Object... objects) {
         log(Diagnostic.Kind.NOTE, message, objects);
     }
+
     public void warn(String message, Object... objects) {
         log(Diagnostic.Kind.WARNING, message, objects);
     }
+
     public void error(String message, Object... objects) {
         log(Diagnostic.Kind.ERROR, message, objects);
     }
@@ -60,14 +68,11 @@ public final class Context {
         return isSubtypeOfAny(typeMirror, props.getArraylikeTypeQualifiedNames());
     }
 
-    /** Check if the type is directly the same type as one of the defined arraylike types */
+    /**
+     * Check if the type is directly the same type as one of the defined arraylike types
+     */
     public boolean isTopArrayType(TypeMirror typeMirror) {
-        for (String qualifiedName : props.getArraylikeTypeQualifiedNames()) {
-            if (isSameTypeOf(typeMirror, qualifiedName)) {
-                return true;
-            }
-        }
-        return false;
+        return isSameTypeOfAny(typeMirror, props.getArraylikeTypeQualifiedNames());
     }
 
     public boolean isMaplike(TypeMirror typeMirror) {
@@ -107,26 +112,18 @@ public final class Context {
         processingEnv.getMessager().printMessage(level, String.format("[ST] %s", String.format(message, objects)));
     }
 
-    private boolean isSubtypeOfAny(TypeMirror typeMirror, Set<String> qualifiedNames) {
-        for (String qualifiedName : qualifiedNames) {
-            if (isSubtypeOf(typeMirror, qualifiedName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isSubtypeOf(TypeMirror typeMirror, String qualifiedName) {
+    @VisibleForTesting
+    boolean isSubtypeOfAny(TypeMirror typeMirror, Set<String> qualifiedNames) {
         Queue<TypeMirror> queue = new ArrayDeque<>();
         queue.add(typeMirror);
         Set<TypeMirror> visited = new HashSet<>();
         while (!queue.isEmpty()) {
             TypeMirror type = queue.poll();
-            if(isSameTypeOf(type, qualifiedName)) {
+            if (isSameTypeOfAny(type, qualifiedNames)) {
                 return true;
             }
             for (TypeMirror directSupertype : types.directSupertypes(type)) {
-                if(!visited.contains(directSupertype) && !props.getIgnoredTypeQualifiedNames().contains(directSupertype.toString())) {
+                if (!visited.contains(directSupertype) && !props.getIgnoredTypeQualifiedNames().contains(directSupertype.toString())) {
                     queue.add(directSupertype);
                     visited.add(directSupertype);
                 }
@@ -135,12 +132,12 @@ public final class Context {
         return false;
     }
 
-    private static boolean isSameTypeOf(TypeMirror typeMirror, String qualifiedName) {
+    private static boolean isSameTypeOfAny(TypeMirror typeMirror, Set<String> qualifiedNames) {
         if (typeMirror instanceof DeclaredType) {
             Element element = ((DeclaredType) typeMirror).asElement();
             if (element instanceof TypeElement) {
                 TypeElement typeElement = (TypeElement) element;
-                return typeElement.getQualifiedName().contentEquals(qualifiedName);
+                return qualifiedNames.contains(typeElement.getQualifiedName().toString());
             }
         }
         return false;
