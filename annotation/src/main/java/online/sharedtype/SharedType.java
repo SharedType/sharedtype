@@ -94,7 +94,8 @@ import java.lang.annotation.Target;
  *
  * <p>
  * <b>Date and Time:</b><br>
- * By default, date and time types are emitted as strings. The default target type can be configured via global properties or via this annotation.
+ * By default, types that are recognized as date and time are emitted as strings, date/time types are configured via global properties.
+ * The emitted target type can be configured via global properties or via this annotation.
  * Target type can be any type literal, but SharedType will not verify its validity in emitted code.
  * </p>
  *
