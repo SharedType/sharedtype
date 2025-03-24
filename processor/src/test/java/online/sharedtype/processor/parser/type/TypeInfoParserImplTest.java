@@ -4,9 +4,11 @@ import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.DateTimeInfo;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.support.annotation.Issue;
+import online.sharedtype.processor.support.annotation.SideEffect;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -175,13 +177,24 @@ class TypeInfoParserImplTest {
         });
     }
 
+    @Test
+    void parseDateTimeLike() {
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("java.time.LocalDate").type())
+            .withTypeKind(TypeKind.DECLARED)
+            .type();
+        when(ctxMocks.getContext().isDatetimelike(type)).thenReturn(true);
+
+        var typeInfo = (DateTimeInfo) parser.parse(type, typeContextOuter);
+        assertThat(typeInfo.qualifiedName()).isEqualTo("java.time.LocalDate");
+    }
+
     @ParameterizedTest
     @CsvSource({
-        "false, false",
-        "true, false",
-        "false, true",
+        "false, false, OTHER",
+        "true, false, ENUM",
+        "false, true, MAP",
     })
-    void setTypeFlags(boolean isEnum, boolean isMaplike) {
+    void setTypeKind(boolean isEnum, boolean isMaplike, ConcreteTypeInfo.Kind expectedKind) {
         var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("com.github.cuzfrog.SomeType").type())
             .withTypeKind(TypeKind.DECLARED)
             .type();
@@ -189,8 +202,18 @@ class TypeInfoParserImplTest {
         when(ctxMocks.getContext().isEnumType(type)).thenReturn(isEnum);
         when(ctxMocks.getContext().isMaplike(type)).thenReturn(isMaplike);
         var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
-        assertThat(typeInfo.isEnumType()).isEqualTo(isEnum);
-        assertThat(typeInfo.isMapType()).isEqualTo(isMaplike);
+        assertThat(typeInfo.getKind()).isEqualTo(expectedKind);
+    }
+
+    @SideEffect("depends on default properties")
+    @Test
+    void markBaseMapFlag() {
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("java.util.Map").type())
+            .withTypeKind(TypeKind.DECLARED)
+            .type();
+
+        var typeInfo = (ConcreteTypeInfo) parser.parse(type, typeContextOuter);
+        assertThat(typeInfo.isBaseMapType()).isTrue();
     }
 
     @Test

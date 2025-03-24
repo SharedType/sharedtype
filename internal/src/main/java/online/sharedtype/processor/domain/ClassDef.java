@@ -69,10 +69,7 @@ public final class ClassDef extends ConcreteTypeDef {
     }
 
     public boolean isMapType() {
-        return typeInfoSet.stream().anyMatch(ConcreteTypeInfo::isMapType);
-    }
-    public boolean isArrayType() {
-        return typeInfoSet.stream().anyMatch(ConcreteTypeInfo::isArrayType);
+        return typeInfoSet.stream().anyMatch(t -> t.getKind() == ConcreteTypeInfo.Kind.MAP);
     }
 
     public void addSubtype(TypeDef subtype) {

@@ -35,7 +35,7 @@ final class OptionalTypeIntegrationTest {
                 assertThat(field4.name()).isEqualTo("mapNestedValueOptional");
                 assertThat(field4.optional()).isTrue();
                 ConcreteTypeInfo fieldTypeInfo = (ConcreteTypeInfo) field4.type();
-                assertThat(fieldTypeInfo.isMapType()).isTrue();
+                assertThat(fieldTypeInfo.getKind()).isEqualTo(ConcreteTypeInfo.Kind.MAP);
                 assertThat(fieldTypeInfo.qualifiedName()).isEqualTo("java.util.Map");
                 assertThat(fieldTypeInfo.typeArgs()).hasSize(2).satisfiesExactly(
                     keyType -> assertThat(keyType).isEqualTo(Constants.BOXED_INT_TYPE_INFO),

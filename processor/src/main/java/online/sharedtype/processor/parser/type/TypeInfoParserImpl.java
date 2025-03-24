@@ -4,6 +4,7 @@ import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.TypeStore;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.DateTimeInfo;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
@@ -92,15 +93,17 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             typeInfo = typeStore.getTypeInfo(qualifiedName, parsedTypeArgs);
         }
 
+        if (typeInfo == null && ctx.isDatetimelike(currentType)) {
+            typeInfo = new DateTimeInfo(qualifiedName);
+        }
+
         if (typeInfo == null) {
             boolean resolved = typeStore.containsTypeDef(qualifiedName) || ctx.isOptionalType(qualifiedName);
             typeInfo = ConcreteTypeInfo.builder()
                 .qualifiedName(qualifiedName)
                 .simpleName(simpleName)
                 .typeArgs(parsedTypeArgs)
-                .enumType(ctx.isEnumType(currentType))
-                .mapType(ctx.isMaplike(currentType)) // TODO: use enum
-                .arrayType(ctx.isArraylike(currentType))
+                .kind(parseKind(currentType))
                 .baseMapType(ctx.getProps().getMaplikeTypeQualifiedNames().contains(qualifiedName))
                 .resolved(resolved)
                 .build();
@@ -117,6 +120,16 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             arrayStack--;
         }
         return typeInfo;
+    }
+
+    private ConcreteTypeInfo.Kind parseKind(TypeMirror typeMirror) {
+        if (ctx.isMaplike(typeMirror)) {
+            return ConcreteTypeInfo.Kind.MAP;
+        } else if (ctx.isEnumType(typeMirror)) {
+            return ConcreteTypeInfo.Kind.ENUM;
+        } else {
+            return ConcreteTypeInfo.Kind.OTHER;
+        }
     }
 
     private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable, TypeContext typeContext) {

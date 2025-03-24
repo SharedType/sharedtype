@@ -13,12 +13,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Represents a primitive type or object type that requires its target representation,
- * and is not recognized as an array-like type.
+ * <p>
+ * Represents a general primitive type or object type that requires its target representation.
  * Like {@link java.lang.String} in typescript as "string", int in typescript as "number".
+ * </p>
+ * <p>
+ * Type with typical signature and render pattern like array-like types are represented as other type info.
+ * </p>
  *
- * @see ArrayTypeInfo
  * @author Cause Chung
+ * @see ArrayTypeInfo
+ * @see Kind
  */
 @EqualsAndHashCode(of = {"qualifiedName", "typeArgs"})
 @Builder(toBuilder = true)
@@ -29,19 +34,12 @@ public final class ConcreteTypeInfo implements TypeInfo {
     @Builder.Default
     private final List<TypeInfo> typeArgs = Collections.emptyList();
 
-    /** If this type is an Enum */
     @Getter
-    private final boolean enumType;
+    private final Kind kind;
 
-    /** If this type is map-like. */
-    @Getter
-    private final boolean mapType;
-
-    /** If this type is array-like. */
-    @Getter
-    private final boolean arrayType;
-
-    /** If this type is defined in global config as base Map type */
+    /**
+     * If this type is defined in global config as base Map type
+     */
     @Getter
     private final boolean baseMapType;
 
@@ -55,6 +53,7 @@ public final class ConcreteTypeInfo implements TypeInfo {
 
     /**
      * The counter-parting type definition.
+     *
      * @see #typeDef()
      */
     @Nullable
@@ -117,8 +116,17 @@ public final class ConcreteTypeInfo implements TypeInfo {
     public String toString() {
         return String.format("%s%s%s",
             qualifiedName,
-                typeArgs.isEmpty() ? "" : "<" + typeArgs.stream().map(TypeInfo::toString).collect(Collectors.joining(",")) + ">",
-                resolved ? "" : "?"
+            typeArgs.isEmpty() ? "" : "<" + typeArgs.stream().map(TypeInfo::toString).collect(Collectors.joining(",")) + ">",
+            resolved ? "" : "?"
         );
+    }
+
+    /**
+     * Kind of types ConcreteTypeInfo can represent.
+     * Array is represented by ArrayTypeInfo.
+     * Date/Time is represented by DateTimeTypeInfo.
+     */
+    public enum Kind {
+        ENUM, MAP, OTHER
     }
 }

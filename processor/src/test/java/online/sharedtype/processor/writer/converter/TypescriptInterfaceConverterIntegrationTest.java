@@ -37,7 +37,7 @@ final class TypescriptInterfaceConverterIntegrationTest {
     void skipMapClassDef() {
         ClassDef classDef = ClassDef.builder()
             .build();
-        classDef.linkTypeInfo(ConcreteTypeInfo.builder().mapType(true).build());
+        classDef.linkTypeInfo(ConcreteTypeInfo.builder().kind(ConcreteTypeInfo.Kind.MAP).build());
         assertThat(converter.shouldAccept(classDef)).isFalse();
     }
 
@@ -88,7 +88,7 @@ final class TypescriptInterfaceConverterIntegrationTest {
                 FieldComponentInfo.builder().name("mapField")
                     .type(
                         ConcreteTypeInfo.builder()
-                            .qualifiedName("java.util.Map").simpleName("Map").mapType(true)
+                            .qualifiedName("java.util.Map").simpleName("Map").kind(ConcreteTypeInfo.Kind.MAP)
                             .typeArgs(Arrays.asList(STRING_TYPE_INFO, INT_TYPE_INFO))
                             .build()
                     )
@@ -96,9 +96,9 @@ final class TypescriptInterfaceConverterIntegrationTest {
                 FieldComponentInfo.builder().name("mapFieldEnumKey")
                     .type(
                         ConcreteTypeInfo.builder()
-                            .qualifiedName("java.util.Map").simpleName("Map").mapType(true)
+                            .qualifiedName("java.util.Map").simpleName("Map").kind(ConcreteTypeInfo.Kind.MAP)
                             .typeArgs(List.of(
-                                ConcreteTypeInfo.builder().simpleName("MyEnum").enumType(true).build(),
+                                ConcreteTypeInfo.builder().simpleName("MyEnum").kind(ConcreteTypeInfo.Kind.ENUM).build(),
                                 INT_TYPE_INFO
                             ))
                             .build()

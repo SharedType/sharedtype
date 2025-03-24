@@ -145,6 +145,7 @@ final class ClassTypeDefParserTest {
         verify(ctxMocks.getTypeStore()).saveConfig(eq(classDef.qualifiedName()), configCaptor.capture());
         var config = configCaptor.getValue();
         assertThat(config.getAnno()).isSameAs(anno);
+        assertThat(classDef.isAnnotated()).isTrue();
     }
 
     @Test

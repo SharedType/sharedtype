@@ -49,6 +49,7 @@ import java.lang.annotation.Target;
  * <p>
  * <b>Cyclic Reference:</b>
  * <ul>
+ *     <li>Typescript: Cyclic referenced field will be optional.</li>
  *     <li>Rust: Cyclic references will be wrapped in {@code Option<Box<T>>}.</li>
  * </ul>
  *
@@ -83,7 +84,7 @@ import java.lang.annotation.Target;
  * </ul>
  *
  * <p>
- * <b>Maps:</b>
+ * <b>Maps:</b><br>
  * Key must be String or numeric types. Enum is support given that its value is a literal.
  * Custom map types are supported, e.g. a class that extends HashMap. But the type itself is treated as a mapType, so its structure will not be emitted.
  * <ul>
@@ -91,6 +92,14 @@ import java.lang.annotation.Target;
  *     <li>Rust: e.g. {@code HashMap<String, T>}, {@code HashMap<EnumType, T>}</li>
  * </ul>
  *
+ * <p>
+ * <b>Date and Time:</b><br>
+ * By default, types that are recognized as date and time are emitted as strings, date/time types are configured via global properties.
+ * The emitted target type can be configured via global properties or via this annotation.
+ * Target type can be any type literal, but SharedType will not verify its validity in emitted code.
+ * </p>
+ *
+ * <br>
  * <p><a href="https://github.com/SharedType/sharedtype">SharedType Website</a></p>
  *
  * @author Cause Chung
@@ -153,6 +162,12 @@ public @interface SharedType {
     String[] rustMacroTraits() default {};
 
     /**
+     * Type literal to be emitted for date/time types. How a java type is considered a date/time type is defined by global properties.
+     * @return any literal, e.g. "String", "chrono::DateTime". When empty, fallback to global default.
+     */
+    String rustTargetDatetimeTypeLiteral() default "";
+
+    /**
      * How to render optional fields in Typescript.
      * @return combination of "?", "null", "undefined", the latter 2 are rendered as union types. If empty, fallback to global default.
      */
@@ -172,6 +187,12 @@ public @interface SharedType {
      *         "none" - no fields are readonly
      */
     String typescriptFieldReadonlyType() default "";
+
+    /**
+     * Type literal to be emitted for date/time types. How a java type is considered a date/time type is defined by global properties.
+     * @return any literal, e.g. "string", "Date". When empty, fallback to global default.
+     */
+    String typescriptTargetDatetimeTypeLiteral() default "";
 
     /**
      * Mark a method as an accessor regardless of its name.

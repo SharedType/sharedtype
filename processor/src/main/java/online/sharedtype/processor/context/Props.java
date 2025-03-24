@@ -24,6 +24,7 @@ public final class Props {
     private final Set<String> accessorGetterPrefixes;
     private final Set<String> arraylikeTypeQualifiedNames;
     private final Set<String> maplikeTypeQualifiedNames;
+    private final Set<String> datetimelikeTypeQualifiedNames;
     private final Set<String> ignoredTypeQualifiedNames;
     private final Set<String> ignoredFieldNames;
     private final boolean constantNamespaced;
@@ -34,6 +35,7 @@ public final class Props {
         private final String outputFileName;
         private final char interfacePropertyDelimiter;
         private final String javaObjectMapType;
+        private final String targetDatetimeTypeLiteral;
         private final Set<OptionalFieldFormat> optionalFieldFormats;
         private final EnumFormat enumFormat;
         private final FieldReadonlyType fieldReadonlyType;
@@ -82,5 +84,6 @@ public final class Props {
         private final boolean allowDeadcode;
         private final boolean convertToSnakeCase;
         private final Set<String> defaultTypeMacros;
+        private final String targetDatetimeTypeLiteral;
     }
 }

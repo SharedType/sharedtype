@@ -81,6 +81,7 @@ final class EnumTypeDefParserTest {
         var config = configCaptor.getValue();
         assertThat(config.getQualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(config.getAnno()).isSameAs(anno);
+        assertThat(typeDef.isAnnotated()).isTrue();
     }
 
     @Test

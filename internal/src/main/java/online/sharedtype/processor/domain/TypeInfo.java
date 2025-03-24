@@ -23,10 +23,8 @@ public interface TypeInfo extends Serializable {
      *
      * @return true is this type and its dependency types are resolved.
      */
-    boolean resolved();
-
-    default boolean isEnumType() {
-        return false;
+    default boolean resolved() {
+        return true;
     }
 
     /**
@@ -35,5 +33,7 @@ public interface TypeInfo extends Serializable {
      *                 value is a type argument, a concrete type e.g. Integer, or a generic type with concrete type parameter, e.g. {@code Tuple<String, String>}
      * @return a newly created type info if updated.
      */
-    TypeInfo reify(Map<TypeVariableInfo, TypeInfo> mappings);
+    default TypeInfo reify(Map<TypeVariableInfo, TypeInfo> mappings) {
+        return this;
+    }
 }

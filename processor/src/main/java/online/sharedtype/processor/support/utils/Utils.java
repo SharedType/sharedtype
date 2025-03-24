@@ -2,7 +2,10 @@ package online.sharedtype.processor.support.utils;
 
 import lombok.experimental.UtilityClass;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
+
+import java.util.function.Supplier;
 
 /**
  * @author Cause Chung
@@ -21,5 +24,13 @@ public final class Utils {
 
     public static String[] emptyStringArray() {
         return EMPTY_STRING_ARRAY;
+    }
+
+    public static String notEmptyOrDefault(String value, String defaultValue, Supplier<String> message) {
+        String res = value != null && !value.isEmpty() ? value : defaultValue;
+        if (res == null || res.isEmpty()) {
+            throw new SharedTypeException("Either value or defaultValue must not be empty. " + message.get());
+        }
+        return res;
     }
 }

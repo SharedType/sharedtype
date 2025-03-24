@@ -1,5 +1,6 @@
 package online.sharedtype.processor.writer.converter.type;
 
+import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.RenderFlags;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
@@ -24,7 +25,7 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
     void beforeVisitTypeInfo(TypeInfo typeInfo) {
         if (typeInfo.equals(Constants.OBJECT_TYPE_INFO)) {
             renderFlags.setUseRustAny(true);
-        } else if (typeInfo instanceof ConcreteTypeInfo && ((ConcreteTypeInfo) typeInfo).isMapType()) {
+        } else if (typeInfo instanceof ConcreteTypeInfo && ((ConcreteTypeInfo) typeInfo).getKind() == ConcreteTypeInfo.Kind.MAP) {
             renderFlags.setUseRustMap(true);
         }
     }
@@ -37,6 +38,11 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
     @Override
     MapSpec mapSpec(ConcreteTypeInfo typeInfo) {
         return DEFAULT_MAP_SPEC;
+    }
+
+    @Override
+    String dateTimeTypeExpr(Config config) {
+        return config.getRustTargetDatetimeTypeLiteral();
     }
 
     @Override

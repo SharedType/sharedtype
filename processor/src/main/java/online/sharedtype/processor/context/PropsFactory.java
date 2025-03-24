@@ -46,6 +46,7 @@ public final class PropsFactory {
             .accessorGetterPrefixes(splitArray(properties.getProperty("sharedtype.accessor.getter-prefixes")))
             .arraylikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.array-like-types")))
             .maplikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.map-like-types")))
+            .datetimelikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.datetime-like-types")))
             .ignoredTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.ignored-types")))
             .ignoredFieldNames(splitArray(properties.getProperty("sharedtype.ignored-fields")))
             .constantNamespaced(parseBoolean(properties, "sharedtype.constant-namespaced"))
@@ -53,6 +54,7 @@ public final class PropsFactory {
                 .outputFileName(properties.getProperty("sharedtype.typescript.output-file-name"))
                 .interfacePropertyDelimiter(properties.getProperty("sharedtype.typescript.interface-property-delimiter").charAt(0))
                 .javaObjectMapType(properties.getProperty("sharedtype.typescript.java-object-map-type"))
+                .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.typescript.target-datetime-type"))
                 .optionalFieldFormats(parseEnumSet(properties, "sharedtype.typescript.optional-field-format",
                     Props.Typescript.OptionalFieldFormat.class, Props.Typescript.OptionalFieldFormat::fromString))
                 .enumFormat(parseEnum(properties, "sharedtype.typescript.enum-format", Props.Typescript.EnumFormat::fromString))
@@ -63,6 +65,7 @@ public final class PropsFactory {
                 .allowDeadcode(parseBoolean(properties, "sharedtype.rust.allow-deadcode"))
                 .convertToSnakeCase(parseBoolean(properties, "sharedtype.rust.convert-to-snake-case"))
                 .defaultTypeMacros(splitArray(properties.getProperty("sharedtype.rust.default-macros-traits")))
+                .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.rust.target-datetime-type"))
                 .build())
             .build();
     }

@@ -32,7 +32,6 @@ public interface TypeDef extends Serializable {
     void setCyclicReferenced(boolean cyclicReferenced);
 
     boolean isAnnotated();
-    void setAnnotated(boolean annotated);
 
     boolean isReferencedByAnnotated();
     void setReferencedByAnnotated(boolean referencedByAnnotated);

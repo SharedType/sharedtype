@@ -1,5 +1,6 @@
 package online.sharedtype.processor.writer.converter.type;
 
+import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
@@ -47,10 +48,15 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
 
     @Override
     MapSpec mapSpec(ConcreteTypeInfo typeInfo) {
-        if (typeInfo.isEnumType()) {
+        if (typeInfo.getKind() == ConcreteTypeInfo.Kind.ENUM) {
             return ENUM_KEY_MAP_SPEC;
         }
         return DEFAULT_MAP_SPEC;
+    }
+
+    @Override
+    String dateTimeTypeExpr(Config config) {
+        return config.getTypescriptTargetDatetimeTypeLiteral();
     }
 
     @Override

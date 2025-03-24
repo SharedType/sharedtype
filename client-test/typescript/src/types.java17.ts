@@ -3,6 +3,8 @@ import {
     EnumTShirt, type JavaRecord, type AnotherJavaClass, type RecursiveClass, type MapClass,
     type OptionalMethod,
     type ArrayClass,
+    type JavaTimeClass,
+    type JodaTimeClass,
 } from "./index.java17";
 
 export const list1: EnumGalaxy[] = ["Andromeda", "MilkyWay", "Triangulum"];
@@ -105,4 +107,25 @@ optionalMethods.nestedValueOptional = "bar";
 
 export const arrayClass: ArrayClass = {
     arr: ["abc"],
+}
+
+export const javaTime: JavaTimeClass = {
+    utilDate: new Date(),
+    sqlDate: new Date(),
+    localDate: new Date(),
+    localTime: new Date(),
+    localDateTime: new Date(),
+    zonedDateTime: new Date(),
+    offsetDateTime: new Date(),
+    offsetTime: new Date(),
+    instant: new Date(),
+}
+
+export const jodaTime: JodaTimeClass = {
+    jodaDateTime: "2022-01-01T00:00:00.000+08:00",
+    jodaLocalDate: "2022-01-01T00:00:00.000+08:00",
+    jodaMonthDay: "2022-01-01T00:00:00.000+08:00",
+    jodaLocalTime: "2022-01-01T00:00:00.000+08:00",
+    jodaLocalDateTime: "2022-01-01T00:00:00.000+08:00",
+    jodaOffsetDateTime: "2022-01-01T00:00:00.000+08:00",
 }

@@ -1,8 +1,7 @@
 package online.sharedtype.processor.parser;
 
-import online.sharedtype.SharedType;
-import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.context.ContextMocks;
+import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -63,17 +61,6 @@ final class CompositeTypeDefParserTest {
         inOrder.verify(delegate2).parse(typeElement);
         assertThat(typeDef2).isEqualTo(constDef);
         inOrder.verify(ctxMocks.getContext().getTypeStore()).saveTypeDef("com.github.cuzfrog.Abc", constDef);
-    }
-
-    @Test
-    void markClassDefAsAnnotated() {
-        var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc")
-            .withAnnotation(SharedType.class)
-            .element();
-        when(delegate1.parse(clazz)).thenReturn(Collections.singletonList(classDef));
-
-        var classDef = (ClassDef) parser.parse(clazz).get(0);
-        assertThat(classDef.isAnnotated()).isTrue();
     }
 
     @Test

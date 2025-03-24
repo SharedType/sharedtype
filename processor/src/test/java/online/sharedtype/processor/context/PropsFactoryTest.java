@@ -29,6 +29,8 @@ final class PropsFactoryTest {
         assertThat(props.getAccessorGetterPrefixes()).containsExactly("get", "is");
         assertThat(props.getArraylikeTypeQualifiedNames()).containsExactly("java.lang.Iterable");
         assertThat(props.getMaplikeTypeQualifiedNames()).containsExactly("java.util.Map");
+        assertThat(props.getDatetimelikeTypeQualifiedNames()).containsExactly(
+            "java.util.Date", "java.time.temporal.Temporal", "org.joda.time.base.AbstractInstant", "org.joda.time.base.AbstractPartial");
         assertThat(props.getIgnoredTypeQualifiedNames()).containsExactlyInAnyOrder(
             "java.lang.Object",
             "java.lang.Enum",
@@ -43,6 +45,7 @@ final class PropsFactoryTest {
         assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.ts");
         assertThat(typescriptProps.getInterfacePropertyDelimiter()).isEqualTo(';');
         assertThat(typescriptProps.getJavaObjectMapType()).isEqualTo("any");
+        assertThat(typescriptProps.getTargetDatetimeTypeLiteral()).isEqualTo("string");
         assertThat(typescriptProps.getOptionalFieldFormats()).containsExactly(Props.Typescript.OptionalFieldFormat.QUESTION_MARK);
         assertThat(typescriptProps.getEnumFormat()).isEqualTo(Props.Typescript.EnumFormat.UNION);
         assertThat(typescriptProps.getFieldReadonlyType()).isEqualTo(Props.Typescript.FieldReadonlyType.ACYCLIC);
@@ -52,6 +55,7 @@ final class PropsFactoryTest {
         assertThat(rustProps.isAllowDeadcode()).isEqualTo(true);
         assertThat(rustProps.isConvertToSnakeCase()).isEqualTo(false);
         assertThat(rustProps.getDefaultTypeMacros()).containsExactly("Debug");
+        assertThat(rustProps.getTargetDatetimeTypeLiteral()).isEqualTo("String");
     }
 
     @Test

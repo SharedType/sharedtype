@@ -30,7 +30,7 @@ final class ConstantTypeDefParserTest {
     private final TypeContext typeContext = TypeContext.builder()
         .typeDef(ConstantNamespaceDef.builder().qualifiedName("com.github.cuzfrog.Abc").build())
         .dependingKind(DependingKind.COMPONENTS).build();
-    private final ClassDef mainTypeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build();
+    private final ClassDef mainTypeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").annotated(true).build();
     private final Config config = mock(Config.class);
 
     @BeforeEach
@@ -41,14 +41,15 @@ final class ConstantTypeDefParserTest {
 
     @Test
     void skipMapType() {
-        mainTypeDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("java.util.Map").mapType(true).build());
+        mainTypeDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("java.util.Map").kind(ConcreteTypeInfo.Kind.MAP).build());
         assertThat(parser.parse(ctxMocks.typeElement("com.github.cuzfrog.Abc").element())).isEmpty();
     }
 
     @Test
-    void skipArrayType() {
-        mainTypeDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("java.util.List").arrayType(true).build());
-        assertThat(parser.parse(ctxMocks.typeElement("com.github.cuzfrog.Abc").element())).isEmpty();
+    void skipWithoutExplicitAnnotation() {
+        ClassDef mainTypeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.AnotherReferenced").annotated(false).build();
+        ctxMocks.getTypeStore().saveTypeDef("com.github.cuzfrog.AnotherReferenced", mainTypeDef);
+        assertThat(parser.parse(ctxMocks.typeElement("com.github.cuzfrog.AnotherReferenced").element())).isEmpty();
     }
 
     @Test
