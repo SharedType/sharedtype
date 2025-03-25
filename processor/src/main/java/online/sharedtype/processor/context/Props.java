@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.lang.annotation.Annotation;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -28,6 +29,7 @@ public final class Props {
     private final Set<String> ignoredTypeQualifiedNames;
     private final Set<String> ignoredFieldNames;
     private final boolean constantNamespaced;
+    private final Map<String, String> arbitraryTypeMappings;
 
     @Builder(access = AccessLevel.PACKAGE)
     @Getter

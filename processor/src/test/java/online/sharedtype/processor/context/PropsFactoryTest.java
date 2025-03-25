@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.entry;
 
 final class PropsFactoryTest {
     @Test
@@ -40,6 +41,7 @@ final class PropsFactoryTest {
         );
         assertThat(props.getIgnoredFieldNames()).containsExactly("serialVersionUID");
         assertThat(props.isConstantNamespaced()).isTrue();
+        assertThat(props.getArbitraryTypeMappings()).isEmpty();
 
         Props.Typescript typescriptProps = props.getTypescript();
         assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.ts");
@@ -70,6 +72,15 @@ final class PropsFactoryTest {
             .isInstanceOf(SharedTypeException.class)
             .cause().cause()
             .hasMessageContaining("Unknown optional field format: 'abc', only '?', 'null', 'undefined' are allowed");
+    }
+
+    @Test
+    void typeMappings() {
+        Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-type-mappings.properties"));
+        assertThat(props.getArbitraryTypeMappings()).containsExactly(
+            entry("MyType1", "RenamedType1"),
+            entry("MyType2", "RenamedType2")
+        );
     }
 
     private static Path resolveResource(String resource) {

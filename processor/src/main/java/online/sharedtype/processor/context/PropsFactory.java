@@ -6,7 +6,10 @@ import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
@@ -50,6 +53,7 @@ public final class PropsFactory {
             .ignoredTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.ignored-types")))
             .ignoredFieldNames(splitArray(properties.getProperty("sharedtype.ignored-fields")))
             .constantNamespaced(parseBoolean(properties, "sharedtype.constant-namespaced"))
+            .arbitraryTypeMappings(parseMap(properties, "sharedtype.type-mappings"))
             .typescript(Props.Typescript.builder()
                 .outputFileName(properties.getProperty("sharedtype.typescript.output-file-name"))
                 .interfacePropertyDelimiter(properties.getProperty("sharedtype.typescript.interface-property-delimiter").charAt(0))
@@ -123,6 +127,23 @@ public final class PropsFactory {
         } catch (Exception e) {
             throw new IllegalArgumentException(String.format("Invalid property %s=%s", propertyName, value), e);
         }
+    }
+
+    private static Map<String, String> parseMap(Properties properties, String propertyName) {
+        String value = properties.getProperty(propertyName);
+        if (value == null || value.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        String[] pairs = value.split(",");
+        Map<String, String> map = new HashMap<>(pairs.length);
+        for (String pair : pairs) {
+            String[] keyValue = pair.trim().split(":");
+            if (keyValue.length != 2) {
+                throw new IllegalArgumentException(String.format("Invalid property %s=%s, entries must be separated by commas and key-value by colons.", propertyName, value));
+            }
+            map.put(keyValue[0].trim(), keyValue[1].trim());
+        }
+        return map;
     }
 
     @SuppressWarnings("unchecked")
