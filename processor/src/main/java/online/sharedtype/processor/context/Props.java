@@ -29,7 +29,6 @@ public final class Props {
     private final Set<String> ignoredTypeQualifiedNames;
     private final Set<String> ignoredFieldNames;
     private final boolean constantNamespaced;
-    private final Map<String, String> arbitraryTypeMappings;
 
     @Builder(access = AccessLevel.PACKAGE)
     @Getter
@@ -41,6 +40,7 @@ public final class Props {
         private final Set<OptionalFieldFormat> optionalFieldFormats;
         private final EnumFormat enumFormat;
         private final FieldReadonlyType fieldReadonlyType;
+        private final Map<String, String> arbitraryTypeMappings;
 
         @Getter
         public enum OptionalFieldFormat {
@@ -87,5 +87,6 @@ public final class Props {
         private final boolean convertToSnakeCase;
         private final Set<String> defaultTypeMacros;
         private final String targetDatetimeTypeLiteral;
+        private final Map<String, String> arbitraryTypeMappings;
     }
 }

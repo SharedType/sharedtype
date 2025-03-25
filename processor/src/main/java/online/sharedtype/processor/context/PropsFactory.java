@@ -53,7 +53,6 @@ public final class PropsFactory {
             .ignoredTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.ignored-types")))
             .ignoredFieldNames(splitArray(properties.getProperty("sharedtype.ignored-fields")))
             .constantNamespaced(parseBoolean(properties, "sharedtype.constant-namespaced"))
-            .arbitraryTypeMappings(parseMap(properties, "sharedtype.type-mappings"))
             .typescript(Props.Typescript.builder()
                 .outputFileName(properties.getProperty("sharedtype.typescript.output-file-name"))
                 .interfacePropertyDelimiter(properties.getProperty("sharedtype.typescript.interface-property-delimiter").charAt(0))
@@ -63,6 +62,7 @@ public final class PropsFactory {
                     Props.Typescript.OptionalFieldFormat.class, Props.Typescript.OptionalFieldFormat::fromString))
                 .enumFormat(parseEnum(properties, "sharedtype.typescript.enum-format", Props.Typescript.EnumFormat::fromString))
                 .fieldReadonlyType(parseEnum(properties, "sharedtype.typescript.field-readonly-type", Props.Typescript.FieldReadonlyType::fromString))
+                .arbitraryTypeMappings(parseMap(properties, "sharedtype.typescript.type-mappings"))
                 .build())
             .rust(Props.Rust.builder()
                 .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))
@@ -70,6 +70,7 @@ public final class PropsFactory {
                 .convertToSnakeCase(parseBoolean(properties, "sharedtype.rust.convert-to-snake-case"))
                 .defaultTypeMacros(splitArray(properties.getProperty("sharedtype.rust.default-macros-traits")))
                 .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.rust.target-datetime-type"))
+                .arbitraryTypeMappings(parseMap(properties, "sharedtype.rust.type-mappings"))
                 .build())
             .build();
     }

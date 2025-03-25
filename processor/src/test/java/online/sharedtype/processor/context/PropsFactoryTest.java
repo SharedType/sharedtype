@@ -41,7 +41,6 @@ final class PropsFactoryTest {
         );
         assertThat(props.getIgnoredFieldNames()).containsExactly("serialVersionUID");
         assertThat(props.isConstantNamespaced()).isTrue();
-        assertThat(props.getArbitraryTypeMappings()).isEmpty();
 
         Props.Typescript typescriptProps = props.getTypescript();
         assertThat(typescriptProps.getOutputFileName()).isEqualTo("types.ts");
@@ -51,6 +50,7 @@ final class PropsFactoryTest {
         assertThat(typescriptProps.getOptionalFieldFormats()).containsExactly(Props.Typescript.OptionalFieldFormat.QUESTION_MARK);
         assertThat(typescriptProps.getEnumFormat()).isEqualTo(Props.Typescript.EnumFormat.UNION);
         assertThat(typescriptProps.getFieldReadonlyType()).isEqualTo(Props.Typescript.FieldReadonlyType.ACYCLIC);
+        assertThat(typescriptProps.getArbitraryTypeMappings()).isEmpty();
 
         Props.Rust rustProps = props.getRust();
         assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");
@@ -58,6 +58,7 @@ final class PropsFactoryTest {
         assertThat(rustProps.isConvertToSnakeCase()).isEqualTo(false);
         assertThat(rustProps.getDefaultTypeMacros()).containsExactly("Debug");
         assertThat(rustProps.getTargetDatetimeTypeLiteral()).isEqualTo("String");
+        assertThat(rustProps.getArbitraryTypeMappings()).isEmpty();
     }
 
     @Test
@@ -77,7 +78,7 @@ final class PropsFactoryTest {
     @Test
     void typeMappings() {
         Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-type-mappings.properties"));
-        assertThat(props.getArbitraryTypeMappings()).containsExactly(
+        assertThat(props.getTypescript().getArbitraryTypeMappings()).containsExactly(
             entry("MyType1", "RenamedType1"),
             entry("MyType2", "RenamedType2")
         );
