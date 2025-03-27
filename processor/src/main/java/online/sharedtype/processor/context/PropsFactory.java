@@ -151,4 +151,19 @@ public final class PropsFactory {
     private static <T> Class<? extends T> parseClass(String className) throws ClassNotFoundException {
         return (Class<? extends T>) Class.forName(className);
     }
+//
+//    private static Map<String, MappedTypeLiteralInfo> parseMappedTypeLiteralInfos(Properties properties) {
+//        Map<String, String> arbitraryTypeMappings = parseMap(properties, "sharedtype.rust.type-mappings");
+//        Map<String, MappedTypeLiteralInfo> mappedTypeLiteralInfoByQualifiedName = new HashMap<>();
+//        for (Map.Entry<String, String> entry : arbitraryTypeMappings.entrySet()) {
+//            MappedTypeLiteralInfo mappedTypeLiteralInfo = MappedTypeLiteralInfo.parse(entry.getKey());
+//
+//            mappedTypeLiteralInfos.add(
+//                MappedTypeLiteralInfo.builder()
+//                    .
+//                    .build()
+//            );
+//        }
+//
+//    }
 }

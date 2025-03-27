@@ -97,6 +97,17 @@ import java.lang.annotation.Target;
  * By default, types that are recognized as date and time are emitted as strings, date/time types are configured via global properties.
  * The emitted target type can be configured via global properties or via this annotation.
  * Target type can be any type literal, but SharedType will not verify its validity in emitted code.
+ * </p><br>
+ *
+ * <p>
+ * <b>Type literal mappings:</b><br>
+ * You dan define any 1-to-1 type mappings via global properties. This is useful when e.g. a 3rd party type is referenced.
+ * Note, SharedType will still try to resolve the type and emit it with the mapped name.
+ * If you don't want SharedType to auto-resolve and emit it, mark it as ignored via {@link SharedType.Ignore} or global properties.
+ * <br>
+ * Type mapped this way will take the highest precedence.
+ * E.g. a date type is configured to be emitted as string, you can override the particular mapping to emit a {@code Date}.
+ * But type mapping cannot be defined on a type with alias configured in {@link SharedType#name()}.
  * </p>
  *
  * <br>
@@ -115,11 +126,8 @@ public @interface SharedType {
      * This may be used to help avoid conflicting names in target code.
      * </p>
      * <br>
-     * <p>
-     * How conflicting names are resolved:
-     * <ul>
-     *     <li>Typescript: simple name of a class is used as type name. Duplicate names are not allowed.</li>
-     * </ul>
+     * This is similar to but different from type mappings configured via global properties,
+     * which maps any Java type to a target type. When both are defined, an error will be raised. See {@link SharedType} for details.
      */
     String name() default "";
 
@@ -163,33 +171,38 @@ public @interface SharedType {
 
     /**
      * Type literal to be emitted for date/time types. How a java type is considered a date/time type is defined by global properties.
+     *
      * @return any literal, e.g. "String", "chrono::DateTime". When empty, fallback to global default.
      */
     String rustTargetDatetimeTypeLiteral() default "";
 
     /**
      * How to render optional fields in Typescript.
+     *
      * @return combination of "?", "null", "undefined", the latter 2 are rendered as union types. If empty, fallback to global default.
      */
     String[] typescriptOptionalFieldFormat() default {};
 
     /**
      * Format of enum in Typescript.
+     *
      * @return one of "const_enum" (const enum), "enum" (enum), or "union" (union types). If empty, fallback to global default.
      */
     String typescriptEnumFormat() default "";
 
     /**
      * Whether to mark generated type fields as readonly. Default fallback to global properties.
+     *
      * @return value can be one of:
-     *         "all" - all fields are readonly
-     *         "acyclic" - only fields of not cyclic-referenced types are readonly
-     *         "none" - no fields are readonly
+     * "all" - all fields are readonly
+     * "acyclic" - only fields of not cyclic-referenced types are readonly
+     * "none" - no fields are readonly
      */
     String typescriptFieldReadonlyType() default "";
 
     /**
      * Type literal to be emitted for date/time types. How a java type is considered a date/time type is defined by global properties.
+     *
      * @return any literal, e.g. "string", "Date". When empty, fallback to global default.
      */
     String typescriptTargetDatetimeTypeLiteral() default "";
@@ -295,7 +308,9 @@ public @interface SharedType {
     enum OptionalBool {
         TRUE,
         FALSE,
-        /** Fallback to global default. */
+        /**
+         * Fallback to global default.
+         */
         DEFAULT,
     }
 }

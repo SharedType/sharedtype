@@ -4,6 +4,7 @@ import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.DateTimeInfo;
 import online.sharedtype.processor.domain.TypeInfo;
 
 import javax.annotation.Nullable;
@@ -15,6 +16,7 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
     private static final MapSpec DEFAULT_MAP_SPEC = new MapSpec("Record<", ", ", ">");
     private static final MapSpec ENUM_KEY_MAP_SPEC = new MapSpec("Partial<Record<", ", ", ">>");
     final Map<TypeInfo, String> typeNameMappings = new HashMap<>(20);
+    private final Map<String, String> arbitraryTypeMappings;
 
     TypescriptTypeExpressionConverter(Context ctx) {
         super(ctx);
@@ -39,6 +41,7 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
         typeNameMappings.put(Constants.STRING_TYPE_INFO, "string");
         typeNameMappings.put(Constants.VOID_TYPE_INFO, "never");
         typeNameMappings.put(Constants.OBJECT_TYPE_INFO, ctx.getProps().getTypescript().getJavaObjectMapType());
+        this.arbitraryTypeMappings = ctx.getProps().getTypescript().getArbitraryTypeMappings();
     }
 
     @Override
@@ -55,13 +58,21 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
     }
 
     @Override
-    String dateTimeTypeExpr(Config config) {
+    String dateTimeTypeExpr(DateTimeInfo dateTimeInfo, Config config) {
+        String arbitraryTypeExpr = arbitraryTypeMappings.get(dateTimeInfo.qualifiedName());
+        if (arbitraryTypeExpr != null) {
+            return arbitraryTypeExpr;
+        }
         return config.getTypescriptTargetDatetimeTypeLiteral();
     }
 
     @Override
     @Nullable
     String toTypeExpression(ConcreteTypeInfo typeInfo, String defaultExpr) {
+        String arbitraryTypeExpr = arbitraryTypeMappings.get(typeInfo.qualifiedName());
+        if (arbitraryTypeExpr != null) {
+            return arbitraryTypeExpr;
+        }
         return typeNameMappings.getOrDefault(typeInfo, defaultExpr);
     }
 }

@@ -15,7 +15,6 @@ import online.sharedtype.processor.support.annotation.SideEffect;
 import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
-import javax.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -35,12 +34,14 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
 
     void beforeVisitTypeInfo(TypeInfo typeInfo) {
     }
-    abstract ArraySpec arraySpec();
-    abstract MapSpec mapSpec(ConcreteTypeInfo typeInfo);
-    abstract String dateTimeTypeExpr(Config config);
 
-    @Nullable
-    abstract String toTypeExpression(ConcreteTypeInfo typeInfo, @Nullable String defaultExpr);
+    abstract ArraySpec arraySpec();
+
+    abstract MapSpec mapSpec(ConcreteTypeInfo typeInfo);
+
+    abstract String dateTimeTypeExpr(DateTimeInfo dateTimeInfo, Config config);
+
+    abstract String toTypeExpression(ConcreteTypeInfo typeInfo, String defaultExpr);
 
     private void buildTypeExprRecursively(TypeInfo typeInfo, @SideEffect StringBuilder exprBuilder, TypeDef contextTypeDef, Config config) {
         beforeVisitTypeInfo(typeInfo);
@@ -70,11 +71,14 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
             buildTypeExprRecursively(arrayTypeInfo.component(), exprBuilder, contextTypeDef, config);
             exprBuilder.append(arraySpec.suffix);
         } else if (typeInfo instanceof DateTimeInfo) {
-            exprBuilder.append(dateTimeTypeExpr(config));
+            exprBuilder.append(dateTimeTypeExpr((DateTimeInfo) typeInfo, config));
         }
     }
 
-    private void buildMapType(ConcreteTypeInfo concreteTypeInfo, @SideEffect StringBuilder exprBuilder, TypeDef contextTypeDef, Config config) {
+    private void buildMapType(ConcreteTypeInfo concreteTypeInfo,
+                              @SideEffect StringBuilder exprBuilder,
+                              TypeDef contextTypeDef,
+                              Config config) {
         ConcreteTypeInfo baseMapType = findBaseMapType(concreteTypeInfo);
         ConcreteTypeInfo keyType = getKeyType(baseMapType, concreteTypeInfo, contextTypeDef);
         MapSpec mapSpec = mapSpec(keyType);
@@ -82,11 +86,6 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
             return;
         }
         String keyTypeExpr = toTypeExpression(keyType, keyType.simpleName());
-        if (keyTypeExpr == null) {
-            throw new SharedTypeInternalError(String.format(
-                "Valid keyType should not be null, probably because type mapping is not provided, keyType: %s, baseMapType: %s" +
-                "When trying to build expression for concrete type: %s. Context type: %s.", keyType, baseMapType, concreteTypeInfo, contextTypeDef));
-        }
         exprBuilder.append(mapSpec.prefix);
         exprBuilder.append(keyTypeExpr);
         exprBuilder.append(mapSpec.delimiter);
@@ -97,7 +96,7 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
     private static ConcreteTypeInfo getKeyType(ConcreteTypeInfo baseMapType, ConcreteTypeInfo concreteTypeInfo, TypeDef contextTypeDef) {
         TypeInfo keyType = baseMapType.typeArgs().get(0);
         boolean validKey = false;
-        if (keyType instanceof ConcreteTypeInfo && ((ConcreteTypeInfo)keyType).getKind() == ConcreteTypeInfo.Kind.ENUM) {
+        if (keyType instanceof ConcreteTypeInfo && ((ConcreteTypeInfo) keyType).getKind() == ConcreteTypeInfo.Kind.ENUM) {
             validKey = true;
         } else if (Constants.STRING_AND_NUMBER_TYPES.contains(keyType)) {
             validKey = true;
@@ -105,7 +104,7 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
         if (!validKey) {
             throw new SharedTypeException(String.format(
                 "Key type of %s must be string or numbers or enum (with EnumValue being string or numbers), but is %s, " +
-                "when trying to build expression for concrete type: %s, context type: %s.",
+                    "when trying to build expression for concrete type: %s, context type: %s.",
                 baseMapType.qualifiedName(), keyType, concreteTypeInfo, contextTypeDef));
         }
         if (!(keyType instanceof ConcreteTypeInfo)) {
@@ -121,7 +120,7 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
         Queue<ConcreteTypeInfo> queue = new ArrayDeque<>();
         ConcreteTypeInfo baseMapType = concreteTypeInfo;
         while (!ctx.getProps().getMaplikeTypeQualifiedNames().contains(baseMapType.qualifiedName())) {
-            ClassDef typeDef = (ClassDef)requireNonNull(baseMapType.typeDef(),
+            ClassDef typeDef = (ClassDef) requireNonNull(baseMapType.typeDef(),
                 "Custom Map type must have a type definition, concrete type: %s, current supertype: %s does not have a type definition.",
                 concreteTypeInfo, baseMapType);
             typeDef = typeDef.reify(baseMapType.typeArgs());
