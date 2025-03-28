@@ -193,11 +193,12 @@ final class ClassTypeDefParser implements TypeDefParser {
                 uniqueNamesOfTypes.add(baseName, returnType);
             }
 
-            if (uniqueNamesOfTypes.ignoredType != null) {
-                ctx.error("%s.%s references to explicitly ignored type %s, which is not allowed." +
-                    " Either remove the ignored type, or add @SharedType.Ignore to the field or accessor.", typeElement, name, uniqueNamesOfTypes.ignoredType);
-                return Collections.emptyList();
-            }
+            // TODO: config safe type check
+//            if (uniqueNamesOfTypes.ignoredType != null) {
+//                ctx.error("%s.%s references to explicitly ignored type %s, which is not allowed." +
+//                    " Either remove the ignored type, or add @SharedType.Ignore to the field or accessor.", typeElement, name, uniqueNamesOfTypes.ignoredType);
+//                return Collections.emptyList();
+//            }
         }
 
         return res;

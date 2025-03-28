@@ -3,17 +3,14 @@ package online.sharedtype.processor.context;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
-
-import java.util.Arrays;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public final class DeclaredTypeVariableElementMock extends AbstractElementMock<VariableElement, DeclaredType, DeclaredTypeVariableElementMock> {
-    DeclaredTypeVariableElementMock(String name, DeclaredType declaredType, Context ctx, Types types) {
-        super(mock(VariableElement.class, name), declaredType, ctx, types);
+    DeclaredTypeVariableElementMock(String name, DeclaredType declaredType, Context ctx) {
+        super(mock(VariableElement.class, name), declaredType, ctx);
         setSimpleName(element, name);
     }
 

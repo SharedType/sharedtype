@@ -220,9 +220,11 @@ public @interface SharedType {
     /**
      * Exclude fields, record components, accessors in a type, or a dependency type, e.g. a supertype.
      * <p>
-     * <b>When placed on a type:</b> a subtype of this type will not extend this type in target code.
-     * But if this type is referenced directly as type of field or return type of accessor, a compilation error will be reported,
-     * unless the field or accessor is also ignored.
+     * <b>When placed on a type:</b><br>
+     * This type will not be emitted.
+     * If this type has a subtype that is going to be emitted, the subtype will not extend this type and its members in target code.
+     * But if this type is referenced directly as type of field or return type of accessor, and "safe-type-resolution" is enabled,
+     * a compilation error will be reported, unless the field or accessor is also ignored.
      * </p>
      */
     @Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE})

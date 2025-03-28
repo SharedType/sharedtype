@@ -9,8 +9,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public final class TypeParameterElementMock extends AbstractElementMock<TypeParameterElement, TypeVariable, TypeParameterElementMock> {
-    TypeParameterElementMock(String name, Context ctx, Types types) {
-        super(mock(TypeParameterElement.class), mock(TypeVariable.class), ctx, types);
+    TypeParameterElementMock(String name, Context ctx) {
+        super(mock(TypeParameterElement.class), mock(TypeVariable.class), ctx);
         when(type.getKind()).thenReturn(TypeKind.TYPEVAR);
         when(type.asElement()).thenReturn(element);
         when(types.asElement(type)).thenReturn(element);

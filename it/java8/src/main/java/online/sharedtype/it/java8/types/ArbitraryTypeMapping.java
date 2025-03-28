@@ -2,6 +2,7 @@ package online.sharedtype.it.java8.types;
 
 import online.sharedtype.SharedType;
 
+@SharedType.Ignore
 class MyType1<T> {
     T value;
 }

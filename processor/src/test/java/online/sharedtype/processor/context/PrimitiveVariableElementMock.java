@@ -11,8 +11,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public final class PrimitiveVariableElementMock extends AbstractElementMock<VariableElement, PrimitiveType, PrimitiveVariableElementMock> {
-    PrimitiveVariableElementMock(String name, TypeKind typeKind, Context ctx, Types types) {
-        super(mock(VariableElement.class, name), mock(PrimitiveType.class, typeKind.name()), ctx, types);
+    PrimitiveVariableElementMock(String name, TypeKind typeKind, Context ctx) {
+        super(mock(VariableElement.class, name), mock(PrimitiveType.class, typeKind.name()), ctx);
         assertThat(typeKind.isPrimitive()).isTrue();
         setSimpleName(element, name);
         when(element.getKind()).thenReturn(ElementKind.FIELD);

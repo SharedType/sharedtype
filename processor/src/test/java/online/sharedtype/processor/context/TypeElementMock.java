@@ -2,7 +2,6 @@ package online.sharedtype.processor.context;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.RecordComponentElement;
 import javax.lang.model.element.TypeElement;
@@ -11,15 +10,14 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Types;
 import java.util.Arrays;
-import java.util.Set;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public final class TypeElementMock extends AbstractElementMock<TypeElement, DeclaredType, TypeElementMock> {
     private static final ElementKind DEFAULT_ELEMENT_KIND = ElementKind.CLASS;
-    TypeElementMock(String qualifiedName, Context ctx, Types types) {
-        super(mock(TypeElement.class, qualifiedName), mock(DeclaredType.class, qualifiedName), ctx, types);
+    TypeElementMock(String qualifiedName, Context ctx) {
+        super(mock(TypeElement.class, qualifiedName), mock(DeclaredType.class, qualifiedName), ctx);
         when(element.getKind()).thenReturn(DEFAULT_ELEMENT_KIND);
         when(element.getNestingKind()).thenReturn(NestingKind.TOP_LEVEL);
         setQualifiedName(element, qualifiedName);
@@ -27,6 +25,7 @@ public final class TypeElementMock extends AbstractElementMock<TypeElement, Decl
         when(type.getKind()).thenReturn(TypeKind.DECLARED);
         when(type.asElement()).thenReturn(element);
         when(types.asElement(type)).thenReturn(element);
+        when(elements.getTypeElement(qualifiedName)).thenReturn(element);
     }
 
     public TypeElementMock withNestingKind(NestingKind nestingKind) {

@@ -37,27 +37,27 @@ public final class ContextMocks {
     }
 
     public TypeElementMock typeElement(String qualifiedName) {
-        return new TypeElementMock(qualifiedName, context, types);
+        return new TypeElementMock(qualifiedName, context);
     }
 
     public DeclaredTypeVariableElementMock declaredTypeVariable(String name, DeclaredType type) {
-        return new DeclaredTypeVariableElementMock(name, type, context, types);
+        return new DeclaredTypeVariableElementMock(name, type, context);
     }
 
     public PrimitiveVariableElementMock primitiveVariable(String name, TypeKind typeKind) {
-        return new PrimitiveVariableElementMock(name, typeKind, context, types);
+        return new PrimitiveVariableElementMock(name, typeKind, context);
     }
 
     public <T extends TypeMirror> RecordComponentMock<T> recordComponent(String name, T type) {
-        return new RecordComponentMock<>(name, type, context, types);
+        return new RecordComponentMock<>(name, type, context);
     }
 
     public TypeParameterElementMock typeParameter(String simpleName) {
-        return new TypeParameterElementMock(simpleName, context, types);
+        return new TypeParameterElementMock(simpleName, context);
     }
 
     public ExecutableElementMock executable(String name) {
-        return new ExecutableElementMock(name, context, types);
+        return new ExecutableElementMock(name, context);
     }
 
     public ArrayTypeMock array(TypeMirror componentType) {
