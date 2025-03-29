@@ -25,8 +25,11 @@ import java.lang.annotation.Target;
  *
  * <p>
  * <b>Configurations:</b><br>
- * Properties on class level (via this annotation) will take precedence over global properties.
- * Properties that only apply to global level will not be present on class level.
+ * Global properties can be defined in a client provided property file or system properties.
+ * By default, SharedType will look for file name "sharedtype.properties" on cmd current path.
+ * The property file path can be changed via compiler option "sharedtype.propsFile", see web for details.
+ * System properties will override property file values.
+ * Configs on class level (via this annotation) will take precedence over global properties.
  * </p>
  *
  * <p>
@@ -107,7 +110,7 @@ import java.lang.annotation.Target;
  * <br>
  * Type mapped this way will take the highest precedence.
  * E.g. a date type is configured to be emitted as string, you can override the particular mapping to emit a {@code Date}.
- * But type mapping cannot be defined on a type with alias configured in {@link SharedType#name()}.
+ * Type mapping will override name configured in {@link SharedType#name()}, with a warning.
  * </p>
  *
  * <br>
@@ -127,7 +130,8 @@ public @interface SharedType {
      * </p>
      * <br>
      * This is similar to but different from type mappings configured via global properties,
-     * which maps any Java type to a target type. When both are defined, an error will be raised. See {@link SharedType} for details.
+     * which maps any Java type to a target type. When both are defined, this will be overridden and an warning will be raised.
+     * See {@link SharedType} for details.
      */
     String name() default "";
 

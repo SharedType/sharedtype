@@ -20,7 +20,7 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
     RustTypeExpressionConverter(Context ctx) {
         super(ctx);
         this.renderFlags = ctx.getRenderFlags();
-        this.arbitraryTypeMappings = ctx.getProps().getRust().getArbitraryTypeMappings();
+        this.arbitraryTypeMappings = ctx.getProps().getRust().getTypeMappings();
     }
 
     @Override

@@ -31,6 +31,7 @@ public final class PropsFactory {
             if (userPropsInputstream != null) {
                 properties.load(userPropsInputstream);
             }
+            properties.putAll(System.getProperties());
             Props props = loadProps(properties);
             if (props.getTypescript().getOptionalFieldFormats().isEmpty()) {
                 throw new IllegalArgumentException("Props 'typescript.optional-field-format' cannot be empty.");
@@ -62,7 +63,7 @@ public final class PropsFactory {
                     Props.Typescript.OptionalFieldFormat.class, Props.Typescript.OptionalFieldFormat::fromString))
                 .enumFormat(parseEnum(properties, "sharedtype.typescript.enum-format", Props.Typescript.EnumFormat::fromString))
                 .fieldReadonlyType(parseEnum(properties, "sharedtype.typescript.field-readonly-type", Props.Typescript.FieldReadonlyType::fromString))
-                .arbitraryTypeMappings(parseMap(properties, "sharedtype.typescript.type-mappings"))
+                .typeMappings(parseMap(properties, "sharedtype.typescript.type-mappings"))
                 .build())
             .rust(Props.Rust.builder()
                 .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))
@@ -70,7 +71,7 @@ public final class PropsFactory {
                 .convertToSnakeCase(parseBoolean(properties, "sharedtype.rust.convert-to-snake-case"))
                 .defaultTypeMacros(splitArray(properties.getProperty("sharedtype.rust.default-macros-traits")))
                 .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.rust.target-datetime-type"))
-                .arbitraryTypeMappings(parseMap(properties, "sharedtype.rust.type-mappings"))
+                .typeMappings(parseMap(properties, "sharedtype.rust.type-mappings"))
                 .build())
             .build();
     }
@@ -151,19 +152,4 @@ public final class PropsFactory {
     private static <T> Class<? extends T> parseClass(String className) throws ClassNotFoundException {
         return (Class<? extends T>) Class.forName(className);
     }
-//
-//    private static Map<String, MappedTypeLiteralInfo> parseMappedTypeLiteralInfos(Properties properties) {
-//        Map<String, String> arbitraryTypeMappings = parseMap(properties, "sharedtype.rust.type-mappings");
-//        Map<String, MappedTypeLiteralInfo> mappedTypeLiteralInfoByQualifiedName = new HashMap<>();
-//        for (Map.Entry<String, String> entry : arbitraryTypeMappings.entrySet()) {
-//            MappedTypeLiteralInfo mappedTypeLiteralInfo = MappedTypeLiteralInfo.parse(entry.getKey());
-//
-//            mappedTypeLiteralInfos.add(
-//                MappedTypeLiteralInfo.builder()
-//                    .
-//                    .build()
-//            );
-//        }
-//
-//    }
 }

@@ -40,7 +40,7 @@ public final class Props {
         private final Set<OptionalFieldFormat> optionalFieldFormats;
         private final EnumFormat enumFormat;
         private final FieldReadonlyType fieldReadonlyType;
-        private final Map<String, String> arbitraryTypeMappings;
+        private final Map<String, String> typeMappings;
 
         @Getter
         public enum OptionalFieldFormat {
@@ -87,6 +87,6 @@ public final class Props {
         private final boolean convertToSnakeCase;
         private final Set<String> defaultTypeMacros;
         private final String targetDatetimeTypeLiteral;
-        private final Map<String, String> arbitraryTypeMappings;
+        private final Map<String, String> typeMappings;
     }
 }

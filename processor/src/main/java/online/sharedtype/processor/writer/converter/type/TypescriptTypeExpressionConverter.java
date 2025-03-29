@@ -41,7 +41,7 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
         typeNameMappings.put(Constants.STRING_TYPE_INFO, "string");
         typeNameMappings.put(Constants.VOID_TYPE_INFO, "never");
         typeNameMappings.put(Constants.OBJECT_TYPE_INFO, ctx.getProps().getTypescript().getJavaObjectMapType());
-        this.arbitraryTypeMappings = ctx.getProps().getTypescript().getArbitraryTypeMappings();
+        this.arbitraryTypeMappings = ctx.getProps().getTypescript().getTypeMappings();
     }
 
     @Override
