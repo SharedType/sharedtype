@@ -110,7 +110,7 @@ import java.lang.annotation.Target;
  * <br>
  * Type mapped this way will take the highest precedence.
  * E.g. a date type is configured to be emitted as string, you can override the particular mapping to emit a {@code Date}.
- * Type mapping will override name configured in {@link SharedType#name()}, with a warning.
+ * Type mapping will override name configured in {@link SharedType#name()}.
  * </p>
  *
  * <br>
@@ -130,7 +130,7 @@ public @interface SharedType {
      * </p>
      * <br>
      * This is similar to but different from type mappings configured via global properties,
-     * which maps any Java type to a target type. When both are defined, this will be overridden and an warning will be raised.
+     * which maps any Java type to a target type. When both are defined, this will be overridden by type mappings.
      * See {@link SharedType} for details.
      */
     String name() default "";

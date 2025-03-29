@@ -1,7 +1,6 @@
 package online.sharedtype.processor.parser.type;
 
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.DateTimeInfo;
 import online.sharedtype.processor.domain.TargetCodeType;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ final class MappableTypeInfoParserTest {
 
         var resTypeInfo = parser.parse(typeMirror1, typeContext);
         assertThat(resTypeInfo).isSameAs(dateTimeInfo);
-        assertThat(dateTimeInfo.mappedName(TargetCodeType.TYPESCRIPT)).isEqualTo("MyString");
-        assertThat(dateTimeInfo.mappedName(TargetCodeType.RUST)).isEqualTo("MyStringR");
+        assertThat(dateTimeInfo.mappedNameOrDefault(TargetCodeType.TYPESCRIPT, "DefaultName")).isEqualTo("MyString");
+        assertThat(dateTimeInfo.mappedNameOrDefault(TargetCodeType.RUST, "DefaultName")).isEqualTo("MyStringR");
     }
 }

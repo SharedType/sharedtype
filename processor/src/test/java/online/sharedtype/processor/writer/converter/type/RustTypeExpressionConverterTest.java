@@ -1,24 +1,30 @@
 package online.sharedtype.processor.writer.converter.type;
 
+import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.RenderFlags;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.DateTimeInfo;
+import online.sharedtype.processor.domain.TargetCodeType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class RustTypeExpressionConverterTest {
     private final ContextMocks contextMocks = new ContextMocks();
     private final RustTypeExpressionConverter converter = new RustTypeExpressionConverter(contextMocks.getContext());
 
+    private final Config config = mock(Config.class);
     private final ClassDef contextTypeDef = ClassDef.builder().simpleName("Abc").build();
 
     @Test
@@ -52,5 +58,19 @@ final class RustTypeExpressionConverterTest {
         var classDef = ClassDef.builder().cyclicReferenced(true).build();
         var expr = converter.toTypeExpression(ConcreteTypeInfo.builder().simpleName("Abc").typeDef(classDef).build(), "Abc");
         assertThat(expr).isEqualTo("Box<Abc>");
+    }
+
+    @Test
+    void typeMappings() {
+        ConcreteTypeInfo typeInfo = ConcreteTypeInfo.builder().qualifiedName("a.b.A1").build();
+        assertThat(converter.toTypeExpression(typeInfo, "DefaultName")).isEqualTo("DefaultName");
+        typeInfo.addMappedName(TargetCodeType.RUST, "AAA");
+        assertThat(converter.toTypeExpression(typeInfo, "DefaultName")).isEqualTo("AAA");
+
+        when(config.getRustTargetDatetimeTypeLiteral()).thenReturn("DefaultDateLiteral");
+        DateTimeInfo dateTimeInfo = new DateTimeInfo("a.b.A2");
+        assertThat(converter.dateTimeTypeExpr(dateTimeInfo, config)).isEqualTo("DefaultDateLiteral");
+        dateTimeInfo.addMappedName(TargetCodeType.RUST, "BBB");
+        assertThat(converter.dateTimeTypeExpr(dateTimeInfo, config)).isEqualTo("BBB");
     }
 }

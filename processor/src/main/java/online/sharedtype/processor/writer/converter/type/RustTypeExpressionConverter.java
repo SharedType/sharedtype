@@ -6,21 +6,19 @@ import online.sharedtype.processor.context.RenderFlags;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DateTimeInfo;
+import online.sharedtype.processor.domain.TargetCodeType;
 import online.sharedtype.processor.domain.TypeInfo;
 
 import javax.annotation.Nullable;
-import java.util.Map;
 
 final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter {
     private static final ArraySpec ARRAY_SPEC = new ArraySpec("Vec<", ">");
     private static final MapSpec DEFAULT_MAP_SPEC = new MapSpec("HashMap<", ", ", ">");
     private final RenderFlags renderFlags;
-    private final Map<String, String> arbitraryTypeMappings;
 
     RustTypeExpressionConverter(Context ctx) {
         super(ctx);
         this.renderFlags = ctx.getRenderFlags();
-        this.arbitraryTypeMappings = ctx.getProps().getRust().getTypeMappings();
     }
 
     @Override
@@ -44,22 +42,16 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
 
     @Override
     String dateTimeTypeExpr(DateTimeInfo dateTimeInfo, Config config) {
-        String arbitraryTypeExpr = arbitraryTypeMappings.get(dateTimeInfo.qualifiedName());
-        if (arbitraryTypeExpr != null) {
-            return arbitraryTypeExpr;
-        }
-        return config.getRustTargetDatetimeTypeLiteral();
+        return dateTimeInfo.mappedNameOrDefault(TargetCodeType.RUST, config.getRustTargetDatetimeTypeLiteral());
     }
 
     @Override
     @Nullable
     String toTypeExpression(ConcreteTypeInfo typeInfo, @Nullable String defaultExpr) {
-        String arbitraryTypeExpr = arbitraryTypeMappings.get(typeInfo.qualifiedName());
-        if (arbitraryTypeExpr != null) {
-            return arbitraryTypeExpr;
+        String expr = typeInfo.mappedName(TargetCodeType.RUST);
+        if (expr == null) {
+            expr = RustTypeNameMappings.getOrDefault(typeInfo, defaultExpr);
         }
-
-        String expr = RustTypeNameMappings.getOrDefault(typeInfo, defaultExpr);
         if (expr != null) {
             if (typeInfo.typeDef() != null && typeInfo.typeDef().isCyclicReferenced()) {
                 expr = String.format("Box<%s>", expr);
