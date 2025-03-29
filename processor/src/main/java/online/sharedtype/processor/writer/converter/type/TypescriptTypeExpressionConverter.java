@@ -4,6 +4,8 @@ import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.DateTimeInfo;
+import online.sharedtype.processor.domain.TargetCodeType;
 import online.sharedtype.processor.domain.TypeInfo;
 
 import javax.annotation.Nullable;
@@ -55,13 +57,17 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
     }
 
     @Override
-    String dateTimeTypeExpr(Config config) {
-        return config.getTypescriptTargetDatetimeTypeLiteral();
+    String dateTimeTypeExpr(DateTimeInfo dateTimeInfo, Config config) {
+        return dateTimeInfo.mappedNameOrDefault(TargetCodeType.TYPESCRIPT, config.getTypescriptTargetDatetimeTypeLiteral());
     }
 
     @Override
     @Nullable
     String toTypeExpression(ConcreteTypeInfo typeInfo, String defaultExpr) {
-        return typeNameMappings.getOrDefault(typeInfo, defaultExpr);
+        String expr = typeInfo.mappedName(TargetCodeType.TYPESCRIPT);
+        if (expr == null) {
+            expr = typeNameMappings.getOrDefault(typeInfo, defaultExpr);
+        }
+        return expr;
     }
 }

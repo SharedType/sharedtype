@@ -1,27 +1,22 @@
 package online.sharedtype.processor.parser;
 
+import online.sharedtype.SharedType;
+import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.DeclaredTypeVariableElementMock;
 import online.sharedtype.processor.context.ExecutableElementMock;
 import online.sharedtype.processor.context.RecordComponentMock;
 import online.sharedtype.processor.context.TypeElementMock;
-import online.sharedtype.processor.support.annotation.Issue;
+import online.sharedtype.processor.parser.type.TypeInfoParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import online.sharedtype.SharedType;
-import online.sharedtype.processor.context.Config;
-import online.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.type.DeclaredType;
 
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -31,8 +26,6 @@ final class ClassTypeDefParserForRecordTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
     private final ClassTypeDefParser parser = new ClassTypeDefParser(ctxMocks.getContext(), typeInfoParser);
-
-    private final ArgumentCaptor<String> msgCaptor = ArgumentCaptor.forClass(String.class);
 
     private final Config config = mock(Config.class);
     private final TypeElementMock string = ctxMocks.typeElement("java.lang.String");
@@ -125,37 +118,5 @@ final class ClassTypeDefParserForRecordTest {
         assertThat(typeDefs).isEmpty();
 
         verify(ctxMocks.getContext()).error(any(), any(Object[].class));
-    }
-
-    @Test @Issue(43)
-    void reportErrorWhenFieldTypeIsIgnoredType() {
-        verify(ctxMocks.getContext()).getProcessingEnv();
-
-        var ignoredTypeMock = ctxMocks.typeElement("com.github.cuzfrog.IgnoredClass")
-            .withAnnotation(SharedType.Ignore.class);
-        var classElementMock = ctxMocks.typeElement("com.github.cuzfrog.Abc")
-            .withEnclosedElements(
-                ctxMocks.declaredTypeVariable("value", ignoredTypeMock.type()).withElementKind(ElementKind.FIELD).element()
-            );
-        var components = parser.resolveComponents(classElementMock.element(), config);
-        assertThat(components).isEmpty();
-        verify(ctxMocks.getContext()).error(msgCaptor.capture(), eq(classElementMock.element()), eq("value"), eq(ignoredTypeMock.type()));
-
-        assertThat(msgCaptor.getValue()).contains("references to explicitly ignored type");
-    }
-
-    @Test @Issue(43)
-    void reportErrorWhenMethodReturnTypeIsIgnoredType() {
-        var ignoredTypeMock = ctxMocks.typeElement("com.github.cuzfrog.IgnoredClass")
-            .withAnnotation(SharedType.Ignore.class);
-        var classElementMock = ctxMocks.typeElement("com.github.cuzfrog.Abc")
-            .withEnclosedElements(
-                ctxMocks.executable("getValue").withElementKind(ElementKind.METHOD).withReturnType(ignoredTypeMock.type()).element()
-            );
-        var components = parser.resolveComponents(classElementMock.element(), config);
-        assertThat(components).isEmpty();
-        verify(ctxMocks.getContext()).error(msgCaptor.capture(), eq(classElementMock.element()), eq("getValue"), eq(ignoredTypeMock.type()));
-
-        assertThat(msgCaptor.getValue()).contains("references to explicitly ignored type");
     }
 }

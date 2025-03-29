@@ -3,9 +3,11 @@ package online.sharedtype.processor.domain;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import online.sharedtype.SharedType;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,7 @@ import java.util.stream.Collectors;
  */
 @EqualsAndHashCode(of = {"qualifiedName", "typeArgs"})
 @Builder(toBuilder = true)
-public final class ConcreteTypeInfo implements TypeInfo {
+public final class ConcreteTypeInfo implements TypeInfo, MappableType {
     private static final long serialVersionUID = 6912267731376244613L;
     private final String qualifiedName;
     private final String simpleName;
@@ -58,6 +60,9 @@ public final class ConcreteTypeInfo implements TypeInfo {
      */
     @Nullable
     private TypeDef typeDef;
+
+    /** Defined type mapping, see {@link SharedType} for details */
+    private final Map<TargetCodeType, String> mappedNames = new EnumMap<>(TargetCodeType.class);
 
 
     static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
@@ -98,6 +103,17 @@ public final class ConcreteTypeInfo implements TypeInfo {
 
     public String qualifiedName() {
         return qualifiedName;
+    }
+
+    @Nullable
+    @Override
+    public String mappedName(@Nullable TargetCodeType targetCodeType) {
+        return targetCodeType == null ? null : mappedNames.get(targetCodeType);
+    }
+
+    @Override
+    public void addMappedName(TargetCodeType targetCodeType, String mappedName) {
+        mappedNames.put(targetCodeType, mappedName);
     }
 
     public String simpleName() {

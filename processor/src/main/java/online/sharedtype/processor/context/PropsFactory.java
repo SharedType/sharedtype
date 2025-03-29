@@ -6,7 +6,10 @@ import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
@@ -28,6 +31,7 @@ public final class PropsFactory {
             if (userPropsInputstream != null) {
                 properties.load(userPropsInputstream);
             }
+            properties.putAll(System.getProperties());
             Props props = loadProps(properties);
             if (props.getTypescript().getOptionalFieldFormats().isEmpty()) {
                 throw new IllegalArgumentException("Props 'typescript.optional-field-format' cannot be empty.");
@@ -59,6 +63,7 @@ public final class PropsFactory {
                     Props.Typescript.OptionalFieldFormat.class, Props.Typescript.OptionalFieldFormat::fromString))
                 .enumFormat(parseEnum(properties, "sharedtype.typescript.enum-format", Props.Typescript.EnumFormat::fromString))
                 .fieldReadonlyType(parseEnum(properties, "sharedtype.typescript.field-readonly-type", Props.Typescript.FieldReadonlyType::fromString))
+                .typeMappings(parseMap(properties, "sharedtype.typescript.type-mappings"))
                 .build())
             .rust(Props.Rust.builder()
                 .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))
@@ -66,6 +71,7 @@ public final class PropsFactory {
                 .convertToSnakeCase(parseBoolean(properties, "sharedtype.rust.convert-to-snake-case"))
                 .defaultTypeMacros(splitArray(properties.getProperty("sharedtype.rust.default-macros-traits")))
                 .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.rust.target-datetime-type"))
+                .typeMappings(parseMap(properties, "sharedtype.rust.type-mappings"))
                 .build())
             .build();
     }
@@ -123,6 +129,23 @@ public final class PropsFactory {
         } catch (Exception e) {
             throw new IllegalArgumentException(String.format("Invalid property %s=%s", propertyName, value), e);
         }
+    }
+
+    private static Map<String, String> parseMap(Properties properties, String propertyName) {
+        String value = properties.getProperty(propertyName);
+        if (value == null || value.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        String[] pairs = value.split(",");
+        Map<String, String> map = new HashMap<>(pairs.length);
+        for (String pair : pairs) {
+            String[] keyValue = pair.trim().split(":");
+            if (keyValue.length != 2) {
+                throw new IllegalArgumentException(String.format("Invalid property %s=%s, entries must be separated by commas and key-value by colons.", propertyName, value));
+            }
+            map.put(keyValue[0].trim(), keyValue[1].trim());
+        }
+        return map;
     }
 
     @SuppressWarnings("unchecked")

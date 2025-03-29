@@ -7,6 +7,7 @@ import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import java.lang.annotation.Annotation;
@@ -26,12 +27,14 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
     final T type;
     final Context ctx;
     final Types types;
+    final Elements elements;
 
-    AbstractElementMock(E element, T type, Context ctx, Types types) {
+    AbstractElementMock(E element, T type, Context ctx) {
         this.element = element;
         this.type = type;
         this.ctx = ctx;
-        this.types = types;
+        this.types = ctx.getProcessingEnv().getTypeUtils();
+        this.elements = ctx.getProcessingEnv().getElementUtils();
         when(element.asType()).thenReturn(type);
     }
 

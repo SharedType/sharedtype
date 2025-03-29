@@ -62,18 +62,18 @@ final class LoopTypeResolverTest {
             .build();
 
         ClassDef tupleDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Tuple").simpleName("Tuple").build();
-        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.Tuple"))).thenReturn(Collections.singletonList(tupleDef));
+        when(typeDefParser.parse(ctxMocks.typeElement("com.github.cuzfrog.Tuple").element())).thenReturn(Collections.singletonList(tupleDef));
         ClassDef aDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.A").simpleName("A").build();
-        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.A"))).thenReturn(Collections.singletonList(aDef));
+        when(typeDefParser.parse(ctxMocks.typeElement("com.github.cuzfrog.A").element())).thenReturn(Collections.singletonList(aDef));
         ClassDef bDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.B").simpleName("B").build();
-        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.B"))).thenReturn(Collections.singletonList(bDef));
+        when(typeDefParser.parse(ctxMocks.typeElement("com.github.cuzfrog.B").element())).thenReturn(Collections.singletonList(bDef));
         ClassDef superADef = ClassDef.builder()
             .qualifiedName("com.github.cuzfrog.SuperClassA").simpleName("SuperClassA")
             .components(Collections.singletonList(
                 FieldComponentInfo.builder().name("a").type(aTypeInfo).build()
             ))
             .build();
-        when(typeDefParser.parse(mockElementByName("com.github.cuzfrog.SuperClassA"))).thenReturn(Collections.singletonList(superADef));
+        when(typeDefParser.parse(ctxMocks.typeElement("com.github.cuzfrog.SuperClassA").element())).thenReturn(Collections.singletonList(superADef));
 
         List<TypeDef> defs = resolver.resolve(Collections.singletonList(typeDef));
         assertThat(defs).hasSize(5);
@@ -126,6 +126,34 @@ final class LoopTypeResolverTest {
     }
 
     @Test
+    void ignoredFieldShouldBeResolvedWithoutTypeDef() {
+        ConcreteTypeInfo aTypeInfo = ConcreteTypeInfo.builder()
+            .qualifiedName("com.github.cuzfrog.A")
+            .resolved(false)
+            .build();
+        ClassDef typeDef = ClassDef.builder()
+            .qualifiedName("com.github.cuzfrog.Abc").simpleName("Abc")
+            .components(Collections.singletonList(
+                FieldComponentInfo.builder().name("a").type(aTypeInfo).build()
+            ))
+            .build();
+        TypeElement typeElement = ctxMocks.typeElement("com.github.cuzfrog.A").element();
+        when(ctxMocks.getContext().isIgnored(typeElement)).thenReturn(true);
+        when(typeDefParser.parse(typeElement)).thenReturn(Collections.emptyList());
+
+        List<TypeDef> defs = resolver.resolve(Collections.singletonList(typeDef));
+        assertThat(defs).hasSize(1);
+        ClassDef abc = (ClassDef) defs.get(0);
+        assertThat(abc).isSameAs(typeDef);
+        FieldComponentInfo field = abc.components().get(0);
+        assertThat(field.resolved()).isTrue();
+        assertThat(field.name()).isEqualTo("a");
+        assertThat(field.type()).isEqualTo(aTypeInfo);
+        assertThat(aTypeInfo.resolved()).isTrue();
+        assertThat(aTypeInfo.typeDef()).isNull();
+    }
+
+    @Test
     void resolveSimpleEnum() {
         EnumDef typeDef = EnumDef.builder()
             .qualifiedName("com.github.cuzfrog.EnumA").simpleName("EnumA")
@@ -147,11 +175,5 @@ final class LoopTypeResolverTest {
         List<TypeDef> defs = resolver.resolve(List.of(classDef, classDef));
         assertThat(defs).hasSize(1);
         assertThat(defs.get(0)).isSameAs(classDef);
-    }
-
-    private TypeElement mockElementByName(String qualifiedName) {
-        TypeElement typeElement = ctxMocks.typeElement(qualifiedName).element();
-        when(ctxMocks.getElements().getTypeElement(qualifiedName)).thenReturn(typeElement);
-        return typeElement;
     }
 }

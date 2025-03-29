@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public final class ClassDef extends ConcreteTypeDef {
     private static final long serialVersionUID = 9052013791381913516L;
     private final String qualifiedName;
+    /** The name to emit to target code. It is the mapped type if type mapping is defined. */
     private final String simpleName;
     @Builder.Default
     private final List<FieldComponentInfo> components = new ArrayList<>();

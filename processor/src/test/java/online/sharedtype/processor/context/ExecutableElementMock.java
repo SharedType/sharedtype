@@ -16,8 +16,8 @@ import static org.mockito.Mockito.when;
 public final class ExecutableElementMock extends AbstractElementMock<ExecutableElement, ExecutableType, ExecutableElementMock> {
     private static final ElementKind DEFAULT_ELEMENT_KIND = ElementKind.METHOD;
 
-    ExecutableElementMock(String name, Context ctx, Types types) {
-        super(mock(ExecutableElement.class, name), mock(ExecutableType.class, name), ctx, types);
+    ExecutableElementMock(String name, Context ctx) {
+        super(mock(ExecutableElement.class, name), mock(ExecutableType.class, name), ctx);
         setSimpleName(element, name);
         when(type.getKind()).thenReturn(TypeKind.EXECUTABLE);
         when(element.getKind()).thenReturn(DEFAULT_ELEMENT_KIND);

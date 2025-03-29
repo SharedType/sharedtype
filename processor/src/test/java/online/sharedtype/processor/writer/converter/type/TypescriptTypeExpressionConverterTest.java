@@ -1,9 +1,12 @@
 package online.sharedtype.processor.writer.converter.type;
 
+import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.DateTimeInfo;
+import online.sharedtype.processor.domain.TargetCodeType;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import org.junit.jupiter.api.Test;
 
@@ -11,10 +14,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 final class TypescriptTypeExpressionConverterTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypescriptTypeExpressionConverter converter = new TypescriptTypeExpressionConverter(ctxMocks.getContext());
+
+    private final Config config = mock(Config.class);
 
     @Test
     void typeContract() {
@@ -68,5 +75,19 @@ final class TypescriptTypeExpressionConverterTest {
             .build();
         assertThatThrownBy(() -> converter.toTypeExpr(invalidMapTypeInfo,contextTypeDef))
             .hasMessageContaining("Base Map type must have 2 type arguments");
+    }
+
+    @Test
+    void typeMapping() {
+        ConcreteTypeInfo typeInfo = ConcreteTypeInfo.builder().qualifiedName("a.b.A1").build();
+        assertThat(converter.toTypeExpression(typeInfo, "DefaultName")).isEqualTo("DefaultName");
+        typeInfo.addMappedName(TargetCodeType.TYPESCRIPT, "AAA");
+        assertThat(converter.toTypeExpression(typeInfo, "DefaultName")).isEqualTo("AAA");
+
+        when(config.getTypescriptTargetDatetimeTypeLiteral()).thenReturn("DefaultDateLiteral");
+        DateTimeInfo dateTimeInfo = new DateTimeInfo("a.b.A2");
+        assertThat(converter.dateTimeTypeExpr(dateTimeInfo, config)).isEqualTo("DefaultDateLiteral");
+        dateTimeInfo.addMappedName(TargetCodeType.TYPESCRIPT, "BBB");
+        assertThat(converter.dateTimeTypeExpr(dateTimeInfo, config)).isEqualTo("BBB");
     }
 }

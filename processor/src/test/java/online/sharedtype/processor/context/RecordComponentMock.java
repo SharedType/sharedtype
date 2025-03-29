@@ -10,8 +10,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public final class RecordComponentMock<T extends TypeMirror> extends AbstractElementMock<RecordComponentElement, T, RecordComponentMock<T>> {
-    RecordComponentMock(String name, T type, Context ctx, Types types) {
-        super(mock(RecordComponentElement.class, name), type, ctx, types);
+    RecordComponentMock(String name, T type, Context ctx) {
+        super(mock(RecordComponentElement.class, name), type, ctx);
         setSimpleName(element, name);
         when(element.asType()).thenReturn(type);
         when(element.getKind()).thenReturn(ElementKind.RECORD_COMPONENT);

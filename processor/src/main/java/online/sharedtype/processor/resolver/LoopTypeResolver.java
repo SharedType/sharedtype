@@ -16,6 +16,7 @@ import online.sharedtype.processor.support.annotation.SideEffect;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -29,6 +30,7 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 final class LoopTypeResolver implements TypeResolver {
+    private static final int MAX_LOOP = 2000;
     private static final int DEPENDENCY_COUNT_EXPANSION_FACTOR = 2; // TODO: find a proper number
     private final Context ctx;
     private final TypeDefParser typeDefParser;
@@ -41,7 +43,12 @@ final class LoopTypeResolver implements TypeResolver {
         Deque<TypeInfo> processingInfoStack = new ArrayDeque<>(n);
         processingDefStack.addAll(typeDefs);
 
+        int loopCount = 0;
         while (!processingDefStack.isEmpty()) {
+            loopCount++;
+            if (loopCount > MAX_LOOP) {
+                throw new SharedTypeInternalError("Resolving typeDefs has exceeded the maximum loop count.");
+            }
             TypeDef typeDef = processingDefStack.pop();
             if (resolvedDefs.contains(typeDef)) {
                 continue;
@@ -89,7 +96,12 @@ final class LoopTypeResolver implements TypeResolver {
 
     @SideEffect
     private void resolveTypeInfo(Deque<TypeDef> processingDefStack, Deque<TypeInfo> processingInfoStack) {
+        int loopCount = 0;
         while (!processingInfoStack.isEmpty()) {
+            loopCount++;
+            if (loopCount > MAX_LOOP) {
+                throw new SharedTypeInternalError("Resolving typeInfo has exceeded the maximum loop count.");
+            }
             TypeInfo typeInfo = processingInfoStack.pop();
             if (typeInfo instanceof ConcreteTypeInfo) {
                 ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
@@ -100,6 +112,8 @@ final class LoopTypeResolver implements TypeResolver {
                         TypeDef mainTypeDef = parsed.get(0);
                         concreteTypeInfo.markShallowResolved(mainTypeDef);
                         processingDefStack.push(mainTypeDef);
+                    } else if (ctx.isIgnored(typeElement)) {
+                        concreteTypeInfo.markShallowResolved(null);
                     }
                 }
                 for (TypeInfo typeArg : concreteTypeInfo.typeArgs()) {

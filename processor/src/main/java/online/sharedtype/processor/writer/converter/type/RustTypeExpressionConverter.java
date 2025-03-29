@@ -5,11 +5,11 @@ import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.RenderFlags;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.DateTimeInfo;
+import online.sharedtype.processor.domain.TargetCodeType;
 import online.sharedtype.processor.domain.TypeInfo;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
 
 final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter {
     private static final ArraySpec ARRAY_SPEC = new ArraySpec("Vec<", ">");
@@ -41,15 +41,18 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
     }
 
     @Override
-    String dateTimeTypeExpr(Config config) {
-        return config.getRustTargetDatetimeTypeLiteral();
+    String dateTimeTypeExpr(DateTimeInfo dateTimeInfo, Config config) {
+        return dateTimeInfo.mappedNameOrDefault(TargetCodeType.RUST, config.getRustTargetDatetimeTypeLiteral());
     }
 
     @Override
     @Nullable
     String toTypeExpression(ConcreteTypeInfo typeInfo, @Nullable String defaultExpr) {
-        String expr = RustTypeNameMappings.getOrDefault(typeInfo, defaultExpr);
-        if (typeInfo != null && expr != null) {
+        String expr = typeInfo.mappedName(TargetCodeType.RUST);
+        if (expr == null) {
+            expr = RustTypeNameMappings.getOrDefault(typeInfo, defaultExpr);
+        }
+        if (expr != null) {
             if (typeInfo.typeDef() != null && typeInfo.typeDef().isCyclicReferenced()) {
                 expr = String.format("Box<%s>", expr);
             }

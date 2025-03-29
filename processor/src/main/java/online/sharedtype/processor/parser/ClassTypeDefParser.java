@@ -44,11 +44,13 @@ import static online.sharedtype.processor.domain.DependingKind.SUPER_TYPE;
  * @author Cause Chung
  */
 final class ClassTypeDefParser implements TypeDefParser {
-    private static final Set<String> SUPPORTED_ELEMENT_KINDS = new HashSet<String>(3){{
-        add(ElementKind.CLASS.name());
-        add(ElementKind.INTERFACE.name());
-        add("RECORD");
-    }};
+
+    private static final Set<String> SUPPORTED_ELEMENT_KINDS = new HashSet<>(3);
+    static {
+        SUPPORTED_ELEMENT_KINDS.add(ElementKind.CLASS.name());
+        SUPPORTED_ELEMENT_KINDS.add(ElementKind.INTERFACE.name());
+        SUPPORTED_ELEMENT_KINDS.add("RECORD");
+    }
     private final Context ctx;
     private final Types types;
     private final TypeInfoParser typeInfoParser;
@@ -192,12 +194,6 @@ final class ClassTypeDefParser implements TypeDefParser {
                 res.add(Tuple.of(methodElem, baseName));
                 uniqueNamesOfTypes.add(baseName, returnType);
             }
-
-            if (uniqueNamesOfTypes.ignoredType != null) {
-                ctx.error("%s.%s references to explicitly ignored type %s, which is not allowed." +
-                    " Either remove the ignored type, or add @SharedType.Ignore to the field or accessor.", typeElement, name, uniqueNamesOfTypes.ignoredType);
-                return Collections.emptyList();
-            }
         }
 
         return res;
@@ -232,7 +228,6 @@ final class ClassTypeDefParser implements TypeDefParser {
     private final class NamesOfTypes {
         private final TypeElement contextType;
         private final Map<String, TypeMirror> namesOfTypes;
-        private TypeMirror ignoredType;
 
         NamesOfTypes(int size, TypeElement contextType) {
             this.contextType = contextType;
@@ -253,10 +248,6 @@ final class ClassTypeDefParser implements TypeDefParser {
 
         void add(String name, TypeMirror componentType) {
             namesOfTypes.put(name, componentType);
-            Element element = types.asElement(componentType);
-            if (element != null && element.getAnnotation(SharedType.Ignore.class) != null) {
-                ignoredType = componentType;
-            }
         }
     }
 }

@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.entry;
 
 final class PropsFactoryTest {
     @Test
@@ -49,6 +50,7 @@ final class PropsFactoryTest {
         assertThat(typescriptProps.getOptionalFieldFormats()).containsExactly(Props.Typescript.OptionalFieldFormat.QUESTION_MARK);
         assertThat(typescriptProps.getEnumFormat()).isEqualTo(Props.Typescript.EnumFormat.UNION);
         assertThat(typescriptProps.getFieldReadonlyType()).isEqualTo(Props.Typescript.FieldReadonlyType.ACYCLIC);
+        assertThat(typescriptProps.getTypeMappings()).isEmpty();
 
         Props.Rust rustProps = props.getRust();
         assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");
@@ -56,6 +58,7 @@ final class PropsFactoryTest {
         assertThat(rustProps.isConvertToSnakeCase()).isEqualTo(false);
         assertThat(rustProps.getDefaultTypeMacros()).containsExactly("Debug");
         assertThat(rustProps.getTargetDatetimeTypeLiteral()).isEqualTo("String");
+        assertThat(rustProps.getTypeMappings()).isEmpty();
     }
 
     @Test
@@ -70,6 +73,15 @@ final class PropsFactoryTest {
             .isInstanceOf(SharedTypeException.class)
             .cause().cause()
             .hasMessageContaining("Unknown optional field format: 'abc', only '?', 'null', 'undefined' are allowed");
+    }
+
+    @Test
+    void typeMappings() {
+        Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-type-mappings.properties"));
+        assertThat(props.getTypescript().getTypeMappings()).containsExactly(
+            entry("MyType1", "RenamedType1"),
+            entry("MyType2", "RenamedType2")
+        );
     }
 
     private static Path resolveResource(String resource) {

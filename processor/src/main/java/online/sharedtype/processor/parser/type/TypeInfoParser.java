@@ -30,6 +30,6 @@ public interface TypeInfoParser {
     TypeInfo parse(TypeMirror typeMirror, TypeContext typeContext);
 
     static TypeInfoParser create(Context ctx) {
-        return new TypeInfoParserImpl(ctx);
+        return new MappableTypeInfoParser(ctx, new TypeInfoParserImpl(ctx));
     }
 }
