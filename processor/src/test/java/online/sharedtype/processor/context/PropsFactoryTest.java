@@ -17,7 +17,7 @@ final class PropsFactoryTest {
     void loadUserProps() {
         Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-user.properties"));
         assertThat(props.getTargets()).containsExactly(OutputTarget.CONSOLE, OutputTarget.TYPESCRIPT);
-        assertThat(props.getOptionalAnnotations()).containsExactly(Override.class);
+        assertThat(props.getOptionalAnnotations()).containsExactly("a.b.TsOptional");
         assertThat(props.getTypescript().getJavaObjectMapType()).isEqualTo("unknown");
     }
 
@@ -25,7 +25,7 @@ final class PropsFactoryTest {
     void loadDefaultProps() {
         Props props = PropsFactory.loadProps(Paths.get("not-exist"));
         assertThat(props.getTargets()).containsExactly(OutputTarget.TYPESCRIPT);
-        assertThat(props.getOptionalAnnotations()).containsExactly(Nullable.class);
+        assertThat(props.getOptionalAnnotations()).containsExactly("javax.annotation.Nullable");
         assertThat(props.getOptionalContainerTypes()).containsExactly("java.util.Optional");
         assertThat(props.getAccessorGetterPrefixes()).containsExactly("get", "is");
         assertThat(props.getArraylikeTypeQualifiedNames()).containsExactly("java.lang.Iterable");
@@ -37,7 +37,8 @@ final class PropsFactoryTest {
             "java.lang.Enum",
             "java.io.Serializable",
             "java.lang.Record",
-            "java.lang.Cloneable"
+            "java.lang.Cloneable",
+            "java.lang.Comparable"
         );
         assertThat(props.getIgnoredFieldNames()).containsExactly("serialVersionUID");
         assertThat(props.isConstantNamespaced()).isTrue();
