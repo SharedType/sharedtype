@@ -104,7 +104,8 @@ final class ConstantTypeDefParser implements TypeDefParser {
             return ((LiteralTree) valueTree).getValue();
         } else {
             throw new SharedTypeException(String.format("Only literal value is supported for constant field." +
-                " Field: %s in %s", fieldElement.getSimpleName(), ctxTypeElement.getQualifiedName()));
+                " Field: %s in %s. Consider use @SharedType.Ignore to ignore this field or exclude constants generation for this type.",
+                fieldElement.getSimpleName(), ctxTypeElement.getQualifiedName()));
         }
     }
 }

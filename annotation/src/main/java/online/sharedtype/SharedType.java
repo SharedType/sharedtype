@@ -59,6 +59,7 @@ import java.lang.annotation.Target;
  * <p>
  * <b>Constants:</b><br>
  * Static fields are treated as constants. Only compile-time resolvable values are supported.
+ * By default, constants are not included, see {@link #includes()}.
  * Only constants in explicitly annotated types will be emitted.
  * </p>
  *
@@ -101,6 +102,15 @@ import java.lang.annotation.Target;
  * The emitted target type can be configured via global properties or via this annotation.
  * Target type can be any type literal, but SharedType will not verify its validity in emitted code.
  * </p><br>
+ *
+ * <p>
+ * <b>Math types:</b><br>
+ * By default {@link java.math.BigInteger} and {@link java.math.BigDecimal} are emitted number types.
+ * A client can use type mappings to override the emitted types. Default mappings are:
+ * <ul>
+ *     <li>Typescript: {@code number}</li>
+ *     <li>Rust: {@code i128} and {@code f64}</li>
+ * </ul>
  *
  * <p>
  * <b>Type literal mappings:</b><br>
@@ -149,7 +159,7 @@ public @interface SharedType {
      * @see ComponentType#ACCESSORS
      * @see ComponentType#CONSTANTS
      */
-    ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS, ComponentType.CONSTANTS};
+    ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS};
 
     /**
      * Java fields have to reside in a class, which provides a natural namespace.
