@@ -79,6 +79,16 @@ You can customize the path by config `maven-compiler-plugin`:
 </compilerArgs>
 ```
 
+Properties can also be passed in as system properties, which will override the properties files, e.g.
+```bash
+./mvnw clean compile -Dsharedtype.typescript.custom-code-path=it/custom-code.ts
+```
+or
+```bash
+MAVEN_OPTS="-Dsharedtype.typescript.custom-code-path=it/custom-code.ts" ./mvnw clean compile
+```
+or can use [properties-maven-plugin](https://www.mojohaus.org/properties-maven-plugin/usage.html#set-system-properties) to set system properties for the build.
+
 See [Default Properties](../processor/src/main/resources/sharedtype-default.properties) for details.
 
 #### Per annotation options

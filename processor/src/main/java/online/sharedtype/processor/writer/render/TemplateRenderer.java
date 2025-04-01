@@ -18,7 +18,7 @@ public interface TemplateRenderer {
      * @param writer java.io.Writer
      * @param data a list of tuple containing the template and corresponding data for rendering.
      */
-    void render(Writer writer, List<Tuple<Template, Object>> data);
+    void render(Writer writer, List<Tuple<Template, ?>> data);
 
     static TemplateRenderer create() {
         return new MustacheTemplateRenderer(new DefaultMustacheFactory());

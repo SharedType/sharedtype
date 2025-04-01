@@ -1,4 +1,4 @@
-import type { JavaClass } from "./index.java8.js";
+import type { CustomCode, JavaClass } from "./index.java8.js";
 
 export const javaClass: JavaClass = {
   string: "",
@@ -7,3 +7,6 @@ export const javaClass: JavaClass = {
   a: 0,
   value: 0
 };
+
+export const customCodeType: CustomCode = {
+}

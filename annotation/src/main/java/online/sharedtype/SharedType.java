@@ -26,10 +26,10 @@ import java.lang.annotation.Target;
  * <p>
  * <b>Configurations:</b><br>
  * Global properties can be defined in a client provided property file or system properties.
- * By default, SharedType will look for file name "sharedtype.properties" on cmd current path.
+ * By default, SharedType will look for file name "sharedtype.properties" on cmd path.
  * The property file path can be changed via compiler option "sharedtype.propsFile", see web for details.
  * System properties will override property file values.
- * Configs on class level (via this annotation) will take precedence over global properties.
+ * Some properties are also defined at class level, i.e. via this annotation, which will take precedence over global properties.
  * </p>
  *
  * <p>
@@ -121,6 +121,14 @@ import java.lang.annotation.Target;
  * Type mapped this way will take the highest precedence.
  * E.g. a date type is configured to be emitted as string, you can override the particular mapping to emit a {@code Date}.
  * Type mapping will override name configured in {@link SharedType#name()}.
+ * </p><br>
+ *
+ * <p>
+ * <b>Custom code snippet:</b><br>
+ * Clients can provide custom code snippets to be injected into the emitted file.
+ * This can be useful when e.g. a 3rd party type is referenced at client code.
+ * By default, SharedType will search files "sharedtype-custom-code.ts", "sharedtype-custom-code.rs" respectively on cmd path.
+ * File paths can be configured via global properties.
  * </p>
  *
  * <br>

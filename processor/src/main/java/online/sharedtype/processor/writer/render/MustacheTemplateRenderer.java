@@ -20,8 +20,8 @@ final class MustacheTemplateRenderer implements TemplateRenderer {
     private final MustacheFactory mf;
 
     @Override
-    public void render(Writer writer, List<Tuple<Template, Object>> data) {
-        for (Tuple<Template, Object> tuple : data) {
+    public void render(Writer writer, List<Tuple<Template, ?>> data) {
+        for (Tuple<Template, ?> tuple : data) {
             Template template = tuple.a();
             Object values = tuple.b();
             Mustache mustache = mf.compile(template.getResourcePath());

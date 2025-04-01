@@ -64,6 +64,7 @@ public final class PropsFactory {
                 .enumFormat(parseEnum(properties, "sharedtype.typescript.enum-format", Props.Typescript.EnumFormat::fromString))
                 .fieldReadonlyType(parseEnum(properties, "sharedtype.typescript.field-readonly-type", Props.Typescript.FieldReadonlyType::fromString))
                 .typeMappings(parseMap(properties, "sharedtype.typescript.type-mappings"))
+                .customCodePath(properties.getProperty("sharedtype.typescript.custom-code-path"))
                 .build())
             .rust(Props.Rust.builder()
                 .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))
@@ -72,6 +73,7 @@ public final class PropsFactory {
                 .defaultTypeMacros(splitArray(properties.getProperty("sharedtype.rust.default-macros-traits")))
                 .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.rust.target-datetime-type"))
                 .typeMappings(parseMap(properties, "sharedtype.rust.type-mappings"))
+                .customCodePath(properties.getProperty("sharedtype.rust.custom-code-path"))
                 .build())
             .build();
     }

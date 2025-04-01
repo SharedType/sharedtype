@@ -1,5 +1,9 @@
 mod types;
 
+pub static CUSTOM_CODE_TYPE: types::CustomInjectedStruct = types::CustomInjectedStruct {
+    field: 33,
+};
+
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;

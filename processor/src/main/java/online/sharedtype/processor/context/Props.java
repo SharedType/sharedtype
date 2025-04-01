@@ -41,6 +41,7 @@ public final class Props {
         private final EnumFormat enumFormat;
         private final FieldReadonlyType fieldReadonlyType;
         private final Map<String, String> typeMappings;
+        private final String customCodePath;
 
         @Getter
         public enum OptionalFieldFormat {
@@ -88,5 +89,6 @@ public final class Props {
         private final Set<String> defaultTypeMacros;
         private final String targetDatetimeTypeLiteral;
         private final Map<String, String> typeMappings;
+        private final String customCodePath;
     }
 }
