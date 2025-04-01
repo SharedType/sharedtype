@@ -52,6 +52,7 @@ final class PropsFactoryTest {
         assertThat(typescriptProps.getEnumFormat()).isEqualTo(Props.Typescript.EnumFormat.UNION);
         assertThat(typescriptProps.getFieldReadonlyType()).isEqualTo(Props.Typescript.FieldReadonlyType.ACYCLIC);
         assertThat(typescriptProps.getTypeMappings()).isEmpty();
+        assertThat(typescriptProps.getCustomCodePath()).isEqualTo("sharedtype-custom-code.ts");
 
         Props.Rust rustProps = props.getRust();
         assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");
@@ -60,6 +61,7 @@ final class PropsFactoryTest {
         assertThat(rustProps.getDefaultTypeMacros()).containsExactly("Debug");
         assertThat(rustProps.getTargetDatetimeTypeLiteral()).isEqualTo("String");
         assertThat(rustProps.getTypeMappings()).isEmpty();
+        assertThat(rustProps.getCustomCodePath()).isEqualTo("sharedtype-custom-code.rs");
     }
 
     @Test

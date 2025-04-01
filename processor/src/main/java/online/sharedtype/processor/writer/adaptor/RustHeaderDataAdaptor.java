@@ -1,19 +1,14 @@
 package online.sharedtype.processor.writer.adaptor;
 
-import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.Props;
-import online.sharedtype.processor.context.RenderFlags;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@RequiredArgsConstructor
-final class RustHeaderDataAdaptor implements RenderDataAdaptor {
-    private final Context ctx;
-
-    RenderFlags renderFlags() {
-        return ctx.getRenderFlags();
+final class RustHeaderDataAdaptor extends AbstractDataAdaptor {
+    RustHeaderDataAdaptor(Context ctx) {
+        super(ctx);
     }
 
     String allowExpr() {
@@ -28,5 +23,10 @@ final class RustHeaderDataAdaptor implements RenderDataAdaptor {
         }
 
         return allows.isEmpty() ? null : String.format("#![allow(%s)]", String.join(", ", allows));
+    }
+
+    @Override
+    String customCodeSnippet() {
+        return readCustomCodeSnippet(ctx.getProps().getRust().getCustomCodePath());
     }
 }

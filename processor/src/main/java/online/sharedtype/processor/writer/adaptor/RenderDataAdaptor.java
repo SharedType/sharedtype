@@ -1,9 +1,8 @@
 package online.sharedtype.processor.writer.adaptor;
 
-import online.sharedtype.processor.context.Context;
-
+/**
+ * Implementations of the type is used as render objects feeding to template renderer.
+ * @author Cause Chung
+ */
 public interface RenderDataAdaptor {
-    static RenderDataAdaptor header(Context ctx) {
-        return new RustHeaderDataAdaptor(ctx);
-    }
 }

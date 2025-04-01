@@ -4,6 +4,7 @@ import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.writer.adaptor.RenderDataAdaptor;
+import online.sharedtype.processor.writer.adaptor.RenderDataAdaptorFactory;
 import online.sharedtype.processor.writer.converter.TemplateDataConverter;
 import online.sharedtype.processor.writer.render.Template;
 import online.sharedtype.processor.writer.render.TemplateRenderer;
@@ -27,6 +28,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,19 +37,20 @@ import static org.mockito.Mockito.when;
 final class TemplateTypeFileWriterTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private @Mock TemplateRenderer renderer;
+    private @Mock RenderDataAdaptorFactory renderDataAdaptorFactory;
     private @Mock TemplateDataConverter converter1;
     private @Mock TemplateDataConverter converter2;
     private @Mock TemplateDataConverter converter3;
     private TemplateTypeFileWriter writer;
 
     private @Mock FileObject fileObject;
-    private @Captor ArgumentCaptor<List<Tuple<Template, Object>>> renderDataCaptor;
+    private @Captor ArgumentCaptor<List<Tuple<Template, ?>>> renderDataCaptor;
     private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(256);
 
     @BeforeEach
     void setUp() throws Exception {
         writer = new TemplateTypeFileWriter(
-            ctxMocks.getContext(), renderer, Template.TEMPLATE_TYPESCRIPT_HEADER,
+            ctxMocks.getContext(), renderer, renderDataAdaptorFactory,
             Set.of(converter1, converter2, converter3), "types.ts");
         when(ctxMocks.getContext().createSourceOutput("types.ts")).thenReturn(fileObject);
         when(fileObject.openOutputStream()).thenReturn(outputStream);
@@ -60,6 +63,8 @@ final class TemplateTypeFileWriterTest {
             writer.write("some-value");
             return null;
         }).when(renderer).render(any(), any());
+        var renderDataAdaptor = mock(RenderDataAdaptor.class);
+        when(renderDataAdaptorFactory.header(ctxMocks.getContext())).thenReturn(Tuple.of(Template.TEMPLATE_TYPESCRIPT_HEADER, renderDataAdaptor));
 
         ClassDef classDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.ClassA").build();
         var data1 = new Object();
@@ -73,11 +78,11 @@ final class TemplateTypeFileWriterTest {
 
         verify(renderer).render(any(), renderDataCaptor.capture());
 
-        List<Tuple<Template, Object>> renderData = renderDataCaptor.getValue();
+        List<Tuple<Template, ?>> renderData = renderDataCaptor.getValue();
         assertThat(renderData).satisfiesExactlyInAnyOrder(
             entry -> {
               assertThat(entry.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_HEADER);
-              assertThat(entry.b()).isInstanceOf(RenderDataAdaptor.class);
+              assertThat(entry.b()).isSameAs(renderDataAdaptor);
             },
             entry -> {
                 assertThat(entry.a()).isEqualTo(Template.TEMPLATE_TYPESCRIPT_INTERFACE);
