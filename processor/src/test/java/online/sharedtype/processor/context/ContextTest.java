@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import javax.annotation.Nullable;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ElementKind;
@@ -64,5 +65,14 @@ final class ContextTest {
         assertThat(ctx.isSubtypeOfAny(typeMirror, Set.of("com.github.cuzfrog.AA"))).isTrue();
         assertThat(ctx.isSubtypeOfAny(typeMirror, Set.of("com.github.cuzfrog.B"))).isFalse();
         assertThat(ctx.isSubtypeOfAny(typeMirror, Set.of("java.lang.Object"))).isFalse();
+    }
+
+    @Test
+    void isOptionalAnnotated() {
+        ctx = new Context(processingEnv, Props.builder().optionalAnnotations(Set.of(Nullable.class.getCanonicalName())).build());
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withAnnotation(Nullable.class)
+            .element();
+        assertThat(ctx.isOptionalAnnotated(typeElement)).isTrue();
     }
 }

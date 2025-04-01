@@ -45,7 +45,7 @@ public final class PropsFactory {
     private static Props loadProps(Properties properties) {
         return Props.builder()
             .targets(parseEnumSet(properties, "sharedtype.targets", OutputTarget.class, OutputTarget::valueOf))
-            .optionalAnnotations(parseClassSet(properties, "sharedtype.optional-annotations"))
+            .optionalAnnotations(splitArray(properties.getProperty("sharedtype.optional-annotations")))
             .optionalContainerTypes(splitArray(properties.getProperty("sharedtype.optional-container-types")))
             .accessorGetterPrefixes(splitArray(properties.getProperty("sharedtype.accessor.getter-prefixes")))
             .arraylikeTypeQualifiedNames(splitArray(properties.getProperty("sharedtype.array-like-types")))

@@ -1,5 +1,6 @@
 package online.sharedtype.processor.context;
 
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
@@ -64,6 +65,11 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
     }
     public final <A extends Annotation> M withAnnotation(Class<A> annotationClazz, Supplier<A> supplier) {
         when(element.getAnnotation(annotationClazz)).thenReturn(supplier.get());
+        var mockAnnotationMirror = mock(AnnotationMirror.class);
+        when(element.getAnnotationMirrors()).thenAnswer(invoc -> List.of(mockAnnotationMirror));
+        var mockAnnotationType = mock(DeclaredType.class);
+        when(mockAnnotationMirror.getAnnotationType()).thenAnswer(invoc -> mockAnnotationType);
+        when(mockAnnotationType.toString()).thenReturn(annotationClazz.getCanonicalName());
         return returnThis();
     }
 

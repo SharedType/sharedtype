@@ -59,6 +59,7 @@ import java.lang.annotation.Target;
  * <p>
  * <b>Constants:</b><br>
  * Static fields are treated as constants. Only compile-time resolvable values are supported.
+ * By default, constants are not included, see {@link #includes()}.
  * Only constants in explicitly annotated types will be emitted.
  * </p>
  *
@@ -103,6 +104,15 @@ import java.lang.annotation.Target;
  * </p><br>
  *
  * <p>
+ * <b>Math types:</b><br>
+ * By default {@link java.math.BigInteger} and {@link java.math.BigDecimal} are emitted number types.
+ * A client can use type mappings to override the emitted types. Default mappings are:
+ * <ul>
+ *     <li>Typescript: {@code number}</li>
+ *     <li>Rust: {@code i128} and {@code f64}</li>
+ * </ul>
+ *
+ * <p>
  * <b>Type literal mappings:</b><br>
  * You dan define any 1-to-1 type mappings via global properties. This is useful when e.g. a 3rd party type is referenced.
  * Note, SharedType will still try to resolve the type and emit it with the mapped name.
@@ -138,18 +148,17 @@ public @interface SharedType {
     /**
      * <p>
      * Configure whether to include fields, record components, accessors, or constants in a type.
-     * All included by default.
      * </p>
      * <p>
      * To exclude a particular component, use {@link Ignore}.
-     * Fields and accessors effectively with the same name will be merged.
+     * Fields and accessors with the same name and type will be merged.
      * </p>
      *
      * @see ComponentType#FIELDS
      * @see ComponentType#ACCESSORS
      * @see ComponentType#CONSTANTS
      */
-    ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS, ComponentType.CONSTANTS};
+    ComponentType[] includes() default {ComponentType.FIELDS, ComponentType.ACCESSORS};
 
     /**
      * Java fields have to reside in a class, which provides a natural namespace.

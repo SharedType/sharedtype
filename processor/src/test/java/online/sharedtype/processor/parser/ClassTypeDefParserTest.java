@@ -48,6 +48,7 @@ final class ClassTypeDefParserTest {
             .withModifiers(Modifier.STATIC); // will be ignored
         var field1 = ctxMocks.primitiveVariable("field1", TypeKind.BOOLEAN);
         var field2 = ctxMocks.declaredTypeVariable("field2", string.type()).withElementKind(ElementKind.FIELD).withAnnotation(Nullable.class);
+        when(ctxMocks.getContext().isOptionalAnnotated(field2.element())).thenReturn(true);
         var method1 = ctxMocks.executable("method1").withElementKind(ElementKind.METHOD);
         var method2 = ctxMocks.executable("getValue").withElementKind(ElementKind.METHOD);
         var supertype1 = ctxMocks.typeElement("com.github.cuzfrog.SuperClassA");

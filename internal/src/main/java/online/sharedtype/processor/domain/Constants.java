@@ -31,6 +31,9 @@ public final class Constants {
     public static final ConcreteTypeInfo BOXED_INT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Integer", "Integer");
     public static final ConcreteTypeInfo BOXED_LONG_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Long", "Long");
     public static final ConcreteTypeInfo BOXED_SHORT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Short", "Short");
+    public static final ConcreteTypeInfo BIG_DECIMAL_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.math.BigDecimal", "BigDecimal");
+    public static final ConcreteTypeInfo BIG_INTEGER_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.math.BigInteger", "BigInteger");
+
     public static final ConcreteTypeInfo STRING_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.String", "String");
     public static final ConcreteTypeInfo VOID_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Void", "Void");
     public static final ConcreteTypeInfo OBJECT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Object", "Object");

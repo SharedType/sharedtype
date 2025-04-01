@@ -6,6 +6,7 @@ import online.sharedtype.SharedType;
 import online.sharedtype.processor.support.annotation.VisibleForTesting;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
@@ -96,6 +97,16 @@ public final class Context {
         } else if (element instanceof TypeElement) {
             TypeElement typeElement = (TypeElement) element;
             return props.getIgnoredTypeQualifiedNames().contains(typeElement.getQualifiedName().toString());
+        }
+        return false;
+    }
+
+    public boolean isOptionalAnnotated(Element element) {
+        for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
+            String annoTypeQualifiedName = annotationMirror.getAnnotationType().toString();
+            if (props.getOptionalAnnotations().contains(annoTypeQualifiedName)) {
+                return true;
+            }
         }
         return false;
     }

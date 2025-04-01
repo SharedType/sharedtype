@@ -136,7 +136,7 @@ final class ClassTypeDefParser implements TypeDefParser {
             FieldComponentInfo fieldInfo = FieldComponentInfo.builder()
                 .name(tuple.b())
                 .modifiers(element.getModifiers())
-                .optional(ctx.getProps().getOptionalAnnotations().stream().anyMatch(e -> element.getAnnotation(e) != null))
+                .optional(ctx.isOptionalAnnotated(element))
                 .type(typeInfoParser.parse(element.asType(), typeContext))
                 .build();
             fields.add(fieldInfo);

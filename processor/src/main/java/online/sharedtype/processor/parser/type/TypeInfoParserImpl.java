@@ -8,6 +8,7 @@ import online.sharedtype.processor.domain.DateTimeInfo;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
+import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.TypeElement;
@@ -54,8 +55,15 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             return parseTypeVariable((TypeVariable) typeMirror, typeContext);
         } else if (typeKind == TypeKind.EXECUTABLE) {
             return parse(((ExecutableType) typeMirror).getReturnType(), typeContext);
+        } else if (typeKind == TypeKind.WILDCARD) {
+            throw new SharedTypeException(String.format("Unsupported type: %s, typeKind: %s, contextType: %s." +
+                    " SharedType currently does not support wildcard generic types." +
+                    " If it's from a dependency type, consider ignore it via global properties.",
+                typeMirror, typeKind, typeContext.getTypeDef()));
         }
-        throw new SharedTypeInternalError(String.format("Unsupported type: %s, typeKind: %s", typeMirror, typeKind));
+        throw new SharedTypeInternalError(String.format("Unsupported type: %s, typeKind: %s, contextType: %s. " +
+                "If it's from a dependency type, consider ignore it via global properties.",
+            typeMirror, typeKind, typeContext.getTypeDef()));
     }
 
     private TypeInfo parseDeclared(DeclaredType declaredType, TypeContext typeContext) {
