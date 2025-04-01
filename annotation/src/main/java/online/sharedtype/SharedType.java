@@ -148,11 +148,10 @@ public @interface SharedType {
     /**
      * <p>
      * Configure whether to include fields, record components, accessors, or constants in a type.
-     * All included by default.
      * </p>
      * <p>
      * To exclude a particular component, use {@link Ignore}.
-     * Fields and accessors effectively with the same name will be merged.
+     * Fields and accessors with the same name and type will be merged.
      * </p>
      *
      * @see ComponentType#FIELDS

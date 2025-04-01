@@ -9,10 +9,16 @@ import online.sharedtype.it.java8.InterfaceA;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-@SharedType(constantNamespaced = SharedType.OptionalBool.FALSE)
+@SharedType(
+    constantNamespaced = SharedType.OptionalBool.FALSE,
+    includes = {
+        SharedType.ComponentType.CONSTANTS,
+        SharedType.ComponentType.FIELDS,
+        SharedType.ComponentType.ACCESSORS,
+    }
+)
 public record JavaRecord<T>(
     String string,
     byte primitiveByte,
