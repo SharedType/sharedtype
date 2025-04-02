@@ -1,3 +1,5 @@
+<img src="./misc/logo-color.svg" width="150" alt="sharedtype-logo"/>
+
 [![Gitter](https://badges.gitter.im/sharedtype/sharedtype.svg)](https://app.gitter.im/#/room/#sharedtype:gitter.im)
 [![CI](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml/badge.svg)](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml)
 [![Maven Central](https://img.shields.io/maven-central/v/online.sharedtype/sharedtype?style=social)](https://central.sonatype.com/search?q=g:online.sharedtype++a:sharedtype&smo=true)
