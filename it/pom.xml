@@ -4,7 +4,7 @@
     <parent>
         <groupId>online.sharedtype</groupId>
         <artifactId>sharedtype-parent</artifactId>
-        <version>0.10.0-SNAPSHOT</version>
+        <version>0.9.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <sharedtype.compilerArg />
+        <compilerArg />
         <sharedtype.propsFile>it/sharedtype.properties</sharedtype.propsFile>
         <compileClasses/>
     </properties>
@@ -100,8 +100,9 @@
                     </annotationProcessorPaths>
                     <showWarnings>true</showWarnings>
                     <compilerArgs>
-                        <arg>${sharedtype.compilerArg}</arg> <!-- supplied from cmd "-Dsharedtype.compilerArg=-proc:only" -->
+                        <arg>${compilerArg}</arg> <!-- supplied from cmd "-Dsharedtype.compilerArg=-proc:only" -->
                         <arg>-Asharedtype.propsFile=${sharedtype.propsFile}</arg>
+                        <arg>-Asharedtype.enabled=true</arg>
                     </compilerArgs>
                     <includes>${compileClasses}</includes>
                 </configuration>

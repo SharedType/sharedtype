@@ -42,6 +42,10 @@ final class ConstantTypeDefParser implements TypeDefParser {
         if (!SUPPORTED_ELEMENT_KIND.contains(typeElement.getKind().name())) {
             return Collections.emptyList();
         }
+        if (ctx.getTrees() == null) {
+            ctx.info("Skip parsing constants for type %s, because tree is not available.", typeElement);
+            return Collections.emptyList();
+        }
 
         String qualifiedName = typeElement.getQualifiedName().toString();
         List<TypeDef> cachedDefs = ctx.getTypeStore().getTypeDefs(qualifiedName);

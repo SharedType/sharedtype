@@ -48,7 +48,8 @@ public final class Context {
         try {
             trees = Trees.instance(processingEnv);
         } catch (IllegalArgumentException e) {
-            error("The provided processingEnv '%s' does not support Tree API.", processingEnv);
+            warn("The provided processingEnv '%s' (%s) does not support Tree API, some features may not work. Error message: %s",
+                processingEnv, processingEnv.getClass(), e.getMessage());
         }
         this.trees = trees;
     }
