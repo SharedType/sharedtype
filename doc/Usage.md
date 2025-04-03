@@ -22,8 +22,9 @@ Add sharedtype dependency, the annotation `@SharedType` is only used at compile 
 Add Maven properties:
 ```xml
 <properties>
-    <sharedtype.compilerArg /> <!-- Placeholder -->
-    <sharedtype.version>0.2.0</sharedtype.version>
+    <compilerArg /> <!-- Placeholder -->
+    <sharedtype.version>0.10.0</sharedtype.version>
+    <sharedtype.enabled>false</sharedtype.enabled> <!-- Disable by default so not to participate in every compilation -->
 </properties>
 ```
 Setup annotation processing:
@@ -41,7 +42,9 @@ Setup annotation processing:
         </annotationProcessorPaths>
         <showWarnings>true</showWarnings> <!-- Show annotation processing info log -->
         <compilerArgs>
-            <arg>${sharedtype.compilerArg}</arg> <!-- supplied as a property from cmd -->
+            <!-- supplied as properties from cmd -->
+            <arg>${compilerArg}</arg>
+            <arg>-Asharedtype.enabled=${sharedtype.enabled}</arg>
         </compilerArgs>
     </configuration>
 </plugin>
@@ -57,7 +60,7 @@ record User(String name, int age, String email) {}
 ```
 
 Execute annotation processing:
-* maven: `./mvnw clean compile "-Dsharedtype.compilerArg=-proc:only"`
+* maven: `./mvnw compile -DcompilerArg=-proc:only -Dsharedtype.enabled=true`
 
 By default, below code will be generated:
 ```typescript

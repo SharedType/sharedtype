@@ -45,6 +45,10 @@ final class EnumTypeDefParser implements TypeDefParser {
         if (typeElement.getKind() != ElementKind.ENUM) {
             return Collections.emptyList();
         }
+        if (ctx.getTrees() == null) {
+            ctx.info("Skip parsing enum %s, because tree is not available.", typeElement);
+            return Collections.emptyList();
+        }
 
         Config config = new Config(typeElement, ctx);
         List<? extends Element> enclosedElements = typeElement.getEnclosedElements();

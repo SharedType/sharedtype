@@ -34,12 +34,13 @@ import static online.sharedtype.processor.support.Preconditions.checkArgument;
  * @author Cause Chung
  */
 @SupportedAnnotationTypes("online.sharedtype.SharedType")
-@SupportedOptions({"sharedtype.propsFile"})
+@SupportedOptions({"sharedtype.propsFile", "sharedtype.enabled"})
 @AutoService(Processor.class)
 public final class AnnotationProcessorImpl extends AbstractProcessor {
     private static final String PROPS_FILE_OPTION_NAME = "sharedtype.propsFile";
     private static final String DEFAULT_USER_PROPS_FILE = "sharedtype.properties";
     private static final boolean ANNOTATION_CONSUMED = true;
+    private boolean enabled;
     Context ctx;
     TypeDefParser parser;
     TypeResolver resolver;
@@ -54,15 +55,18 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         String configFile = processingEnv.getOptions().getOrDefault(PROPS_FILE_OPTION_NAME, DEFAULT_USER_PROPS_FILE);
-        ctx = new Context(processingEnv, PropsFactory.loadProps(Paths.get(configFile)));
-        parser = TypeDefParser.create(ctx);
-        resolver = TypeResolver.create(ctx, parser);
-        writer = TypeWriter.create(ctx);
+        enabled = isEnabled(processingEnv);
+        if (enabled) {
+            ctx = new Context(processingEnv, PropsFactory.loadProps(Paths.get(configFile)));
+            parser = TypeDefParser.create(ctx);
+            resolver = TypeResolver.create(ctx, parser);
+            writer = TypeWriter.create(ctx);
+        }
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        if (annotations.isEmpty()) {
+        if (!enabled || annotations.isEmpty()) {
             return ANNOTATION_CONSUMED;
         }
         if (annotations.size() > 1) {
@@ -96,5 +100,10 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
         } catch (IOException e) {
             throw new SharedTypeException("Failed to write,", e);
         }
+    }
+
+    private static boolean isEnabled(ProcessingEnvironment processingEnv) {
+        String enabledExpr = processingEnv.getOptions().getOrDefault("sharedtype.enabled", "false");
+        return enabledExpr.equalsIgnoreCase("true") || enabledExpr.equalsIgnoreCase("yes");
     }
 }
