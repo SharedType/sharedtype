@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <sharedtype.compilerArg />
+        <compilerArg />
         <sharedtype.propsFile>it/sharedtype.properties</sharedtype.propsFile>
         <compileClasses/>
     </properties>
@@ -100,8 +100,9 @@
                     </annotationProcessorPaths>
                     <showWarnings>true</showWarnings>
                     <compilerArgs>
-                        <arg>${sharedtype.compilerArg}</arg> <!-- supplied from cmd "-Dsharedtype.compilerArg=-proc:only" -->
+                        <arg>${compilerArg}</arg> <!-- supplied from cmd "-Dsharedtype.compilerArg=-proc:only" -->
                         <arg>-Asharedtype.propsFile=${sharedtype.propsFile}</arg>
+                        <arg>-Asharedtype.enabled=true</arg>
                     </compilerArgs>
                     <includes>${compileClasses}</includes>
                 </configuration>
