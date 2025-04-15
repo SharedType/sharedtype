@@ -4,6 +4,11 @@ pub static CUSTOM_CODE_TYPE: types::CustomInjectedStruct = types::CustomInjected
     field: 33,
 };
 
+pub static MATH_CLASS: types::MathClass = types::MathClass {
+    bigInteger: 500000000i128,
+    bigDecimal: 6.534543474564f64,
+};
+
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;

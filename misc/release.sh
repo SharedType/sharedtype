@@ -28,6 +28,7 @@ snapshotVersion=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceSt
 version="$(printf '%s' "$snapshotVersion" | sed -e "s/-SNAPSHOT//g")"
 
 ./mvnw versions:set -DgenerateBackupPoms=false -DnewVersion="$version" --ntp -B
+sed -i -E "s/<sharedtype\.version>[0-9]+\.[0-9\.\[0-9]+\.[0-9]+<\/sharedtype\.version>/<sharedtype.version>$version<\/sharedtype.version>/g" doc/Usage.md
 ./mvnw deploy -DskipTests -Prelease --ntp -B # to debug release can add -DskipPublishing=true to prevent actual upload
 NEW_VERSION="$(increment_version "$version" 1)-SNAPSHOT"
 ./mvnw versions:set -DgenerateBackupPoms=false -DnewVersion="$NEW_VERSION" --ntp -B

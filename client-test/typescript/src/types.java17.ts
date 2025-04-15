@@ -5,6 +5,7 @@ import {
     type ArrayClass,
     type JavaTimeClass,
     type JodaTimeClass,
+    type MathClass,
 } from "./index.java17";
 
 export const list1: EnumGalaxy[] = ["Andromeda", "MilkyWay", "Triangulum"];
@@ -128,4 +129,9 @@ export const jodaTime: JodaTimeClass = {
     jodaLocalTime: "2022-01-01T00:00:00.000+08:00",
     jodaLocalDateTime: "2022-01-01T00:00:00.000+08:00",
     jodaOffsetDateTime: "2022-01-01T00:00:00.000+08:00",
+}
+
+export const mathClass: MathClass = {
+    bigDecimal: 1,
+    bigInteger: 1,
 }
