@@ -67,6 +67,8 @@ public final class Constants {
         PREDEFINED_OBJECT_TYPES.put("java.lang.Object", OBJECT_TYPE_INFO);
         PREDEFINED_OBJECT_TYPES.put("java.lang.Class", CLASS_TYPE_INFO);
         PREDEFINED_OBJECT_TYPES.put("java.lang.Enum", ENUM_TYPE_INFO);
+        PREDEFINED_OBJECT_TYPES.put("java.math.BigDecimal", BIG_DECIMAL_TYPE_INFO);
+        PREDEFINED_OBJECT_TYPES.put("java.math.BigInteger", BIG_INTEGER_TYPE_INFO);
     }
 
     public static final Set<TypeInfo> STRING_AND_NUMBER_TYPES = new HashSet<>(14);
