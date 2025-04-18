@@ -10,11 +10,13 @@ import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TypeElementMock;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.parser.type.TypeContext;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.type.TypeKind;
 
@@ -43,6 +45,12 @@ final class EnumTypeDefParserTest {
 
     private final ArgumentCaptor<String> msgCaptor = ArgumentCaptor.forClass(String.class);
 
+    @BeforeEach
+    void beforeEach() {
+        when(ctxMocks.getContext().isAnnotatedAsEnumValue(any())).then(
+            invocation -> invocation.<Element>getArgument(0).getAnnotation(SharedType.EnumValue.class) != null);
+    }
+
     @Test
     void skipIfNotEnum() {
         var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc").withElementKind(ElementKind.CLASS);
@@ -55,14 +63,14 @@ final class EnumTypeDefParserTest {
         enumType
             .withAnnotation(SharedType.class, () -> anno)
             .withEnclosedElements(
-            ctxMocks.declaredTypeVariable("Value1", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element(),
-            ctxMocks.declaredTypeVariable("Value2", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element()
-        );
+                ctxMocks.declaredTypeVariable("Value1", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element(),
+                ctxMocks.declaredTypeVariable("Value2", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element()
+            );
 
         ConcreteTypeInfo typeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").build();
         when(typeInfoParser.parse(enumType.type(), selfTypeContext)).thenReturn(typeInfo);
 
-        EnumDef typeDef = (EnumDef)parser.parse(enumType.element()).getFirst();
+        EnumDef typeDef = (EnumDef) parser.parse(enumType.element()).getFirst();
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
         assertThat(typeDef.components()).satisfiesExactly(
@@ -119,7 +127,7 @@ final class EnumTypeDefParserTest {
         );
         when(typeInfoParser.parse(field2.type(), typeContext)).thenReturn(Constants.CHAR_TYPE_INFO);
 
-        EnumDef typeDef = (EnumDef)parser.parse(enumType.element()).getFirst();
+        EnumDef typeDef = (EnumDef) parser.parse(enumType.element()).getFirst();
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
         assertThat(typeDef.components()).satisfiesExactly(
@@ -169,7 +177,7 @@ final class EnumTypeDefParserTest {
             ctxMocks.primitiveVariable("field2", TypeKind.CHAR).element()
         );
 
-        var typeDef = (EnumDef)parser.parse(enumType.element()).getFirst();
+        var typeDef = (EnumDef) parser.parse(enumType.element()).getFirst();
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
         assertThat(typeDef.components()).satisfiesExactly(
@@ -203,7 +211,7 @@ final class EnumTypeDefParserTest {
 
         parser.parse(enumType.element());
         verify(ctxMocks.getContext()).error(msgCaptor.capture(), any(Object[].class));
-        assertThat(msgCaptor.getValue()).contains("multiple annotation");
+        assertThat(msgCaptor.getValue()).contains("multiple fields annotated as enum value");
     }
 
     @Test
@@ -231,7 +239,7 @@ final class EnumTypeDefParserTest {
 
         parser.parse(enumType.element());
         verify(ctxMocks.getContext()).error(msgCaptor.capture(), any(Object[].class));
-        assertThat(msgCaptor.getValue()).contains("multiple annotation");
+        assertThat(msgCaptor.getValue()).contains("multiple fields annotated as enum value");
     }
 
     @Test
@@ -259,7 +267,7 @@ final class EnumTypeDefParserTest {
 
         parser.parse(enumType.element());
         verify(ctxMocks.getContext()).error(msgCaptor.capture(), any(Object[].class));
-        assertThat(msgCaptor.getValue()).contains("multiple annotation");
+        assertThat(msgCaptor.getValue()).contains("multiple fields annotated as enum value");
     }
 
     @Test

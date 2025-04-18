@@ -21,6 +21,9 @@ public final class Props {
     private final Rust rust;
 
     private final Set<String> optionalAnnotations;
+    private final Set<String> ignoreAnnotations;
+    private final Set<String> accessorAnnotations;
+    private final Set<String> enumValueAnnotations;
     private final Set<String> optionalContainerTypes;
     private final Set<String> accessorGetterPrefixes;
     private final Set<String> arraylikeTypeQualifiedNames;

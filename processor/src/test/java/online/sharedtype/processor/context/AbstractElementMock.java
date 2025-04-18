@@ -73,6 +73,11 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
         return returnThis();
     }
 
+    public final M withAnnotationMirrors(AnnotationMirror... annotationMirrors) {
+        when(element.getAnnotationMirrors()).thenAnswer(invoc -> Arrays.asList(annotationMirrors));
+        return returnThis();
+    }
+
     public final M withModifiers(Modifier... modifiers) {
         when(element.getModifiers()).thenReturn(Set.of(modifiers));
         return returnThis();

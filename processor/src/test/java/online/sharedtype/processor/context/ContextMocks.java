@@ -79,4 +79,8 @@ public final class ContextMocks {
     public IdentifierTreeMock identifierTree(String name) {
         return new IdentifierTreeMock(name, context);
     }
+
+    public AnnotationMirrorMock annotationMirror(DeclaredType declaredType) {
+        return new AnnotationMirrorMock(declaredType);
+    }
 }
