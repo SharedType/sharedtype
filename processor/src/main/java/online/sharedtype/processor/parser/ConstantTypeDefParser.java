@@ -14,7 +14,6 @@ import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.parser.type.TypeContext;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
-import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.Element;
@@ -29,12 +28,14 @@ import java.util.Set;
 @RequiredArgsConstructor
 final class ConstantTypeDefParser implements TypeDefParser {
     private static final Set<String> SUPPORTED_ELEMENT_KIND = new HashSet<>(4);
+
     static {
         SUPPORTED_ELEMENT_KIND.add(ElementKind.CLASS.name());
         SUPPORTED_ELEMENT_KIND.add(ElementKind.INTERFACE.name());
         SUPPORTED_ELEMENT_KIND.add("RECORD");
         SUPPORTED_ELEMENT_KIND.add(ElementKind.ENUM.name());
     }
+
     private final Context ctx;
     private final TypeInfoParser typeInfoParser;
 
@@ -62,7 +63,7 @@ final class ConstantTypeDefParser implements TypeDefParser {
         if (!config.includes(SharedType.ComponentType.CONSTANTS)) {
             return Collections.emptyList();
         }
-        ConstantNamespaceDef constantNamespaceDef = ConstantNamespaceDef.builder()
+        ConstantNamespaceDef constantNamespaceDef = ConstantNamespaceDef.builder().element(typeElement)
             .qualifiedName(qualifiedName)
             .simpleName(config.getSimpleName())
             .build();
@@ -108,9 +109,10 @@ final class ConstantTypeDefParser implements TypeDefParser {
         if (valueTree instanceof LiteralTree) {
             return ((LiteralTree) valueTree).getValue();
         } else {
-            throw new SharedTypeException(String.format("Only literal value is supported for constant field." +
-                " Field: %s in %s. Consider use @SharedType.Ignore to ignore this field or exclude constants generation for this type.",
-                fieldElement.getSimpleName(), ctxTypeElement.getQualifiedName()));
+            ctx.error(ctxTypeElement, "Only literal value is supported for constant field." +
+                    " Field: %s in %s. Consider use @SharedType.Ignore to ignore this field or exclude constants generation for this type.",
+                fieldElement.getSimpleName(), ctxTypeElement.getQualifiedName());
+            return null;
         }
     }
 }

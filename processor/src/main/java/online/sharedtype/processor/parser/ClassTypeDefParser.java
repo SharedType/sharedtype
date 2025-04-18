@@ -71,7 +71,7 @@ final class ClassTypeDefParser implements TypeDefParser {
         }
         Config config = new Config(typeElement, ctx);
 
-        ClassDef classDef = ClassDef.builder()
+        ClassDef classDef = ClassDef.builder().element(typeElement)
             .qualifiedName(config.getQualifiedName()).simpleName(config.getSimpleName()).annotated(config.isAnnotated())
             .build();
         classDef.typeVariables().addAll(parseTypeVariables(typeElement));

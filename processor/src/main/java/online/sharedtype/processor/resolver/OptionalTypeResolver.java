@@ -9,7 +9,6 @@ import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.support.annotation.SideEffect;
-import online.sharedtype.processor.support.exception.SharedTypeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,9 +60,9 @@ final class OptionalTypeResolver implements TypeResolver {
             ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
             if (ctx.isOptionalType(concreteTypeInfo.qualifiedName())) {
                 if (concreteTypeInfo.typeArgs().size() != 1) {
-                    throw new SharedTypeException(String.format(
+                    ctx.error(ctxTypeDef.getElement(),
                         "Optional type %s in %s should have exactly one type argument. Check configuration if optional types are wrongly defined.",
-                        concreteTypeInfo.qualifiedName(), ctxTypeDef.qualifiedName()));
+                        concreteTypeInfo.qualifiedName(), ctxTypeDef.qualifiedName());
                 }
                 return recursivelyFlattenOptionalTypes(concreteTypeInfo.typeArgs().get(0), ctxTypeDef);
             } else {

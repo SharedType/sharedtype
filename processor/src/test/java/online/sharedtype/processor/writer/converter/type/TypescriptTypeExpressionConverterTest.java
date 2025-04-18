@@ -9,12 +9,14 @@ import online.sharedtype.processor.domain.DateTimeInfo;
 import online.sharedtype.processor.domain.TargetCodeType;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 final class TypescriptTypeExpressionConverterTest {
@@ -22,6 +24,7 @@ final class TypescriptTypeExpressionConverterTest {
     private final TypescriptTypeExpressionConverter converter = new TypescriptTypeExpressionConverter(ctxMocks.getContext());
 
     private final Config config = mock(Config.class);
+    private final ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
 
     @Test
     void typeContract() {
@@ -47,9 +50,9 @@ final class TypescriptTypeExpressionConverterTest {
                     .build()
             )
             .build();
-        assertThatThrownBy(() -> converter.toTypeExpr(invalidKeyTypeInfo,contextTypeDef))
-            .hasMessageContaining("Key type of java.util.Map must be string or numbers or enum")
-            .hasMessageContaining("context type: a.b.Abc");
+        converter.toTypeExpr(invalidKeyTypeInfo,contextTypeDef);
+        verify(ctxMocks.getContext()).error(any(), messageCaptor.capture(), any(Object[].class));
+        assertThat(messageCaptor.getValue()).contains("Key type of %s must be string or numbers or enum");
     }
 
     @Test
@@ -73,8 +76,9 @@ final class TypescriptTypeExpressionConverterTest {
                     .build()
             )
             .build();
-        assertThatThrownBy(() -> converter.toTypeExpr(invalidMapTypeInfo,contextTypeDef))
-            .hasMessageContaining("Base Map type must have 2 type arguments");
+        converter.toTypeExpr(invalidMapTypeInfo,contextTypeDef);
+        verify(ctxMocks.getContext()).error(any(), messageCaptor.capture(), any(Object[].class));
+        assertThat(messageCaptor.getValue()).contains("Base Map type must have 2 type arguments");
     }
 
     @Test

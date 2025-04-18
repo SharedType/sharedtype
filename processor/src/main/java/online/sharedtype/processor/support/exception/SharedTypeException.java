@@ -2,6 +2,7 @@ package online.sharedtype.processor.support.exception;
 
 /**
  * Indicate an exception, equivalent to {@link RuntimeException}.
+ * Note: compilation error should be printed via {@link online.sharedtype.processor.context.Context#error}.
  *
  * @author Cause Chung
  */

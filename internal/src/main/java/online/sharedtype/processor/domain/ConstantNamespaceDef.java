@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.lang.model.element.Element;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,8 @@ import java.util.List;
 @EqualsAndHashCode(of = "qualifiedName")
 public final class ConstantNamespaceDef implements TypeDef {
     private static final long serialVersionUID = 4249235760298548628L;
+    @Getter
+    private final transient Element element;
     private final String qualifiedName;
     private final String simpleName;
     @Builder.Default

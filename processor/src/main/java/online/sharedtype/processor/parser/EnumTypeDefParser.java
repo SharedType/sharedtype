@@ -6,7 +6,6 @@ import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.SharedType;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.EnumDef;
@@ -65,7 +64,7 @@ final class EnumTypeDefParser implements TypeDefParser {
             }
         }
 
-        EnumDef enumDef = EnumDef.builder()
+        EnumDef enumDef = EnumDef.builder().element(typeElement)
             .qualifiedName(config.getQualifiedName())
             .simpleName(config.getSimpleName())
             .annotated(config.isAnnotated())
