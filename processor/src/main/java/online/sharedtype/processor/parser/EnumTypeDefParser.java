@@ -60,7 +60,7 @@ final class EnumTypeDefParser implements TypeDefParser {
                 enumConstantElems.add((VariableElement) enclosedElement);
             } else if (enclosedElement.getKind() == ElementKind.CONSTRUCTOR) {
                 enumValueMarker.parseConstructor((ExecutableElement) enclosedElement);
-            } else if (enclosedElement.getAnnotation(SharedType.EnumValue.class) != null) {
+            } else if (ctx.isAnnotatedAsEnumValue(enclosedElement)) {
                 enumValueMarker.setField((VariableElement) enclosedElement);
             }
         }
@@ -159,7 +159,7 @@ final class EnumTypeDefParser implements TypeDefParser {
             for (int i = 0, n = parameters.size(); i < n; i++) {
                 VariableElement arg = parameters.get(i);
                 constructorArgNames.add(arg.getSimpleName().toString());
-                if (arg.getAnnotation(SharedType.EnumValue.class) != null) {
+                if (ctx.isAnnotatedAsEnumValue(arg)) {
                     setField(arg);
                     this.constructorArgIdx = i;
                 }
@@ -168,8 +168,8 @@ final class EnumTypeDefParser implements TypeDefParser {
 
         void setField(VariableElement enumValueVariableElem) {
             if (this.enumValueVariableElem != null) {
-                ctx.error("Enum %s has multiple annotation @%s usage, only one field or constructor parameter is allowed, found on %s and %s",
-                    config.getQualifiedName(), SharedType.EnumValue.class, this.enumValueVariableElem, enumValueVariableElem);
+                ctx.error("Enum %s has multiple fields annotated as enum value, only one field or constructor parameter is allowed, found on %s and %s",
+                    config.getQualifiedName(), this.enumValueVariableElem, enumValueVariableElem);
             } else {
                 this.enumValueVariableElem = enumValueVariableElem;
             }
@@ -196,10 +196,10 @@ final class EnumTypeDefParser implements TypeDefParser {
                     " Later version of SharedType may infer constructor parameter position by field position without an explicit constructor.";
             }
 
-            ctx.error("Enum %s has @%s annotated on a field, but no constructor parameter can be matched."
+            ctx.error("Enum %s has a field annotated as enum value, but no constructor parameter can be matched."
                     + lombokSuggestion
                     + " May refer to the documentation on how to correctly mark enum value.",
-                config.getQualifiedName(), SharedType.EnumValue.class);
+                config.getQualifiedName());
             return -1;
         }
 

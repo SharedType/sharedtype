@@ -36,6 +36,17 @@ final class ContextTest {
     }
 
     @Test
+    void isIgnoredWhenMarkedWithCustomIgnoreAnno() {
+        ctx = new Context(processingEnv, Props.builder().ignoreAnnotations(Set.of("a.b.Ignore")).build());
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withAnnotationMirrors(
+                ctxMocks.annotationMirror(ctxMocks.typeElement("a.b.Ignore").type()).mocked()
+            )
+            .element();
+        assertThat(ctx.isIgnored(typeElement)).isTrue();
+    }
+
+    @Test
     void ignoredField() {
         ctx = new Context(processingEnv, Props.builder().ignoredFieldNames(Set.of("field333")).build());
         var fieldElement = ctxMocks.declaredTypeVariable("field333", ctxMocks.typeElement("java.lang.String").type())
@@ -74,5 +85,45 @@ final class ContextTest {
             .withAnnotation(Nullable.class)
             .element();
         assertThat(ctx.isOptionalAnnotated(typeElement)).isTrue();
+    }
+
+    @Test
+    void isExplicitAccessorAnnotated() {
+        ctx = new Context(processingEnv, Props.builder().build());
+        var typeElement = ctxMocks.executable("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.Accessor.class)
+            .element();
+        assertThat(ctx.isExplicitAccessor(typeElement)).isTrue();
+    }
+
+    @Test
+    void isExplicitAccessorCustomAnnotated() {
+        ctx = new Context(processingEnv, Props.builder().accessorAnnotations(Set.of("a.b.Accessor")).build());
+        var typeElement = ctxMocks.executable("com.github.cuzfrog.Abc")
+            .withAnnotationMirrors(
+                ctxMocks.annotationMirror(ctxMocks.typeElement("a.b.Accessor").type()).mocked()
+            )
+            .element();
+        assertThat(ctx.isExplicitAccessor(typeElement)).isTrue();
+    }
+
+    @Test
+    void isEnumValueAnnotated() {
+        ctx = new Context(processingEnv, Props.builder().build());
+        var typeElement = ctxMocks.executable("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.EnumValue.class)
+            .element();
+        assertThat(ctx.isAnnotatedAsEnumValue(typeElement)).isTrue();
+    }
+
+    @Test
+    void isEnumValueCustomAnnotated() {
+        ctx = new Context(processingEnv, Props.builder().enumValueAnnotations(Set.of("a.b.EnumValue")).build());
+        var typeElement = ctxMocks.executable("com.github.cuzfrog.Abc")
+            .withAnnotationMirrors(
+                ctxMocks.annotationMirror(ctxMocks.typeElement("a.b.EnumValue").type()).mocked()
+            )
+            .element();
+        assertThat(ctx.isAnnotatedAsEnumValue(typeElement)).isTrue();
     }
 }

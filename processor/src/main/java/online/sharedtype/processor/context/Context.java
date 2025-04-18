@@ -9,6 +9,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
@@ -93,6 +94,10 @@ public final class Context {
         if (element.getAnnotation(SharedType.Ignore.class) != null) {
             return true;
         }
+        boolean hasIgnoreAnnotation = isAnnotatedByQualifiedNames(element, props.getIgnoreAnnotations());
+        if (hasIgnoreAnnotation) {
+            return true;
+        }
         if (element.getKind() == ElementKind.FIELD) {
             return props.getIgnoredFieldNames().contains(element.getSimpleName().toString());
         } else if (element instanceof TypeElement) {
@@ -114,6 +119,20 @@ public final class Context {
 
     public boolean isOptionalType(String qualifiedName) {
         return props.getOptionalContainerTypes().contains(qualifiedName);
+    }
+
+    public boolean isExplicitAccessor(ExecutableElement element) {
+        if (element.getAnnotation(SharedType.Accessor.class) != null) {
+            return true;
+        }
+        return isAnnotatedByQualifiedNames(element, props.getAccessorAnnotations());
+    }
+
+    public boolean isAnnotatedAsEnumValue(Element element) {
+        if (element.getAnnotation(SharedType.EnumValue.class) != null) {
+            return true;
+        }
+        return isAnnotatedByQualifiedNames(element, props.getEnumValueAnnotations());
     }
 
     public FileObject createSourceOutput(String filename) throws IOException {
@@ -150,6 +169,16 @@ public final class Context {
             if (element instanceof TypeElement) {
                 TypeElement typeElement = (TypeElement) element;
                 return qualifiedNames.contains(typeElement.getQualifiedName().toString());
+            }
+        }
+        return false;
+    }
+
+    private static boolean isAnnotatedByQualifiedNames(Element element, Set<String> qualifiedNames) {
+        for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
+            String annoTypeQualifiedName = annotationMirror.getAnnotationType().toString();
+            if (qualifiedNames.contains(annoTypeQualifiedName)) {
+                return true;
             }
         }
         return false;

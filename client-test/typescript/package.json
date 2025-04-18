@@ -11,6 +11,7 @@
   "license": "CC BY 4.0",
   "description": "typescript-client-test",
   "devDependencies": {
+    "eslint": "9.24.0",
     "typescript": "5.6.3",
     "vitest": "3.1.1"
   }

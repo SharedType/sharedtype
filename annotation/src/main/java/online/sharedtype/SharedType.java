@@ -232,6 +232,8 @@ public @interface SharedType {
      * Mark a method as an accessor regardless of its name.
      * Getter prefixes are configured in global properties.
      * This annotation will be ignored if {@link #includes()} does not include {@link ComponentType#ACCESSORS}.
+     * <br>
+     * Additional annotation types can be configured via global properties.
      */
     @Target({ElementType.METHOD})
     @Retention(RetentionPolicy.SOURCE)
@@ -247,6 +249,8 @@ public @interface SharedType {
      * But if this type is referenced directly as type of field or return type of accessor, and "safe-type-resolution" is enabled,
      * a compilation error will be reported, unless the field or accessor is also ignored.
      * </p>
+     * <br>
+     * Additional annotation types can be configured via global properties.
      */
     @Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE})
     @Retention(RetentionPolicy.SOURCE)
@@ -292,6 +296,8 @@ public @interface SharedType {
      * }
      * }
      * </pre>
+     * <br>
+     * Additional annotation types can be configured via global properties.
      */
     @Target({ElementType.FIELD, ElementType.PARAMETER})
     @Retention(RetentionPolicy.CLASS)
@@ -312,7 +318,7 @@ public @interface SharedType {
          * <ul>
          *     <li>have names same as respective instance fields, aka, fluent getter. This includes record's component accessor.</li>
          *     <li>start with a getter prefix. By default, prefixes include 'get' or 'is', which can be configured via global properties.</li>
-         *     <li>annotated with {@link Accessor}.</li>
+         *     <li>annotated with {@link Accessor} or any custom annotations configured via global properties.</li>
          * </ul>
          */
         ACCESSORS,

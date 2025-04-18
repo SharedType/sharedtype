@@ -176,7 +176,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 }
             } else if (includeAccessors && enclosedElement instanceof ExecutableElement) {
                 ExecutableElement methodElem = (ExecutableElement) enclosedElement;
-                boolean explicitAccessor = methodElem.getAnnotation(SharedType.Accessor.class) != null;
+                boolean explicitAccessor = ctx.isExplicitAccessor(methodElem);
                 if (!isZeroArgNonstaticMethod(methodElem)) {
                     if (explicitAccessor) {
                         ctx.warn("%s.%s annotated with @SharedType.Accessor is not a zero-arg nonstatic method.", typeElement, methodElem);
