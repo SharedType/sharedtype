@@ -40,7 +40,7 @@ pub struct User {
 * Generics support.
 * Constant support.
 * Client source dependency is only `@SharedType` retained at source code level.
-* SharedType AP jar <150KB, only 2 small dependencies: jsr305 annotations and [mustache](https://github.com/spullara/mustache.java).
+* SharedType AP has only 2 small dependencies: jsr305 annotations and [mustache](https://github.com/spullara/mustache.java).
 * Parsing takes milliseconds with `-proc:only`.
 * Intuitive defaults, put `@SharedType` and there you go. Global + class level options.
 
@@ -51,6 +51,7 @@ pub struct User {
 ## Similar Projects
 * [bsorrentino/java2typescript](https://github.com/bsorrentino/java2typescript)
 * [vojtechhabarta/typescript-generator](https://github.com/vojtechhabarta/typescript-generator)
+* [aws/smithy](https://github.com/smithy-lang/smithy)
 
 ## Authors
 Cause Chung (cuzfrog@gmail.com), Jeremy Zhou (hb.zhou.jeremy@gmail.com)
