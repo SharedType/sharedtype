@@ -6,6 +6,7 @@ import online.sharedtype.SharedType;
 final class MyConstants {
     private static final float FLOAT_VALUE = 1.888f;
     private static final Long LONG_VALUE = 999L;
+//    private static final Long REFERENCED_VALUE = MyConstants.LONG_VALUE;
 }
 
 @SharedType(includes = SharedType.ComponentType.CONSTANTS)

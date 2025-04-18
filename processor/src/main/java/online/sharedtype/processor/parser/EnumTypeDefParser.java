@@ -46,7 +46,7 @@ final class EnumTypeDefParser implements TypeDefParser {
             return Collections.emptyList();
         }
         if (ctx.getTrees() == null) {
-            ctx.info("Skip parsing enum %s, because tree is not available.", typeElement);
+            ctx.info(typeElement, "Skip parsing enum %s, because tree is not available.", typeElement);
             return Collections.emptyList();
         }
 
@@ -111,7 +111,7 @@ final class EnumTypeDefParser implements TypeDefParser {
                     res.add(new EnumValueInfo(name, valueTypeInfo, value));
                 }
             } else if (tree == null) {
-                ctx.error("Literal value cannot be parsed from enum constant: %s of enum %s, because source tree from the element is null." +
+                ctx.error(enumConstant, "Literal value cannot be parsed from enum constant: %s of enum %s, because source tree from the element is null." +
                     " This could mean at the time of the annotation processing, the source tree was not available." +
                     " Is this class from a dependency jar/compiled class file? Please refer to the documentation for more information.",
                     enumConstant, enumTypeElement);
@@ -133,7 +133,7 @@ final class EnumTypeDefParser implements TypeDefParser {
                     LiteralTree argLiteralTree = (LiteralTree) argTree;
                     return argLiteralTree.getValue();
                 } else {
-                    ctx.error("Unsupported argument in enum type %s: %s in %s, argIndex: %s. Only literals are supported as enum value.",
+                    ctx.error(enumTypeElement, "Unsupported argument in enum type %s: %s in %s, argIndex: %s. Only literals are supported as enum value.",
                         enumTypeElement, argTree, tree, ctorArgIdx);
                     return null;
                 }
@@ -168,7 +168,7 @@ final class EnumTypeDefParser implements TypeDefParser {
 
         void setField(VariableElement enumValueVariableElem) {
             if (this.enumValueVariableElem != null) {
-                ctx.error("Enum %s has multiple fields annotated as enum value, only one field or constructor parameter is allowed, found on %s and %s",
+                ctx.error(enumValueVariableElem, "Enum %s has multiple fields annotated as enum value, only one field or constructor parameter is allowed, found on %s and %s",
                     config.getQualifiedName(), this.enumValueVariableElem, enumValueVariableElem);
             } else {
                 this.enumValueVariableElem = enumValueVariableElem;
@@ -196,7 +196,7 @@ final class EnumTypeDefParser implements TypeDefParser {
                     " Later version of SharedType may infer constructor parameter position by field position without an explicit constructor.";
             }
 
-            ctx.error("Enum %s has a field annotated as enum value, but no constructor parameter can be matched."
+            ctx.error(enumValueVariableElem, "Enum %s has a field annotated as enum value, but no constructor parameter can be matched."
                     + lombokSuggestion
                     + " May refer to the documentation on how to correctly mark enum value.",
                 config.getQualifiedName());

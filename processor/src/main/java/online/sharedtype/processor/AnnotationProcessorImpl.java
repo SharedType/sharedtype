@@ -88,7 +88,7 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
                 List<TypeDef> typeDefs = parser.parse(typeElement);
                 discoveredDefs.addAll(typeDefs);
                 if (typeDefs.isEmpty()){
-                    ctx.warn("Type '%s' is ignored or invalid, but annotated with '%s'.", typeElement.getQualifiedName().toString(), ANNOTATION_QUALIFIED_NAME);
+                    ctx.warn(element, "Type '%s' is ignored or invalid, but annotated with '%s'.", typeElement.getQualifiedName().toString(), ANNOTATION_QUALIFIED_NAME);
                 }
             } else {
                 throw new SharedTypeInternalError(String.format("Unsupported element: %s of kind %s", element, element.getKind()));

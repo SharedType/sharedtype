@@ -77,7 +77,7 @@ final class ClassTypeDefParserForRecordTest {
         assertThat(component2.a()).isEqualTo(method2.element());
         assertThat(component2.b()).isEqualTo("value2");
 
-        verify(ctxMocks.getContext(), never()).error(any(), any(Object[].class));
+        verify(ctxMocks.getContext(), never()).error(any(), any(), any(Object[].class));
     }
 
     @Test
@@ -117,6 +117,6 @@ final class ClassTypeDefParserForRecordTest {
         var typeDefs = parser.parse(recordElement.withModifiers().withNestingKind(NestingKind.MEMBER).element());
         assertThat(typeDefs).isEmpty();
 
-        verify(ctxMocks.getContext()).error(any(), any(Object[].class));
+        verify(ctxMocks.getContext()).error(any(), any(), any(Object[].class));
     }
 }

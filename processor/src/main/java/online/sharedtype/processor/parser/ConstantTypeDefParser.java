@@ -28,12 +28,13 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 final class ConstantTypeDefParser implements TypeDefParser {
-    private static final Set<String> SUPPORTED_ELEMENT_KIND = new HashSet<String>(4) {{
-        add(ElementKind.CLASS.name());
-        add(ElementKind.INTERFACE.name());
-        add("RECORD");
-        add(ElementKind.ENUM.name());
-    }};
+    private static final Set<String> SUPPORTED_ELEMENT_KIND = new HashSet<>(4);
+    static {
+        SUPPORTED_ELEMENT_KIND.add(ElementKind.CLASS.name());
+        SUPPORTED_ELEMENT_KIND.add(ElementKind.INTERFACE.name());
+        SUPPORTED_ELEMENT_KIND.add("RECORD");
+        SUPPORTED_ELEMENT_KIND.add(ElementKind.ENUM.name());
+    }
     private final Context ctx;
     private final TypeInfoParser typeInfoParser;
 
@@ -43,7 +44,7 @@ final class ConstantTypeDefParser implements TypeDefParser {
             return Collections.emptyList();
         }
         if (ctx.getTrees() == null) {
-            ctx.info("Skip parsing constants for type %s, because tree is not available.", typeElement);
+            ctx.info(typeElement, "Skip parsing constants for type %s, because tree is not available.", typeElement);
             return Collections.emptyList();
         }
 

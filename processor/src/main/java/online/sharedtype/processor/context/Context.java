@@ -55,16 +55,20 @@ public final class Context {
         this.trees = trees;
     }
 
+    public void info(Element element, String message, Object... objects) {
+        log(Diagnostic.Kind.NOTE, element, message, objects);
+    }
+    public void warn(Element element, String message, Object... objects) {
+        log(Diagnostic.Kind.WARNING, element, message, objects);
+    }
+    public void error(Element element, String message, Object... objects) {
+        log(Diagnostic.Kind.ERROR, element, message, objects);
+    }
     public void info(String message, Object... objects) {
-        log(Diagnostic.Kind.NOTE, message, objects);
+        log(Diagnostic.Kind.NOTE, null, message, objects);
     }
-
     public void warn(String message, Object... objects) {
-        log(Diagnostic.Kind.WARNING, message, objects);
-    }
-
-    public void error(String message, Object... objects) {
-        log(Diagnostic.Kind.ERROR, message, objects);
+        log(Diagnostic.Kind.WARNING, null, message, objects);
     }
 
     public boolean isArraylike(TypeMirror typeMirror) {
@@ -139,8 +143,8 @@ public final class Context {
         return processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", filename);
     }
 
-    private void log(Diagnostic.Kind level, String message, Object... objects) {
-        processingEnv.getMessager().printMessage(level, String.format("[ST] %s", String.format(message, objects)));
+    private void log(Diagnostic.Kind level, Element element, String message, Object... objects) {
+        processingEnv.getMessager().printMessage(level, String.format("[ST] %s", String.format(message, objects)), element);
     }
 
     @VisibleForTesting

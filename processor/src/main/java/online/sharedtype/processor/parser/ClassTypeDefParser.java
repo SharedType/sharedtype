@@ -86,7 +86,7 @@ final class ClassTypeDefParser implements TypeDefParser {
 
     private boolean isValidClassTypeElement(TypeElement typeElement) {
         if (typeElement.getNestingKind() != NestingKind.TOP_LEVEL && !typeElement.getModifiers().contains(Modifier.STATIC)) {
-            ctx.error("Class %s is not static, non-static inner class is not supported." +
+            ctx.error(typeElement, "Class %s is not static, non-static inner class is not supported." +
                 " Instance class may refer to its enclosing class's generic type without the type declaration on its own," +
                 " which could break the generated code. Later version of SharedType may loosen this limitation.", typeElement);
             return false;
@@ -179,7 +179,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 boolean explicitAccessor = ctx.isExplicitAccessor(methodElem);
                 if (!isZeroArgNonstaticMethod(methodElem)) {
                     if (explicitAccessor) {
-                        ctx.warn("%s.%s annotated with @SharedType.Accessor is not a zero-arg nonstatic method.", typeElement, methodElem);
+                        ctx.warn(methodElem, "%s.%s annotated as an accessor is not a zero-arg nonstatic method.", typeElement, methodElem);
                     }
                     continue;
                 }
@@ -240,7 +240,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 return false;
             }
             if (!types.isSameType(type, componentType)) { // TODO exception and log at higher level with element context
-                ctx.error("Type %s has conflicting components with same name '%s', because they have different types '%s' and '%s', they cannot be merged.",
+                ctx.error(contextType, "Type %s has conflicting components with same name '%s', because they have different types '%s' and '%s', they cannot be merged.",
                     contextType, name, type, componentType);
             }
             return true;
