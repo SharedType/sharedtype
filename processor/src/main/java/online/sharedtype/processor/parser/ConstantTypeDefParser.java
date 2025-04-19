@@ -27,24 +27,27 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 final class ConstantTypeDefParser implements TypeDefParser {
     private static final Set<String> SUPPORTED_ELEMENT_KIND = new HashSet<>(4);
-    private final static Set<String> TYPE_ELEMENT_KIND = new HashSet<>(4);
+    private final static Set<String> TO_FIND_ENCLOSED_ELEMENT_KIND_SET = new HashSet<>(4);
     static {
         SUPPORTED_ELEMENT_KIND.add(ElementKind.CLASS.name());
         SUPPORTED_ELEMENT_KIND.add(ElementKind.INTERFACE.name());
         SUPPORTED_ELEMENT_KIND.add("RECORD");
         SUPPORTED_ELEMENT_KIND.add(ElementKind.ENUM.name());
 
-        TYPE_ELEMENT_KIND.add(ElementKind.ENUM.name());
-        TYPE_ELEMENT_KIND.add(ElementKind.CLASS.name());
-        TYPE_ELEMENT_KIND.add(ElementKind.INTERFACE.name());
-        TYPE_ELEMENT_KIND.add("RECORD");
+        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.ENUM.name());
+        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.CLASS.name());
+        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.INTERFACE.name());
+        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add("RECORD");
+        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.FIELD.name());
     }
 
     private final Context ctx;
@@ -167,11 +170,11 @@ final class ConstantTypeDefParser implements TypeDefParser {
     private Element findEnclosedElement(TypeElement enclosingTypeElement, String name) {
         for (Element element : enclosingTypeElement.getEnclosedElements()) {
             if (element.getSimpleName().contentEquals(name)) {
-//                if (element.getKind() != ElementKind.FIELD) {
-//                    ctx.error(enclosingTypeElement,
-//                        "Constant field '%s' is referencing a non-field element: %s in %s, which is not supported.",
-//                        name, element.getSimpleName(), enclosingTypeElement.getQualifiedName());
-//                }
+                if (!TO_FIND_ENCLOSED_ELEMENT_KIND_SET.contains(element.getKind().name())) {
+                    ctx.error(enclosingTypeElement,
+                        "Constant field '%s' is referencing a %s element: %s in %s, which is not supported. Supported element kinds: %s.",
+                        name, element.getSimpleName(), enclosingTypeElement.getQualifiedName(), String.join(", ", TO_FIND_ENCLOSED_ELEMENT_KIND_SET));
+                }
                 return element;
             }
         }
@@ -184,7 +187,7 @@ final class ConstantTypeDefParser implements TypeDefParser {
         Scope curScope = scope;
         while (curScope != null) {
             for (Element element : curScope.getLocalElements()) {
-                if (element.getSimpleName().contentEquals(name) && TYPE_ELEMENT_KIND.contains(element.getKind().name())) {
+                if (element.getSimpleName().contentEquals(name) && TO_FIND_ENCLOSED_ELEMENT_KIND_SET.contains(element.getKind().name())) {
                     return element;
                 }
             }

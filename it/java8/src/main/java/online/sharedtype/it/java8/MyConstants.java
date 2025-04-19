@@ -3,6 +3,8 @@ package online.sharedtype.it.java8;
 import online.sharedtype.SharedType;
 import online.sharedtype.it.java8.other.OtherConstants;
 
+import static online.sharedtype.it.java8.other.OtherConstants.Inner1.STATIC_IMPORTED_VALUE;
+
 @SharedType(constantNamespaced = SharedType.OptionalBool.FALSE, includes = SharedType.ComponentType.CONSTANTS)
 final class MyConstants {
     private static final float FLOAT_VALUE = 1.888f;
@@ -13,6 +15,7 @@ final class MyConstants {
     static final long SELF_REFERENCED_LOCAL_VALUE = MyConstants.IGNORED_LOCAL_VALUE;
     static final long REFERENCED_IMPORTED_VALUE = OtherConstants.LONG_VALUE;
     static final long REFERENCED_NESTED_VALUE = OtherConstants.Inner1.Inner2.INNER_LONG_VALUE;
+    static final long REFERENCED_STATIC_IMPORTED_VALUE = STATIC_IMPORTED_VALUE;
 }
 
 @SharedType(includes = SharedType.ComponentType.CONSTANTS)
