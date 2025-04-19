@@ -39,7 +39,7 @@ final class CompositeTypeDefParser implements TypeDefParser {
         }
         // TODO: warn for maplikeType
 
-        ctx.info(typeElement, "Processing: %s", typeElement.getQualifiedName());
+        ctx.info("Processing: %s", typeElement.getQualifiedName());
         List<TypeDef> typeDefs = new ArrayList<>();
         for (TypeDefParser typeDefParser : parsers) {
             List<TypeDef> parsedTypeDefs = typeDefParser.parse(typeElement);
