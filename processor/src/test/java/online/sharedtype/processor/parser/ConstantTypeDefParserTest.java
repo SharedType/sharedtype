@@ -141,4 +141,9 @@ final class ConstantTypeDefParserTest {
     void parseStaticImportedReference() {
 
     }
+
+    @Test
+    void parsePackagePrivateReference() {
+
+    }
 }

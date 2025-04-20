@@ -17,6 +17,7 @@ final class MyConstants {
     static final long REFERENCED_NESTED_VALUE = OtherConstants.Inner1.Inner2.INNER_LONG_VALUE;
     static final long REFERENCED_STATIC_IMPORTED_VALUE = STATIC_IMPORTED_VALUE;
     static final long DOUBLE_REFERENCED_VALUE = SELF_REFERENCED_LOCAL_VALUE;
+    static final long REFERENCED_PACKAGE_PRIVATE_VALUE = JavaClass.SOME_LONG_VALUE;
 }
 
 @SharedType(includes = SharedType.ComponentType.CONSTANTS)

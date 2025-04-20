@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -153,6 +154,9 @@ final class ConstantTypeDefParser implements TypeDefParser {
             if (referencedElement == null) {
                 referencedElement = findEnclosedElement(enclosingTypeElement, identifierTree.getName().toString());
             }
+            if (referencedElement == null) {
+                referencedElement = findEnclosedElement(elements.getPackageOf(enclosingTypeElement), identifierTree.getName().toString());
+            }
             return referencedElement;
         } if (valueTree instanceof MemberSelectTree) {
             MemberSelectTree memberSelectTree = (MemberSelectTree) valueTree;
@@ -162,23 +166,24 @@ final class ConstantTypeDefParser implements TypeDefParser {
                 throw new SharedTypeException(String.format(
                     "A selectee element must be typeElement, but found: %s in %s", selecteeElement, enclosingTypeElement));
             }
-            return findEnclosedElement((TypeElement) selecteeElement, memberSelectTree.getIdentifier().toString());
+            return findEnclosedElement(selecteeElement, memberSelectTree.getIdentifier().toString());
         }
         return null;
     }
 
-    private Element findEnclosedElement(TypeElement enclosingTypeElement, String name) {
-        for (Element element : enclosingTypeElement.getEnclosedElements()) {
+    @Nullable
+    private Element findEnclosedElement(Element enclosingElement, String name) {
+        for (Element element : enclosingElement.getEnclosedElements()) {
             if (element.getSimpleName().contentEquals(name)) {
                 if (!TO_FIND_ENCLOSED_ELEMENT_KIND_SET.contains(element.getKind().name())) {
-                    ctx.error(enclosingTypeElement,
+                    ctx.error(enclosingElement,
                         "Constant field '%s' is referencing a %s element: %s in %s, which is not supported. Supported element kinds: %s.",
-                        name, element.getSimpleName(), enclosingTypeElement.getQualifiedName(), String.join(", ", TO_FIND_ENCLOSED_ELEMENT_KIND_SET));
+                        name, element.getSimpleName(), enclosingElement, String.join(", ", TO_FIND_ENCLOSED_ELEMENT_KIND_SET));
                 }
                 return element;
             }
         }
-        throw new SharedTypeException(String.format("Cannot find referenced local element: %s in %s", enclosingTypeElement.getQualifiedName(), name));
+        return null;
     }
 
     /** Try to find referenced type element in the file scope, including: local references and imported references */
