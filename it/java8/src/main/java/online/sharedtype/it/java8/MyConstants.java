@@ -10,7 +10,7 @@ final class MyConstants extends IgnoredSuperClassB {
     private static final float FLOAT_VALUE = 1.888f;
     static final long LONG_VALUE = 999L;
     @SharedType.Ignore
-    static long IGNORED_LOCAL_VALUE = 555L;
+    static final long IGNORED_LOCAL_VALUE = 555L;
     static final long REFERENCED_LOCAL_VALUE = IGNORED_LOCAL_VALUE;
     static final long SELF_REFERENCED_LOCAL_VALUE = MyConstants.IGNORED_LOCAL_VALUE;
     static final long REFERENCED_IMPORTED_VALUE = OtherConstants.LONG_VALUE;
@@ -22,8 +22,10 @@ final class MyConstants extends IgnoredSuperClassB {
     static final long SELECTED_SUPER_VALUE = IgnoredSuperClassB.LONG_VALUE_IN_SUPER;
 
     static final long REFERENCED_VALUE_IN_STATIC_BLOCK;
+    static final long REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK;
     static {
         REFERENCED_VALUE_IN_STATIC_BLOCK = 112L;
+        REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK = IGNORED_LOCAL_VALUE;
     }
 }
 

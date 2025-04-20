@@ -137,17 +137,21 @@ final class ConstantTypeDefParser implements TypeDefParser {
         if (tree instanceof LiteralTree) {
             return ((LiteralTree) tree).getValue();
         }
-        final ExpressionTree valueTree = getValueTree(tree, enclosingTypeElement);
-        if (valueTree instanceof LiteralTree) {
-            return ((LiteralTree) valueTree).getValue();
-        }
-        if (valueTree == null) {
-            return resolveEvaluationInStaticBlock(fieldElement, scope, enclosingTypeElement);
-        }
+        try {
+            ExpressionTree valueTree = getValueTree(tree, enclosingTypeElement);
+            if (valueTree instanceof LiteralTree) {
+                return ((LiteralTree) valueTree).getValue();
+            }
+            if (valueTree == null) {
+                return resolveEvaluationInStaticBlock(fieldElement, scope, enclosingTypeElement);
+            }
 
-        Element referencedFieldElement = recursivelyResolveReferencedElement(valueTree, scope, enclosingTypeElement);
-        if (referencedFieldElement != null) {
-            return parseConstantValue(referencedFieldElement, trees.getTree(referencedFieldElement), scope, enclosingTypeElement);
+            Element referencedFieldElement = recursivelyResolveReferencedElement(valueTree, scope, enclosingTypeElement);
+            if (referencedFieldElement != null) {
+                return parseConstantValue(referencedFieldElement, trees.getTree(referencedFieldElement), scope, enclosingTypeElement);
+            }
+        } catch (SharedTypeException e) {
+            ctx.error(fieldElement, e.getMessage());
         }
         ctx.error(enclosingTypeElement, "Only literal value is supported for constant field." +
                 " Field: %s in %s. Consider use @SharedType.Ignore to ignore this field or exclude constants generation for this type.",
@@ -162,7 +166,10 @@ final class ConstantTypeDefParser implements TypeDefParser {
             valueTree = ((VariableTree) tree).getInitializer();
         } else if (tree instanceof AssignmentTree) {
             valueTree = ((AssignmentTree) tree).getExpression();
-        } else {
+        } else if (tree instanceof IdentifierTree) {
+            valueTree = (IdentifierTree)tree;
+        }
+        else {
             throw new SharedTypeException(String.format(
                 "Only VariableTree or AssignmentTree is supported for constant field. Field: %s in %s",
                 tree, enclosingTypeElement
