@@ -157,6 +157,9 @@ final class ConstantTypeDefParser implements TypeDefParser {
             if (referencedElement == null) {
                 referencedElement = findEnclosedElement(elements.getPackageOf(enclosingTypeElement), identifierTree.getName().toString());
             }
+            if (referencedElement == null) {
+                referencedElement = findEnclosedElement(types.asElement(enclosingTypeElement.getSuperclass()), identifierTree.getName().toString());
+            }
             return referencedElement;
         } if (valueTree instanceof MemberSelectTree) {
             MemberSelectTree memberSelectTree = (MemberSelectTree) valueTree;
