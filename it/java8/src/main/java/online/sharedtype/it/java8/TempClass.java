@@ -9,6 +9,6 @@ public class TempClass extends IgnoredSuperClassB{
 
     static final long REFERENCED_VALUE;
     static {
-        REFERENCED_VALUE = IGNORED_LOCAL_VALUE;
+        REFERENCED_VALUE = TempClass.IGNORED_LOCAL_VALUE;
     }
 }

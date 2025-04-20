@@ -167,9 +167,10 @@ final class ConstantTypeDefParser implements TypeDefParser {
         } else if (tree instanceof AssignmentTree) {
             valueTree = ((AssignmentTree) tree).getExpression();
         } else if (tree instanceof IdentifierTree) {
-            valueTree = (IdentifierTree)tree;
-        }
-        else {
+            valueTree = (IdentifierTree) tree;
+        } else if (tree instanceof MemberSelectTree) {
+            valueTree = (MemberSelectTree) tree;
+        } else {
             throw new SharedTypeException(String.format(
                 "Only VariableTree or AssignmentTree is supported for constant field. Field: %s in %s",
                 tree, enclosingTypeElement
