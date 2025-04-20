@@ -20,6 +20,11 @@ final class MyConstants extends IgnoredSuperClassB {
     static final long REFERENCED_PACKAGE_PRIVATE_VALUE = JavaClass.SOME_LONG_VALUE;
     static final long REFERENCED_SUPER_VALUE = LONG_VALUE_IN_SUPER;
     static final long SELECTED_SUPER_VALUE = IgnoredSuperClassB.LONG_VALUE_IN_SUPER;
+
+    static final long REFERENCED_VALUE_IN_STATIC_BLOCK;
+    static {
+        REFERENCED_VALUE_IN_STATIC_BLOCK = 112L;
+    }
 }
 
 @SharedType(includes = SharedType.ComponentType.CONSTANTS)

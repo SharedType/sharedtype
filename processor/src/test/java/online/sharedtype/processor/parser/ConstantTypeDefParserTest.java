@@ -146,4 +146,14 @@ final class ConstantTypeDefParserTest {
     void parsePackagePrivateReference() {
 
     }
+
+    @Test
+    void parseInheritedReference() {
+
+    }
+
+    @Test
+    void parseStaticBlock() {
+
+    }
 }

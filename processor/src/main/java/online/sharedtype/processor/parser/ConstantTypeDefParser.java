@@ -1,10 +1,15 @@
 package online.sharedtype.processor.parser;
 
+import com.sun.source.tree.AssignmentTree;
+import com.sun.source.tree.BlockTree;
+import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.LiteralTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.Scope;
+import com.sun.source.tree.StatementTree;
+import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.Trees;
 import online.sharedtype.SharedType;
@@ -24,20 +29,18 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 final class ConstantTypeDefParser implements TypeDefParser {
     private static final Set<String> SUPPORTED_ELEMENT_KIND = new HashSet<>(4);
     private final static Set<String> TO_FIND_ENCLOSED_ELEMENT_KIND_SET = new HashSet<>(4);
+
     static {
         SUPPORTED_ELEMENT_KIND.add(ElementKind.CLASS.name());
         SUPPORTED_ELEMENT_KIND.add(ElementKind.INTERFACE.name());
@@ -99,10 +102,18 @@ final class ConstantTypeDefParser implements TypeDefParser {
             }
 
             if (enclosedElement.getKind() == ElementKind.FIELD && enclosedElement.getModifiers().contains(Modifier.STATIC)) {
+                Tree tree = ctx.getTrees().getTree(enclosedElement);
+                if (tree == null) {
+                    throw new SharedTypeInternalError(String.format("Cannot parse constant value for field: %s in %s, tree is null from the field element. " +
+                            "If the type is from a dependency jar/compiled class file, tree is not available at the time of annotation processing. " +
+                            "Check if the type or its custom mapping is correct.",
+                        enclosedElement.getSimpleName(), typeElement));
+                }
+                Scope scope = ctx.getTrees().getScope(ctx.getTrees().getPath(enclosedElement));
                 ConstantField constantField = new ConstantField(
                     enclosedElement.getSimpleName().toString(),
                     typeInfoParser.parse(enclosedElement.asType(), TypeContext.builder().typeDef(constantNamespaceDef).dependingKind(DependingKind.COMPONENTS).build()),
-                    parseConstantValue(enclosedElement, typeElement)
+                    parseConstantValue(enclosedElement, tree, scope, typeElement)
                 );
                 constantNamespaceDef.components().add(constantField);
             }
@@ -122,35 +133,79 @@ final class ConstantTypeDefParser implements TypeDefParser {
         return false;
     }
 
-    private Object parseConstantValue(Element fieldElement, TypeElement ctxTypeElement) {
-        VariableTree tree = (VariableTree) ctx.getTrees().getTree(fieldElement);
-        if (tree == null) {
-            throw new SharedTypeInternalError(String.format("Cannot parse constant value for field: %s in %s, tree is null from the field element. " +
-                    "If the type is from a dependency jar/compiled class file, tree is not available at the time of annotation processing. " +
-                    "Check if the type or its custom mapping is correct.",
-                fieldElement.getSimpleName(), ctxTypeElement.getQualifiedName()));
+    private Object parseConstantValue(Element fieldElement, Tree tree, Scope scope, TypeElement enclosingTypeElement) {
+        if (tree instanceof LiteralTree) {
+            return ((LiteralTree) tree).getValue();
         }
-        ExpressionTree valueTree = tree.getInitializer();
+        final ExpressionTree valueTree = getValueTree(tree, enclosingTypeElement);
         if (valueTree instanceof LiteralTree) {
             return ((LiteralTree) valueTree).getValue();
-        } else {
-            Scope scope = ctx.getTrees().getScope(ctx.getTrees().getPath(fieldElement));
-            Element referencedFieldElement = recursivelyResolveReferencedElement(valueTree, scope, ctxTypeElement);
-            if (referencedFieldElement != null) {
-                return parseConstantValue(referencedFieldElement, ctxTypeElement);
-            }
-
-            ctx.error(ctxTypeElement, "Only literal value is supported for constant field." +
-                    " Field: %s in %s. Consider use @SharedType.Ignore to ignore this field or exclude constants generation for this type.",
-                fieldElement.getSimpleName(), ctxTypeElement.getQualifiedName());
-            return null;
         }
+        if (valueTree == null) {
+            return resolveEvaluationInStaticBlock(fieldElement, scope, enclosingTypeElement);
+        }
+
+        Element referencedFieldElement = recursivelyResolveReferencedElement(valueTree, scope, enclosingTypeElement);
+        if (referencedFieldElement != null) {
+            return parseConstantValue(referencedFieldElement, trees.getTree(referencedFieldElement), scope, enclosingTypeElement);
+        }
+        ctx.error(enclosingTypeElement, "Only literal value is supported for constant field." +
+                " Field: %s in %s. Consider use @SharedType.Ignore to ignore this field or exclude constants generation for this type.",
+            tree, enclosingTypeElement.getQualifiedName());
+        return null;
+    }
+
+    @Nullable
+    private static ExpressionTree getValueTree(Tree tree, TypeElement enclosingTypeElement) {
+        final ExpressionTree valueTree;
+        if (tree instanceof VariableTree) {
+            valueTree = ((VariableTree) tree).getInitializer();
+        } else if (tree instanceof AssignmentTree) {
+            valueTree = ((AssignmentTree) tree).getExpression();
+        } else {
+            throw new SharedTypeException(String.format(
+                "Only VariableTree or AssignmentTree is supported for constant field. Field: %s in %s",
+                tree, enclosingTypeElement
+            ));
+        }
+        return valueTree;
+    }
+
+    private Object resolveEvaluationInStaticBlock(Element fieldElement, Scope scope, TypeElement enclosingTypeElement) {
+        BlockTree blockTree = getStaticBlock(enclosingTypeElement);
+        for (StatementTree statement : blockTree.getStatements()) {
+            if (statement.getKind() == Tree.Kind.EXPRESSION_STATEMENT) {
+                ExpressionStatementTree expressionStatementTree = (ExpressionStatementTree) statement;
+                ExpressionTree expressionTree = expressionStatementTree.getExpression();
+                if (expressionTree.getKind() == Tree.Kind.ASSIGNMENT) {
+                    AssignmentTree assignmentTree = (AssignmentTree) expressionTree;
+                    Element referencedVariableElement = recursivelyResolveReferencedElement(assignmentTree.getVariable(), scope, enclosingTypeElement);
+
+                    if (referencedVariableElement.equals(fieldElement)) {
+                        return parseConstantValue(fieldElement, assignmentTree.getExpression(), scope, enclosingTypeElement);
+                    }
+                }
+            }
+        }
+        throw new SharedTypeException("No static evaluation found for constant field: " + fieldElement + " in " + enclosingTypeElement);
+    }
+
+    private BlockTree getStaticBlock(TypeElement enclosingTypeElement) {
+        for (Tree member : trees.getTree(enclosingTypeElement).getMembers()) {
+            if (member.getKind() == Tree.Kind.BLOCK) {
+                BlockTree blockTree = (BlockTree) member;
+                if (blockTree.isStatic()) {
+                    return blockTree;
+                }
+            }
+        }
+        throw new SharedTypeException("No static block found for type: " + enclosingTypeElement);
     }
 
     private Element recursivelyResolveReferencedElement(ExpressionTree valueTree, Scope scope, TypeElement enclosingTypeElement) {
         if (valueTree instanceof IdentifierTree) {
             IdentifierTree identifierTree = (IdentifierTree) valueTree;
-            Element referencedElement = findReferencedElementInTree(scope, identifierTree.getName().toString());
+            Element referencedElement = findElementInTree(scope, identifierTree.getName().toString());
             if (referencedElement == null) {
                 referencedElement = findEnclosedElement(enclosingTypeElement, identifierTree.getName().toString());
             }
@@ -161,7 +216,8 @@ final class ConstantTypeDefParser implements TypeDefParser {
                 referencedElement = findEnclosedElement(types.asElement(enclosingTypeElement.getSuperclass()), identifierTree.getName().toString());
             }
             return referencedElement;
-        } if (valueTree instanceof MemberSelectTree) {
+        }
+        if (valueTree instanceof MemberSelectTree) {
             MemberSelectTree memberSelectTree = (MemberSelectTree) valueTree;
             ExpressionTree expressionTree = memberSelectTree.getExpression();
             Element selecteeElement = recursivelyResolveReferencedElement(expressionTree, scope, enclosingTypeElement);
@@ -189,9 +245,11 @@ final class ConstantTypeDefParser implements TypeDefParser {
         return null;
     }
 
-    /** Try to find referenced type element in the file scope, including: local references and imported references */
+    /**
+     * Only element in the file scope, not including package private or inherited.
+     */
     @Nullable
-    private Element findReferencedElementInTree(Scope scope, String name) {
+    private static Element findElementInTree(Scope scope, String name) {
         Scope curScope = scope;
         while (curScope != null) {
             for (Element element : curScope.getLocalElements()) {
@@ -203,6 +261,4 @@ final class ConstantTypeDefParser implements TypeDefParser {
         }
         return null;
     }
-
-
 }
