@@ -116,44 +116,4 @@ final class ConstantTypeDefParserTest {
             }
         );
     }
-
-    @Test
-    void parseDirectLocalReference() {
-
-    }
-
-    @Test
-    void parseSelectedLocalReference() {
-
-    }
-
-    @Test
-    void parseImportedReference() {
-
-    }
-
-    @Test
-    void parseImportedNestedReference() {
-
-    }
-
-    @Test
-    void parseStaticImportedReference() {
-
-    }
-
-    @Test
-    void parsePackagePrivateReference() {
-
-    }
-
-    @Test
-    void parseInheritedReference() {
-
-    }
-
-    @Test
-    void parseStaticBlock() {
-
-    }
 }
