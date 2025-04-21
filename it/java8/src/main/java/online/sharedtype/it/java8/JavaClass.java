@@ -4,6 +4,8 @@ import online.sharedtype.SharedType;
 
 @SharedType
 class JavaClass extends SuperClassA {
+    static final long SOME_LONG_VALUE = 123L;
+
     private String string;
     private EnumSize size;
 //    private IgnoredInterfaceB b; // compilation failure

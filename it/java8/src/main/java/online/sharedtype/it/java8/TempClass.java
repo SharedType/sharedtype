@@ -1,10 +1,12 @@
 package online.sharedtype.it.java8;
 
 import online.sharedtype.SharedType;
+import online.sharedtype.it.java8.other.OtherConstants;
 
-import java.time.LocalDate;
-
-@SharedType
-public class TempClass {
-    LocalDate localDate;
+@SharedType(includes = SharedType.ComponentType.CONSTANTS)
+public class TempClass extends IgnoredSuperClassB{
+    static final long REFERENCED_VALUE;
+    static {
+        REFERENCED_VALUE = OtherConstants.Inner1.Inner2.INNER_LONG_VALUE;
+    }
 }

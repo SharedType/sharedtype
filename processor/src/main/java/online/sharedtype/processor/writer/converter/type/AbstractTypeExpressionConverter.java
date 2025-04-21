@@ -12,7 +12,6 @@ import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.support.annotation.SideEffect;
-import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import java.util.ArrayDeque;
@@ -79,7 +78,7 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
                               @SideEffect StringBuilder exprBuilder,
                               TypeDef contextTypeDef,
                               Config config) {
-        ConcreteTypeInfo baseMapType = findBaseMapType(concreteTypeInfo);
+        ConcreteTypeInfo baseMapType = findBaseMapType(concreteTypeInfo, contextTypeDef);
         ConcreteTypeInfo keyType = getKeyType(baseMapType, concreteTypeInfo, contextTypeDef);
         MapSpec mapSpec = mapSpec(keyType);
         if (mapSpec == null) {
@@ -93,7 +92,7 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
         exprBuilder.append(mapSpec.suffix);
     }
 
-    private static ConcreteTypeInfo getKeyType(ConcreteTypeInfo baseMapType, ConcreteTypeInfo concreteTypeInfo, TypeDef contextTypeDef) {
+    private ConcreteTypeInfo getKeyType(ConcreteTypeInfo baseMapType, ConcreteTypeInfo concreteTypeInfo, TypeDef contextTypeDef) {
         TypeInfo keyType = baseMapType.typeArgs().get(0);
         boolean validKey = false;
         if (keyType instanceof ConcreteTypeInfo && ((ConcreteTypeInfo) keyType).getKind() == ConcreteTypeInfo.Kind.ENUM) {
@@ -102,10 +101,10 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
             validKey = true;
         }
         if (!validKey) {
-            throw new SharedTypeException(String.format(
+            ctx.error(contextTypeDef.getElement(),
                 "Key type of %s must be string or numbers or enum (with EnumValue being string or numbers), but is %s, " +
                     "when trying to build expression for concrete type: %s, context type: %s.",
-                baseMapType.qualifiedName(), keyType, concreteTypeInfo, contextTypeDef));
+                baseMapType.qualifiedName(), keyType, concreteTypeInfo, contextTypeDef);
         }
         if (!(keyType instanceof ConcreteTypeInfo)) {
             throw new SharedTypeInternalError(String.format(
@@ -116,7 +115,7 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
         return (ConcreteTypeInfo) keyType;
     }
 
-    private ConcreteTypeInfo findBaseMapType(ConcreteTypeInfo concreteTypeInfo) {
+    private ConcreteTypeInfo findBaseMapType(ConcreteTypeInfo concreteTypeInfo, TypeDef contextTypeDef) {
         Queue<ConcreteTypeInfo> queue = new ArrayDeque<>();
         ConcreteTypeInfo baseMapType = concreteTypeInfo;
         while (!ctx.getProps().getMaplikeTypeQualifiedNames().contains(baseMapType.qualifiedName())) {
@@ -132,8 +131,8 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
             baseMapType = requireNonNull(queue.poll(), "Cannot find a qualified type name of a map-like type, concrete type: %s", concreteTypeInfo);
         }
         if (baseMapType.typeArgs().size() != 2) {
-            throw new SharedTypeException(String.format("Base Map type must have 2 type arguments, with first as the key type and the second as the value type," +
-                "but is %s, when trying to build expression for concrete type: %s", baseMapType, concreteTypeInfo));
+            ctx.error(contextTypeDef.getElement(), "Base Map type must have 2 type arguments, with first as the key type and the second as the value type," +
+                "but is %s, when trying to build expression for concrete type: %s", baseMapType, concreteTypeInfo);
         }
         return baseMapType;
     }

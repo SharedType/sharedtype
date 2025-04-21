@@ -8,7 +8,6 @@ import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TypeElementMock;
-import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.parser.type.TypeContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -210,7 +209,7 @@ final class EnumTypeDefParserTest {
         );
 
         parser.parse(enumType.element());
-        verify(ctxMocks.getContext()).error(msgCaptor.capture(), any(Object[].class));
+        verify(ctxMocks.getContext()).error(any(), msgCaptor.capture(), any(Object[].class));
         assertThat(msgCaptor.getValue()).contains("multiple fields annotated as enum value");
     }
 
@@ -238,7 +237,7 @@ final class EnumTypeDefParserTest {
         );
 
         parser.parse(enumType.element());
-        verify(ctxMocks.getContext()).error(msgCaptor.capture(), any(Object[].class));
+        verify(ctxMocks.getContext()).error(any(), msgCaptor.capture(), any(Object[].class));
         assertThat(msgCaptor.getValue()).contains("multiple fields annotated as enum value");
     }
 
@@ -266,7 +265,7 @@ final class EnumTypeDefParserTest {
         );
 
         parser.parse(enumType.element());
-        verify(ctxMocks.getContext()).error(msgCaptor.capture(), any(Object[].class));
+        verify(ctxMocks.getContext()).error(any(), msgCaptor.capture(), any(Object[].class));
         assertThat(msgCaptor.getValue()).contains("multiple fields annotated as enum value");
     }
 
@@ -288,7 +287,7 @@ final class EnumTypeDefParserTest {
             ctxMocks.primitiveVariable("field2", TypeKind.CHAR).element()
         );
         parser.parse(enumType.element());
-        verify(ctxMocks.getContext()).error(msgCaptor.capture(), any(Object[].class));
+        verify(ctxMocks.getContext()).error(any(), msgCaptor.capture(), any(Object[].class));
         assertThat(msgCaptor.getValue()).contains("Lombok");
     }
 
@@ -315,7 +314,7 @@ final class EnumTypeDefParserTest {
         );
 
         parser.parse(enumType.element());
-        verify(ctxMocks.getContext()).error(msgCaptor.capture(), any(Object[].class));
+        verify(ctxMocks.getContext()).error(any(), msgCaptor.capture(), any(Object[].class));
         assertThat(msgCaptor.getValue()).contains("Only literals are supported");
     }
 }

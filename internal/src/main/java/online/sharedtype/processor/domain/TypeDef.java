@@ -1,5 +1,6 @@
 package online.sharedtype.processor.domain;
 
+import javax.lang.model.element.Element;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.List;
  * @author Cause Chung
  */
 public interface TypeDef extends Serializable {
+    Element getElement();
+
     String qualifiedName();
 
     String simpleName();
