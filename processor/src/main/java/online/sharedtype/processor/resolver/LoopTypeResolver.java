@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.domain.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.ConstantField;
+import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
@@ -84,8 +86,15 @@ final class LoopTypeResolver implements TypeResolver {
                         processingInfoStack.push(component.type());
                     }
                 }
+            } else if (typeDef instanceof ConstantNamespaceDef) {
+                ConstantNamespaceDef constantNamespaceDef = (ConstantNamespaceDef) typeDef;
+                for (ConstantField constantField : constantNamespaceDef.components()) {
+                    if (!constantField.resolved()) {
+                        processingInfoStack.push(constantField.type());
+                    }
+                }
             } else {
-                throw new SharedTypeInternalError(String.format("Unsupported TypeDef type: %s, %s", typeDef.getClass(), typeDef));
+                throw new SharedTypeInternalError(String.format("Unsupported TypeDef:'%s' of type '%s'", typeDef.qualifiedName(), typeDef.getClass()));
             }
 
             resolveTypeInfo(processingDefStack, processingInfoStack);

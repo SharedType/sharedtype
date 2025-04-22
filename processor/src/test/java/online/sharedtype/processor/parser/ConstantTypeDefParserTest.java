@@ -65,7 +65,7 @@ final class ConstantTypeDefParserTest {
     }
 
     @Test
-    void parse() {
+    void parseSimpleLiteralValues() {
         when(config.includes(SharedType.ComponentType.CONSTANTS)).thenReturn(true);
         var ignoredField = ctxMocks.primitiveVariable("SHOULD_BE_IGNORED", TypeKind.INT)
             .withModifiers(Modifier.STATIC);
