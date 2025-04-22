@@ -104,4 +104,17 @@ final class ConstantsIntegrationTest {
             }
         );
     }
+
+    @Test
+    void parseMyConstantsInner() {
+        ConstantNamespaceDef constantsDef = (ConstantNamespaceDef) deserializeTypeDef("$online.sharedtype.it.java8.MyConstants.InnerConstantClass.ser");
+        assertThat(constantsDef.simpleName()).isEqualTo("InnerConstantClass");
+        var components = constantsDef.components();
+        assertThat(components).satisfiesExactly(
+            component -> {
+                assertThat(component.name()).isEqualTo("INNER_REFERENCED_SUPER_VALUE_IN_STATIC");
+                assertThat(component.value()).isEqualTo(345L);
+            }
+        );
+    }
 }

@@ -45,6 +45,14 @@ final class MyConstants extends IgnoredSuperClassB {
         SELECTED_SUPER_VALUE_IN_STATIC_BLOCK = IgnoredSuperClassB.LONG_VALUE_IN_SUPER;
         REFERENCED_STATIC_VALUE_IN_STATIC_BLOCK = OtherConstants.Inner1.INNER_LONG_VALUE_IN_STATIC_BLOCK;
     }
+
+    @SharedType(constantNamespaced = SharedType.OptionalBool.FALSE, includes = SharedType.ComponentType.CONSTANTS)
+    static final class InnerConstantClass {
+        static final long INNER_REFERENCED_SUPER_VALUE_IN_STATIC;
+        static {
+            INNER_REFERENCED_SUPER_VALUE_IN_STATIC = LONG_VALUE_IN_SUPER;
+        }
+    }
 }
 
 @SharedType(includes = SharedType.ComponentType.CONSTANTS)

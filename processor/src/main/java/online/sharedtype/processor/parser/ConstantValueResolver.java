@@ -84,7 +84,7 @@ final class ConstantValueResolver {
             if (valueTree instanceof LiteralTree) {
                 return ((LiteralTree) valueTree).getValue();
             }
-            if (valueTree == null && tree.getKind() == Tree.Kind.VARIABLE) { // TODO pass variable name
+            if (valueTree == null && tree.getKind() == Tree.Kind.VARIABLE) {
                 VariableTree variableTree = (VariableTree) tree;
                 return resolveEvaluationInStaticBlock(variableTree.getName(), enclosingTypeElement);
             }
@@ -95,7 +95,11 @@ final class ConstantValueResolver {
             Scope scope = ctx.getTrees().getScope(ctx.getTrees().getPath(enclosingTypeElement));
             Element referencedFieldElement = recursivelyResolveReferencedElement(valueTree, scope, enclosingTypeElement);
             if (referencedFieldElement != null) {
-                return recursivelyResolveConstantValue(trees.getTree(referencedFieldElement), getEnclosingTypeElement(referencedFieldElement));
+                TypeElement referencedFieldEnclosingTypeElement = getEnclosingTypeElement(referencedFieldElement);
+                if (referencedFieldEnclosingTypeElement == null) {
+                    throw new SharedTypeException(String.format("Cannot find enclosing type for field: '%s'", referencedFieldElement));
+                }
+                return recursivelyResolveConstantValue(trees.getTree(referencedFieldElement), referencedFieldEnclosingTypeElement);
             }
         } catch (SharedTypeException e) {
             ctx.error(fieldElement, e.getMessage());
@@ -164,15 +168,13 @@ final class ConstantValueResolver {
     private Element recursivelyResolveReferencedElement(ExpressionTree valueTree, Scope scope, TypeElement enclosingTypeElement) {
         if (valueTree instanceof IdentifierTree) {
             IdentifierTree identifierTree = (IdentifierTree) valueTree;
-            Element referencedElement = findElementInTree(scope, identifierTree.getName().toString());
-            if (referencedElement == null) { // no need to check all enclosing elements, since constants are only parsed in the directly annotated type
-                referencedElement = findEnclosedElement(enclosingTypeElement, identifierTree.getName().toString());
+            String name = identifierTree.getName().toString();
+            Element referencedElement = findElementInLocalScope(scope, name, enclosingTypeElement);
+            if (referencedElement == null) { // find package scope references
+                referencedElement = findEnclosedElement(elements.getPackageOf(enclosingTypeElement), name);
             }
             if (referencedElement == null) {
-                referencedElement = findEnclosedElement(elements.getPackageOf(enclosingTypeElement), identifierTree.getName().toString());
-            }
-            if (referencedElement == null) { // TODO: check all superclasses in scope
-                referencedElement = findEnclosedElement(types.asElement(enclosingTypeElement.getSuperclass()), identifierTree.getName().toString());
+                referencedElement = findElementInInheritedScope(enclosingTypeElement, name);
             }
             return referencedElement;
         }
@@ -185,6 +187,28 @@ final class ConstantValueResolver {
                     "A selectee element must be typeElement, but found: %s in %s", selecteeElement, enclosingTypeElement));
             }
             return findEnclosedElement(selecteeElement, memberSelectTree.getIdentifier().toString());
+        }
+        return null;
+    }
+
+    private static Element findElementInLocalScope(Scope scope, String name, TypeElement enclosingTypeElement) {
+        Element referencedElement = findElementInTree(scope, name);
+        if (referencedElement == null) { // find local scope references that cannot be found via tree
+            // no need to check all enclosing elements, since constants are only parsed in the directly annotated type
+            referencedElement = findEnclosedElement(enclosingTypeElement, name);
+        }
+        return referencedElement;
+    }
+
+    @Nullable
+    private Element findElementInInheritedScope(TypeElement enclosingTypeElement, String name) {
+        TypeElement curEnclosingTypeElement = enclosingTypeElement;
+        while (curEnclosingTypeElement != null) {
+            Element referencedElement = findEnclosedElement(types.asElement(curEnclosingTypeElement.getSuperclass()), name);
+            if (referencedElement != null) {
+                return referencedElement;
+            }
+            curEnclosingTypeElement = getEnclosingTypeElement(curEnclosingTypeElement);
         }
         return null;
     }
@@ -221,11 +245,12 @@ final class ConstantValueResolver {
         return null;
     }
 
+    @Nullable
     private static TypeElement getEnclosingTypeElement(Element element) {
         Element enclosingElement = element.getEnclosingElement();
         if (enclosingElement instanceof TypeElement) {
             return (TypeElement) enclosingElement;
         }
-        throw new SharedTypeException(String.format("Enclosing element is not a typeElement, found: %s in %s", element, enclosingElement));
+        return null;
     }
 }
