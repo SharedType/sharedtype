@@ -37,6 +37,7 @@ final class ConstantValueResolver implements ValueResolver {
     }
 
     private final Context ctx;
+    private final ValueResolver enumValueResolver;
 
     @Override
     public Object resolve(Element fieldElement, TypeElement ctxTypeElement) {
@@ -64,7 +65,7 @@ final class ConstantValueResolver implements ValueResolver {
         return null;
     }
 
-    private static Object recursivelyResolveConstantValue(ValueResolveContext parsingContext) {
+    private Object recursivelyResolveConstantValue(ValueResolveContext parsingContext) {
         ExpressionTree valueTree = getValueTree(parsingContext);
         if (valueTree instanceof LiteralTree) {
             return ((LiteralTree) valueTree).getValue();
@@ -84,14 +85,14 @@ final class ConstantValueResolver implements ValueResolver {
         if (referencedFieldElement == null) {
             throw new SharedTypeException(String.format("Cannot find referenced field for tree: '%s' in '%s'", tree, enclosingTypeElement));
         }
-        if (referencedFieldElement.getKind() == ElementKind.ENUM_CONSTANT) {
-            throw new AssertionError("Not implemented");
-        }
-
         TypeElement referencedFieldEnclosingTypeElement = ValueResolveUtils.getEnclosingTypeElement(referencedFieldElement);
         if (referencedFieldEnclosingTypeElement == null) {
             throw new SharedTypeException(String.format("Cannot find enclosing type for field: '%s'", referencedFieldElement));
         }
+        if (referencedFieldElement.getKind() == ElementKind.ENUM_CONSTANT) {
+            return enumValueResolver.resolve(referencedFieldElement, referencedFieldEnclosingTypeElement);
+        }
+
         ValueResolveContext nextParsingContext = parsingContext.toBuilder()
             .tree(parsingContext.getTrees().getTree(referencedFieldElement)).enclosingTypeElement(referencedFieldEnclosingTypeElement)
             .build();
@@ -121,7 +122,7 @@ final class ConstantValueResolver implements ValueResolver {
         return valueTree;
     }
 
-    private static Object resolveEvaluationInStaticBlock(Name variableName, ValueResolveContext parsingContext) {
+    private Object resolveEvaluationInStaticBlock(Name variableName, ValueResolveContext parsingContext) {
         BlockTree blockTree = parsingContext.getStaticBlock();
         for (StatementTree statement : blockTree.getStatements()) {
             if (statement.getKind() == Tree.Kind.EXPRESSION_STATEMENT) {

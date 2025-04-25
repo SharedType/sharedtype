@@ -20,6 +20,7 @@ final class MyConstants extends IgnoredSuperClassB {
     static final long REFERENCED_PACKAGE_PRIVATE_VALUE = JavaClass.SOME_LONG_VALUE;
     static final long REFERENCED_SUPER_VALUE = LONG_VALUE_IN_SUPER;
     static final long SELECTED_SUPER_VALUE = IgnoredSuperClassB.LONG_VALUE_IN_SUPER;
+    static final EnumGalaxy REFERENCED_ENUM_VALUE = EnumGalaxy.MilkyWay;
 
     static final long REFERENCED_VALUE_IN_STATIC_BLOCK;
     static final long REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK;
@@ -32,6 +33,7 @@ final class MyConstants extends IgnoredSuperClassB {
     static final long REFERENCED_SUPER_VALUE_IN_STATIC_BLOCK;
     static final long SELECTED_SUPER_VALUE_IN_STATIC_BLOCK;
     static final long REFERENCED_STATIC_VALUE_IN_STATIC_BLOCK;
+    static final EnumGalaxy REFERENCED_ENUM_VALUE_IN_STATIC_BLOCK;
     static {
         REFERENCED_VALUE_IN_STATIC_BLOCK = 112L;
         REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK = IGNORED_LOCAL_VALUE;
@@ -44,6 +46,7 @@ final class MyConstants extends IgnoredSuperClassB {
         REFERENCED_SUPER_VALUE_IN_STATIC_BLOCK = LONG_VALUE_IN_SUPER;
         SELECTED_SUPER_VALUE_IN_STATIC_BLOCK = IgnoredSuperClassB.LONG_VALUE_IN_SUPER;
         REFERENCED_STATIC_VALUE_IN_STATIC_BLOCK = OtherConstants.Inner1.INNER_LONG_VALUE_IN_STATIC_BLOCK;
+        REFERENCED_ENUM_VALUE_IN_STATIC_BLOCK = EnumGalaxy.MilkyWay;
     }
 
     @SharedType(constantNamespaced = SharedType.OptionalBool.FALSE, includes = SharedType.ComponentType.CONSTANTS)

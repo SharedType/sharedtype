@@ -13,8 +13,9 @@ public interface ValueResolver {
 
     static ValueResolver create(Context ctx) {
         Map<ElementKind, ValueResolver> valueResolvers = new EnumMap<>(ElementKind.class);
-        valueResolvers.put(ElementKind.ENUM_CONSTANT, new EnumValueResolver(ctx));
-        valueResolvers.put(ElementKind.FIELD, new ConstantValueResolver(ctx));
+        ValueResolver enumValueResolver = new EnumValueResolver(ctx);
+        valueResolvers.put(ElementKind.ENUM_CONSTANT, enumValueResolver);
+        valueResolvers.put(ElementKind.FIELD, new ConstantValueResolver(ctx, enumValueResolver));
         return new CompositeValueResolver(valueResolvers);
     }
 }
