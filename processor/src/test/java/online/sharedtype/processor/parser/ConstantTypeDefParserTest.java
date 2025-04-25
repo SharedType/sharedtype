@@ -10,6 +10,7 @@ import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.DependingKind;
 import online.sharedtype.processor.parser.type.TypeContext;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
+import online.sharedtype.processor.parser.value.ValueResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +26,8 @@ import static org.mockito.Mockito.when;
 final class ConstantTypeDefParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
-    private final ConstantTypeDefParser parser = new ConstantTypeDefParser(ctxMocks.getContext(), typeInfoParser);
+    private final ValueResolver valueResolver = mock(ValueResolver.class);
+    private final ConstantTypeDefParser parser = new ConstantTypeDefParser(ctxMocks.getContext(), typeInfoParser, valueResolver);
 
     private final TypeContext typeContext = TypeContext.builder()
         .typeDef(ConstantNamespaceDef.builder().qualifiedName("com.github.cuzfrog.Abc").build())
@@ -100,6 +102,8 @@ final class ConstantTypeDefParserTest {
             .element();
         when(typeInfoParser.parse(intStaticField.type(), typeContext)).thenReturn(Constants.INT_TYPE_INFO);
         when(typeInfoParser.parse(stringStaticField.type(), typeContext)).thenReturn(Constants.STRING_TYPE_INFO);
+        when(valueResolver.resolve(intStaticField.element(), typeElement)).thenReturn(105);
+        when(valueResolver.resolve(stringStaticField.element(), typeElement)).thenReturn("abc123");
 
         var typeDef = (ConstantNamespaceDef)parser.parse(typeElement).get(0);
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");

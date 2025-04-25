@@ -28,7 +28,7 @@ final class EnumIntegrationTest {
         assertThat(enumSize.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumSize");
         assertThat(enumSize.components()).hasSize(3).allMatch(constant -> {
             ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)constant.type();
-            return typeInfo.qualifiedName().equals("int");
+            return typeInfo.qualifiedName().equals("java.lang.Integer");
         });
 
         EnumValueInfo constant1 = enumSize.components().get(0);
@@ -39,5 +39,24 @@ final class EnumIntegrationTest {
 
         EnumValueInfo constant3 = enumSize.components().get(2);
         assertThat(constant3.value()).isEqualTo(3);
+    }
+
+    @Test
+    void enumGalaxy() {
+        EnumDef enumGalaxy = (EnumDef) deserializeTypeDef("online.sharedtype.it.java8.EnumGalaxy.ser");
+        assertThat(enumGalaxy.simpleName()).isEqualTo("EnumGalaxy");
+        assertThat(enumGalaxy.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumGalaxy");
+        assertThat(enumGalaxy.components()).hasSize(3).allMatch(constant -> {
+            ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)constant.type();
+            return typeInfo.qualifiedName().equals("java.lang.String");
+        });
+        EnumValueInfo constant1 = enumGalaxy.components().get(0);
+        assertThat(constant1.value()).isEqualTo("MilkyWay");
+
+        EnumValueInfo constant2 = enumGalaxy.components().get(1);
+        assertThat(constant2.value()).isEqualTo("Andromeda");
+
+        EnumValueInfo constant3 = enumGalaxy.components().get(2);
+        assertThat(constant3.value()).isEqualTo("Triangulum");
     }
 }

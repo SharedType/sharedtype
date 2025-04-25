@@ -12,9 +12,10 @@ public enum EnumTShirt {
     ;
 
     private final EnumSize size;
+    @SharedType.EnumValue
     private final String name;
 
-    EnumTShirt(EnumSize size, @SharedType.EnumValue String name) {
+    EnumTShirt(EnumSize size, String name) {
         this.size = size;
         this.name = name;
     }

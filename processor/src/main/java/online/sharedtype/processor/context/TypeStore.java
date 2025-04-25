@@ -30,6 +30,7 @@ public final class TypeStore {
     private final Map<String, List<TypeDef>> typeDefByQualifiedName = new HashMap<>();
     private final Map<TypeInfoKey, TypeInfo> typeInfoByKey = new HashMap<>();
     private final Map<String, Config> typeConfig = new HashMap<>();
+    private final Map<String, Integer> enumValueIndexByQualifiedName = new HashMap<>();
 
     TypeStore() {
         for (Map.Entry<String, ConcreteTypeInfo> entry : PREDEFINED_OBJECT_TYPES.entrySet()) {
@@ -74,6 +75,15 @@ public final class TypeStore {
      */
     public Config getConfig(TypeDef typeDef) {
         return typeConfig.get(typeDef.qualifiedName());
+    }
+
+    public void saveEnumValueIndex(String qualifiedName, int index) {
+        enumValueIndexByQualifiedName.put(qualifiedName, index);
+    }
+
+    @Nullable
+    public Integer getEnumValueIndex(String qualifiedName) {
+        return enumValueIndexByQualifiedName.get(qualifiedName);
     }
 
     @EqualsAndHashCode
