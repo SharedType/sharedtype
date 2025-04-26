@@ -13,7 +13,7 @@ public interface ValueResolver {
 
     static ValueResolver create(Context ctx, TypeInfoParser typeInfoParser) {
         CompositeValueResolver compositeValueResolver = new CompositeValueResolver();
-        ValueResolverBackend backend = ValueResolverBackend.create(compositeValueResolver);
+        ValueResolverBackend backend = new ValueResolverBackendImpl(compositeValueResolver);
         compositeValueResolver.registerResolver(ElementKind.ENUM_CONSTANT, new EnumValueResolver(ctx, typeInfoParser, backend));
         compositeValueResolver.registerResolver(ElementKind.FIELD, new ConstantValueResolver(ctx, backend));
         return compositeValueResolver;

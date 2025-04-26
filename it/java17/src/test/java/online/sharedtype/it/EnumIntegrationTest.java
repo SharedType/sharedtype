@@ -66,4 +66,41 @@ final class EnumIntegrationTest {
         EnumValueInfo constant3 = enumGalaxy.components().get(2);
         assertThat(constant3.value().getValue()).isEqualTo("Triangulum");
     }
+
+    @Test
+    void parseEnumConstReference() {
+        EnumDef enumDef = (EnumDef) deserializeTypeDef("online.sharedtype.it.java8.EnumConstReference.ser");
+        assertThat(enumDef.simpleName()).isEqualTo("EnumConstReference");
+        assertThat(enumDef.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumConstReference");
+        assertThat(enumDef.components()).hasSize(2);
+
+        EnumValueInfo constant1 = enumDef.components().get(0);
+        assertThat(constant1.value().getValue()).isEqualTo(999L);
+        assertThat(constant1.value().getEnumConstantName()).isEqualTo("ReferenceConstantInOther");
+        var constant1TypeInfo = (ConcreteTypeInfo)constant1.value().getValueType();
+        assertThat(constant1.type()).isEqualTo(constant1TypeInfo);
+        assertThat(constant1TypeInfo.qualifiedName()).isEqualTo("long");
+
+        EnumValueInfo constant2 = enumDef.components().get(1);
+        assertThat(constant2.value().getValue()).isEqualTo(156L);
+        assertThat(constant2.value().getEnumConstantName()).isEqualTo("ReferenceConstantLocally");
+        var constant2TypeInfo = (ConcreteTypeInfo)constant2.value().getValueType();
+        assertThat(constant2.type()).isEqualTo(constant2TypeInfo);
+        assertThat(constant2TypeInfo.qualifiedName()).isEqualTo("long");
+    }
+
+    @Test
+    void parseEnumEnumReference() {
+        EnumDef enumDef = (EnumDef) deserializeTypeDef("online.sharedtype.it.java8.EnumEnumReference.ser");
+        assertThat(enumDef.simpleName()).isEqualTo("EnumEnumReference");
+        assertThat(enumDef.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumEnumReference");
+        assertThat(enumDef.components()).hasSize(1);
+
+        EnumValueInfo constant1 = enumDef.components().get(0);
+        assertThat(constant1.value().getValue()).isEqualTo(3);
+        assertThat(constant1.value().getEnumConstantName()).isEqualTo("ReferenceAnother");
+        var constant1TypeInfo = (ConcreteTypeInfo)constant1.value().getValueType();
+        assertThat(constant1.type()).isEqualTo(constant1TypeInfo);
+        assertThat(constant1TypeInfo.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumSize"); // TODO: should be int? EnumSize's value type is effectively int
+    }
 }
