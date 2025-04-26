@@ -12,7 +12,7 @@ final class ConstantsIntegrationTest {
         ConstantNamespaceDef constantsDef = (ConstantNamespaceDef) deserializeTypeDef("$online.sharedtype.it.java8.MyConstants.ser");
         assertThat(constantsDef.simpleName()).isEqualTo("MyConstants");
         var components = constantsDef.components();
-        assertThat(components).hasSize(21);
+        assertThat(components).hasSize(24);
         assertThat(components).satisfiesExactly(
             component -> {
                 assertThat(component.name()).isEqualTo("FLOAT_VALUE");
@@ -59,6 +59,10 @@ final class ConstantsIntegrationTest {
                 assertThat(component.value()).isEqualTo(345L);
             },
             component -> {
+                assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE");
+                assertThat(component.value()).isEqualTo("MilkyWay");
+            },
+            component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_VALUE_IN_STATIC_BLOCK");
                 assertThat(component.value()).isEqualTo(112L);
             },
@@ -96,6 +100,27 @@ final class ConstantsIntegrationTest {
             },
             component -> {
                 assertThat(component.name()).isEqualTo("SELECTED_SUPER_VALUE_IN_STATIC_BLOCK");
+                assertThat(component.value()).isEqualTo(345L);
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("REFERENCED_STATIC_VALUE_IN_STATIC_BLOCK");
+                assertThat(component.value()).isEqualTo(787L);
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE_IN_STATIC_BLOCK");
+                assertThat(component.value()).isEqualTo("MilkyWay");
+            }
+        );
+    }
+
+    @Test
+    void parseMyConstantsInner() {
+        ConstantNamespaceDef constantsDef = (ConstantNamespaceDef) deserializeTypeDef("$online.sharedtype.it.java8.MyConstants.InnerConstantClass.ser");
+        assertThat(constantsDef.simpleName()).isEqualTo("InnerConstantClass");
+        var components = constantsDef.components();
+        assertThat(components).satisfiesExactly(
+            component -> {
+                assertThat(component.name()).isEqualTo("INNER_REFERENCED_SUPER_VALUE_IN_STATIC");
                 assertThat(component.value()).isEqualTo(345L);
             }
         );

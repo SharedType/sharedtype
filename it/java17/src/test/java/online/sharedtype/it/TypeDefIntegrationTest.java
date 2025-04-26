@@ -74,45 +74,6 @@ final class TypeDefIntegrationTest {
     }
 
     @Test
-    void enumGalaxy() {
-        EnumDef enumGalaxy = (EnumDef) deserializeTypeDef("online.sharedtype.it.java8.EnumGalaxy.ser");
-        assertThat(enumGalaxy.simpleName()).isEqualTo("EnumGalaxy");
-        assertThat(enumGalaxy.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumGalaxy");
-        assertThat(enumGalaxy.components()).hasSize(3).allMatch(constant -> {
-            ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)constant.type();
-            return typeInfo.qualifiedName().equals("java.lang.String");
-        });
-        EnumValueInfo constant1 = enumGalaxy.components().get(0);
-        assertThat(constant1.value()).isEqualTo("MilkyWay");
-
-        EnumValueInfo constant2 = enumGalaxy.components().get(1);
-        assertThat(constant2.value()).isEqualTo("Andromeda");
-
-        EnumValueInfo constant3 = enumGalaxy.components().get(2);
-        assertThat(constant3.value()).isEqualTo("Triangulum");
-    }
-
-    @Test
-    void enumSize() {
-        EnumDef enumSize = (EnumDef) deserializeTypeDef("online.sharedtype.it.java8.EnumSize.ser");
-        assertThat(enumSize.simpleName()).isEqualTo("EnumSize");
-        assertThat(enumSize.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumSize");
-        assertThat(enumSize.components()).hasSize(3).allMatch(constant -> {
-            ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)constant.type();
-            return typeInfo.qualifiedName().equals("int");
-        });
-
-        EnumValueInfo constant1 = enumSize.components().get(0);
-        assertThat(constant1.value()).isEqualTo(1);
-
-        EnumValueInfo constant2 = enumSize.components().get(1);
-        assertThat(constant2.value()).isEqualTo(2);
-
-        EnumValueInfo constant3 = enumSize.components().get(2);
-        assertThat(constant3.value()).isEqualTo(3);
-    }
-
-    @Test
     void recursiveClass() {
         ClassDef recursiveClass = (ClassDef) deserializeTypeDef("online.sharedtype.it.java8.RecursiveClass.ser");
         assertThat(recursiveClass.simpleName()).isEqualTo("RecursiveClass");

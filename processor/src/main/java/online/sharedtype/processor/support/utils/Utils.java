@@ -5,6 +5,13 @@ import online.sharedtype.SharedType;
 import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -32,5 +39,16 @@ public final class Utils {
             throw new SharedTypeException("Either value or defaultValue must not be empty. " + message.get());
         }
         return res;
+    }
+
+    public static List<VariableElement> allInstanceFields(TypeElement typeElement) {
+        List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
+        List<VariableElement> fields = new ArrayList<>(enclosedElements.size());
+        for (Element enclosedElement : enclosedElements) {
+            if (enclosedElement.getKind() == ElementKind.FIELD && !enclosedElement.getModifiers().contains(Modifier.STATIC)) {
+                fields.add((VariableElement) enclosedElement);
+            }
+        }
+        return fields;
     }
 }

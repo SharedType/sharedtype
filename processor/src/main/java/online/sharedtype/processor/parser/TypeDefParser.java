@@ -3,14 +3,11 @@ package online.sharedtype.processor.parser;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
+import online.sharedtype.processor.parser.value.ValueResolver;
 
-import javax.annotation.Nullable;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Parse type structural information.
@@ -32,10 +29,11 @@ public interface TypeDefParser {
 
     static TypeDefParser create(Context ctx) {
         TypeInfoParser typeInfoParser = TypeInfoParser.create(ctx);
+        ValueResolver valueResolver = ValueResolver.create(ctx);
         List<TypeDefParser> parsers = new ArrayList<>(3); // order matters! see #parse
         parsers.add(new ClassTypeDefParser(ctx, typeInfoParser));
-        parsers.add(new EnumTypeDefParser(ctx, typeInfoParser));
-        parsers.add(new ConstantTypeDefParser(ctx, typeInfoParser));
+        parsers.add(new EnumTypeDefParser(ctx, typeInfoParser, valueResolver));
+        parsers.add(new ConstantTypeDefParser(ctx, typeInfoParser, valueResolver));
         return new CompositeTypeDefParser(ctx, parsers);
     }
 }

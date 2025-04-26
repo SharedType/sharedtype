@@ -97,7 +97,7 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
         boolean validKey = false;
         if (keyType instanceof ConcreteTypeInfo && ((ConcreteTypeInfo) keyType).getKind() == ConcreteTypeInfo.Kind.ENUM) {
             validKey = true;
-        } else if (Constants.STRING_AND_NUMBER_TYPES.contains(keyType)) {
+        } else if (Constants.LITERAL_TYPES.contains(keyType)) {
             validKey = true;
         }
         if (!validKey) {

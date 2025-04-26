@@ -9,6 +9,7 @@ import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TypeElementMock;
 import online.sharedtype.processor.parser.type.TypeContext;
+import online.sharedtype.processor.parser.value.ValueResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -17,7 +18,6 @@ import online.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.type.TypeKind;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,20 +29,17 @@ import static org.mockito.Mockito.when;
 final class EnumTypeDefParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
-    private final EnumTypeDefParser parser = new EnumTypeDefParser(ctxMocks.getContext(), typeInfoParser);
+    private final ValueResolver valueResolver = mock(ValueResolver.class);
+    private final EnumTypeDefParser parser = new EnumTypeDefParser(ctxMocks.getContext(), typeInfoParser, valueResolver);
 
     private final ArgumentCaptor<Config> configCaptor = ArgumentCaptor.forClass(Config.class);
 
     private final TypeElementMock enumType = ctxMocks.typeElement("com.github.cuzfrog.EnumA")
         .withElementKind(ElementKind.ENUM);
-    private final TypeContext typeContext = TypeContext.builder()
-        .typeDef(EnumDef.builder().qualifiedName("com.github.cuzfrog.EnumA").build())
-        .dependingKind(DependingKind.ENUM_VALUE).build();
     private final TypeContext selfTypeContext = TypeContext.builder()
         .typeDef(EnumDef.builder().qualifiedName("com.github.cuzfrog.EnumA").build())
         .dependingKind(DependingKind.SELF).build();
 
-    private final ArgumentCaptor<String> msgCaptor = ArgumentCaptor.forClass(String.class);
 
     @BeforeEach
     void beforeEach() {
@@ -59,15 +56,16 @@ final class EnumTypeDefParserTest {
     @Test
     void simpleEnum() {
         var anno = TestUtils.defaultSharedTypeAnnotation();
+        var enumConstant1 = ctxMocks.declaredTypeVariable("Value1", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element();
+        var enumConstant2 = ctxMocks.declaredTypeVariable("Value2", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element();
         enumType
             .withAnnotation(SharedType.class, () -> anno)
-            .withEnclosedElements(
-                ctxMocks.declaredTypeVariable("Value1", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element(),
-                ctxMocks.declaredTypeVariable("Value2", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element()
-            );
+            .withEnclosedElements(enumConstant1, enumConstant2);
 
         ConcreteTypeInfo typeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").build();
         when(typeInfoParser.parse(enumType.type(), selfTypeContext)).thenReturn(typeInfo);
+        when(valueResolver.resolve(enumConstant1, enumType.element())).thenReturn("Value1");
+        when(valueResolver.resolve(enumConstant2, enumType.element())).thenReturn("Value2");
 
         EnumDef typeDef = (EnumDef) parser.parse(enumType.element()).getFirst();
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
@@ -75,10 +73,12 @@ final class EnumTypeDefParserTest {
         assertThat(typeDef.components()).satisfiesExactly(
             c1 -> {
                 assertThat(c1.value()).isEqualTo("Value1");
+                assertThat(c1.type()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(c1.name()).isEqualTo("Value1");
             },
             c2 -> {
                 assertThat(c2.value()).isEqualTo("Value2");
+                assertThat(c2.type()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(c2.name()).isEqualTo("Value2");
             }
         );
@@ -89,232 +89,5 @@ final class EnumTypeDefParserTest {
         assertThat(config.getQualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(config.getAnno()).isSameAs(anno);
         assertThat(typeDef.isAnnotated()).isTrue();
-    }
-
-    @Test
-    void enumValueMarkedOnField() {
-        var field2 = ctxMocks.primitiveVariable("field2", TypeKind.CHAR).withAnnotation(SharedType.EnumValue.class);
-        enumType.withEnclosedElements(
-            ctxMocks.executable("EnumA").withElementKind(ElementKind.CONSTRUCTOR)
-                .withParameters(
-                    ctxMocks.primitiveVariable("field1", TypeKind.INT).element(),
-                    ctxMocks.primitiveVariable("field2", TypeKind.CHAR).element()
-                )
-                .element(),
-            ctxMocks.declaredTypeVariable("Value1", enumType.type())
-                .withElementKind(ElementKind.ENUM_CONSTANT)
-                .ofTree(
-                    ctxMocks.variableTree().withInitializer(
-                        ctxMocks.newClassTree().withArguments(
-                            ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        ).getTree()
-                    )
-                )
-                .element(),
-            ctxMocks.declaredTypeVariable("Value2", enumType.type())
-                .withElementKind(ElementKind.ENUM_CONSTANT)
-                .ofTree(
-                    ctxMocks.variableTree().withInitializer(
-                        ctxMocks.newClassTree().withArguments(
-                            ctxMocks.literalTree(200), ctxMocks.literalTree('b')
-                        ).getTree()
-                    )
-                )
-                .element(),
-            ctxMocks.primitiveVariable("field1", TypeKind.INT).element(),
-            field2.element()
-        );
-        when(typeInfoParser.parse(field2.type(), typeContext)).thenReturn(Constants.CHAR_TYPE_INFO);
-
-        EnumDef typeDef = (EnumDef) parser.parse(enumType.element()).getFirst();
-        assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
-        assertThat(typeDef.simpleName()).isEqualTo("EnumA");
-        assertThat(typeDef.components()).satisfiesExactly(
-            c1 -> {
-                assertThat(c1.value()).isEqualTo('a');
-                assertThat(c1.name()).isEqualTo("Value1");
-                assertThat(c1.type()).isEqualTo(Constants.CHAR_TYPE_INFO);
-            },
-            c2 -> {
-                assertThat(c2.value()).isEqualTo('b');
-                assertThat(c2.name()).isEqualTo("Value2");
-                assertThat(c2.type()).isEqualTo(Constants.CHAR_TYPE_INFO);
-            }
-        );
-    }
-
-    @Test
-    void enumValueMarkedOnConstructorParameter() {
-        enumType.withEnclosedElements(
-            ctxMocks.executable("EnumA").withElementKind(ElementKind.CONSTRUCTOR)
-                .withParameters(
-                    ctxMocks.primitiveVariable("field1", TypeKind.INT).withAnnotation(SharedType.EnumValue.class).element(),
-                    ctxMocks.primitiveVariable("field2", TypeKind.CHAR).element()
-                )
-                .element(),
-            ctxMocks.declaredTypeVariable("Value1", enumType.type())
-                .withElementKind(ElementKind.ENUM_CONSTANT)
-                .ofTree(
-                    ctxMocks.variableTree().withInitializer(
-                        ctxMocks.newClassTree().withArguments(
-                            ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        ).getTree()
-                    )
-                )
-                .element(),
-            ctxMocks.declaredTypeVariable("Value2", enumType.type())
-                .withElementKind(ElementKind.ENUM_CONSTANT)
-                .ofTree(
-                    ctxMocks.variableTree().withInitializer(
-                        ctxMocks.newClassTree().withArguments(
-                            ctxMocks.literalTree(200), ctxMocks.literalTree('b')
-                        ).getTree()
-                    )
-                )
-                .element(),
-            ctxMocks.primitiveVariable("field1", TypeKind.INT).element(),
-            ctxMocks.primitiveVariable("field2", TypeKind.CHAR).element()
-        );
-
-        var typeDef = (EnumDef) parser.parse(enumType.element()).getFirst();
-        assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
-        assertThat(typeDef.simpleName()).isEqualTo("EnumA");
-        assertThat(typeDef.components()).satisfiesExactly(
-            c1 -> assertThat(c1.value()).isEqualTo(100),
-            c2 -> assertThat(c2.value()).isEqualTo(200)
-        );
-    }
-
-    @Test
-    void failWhenMoreThanOneEnumValueMarkedOnField() {
-        enumType.withEnclosedElements(
-            ctxMocks.executable("EnumA").withElementKind(ElementKind.CONSTRUCTOR)
-                .withParameters(
-                    ctxMocks.primitiveVariable("field1", TypeKind.INT).element(),
-                    ctxMocks.primitiveVariable("field2", TypeKind.CHAR).element()
-                )
-                .element(),
-            ctxMocks.declaredTypeVariable("Value1", enumType.type())
-                .withElementKind(ElementKind.ENUM_CONSTANT)
-                .ofTree(
-                    ctxMocks.variableTree().withInitializer(
-                        ctxMocks.newClassTree().withArguments(
-                            ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        ).getTree()
-                    )
-                )
-                .element(),
-            ctxMocks.primitiveVariable("field1", TypeKind.INT).withAnnotation(SharedType.EnumValue.class).element(),
-            ctxMocks.primitiveVariable("field2", TypeKind.CHAR).withAnnotation(SharedType.EnumValue.class).element()
-        );
-
-        parser.parse(enumType.element());
-        verify(ctxMocks.getContext()).error(any(), msgCaptor.capture(), any(Object[].class));
-        assertThat(msgCaptor.getValue()).contains("multiple fields annotated as enum value");
-    }
-
-    @Test
-    void failWhenMoreThanOneEnumValueMarkedOnConstructorParameter() {
-        enumType.withEnclosedElements(
-            ctxMocks.executable("EnumA").withElementKind(ElementKind.CONSTRUCTOR)
-                .withParameters(
-                    ctxMocks.primitiveVariable("field1", TypeKind.INT).withAnnotation(SharedType.EnumValue.class).element(),
-                    ctxMocks.primitiveVariable("field2", TypeKind.CHAR).withAnnotation(SharedType.EnumValue.class).element()
-                )
-                .element(),
-            ctxMocks.declaredTypeVariable("Value1", enumType.type())
-                .withElementKind(ElementKind.ENUM_CONSTANT)
-                .ofTree(
-                    ctxMocks.variableTree().withInitializer(
-                        ctxMocks.newClassTree().withArguments(
-                            ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        ).getTree()
-                    )
-                )
-                .element(),
-            ctxMocks.primitiveVariable("field1", TypeKind.INT).element(),
-            ctxMocks.primitiveVariable("field2", TypeKind.CHAR).element()
-        );
-
-        parser.parse(enumType.element());
-        verify(ctxMocks.getContext()).error(any(), msgCaptor.capture(), any(Object[].class));
-        assertThat(msgCaptor.getValue()).contains("multiple fields annotated as enum value");
-    }
-
-    @Test
-    void failWhenMoreThanOneEnumValueMarkedOnConstructorParameterAndField() {
-        enumType.withEnclosedElements(
-            ctxMocks.executable("EnumA").withElementKind(ElementKind.CONSTRUCTOR)
-                .withParameters(
-                    ctxMocks.primitiveVariable("field1", TypeKind.INT).withAnnotation(SharedType.EnumValue.class).element(),
-                    ctxMocks.primitiveVariable("field2", TypeKind.CHAR).element()
-                )
-                .element(),
-            ctxMocks.declaredTypeVariable("Value1", enumType.type())
-                .withElementKind(ElementKind.ENUM_CONSTANT)
-                .ofTree(
-                    ctxMocks.variableTree().withInitializer(
-                        ctxMocks.newClassTree().withArguments(
-                            ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        ).getTree()
-                    )
-                )
-                .element(),
-            ctxMocks.primitiveVariable("field1", TypeKind.INT).withAnnotation(SharedType.EnumValue.class).element(),
-            ctxMocks.primitiveVariable("field2", TypeKind.CHAR).element()
-        );
-
-        parser.parse(enumType.element());
-        verify(ctxMocks.getContext()).error(any(), msgCaptor.capture(), any(Object[].class));
-        assertThat(msgCaptor.getValue()).contains("multiple fields annotated as enum value");
-    }
-
-    @Test
-    void failWhenConstructorHasNoParameter() {
-        enumType.withEnclosedElements(
-            ctxMocks.executable("EnumA").withElementKind(ElementKind.CONSTRUCTOR).element(),
-            ctxMocks.declaredTypeVariable("Value1", enumType.type())
-                .withElementKind(ElementKind.ENUM_CONSTANT)
-                .ofTree(
-                    ctxMocks.variableTree().withInitializer(
-                        ctxMocks.newClassTree().withArguments(
-                            ctxMocks.literalTree(100), ctxMocks.literalTree('a')
-                        ).getTree()
-                    )
-                )
-                .element(),
-            ctxMocks.primitiveVariable("field1", TypeKind.INT).withAnnotation(SharedType.EnumValue.class).element(),
-            ctxMocks.primitiveVariable("field2", TypeKind.CHAR).element()
-        );
-        parser.parse(enumType.element());
-        verify(ctxMocks.getContext()).error(any(), msgCaptor.capture(), any(Object[].class));
-        assertThat(msgCaptor.getValue()).contains("Lombok");
-    }
-
-    @Test
-    void failWhenEnumValueTypeIsNotLiteral() {
-        var enumB = ctxMocks.typeElement("com.github.cuzfrog.EnumB").withElementKind(ElementKind.ENUM);
-        enumType.withEnclosedElements(
-            ctxMocks.executable("EnumA").withElementKind(ElementKind.CONSTRUCTOR)
-                .withParameters(
-                    ctxMocks.declaredTypeVariable("field1", enumB.type()).withAnnotation(SharedType.EnumValue.class).element()
-                )
-                .element(),
-            ctxMocks.declaredTypeVariable("Value1", enumType.type())
-                .withElementKind(ElementKind.ENUM_CONSTANT)
-                .ofTree(
-                    ctxMocks.variableTree().withInitializer(
-                        ctxMocks.newClassTree().withArguments(
-                            ctxMocks.identifierTree("FOO")
-                        ).getTree()
-                    )
-                )
-                .element(),
-            ctxMocks.declaredTypeVariable("field1", enumB.type()).element()
-        );
-
-        parser.parse(enumType.element());
-        verify(ctxMocks.getContext()).error(any(), msgCaptor.capture(), any(Object[].class));
-        assertThat(msgCaptor.getValue()).contains("Only literals are supported");
     }
 }

@@ -1,7 +1,6 @@
 package online.sharedtype.processor.parser;
 
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.TypeDef;
 
