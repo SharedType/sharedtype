@@ -3,7 +3,7 @@ package online.sharedtype.processor.parser.value;
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TypeElementMock;
-import online.sharedtype.processor.domain.EnumConstantValue;
+import online.sharedtype.processor.domain.value.EnumConstantValue;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -60,9 +60,9 @@ final class EnumValueResolverTest {
 
         EnumConstantValue value1 = (EnumConstantValue) resolver.resolve(enumConstant1, enumType.element());
         assertThat(value1.getEnumConstantName()).isEqualTo(enumConstant1.getSimpleName().toString());
-        assertThat(value1.value()).isEqualTo('a');
+        assertThat(value1.getValue()).isEqualTo('a');
         var value2 = resolver.resolve(enumConstant2, enumType.element());
-        assertThat(value2.value()).isEqualTo('b');
+        assertThat(value2.getValue()).isEqualTo('b');
     }
 
     @Test

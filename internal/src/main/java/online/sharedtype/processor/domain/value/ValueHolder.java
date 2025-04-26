@@ -1,11 +1,14 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.value;
+
+import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.TypeInfo;
 
 import java.io.Serializable;
 
 public interface ValueHolder extends Serializable {
-    Object value();
+    Object getValue();
     default String literalValue() {
-        Object value = value();
+        Object value = getValue();
         if (value instanceof CharSequence || value instanceof Character) {
             return String.format("\"%s\"", value); // TODO: options single or double quotes?
         } else {

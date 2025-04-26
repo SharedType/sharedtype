@@ -6,7 +6,7 @@ import online.sharedtype.processor.context.OutputTarget;
 import online.sharedtype.processor.domain.ConstantField;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.ValueHolder;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

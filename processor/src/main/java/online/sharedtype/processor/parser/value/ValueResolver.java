@@ -1,7 +1,7 @@
 package online.sharedtype.processor.parser.value;
 
 import online.sharedtype.processor.context.Context;
-import online.sharedtype.processor.domain.ValueHolder;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.lang.model.element.Element;

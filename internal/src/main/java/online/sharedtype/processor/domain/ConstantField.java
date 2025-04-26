@@ -2,7 +2,7 @@ package online.sharedtype.processor.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import online.sharedtype.processor.domain.value.ValueHolder;
 
 /**
  * Represents a constant literal.

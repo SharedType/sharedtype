@@ -3,6 +3,7 @@ package online.sharedtype.processor.domain;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.value.EnumConstantValue;
 
 /**
  * Represents an enum value, which is the value in the target code that corresponds to an enum constant.

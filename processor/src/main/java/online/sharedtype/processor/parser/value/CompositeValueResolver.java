@@ -1,7 +1,7 @@
 package online.sharedtype.processor.parser.value;
 
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.processor.domain.ValueHolder;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.Element;

@@ -1,11 +1,10 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.value;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.io.Serial;
+import online.sharedtype.processor.domain.TypeInfo;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
@@ -18,9 +17,9 @@ public final class EnumConstantValue implements ValueHolder {
     private final Object value;
 
     @Override
-    public Object value() {
+    public Object getValue() {
         if (value instanceof ValueHolder) {
-            return ((ValueHolder) value).value();
+            return ((ValueHolder) value).getValue();
         }
         return value;
     }

@@ -1,10 +1,9 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.value;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
-import java.io.Serial;
 import java.util.Objects;
 
 @EqualsAndHashCode
@@ -14,10 +13,10 @@ public final class LiteralValue implements ValueHolder {
     private final Object value;
 
     @Override
-    public Object value() {
+    public Object getValue() {
         Object v = value;
         while (v instanceof ValueHolder) {
-            v = ((ValueHolder) v).value();
+            v = ((ValueHolder) v).getValue();
         }
         return v;
     }

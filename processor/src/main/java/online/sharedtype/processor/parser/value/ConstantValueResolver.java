@@ -13,8 +13,7 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
-import online.sharedtype.processor.domain.LiteralValue;
-import online.sharedtype.processor.domain.ValueHolder;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 

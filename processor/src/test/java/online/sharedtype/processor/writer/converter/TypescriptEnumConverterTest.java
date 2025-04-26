@@ -5,13 +5,14 @@ import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.Props;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
-import online.sharedtype.processor.domain.ValueHolder;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.writer.render.Template;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+import static online.sharedtype.processor.domain.Constants.BOXED_INT_TYPE_INFO;
 import static online.sharedtype.processor.domain.Constants.INT_TYPE_INFO;
 import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,9 +28,9 @@ final class TypescriptEnumConverterTest {
         .simpleName("EnumA")
         .qualifiedName("com.github.cuzfrog.EnumA")
         .enumValueInfos(Arrays.asList(
-            new EnumValueInfo("Value1", STRING_TYPE_INFO, ValueHolder.ofEnum(null, "Value1", null, "Value1")),
-            new EnumValueInfo("Value2", INT_TYPE_INFO, ValueHolder.ofEnum(null, "Value2", null, 123)),
-            new EnumValueInfo("Value3", INT_TYPE_INFO, ValueHolder.ofEnum(null, "Value3", null, null))
+            new EnumValueInfo("Value1", STRING_TYPE_INFO, ValueHolder.ofEnum("Value1", STRING_TYPE_INFO, "Value1")),
+            new EnumValueInfo("Value2", INT_TYPE_INFO, ValueHolder.ofEnum("Value2", INT_TYPE_INFO, 123)),
+            new EnumValueInfo("Value3", BOXED_INT_TYPE_INFO, ValueHolder.ofEnum("Value3", BOXED_INT_TYPE_INFO, null))
         ))
         .build();
 

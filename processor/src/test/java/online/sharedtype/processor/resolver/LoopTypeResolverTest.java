@@ -9,7 +9,7 @@ import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeVariableInfo;
-import online.sharedtype.processor.domain.ValueHolder;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.TypeDefParser;
 import org.junit.jupiter.api.Test;
 
@@ -159,8 +159,8 @@ final class LoopTypeResolverTest {
         EnumDef typeDef = EnumDef.builder()
             .qualifiedName("com.github.cuzfrog.EnumA").simpleName("EnumA")
             .enumValueInfos(Arrays.asList(
-                new EnumValueInfo("Value1", STRING_TYPE_INFO, ValueHolder.ofEnum(null, "Value1")),
-                new EnumValueInfo("Value2", STRING_TYPE_INFO, ValueHolder.ofEnum(null, "Value2"))
+                new EnumValueInfo("Value1", STRING_TYPE_INFO, ValueHolder.ofEnum("Value1")),
+                new EnumValueInfo("Value2", STRING_TYPE_INFO, ValueHolder.ofEnum("Value2"))
             ))
             .build();
 

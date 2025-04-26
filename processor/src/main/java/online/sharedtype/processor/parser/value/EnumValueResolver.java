@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.EnumCtorIndex;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.ValueHolder;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.support.annotation.VisibleForTesting;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;

@@ -7,7 +7,7 @@ import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.ValueHolder;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.parser.value.ValueResolver;
 import org.junit.jupiter.api.BeforeEach;
@@ -107,13 +107,13 @@ final class ConstantTypeDefParserTest {
             field1 -> {
                 assertThat(field1.name()).isEqualTo("CONST_INT_VALUE");
                 assertThat(field1.type()).isEqualTo(Constants.INT_TYPE_INFO);
-                assertThat(field1.value().value()).isEqualTo(105);
+                assertThat(field1.value().getValue()).isEqualTo(105);
                 assertThat(field1.value().literalValue()).isEqualTo("105");
             },
             field2 -> {
                 assertThat(field2.name()).isEqualTo("CONST_STRING_VALUE");
                 assertThat(field2.type()).isEqualTo(Constants.STRING_TYPE_INFO);
-                assertThat(field2.value().value()).isEqualTo("abc123");
+                assertThat(field2.value().getValue()).isEqualTo("abc123");
                 assertThat(field2.value().literalValue()).isEqualTo("\"abc123\"");
             }
         );

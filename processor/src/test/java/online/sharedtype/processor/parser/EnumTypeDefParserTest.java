@@ -8,7 +8,7 @@ import online.sharedtype.processor.context.TypeElementMock;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.EnumDef;
-import online.sharedtype.processor.domain.ValueHolder;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.parser.value.ValueResolver;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,13 +69,13 @@ final class EnumTypeDefParserTest {
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
         assertThat(typeDef.components()).satisfiesExactly(
             c1 -> {
-                assertThat(c1.value().value()).isEqualTo("Value1");
+                assertThat(c1.value().getValue()).isEqualTo("Value1");
                 assertThat(c1.value().getEnumConstantName()).isEqualTo("Value1");
                 assertThat(c1.type()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(c1.name()).isEqualTo("Value1");
             },
             c2 -> {
-                assertThat(c2.value().value()).isEqualTo("Value2");
+                assertThat(c2.value().getValue()).isEqualTo("Value2");
                 assertThat(c2.type()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(c2.name()).isEqualTo("Value2");
             }
