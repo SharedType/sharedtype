@@ -24,14 +24,16 @@ final class ReferenceResolverTest {
             .typeArgs(List.of(TypeVariableInfo.builder().name("T1").build())).build());
         classDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("a.b.A")
             .typeArgs(List.of(TypeVariableInfo.builder().name("T2").build())).build());
-        classDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("a.b.A")
-            .typeArgs(List.of(TypeVariableInfo.builder().name("T3").build()))
-            .referencingTypes(Set.of(classDefReferencing1)).build());
+        var referencedTypeT3 = ConcreteTypeInfo.builder().qualifiedName("a.b.A")
+            .typeArgs(List.of(TypeVariableInfo.builder().name("T3").build())).build();
+        referencedTypeT3.addReferencingType(classDefReferencing1);
+        classDef.linkTypeInfo(referencedTypeT3);
 
         var classDefReferencing2 = ClassDef.builder().qualifiedName("a.b.R2").annotated(true)
             .build();
-        classDefReferencing1.linkTypeInfo(ConcreteTypeInfo.builder()
-            .qualifiedName("a.b.C4").referencingTypes(Set.of(classDefReferencing2)).build());
+        var referencedTypeC4 = ConcreteTypeInfo.builder().qualifiedName("a.b.C4").build();
+        referencedTypeC4.addReferencingType(classDefReferencing2);
+        classDefReferencing1.linkTypeInfo(referencedTypeC4);
 
         referenceResolver.resolve(List.of(classDef));
         assertThat(classDef.isReferencedByAnnotated()).isTrue();
@@ -45,9 +47,15 @@ final class ReferenceResolverTest {
             .build();
         var classDefC = ClassDef.builder().qualifiedName("a.b.C")
             .build();
-        classDefA.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("a.b.A").referencingTypes(Set.of(classDefC)).build());
-        classDefB.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("a.b.B").referencingTypes(Set.of(classDefA)).build());
-        classDefC.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("a.b.C").referencingTypes(Set.of(classDefB)).build());
+        var typeInfoA = ConcreteTypeInfo.builder().qualifiedName("a.b.A").build();
+        typeInfoA.addReferencingType(classDefC);
+        var typeInfoB = ConcreteTypeInfo.builder().qualifiedName("a.b.B").build();
+        typeInfoB.addReferencingType(classDefA);
+        var typeInfoC = ConcreteTypeInfo.builder().qualifiedName("a.b.C").build();
+        typeInfoC.addReferencingType(classDefB);
+        classDefA.linkTypeInfo(typeInfoA);
+        classDefB.linkTypeInfo(typeInfoB);
+        classDefC.linkTypeInfo(typeInfoC);
 
         referenceResolver.resolve(List.of(classDefA, classDefB, classDefC));
         assertThat(classDefA.isCyclicReferenced()).isTrue();

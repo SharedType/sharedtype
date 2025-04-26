@@ -87,6 +87,7 @@ final class ClassTypeDefParserTest {
 
         var classDefs = parser.parse(clazz);
         var classDef = (ClassDef)classDefs.get(0);
+        assertThat(parsedField1Type.referencingTypes()).containsExactly(classDef);
         assertThat(classDef.simpleName()).isEqualTo("Abc");
 
         // components

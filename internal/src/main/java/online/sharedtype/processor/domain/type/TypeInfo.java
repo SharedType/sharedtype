@@ -43,5 +43,5 @@ public interface TypeInfo extends Serializable {
      * Mark this type as referenced by another type. Used for e.g. cyclic reference detection.
      * @param typeDef type that references this type
      */
-//    void addReferencingType(TypeDef typeDef);
+    void addReferencingType(TypeDef typeDef);
 }

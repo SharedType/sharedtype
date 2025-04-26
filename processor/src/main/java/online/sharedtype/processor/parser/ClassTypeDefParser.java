@@ -130,9 +130,7 @@ final class ClassTypeDefParser implements TypeDefParser {
         for (Tuple<Element, String> tuple : componentElems) {
             Element element = tuple.a();
             TypeInfo fieldTypeInfo = typeInfoParser.parse(element.asType(), typeElement);
-            if (fieldTypeInfo instanceof ConcreteTypeInfo) {
-                ((ConcreteTypeInfo) fieldTypeInfo).referencingTypes().add(classDef);
-            } // TODO: now, referencing type can be a wrapper typeInfo like array
+            fieldTypeInfo.addReferencingType(classDef);
             FieldComponentInfo fieldInfo = FieldComponentInfo.builder()
                 .name(tuple.b())
                 .modifiers(element.getModifiers())

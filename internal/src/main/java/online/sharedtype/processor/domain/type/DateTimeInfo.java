@@ -16,9 +16,9 @@ import java.util.Map;
  *
  * @author Cause Chung
  */
-@EqualsAndHashCode(of = "qualifiedName")
+@EqualsAndHashCode(of = "qualifiedName", callSuper = false)
 @RequiredArgsConstructor
-public final class DateTimeInfo implements TypeInfo, MappableType {
+public final class DateTimeInfo extends ReferableTypeInfo implements MappableType {
     private static final long serialVersionUID = 5428192893749821359L;
 
     private final String qualifiedName;

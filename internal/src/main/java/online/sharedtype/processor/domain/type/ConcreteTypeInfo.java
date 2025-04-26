@@ -31,9 +31,9 @@ import java.util.stream.Collectors;
  * @see ArrayTypeInfo
  * @see Kind
  */
-@EqualsAndHashCode(of = {"qualifiedName", "typeArgs"})
+@EqualsAndHashCode(of = {"qualifiedName", "typeArgs"}, callSuper = false)
 @Builder(toBuilder = true)
-public final class ConcreteTypeInfo implements TypeInfo, MappableType {
+public final class ConcreteTypeInfo extends ReferableTypeInfo implements MappableType {
     private static final long serialVersionUID = 6912267731376244613L;
     private final String qualifiedName;
     private final String simpleName;
@@ -49,11 +49,6 @@ public final class ConcreteTypeInfo implements TypeInfo, MappableType {
     @Getter
     private final boolean baseMapType;
 
-    /**
-     * Qualified names of types from where this typeInfo is strongly referenced, i.e. as a component type.
-     */
-    @Builder.Default
-    private final Set<TypeDef> referencingTypes = new HashSet<>();
     @Builder.Default
     private boolean resolved = true;
 
@@ -122,10 +117,6 @@ public final class ConcreteTypeInfo implements TypeInfo, MappableType {
 
     public String simpleName() {
         return simpleName;
-    }
-
-    public Set<TypeDef> referencingTypes() {
-        return referencingTypes;
     }
 
     public List<TypeInfo> typeArgs() {
