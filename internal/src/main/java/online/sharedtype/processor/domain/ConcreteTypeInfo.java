@@ -36,8 +36,8 @@ public final class ConcreteTypeInfo implements TypeInfo, MappableType {
     @Builder.Default
     private final List<TypeInfo> typeArgs = Collections.emptyList();
 
-    @Getter
-    private final Kind kind;
+    @Getter @Builder.Default
+    private final Kind kind = Kind.OTHER;
 
     /**
      * If this type is defined in global config as base Map type

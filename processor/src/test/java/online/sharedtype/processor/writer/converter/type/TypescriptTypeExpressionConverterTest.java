@@ -28,7 +28,7 @@ final class TypescriptTypeExpressionConverterTest {
 
     @Test
     void typeContract() {
-        assertThat(converter.typeNameMappings.keySet()).containsAll(Constants.STRING_AND_NUMBER_TYPES);
+        assertThat(converter.typeNameMappings.keySet()).containsAll(Constants.LITERAL_TYPES);
     }
 
     @Test
