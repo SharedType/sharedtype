@@ -7,7 +7,6 @@ import online.sharedtype.processor.context.Props;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.render.Template;
 
@@ -31,7 +30,7 @@ final class TypescriptEnumConverter implements TemplateDataConverter {
         if (config.getTypescriptEnumFormat() == Props.Typescript.EnumFormat.UNION) {
             List<String> values = new ArrayList<>(enumDef.components().size());
             for (EnumValueInfo component : enumDef.components()) {
-                values.add(ConversionUtils.literalValue(component.value()));
+                values.add(component.value().literalValue());
             }
             return Tuple.of(Template.TEMPLATE_TYPESCRIPT_UNION_TYPE_ENUM, new EnumUnionExpr(enumDef.simpleName(), values));
         } else {
@@ -40,7 +39,7 @@ final class TypescriptEnumConverter implements TemplateDataConverter {
                 config.getTypescriptEnumFormat() == Props.Typescript.EnumFormat.CONST_ENUM,
                 enumDef.components().stream().map(component -> new EnumValueExpr(
                     component.name(),
-                    ConversionUtils.literalValue(component.value())
+                    component.value().literalValue()
                 )).collect(Collectors.toList())
             );
             return Tuple.of(Template.TEMPLATE_TYPESCRIPT_ENUM, value);

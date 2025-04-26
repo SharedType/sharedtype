@@ -7,6 +7,7 @@ import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.ConstantField;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.ValueHolder;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,10 +28,11 @@ final class ConstantConverterRustTest {
         .simpleName("Abc")
         .qualifiedName("com.github.cuzfrog.Abc")
         .constants(List.of(
-            new ConstantField("VALUE1", Constants.BOOLEAN_TYPE_INFO, true),
-            new ConstantField("VALUE2", Constants.STRING_TYPE_INFO, "value2"),
-            new ConstantField("VALUE3", Constants.FLOAT_TYPE_INFO, 3.5f),
-            new ConstantField("VALUE4", ConcreteTypeInfo.builder().simpleName("MyEnum").kind(ENUM).build(), "ENUM_VALUE1")
+            new ConstantField("VALUE1", Constants.BOOLEAN_TYPE_INFO, ValueHolder.of(true)),
+            new ConstantField("VALUE2", Constants.STRING_TYPE_INFO, ValueHolder.of("value2")),
+            new ConstantField("VALUE3", Constants.FLOAT_TYPE_INFO, ValueHolder.of(3.5f)),
+            new ConstantField("VALUE4", ConcreteTypeInfo.builder().simpleName("MyEnum").kind(ENUM).build(),
+                ValueHolder.ofEnum(null, "ENUM_CONST", null, "1"))
         ))
         .build();
     private final Config config = mock(Config.class);
@@ -64,7 +66,7 @@ final class ConstantConverterRustTest {
             constantExpr -> {
                 assertThat(constantExpr.name).isEqualTo("VALUE4");
                 assertThat(constantExpr.type).isEqualTo("MyEnum");
-                assertThat(constantExpr.value.toString()).isEqualTo("MyEnum::ENUM_VALUE1");
+                assertThat(constantExpr.value).isEqualTo("MyEnum::ENUM_CONST");
             }
         );
         var template = tuple.a();

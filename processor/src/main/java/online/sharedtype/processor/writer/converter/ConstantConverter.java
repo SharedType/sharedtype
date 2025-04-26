@@ -7,8 +7,9 @@ import online.sharedtype.processor.context.OutputTarget;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.ConstantField;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
-import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.EnumConstantValue;
 import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.ValueHolder;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
@@ -49,14 +50,16 @@ final class ConstantConverter implements TemplateDataConverter {
         );
     }
 
-    private Object toConstantValue(ConstantField constantField) {
+    private String toConstantValue(ConstantField constantField) {
         if (constantField.type() instanceof ConcreteTypeInfo) {
             ConcreteTypeInfo type = (ConcreteTypeInfo) constantField.type();
-            if (type.getKind() == ConcreteTypeInfo.Kind.ENUM && outputTarget == OutputTarget.RUST) {
-                return new RustEnumValueExpr(type.simpleName(), constantField.value().toString());
+            ValueHolder value = constantField.value();
+            if (value instanceof EnumConstantValue && outputTarget == OutputTarget.RUST) {
+                EnumConstantValue enumConstantValue = (EnumConstantValue) value;
+                return String.format("%s::%s",type.simpleName(), enumConstantValue.getEnumConstantName());
             }
         }
-        return ConversionUtils.literalValue(constantField.value());
+        return constantField.value().literalValue();
     }
 
     @RequiredArgsConstructor
@@ -69,17 +72,6 @@ final class ConstantConverter implements TemplateDataConverter {
     static final class ConstantExpr {
         final String name;
         final String type;
-        final Object value;
-    }
-
-    @RequiredArgsConstructor
-    static final class RustEnumValueExpr {
-        final String name;
         final String value;
-
-        @Override
-        public String toString() {
-            return String.format("%s::%s", name, value);
-        }
     }
 }

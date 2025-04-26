@@ -3,6 +3,8 @@ package online.sharedtype.processor.parser.value;
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TypeElementMock;
+import online.sharedtype.processor.domain.EnumConstantValue;
+import online.sharedtype.processor.parser.type.TypeInfoParser;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -12,12 +14,14 @@ import javax.lang.model.type.TypeKind;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 final class EnumValueResolverTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final EnumValueResolver resolver = new EnumValueResolver(ctxMocks.getContext());
+    private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
+    private final EnumValueResolver resolver = new EnumValueResolver(ctxMocks.getContext(), typeInfoParser);
 
     private final ArgumentCaptor<String> msgCaptor = ArgumentCaptor.forClass(String.class);
     private final TypeElementMock enumType = ctxMocks.typeElement("com.github.cuzfrog.EnumA");
@@ -54,8 +58,11 @@ final class EnumValueResolverTest {
         );
         when(ctxMocks.getContext().isAnnotatedAsEnumValue(field2.element())).thenReturn(true);
 
-        assertThat(resolver.resolve(enumConstant1, enumType.element())).isEqualTo('a');
-        assertThat(resolver.resolve(enumConstant2, enumType.element())).isEqualTo('b');
+        EnumConstantValue value1 = (EnumConstantValue) resolver.resolve(enumConstant1, enumType.element());
+        assertThat(value1.getEnumConstantName()).isEqualTo(enumConstant1.getSimpleName().toString());
+        assertThat(value1.value()).isEqualTo('a');
+        var value2 = resolver.resolve(enumConstant2, enumType.element());
+        assertThat(value2.value()).isEqualTo('b');
     }
 
     @Test

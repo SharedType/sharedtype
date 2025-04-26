@@ -12,7 +12,7 @@ final class ConstantsIntegrationTest {
         ConstantNamespaceDef constantsDef = (ConstantNamespaceDef) deserializeTypeDef("$online.sharedtype.it.java8.MyConstants.ser");
         assertThat(constantsDef.simpleName()).isEqualTo("MyConstants");
         var components = constantsDef.components();
-        assertThat(components).hasSize(24);
+        assertThat(components).hasSize(28);
         assertThat(components).satisfiesExactly(
             component -> {
                 assertThat(component.name()).isEqualTo("FLOAT_VALUE");
@@ -63,6 +63,14 @@ final class ConstantsIntegrationTest {
                 assertThat(component.value()).isEqualTo("MilkyWay");
             },
             component -> {
+                assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE2");
+                assertThat(component.value()).isEqualTo("S");
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE3");
+                assertThat(component.value()).isEqualTo(1);
+            },
+            component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_VALUE_IN_STATIC_BLOCK");
                 assertThat(component.value()).isEqualTo(112L);
             },
@@ -109,6 +117,14 @@ final class ConstantsIntegrationTest {
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE_IN_STATIC_BLOCK");
                 assertThat(component.value()).isEqualTo("MilkyWay");
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE2_IN_STATIC_BLOCK");
+                assertThat(component.value()).isEqualTo("S");
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE3_IN_STATIC_BLOCK");
+                assertThat(component.value()).isEqualTo(1);
             }
         );
     }

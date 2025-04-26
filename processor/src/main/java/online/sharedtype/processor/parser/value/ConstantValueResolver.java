@@ -13,6 +13,8 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.domain.LiteralValue;
+import online.sharedtype.processor.domain.ValueHolder;
 import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
@@ -40,14 +42,14 @@ final class ConstantValueResolver implements ValueResolver {
     private final ValueResolver enumValueResolver;
 
     @Override
-    public Object resolve(Element fieldElement, TypeElement ctxTypeElement) {
+    public ValueHolder resolve(Element fieldElement, TypeElement ctxTypeElement) {
         Tree tree = ctx.getTrees().getTree(fieldElement);
         if (tree == null) {
             ctx.error(fieldElement, "Cannot parse constant value for field: %s in %s, tree is null from the field element. " +
                     "If the type is from a dependency jar/compiled class file, tree is not available at the time of annotation processing. " +
                     "Check if the type or its custom mapping is correct.",
                 fieldElement, ctxTypeElement);
-            return null;
+            return ValueHolder.NULL;
         }
         try {
             ValueResolveContext parsingContext = ValueResolveContext.builder()
@@ -55,14 +57,14 @@ final class ConstantValueResolver implements ValueResolver {
                 .fieldElement(fieldElement)
                 .tree(tree).enclosingTypeElement(ctxTypeElement)
                 .build();
-            return recursivelyResolveConstantValue(parsingContext);
+            return ValueHolder.of(recursivelyResolveConstantValue(parsingContext));
         } catch (SharedTypeException e) {
             ctx.error(fieldElement, "Failed to resolve constant value. " +
                     "Field tree: %s in %s. Consider to ignore this field or exclude constants generation for this type. " +
                     "Error message: %s",
                 tree, ctxTypeElement, e.getMessage());
         }
-        return null;
+        return ValueHolder.NULL;
     }
 
     private Object recursivelyResolveConstantValue(ValueResolveContext parsingContext) {

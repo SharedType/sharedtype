@@ -7,8 +7,7 @@ import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.DependingKind;
-import online.sharedtype.processor.parser.type.TypeContext;
+import online.sharedtype.processor.domain.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.parser.value.ValueResolver;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,9 +28,6 @@ final class ConstantTypeDefParserTest {
     private final ValueResolver valueResolver = mock(ValueResolver.class);
     private final ConstantTypeDefParser parser = new ConstantTypeDefParser(ctxMocks.getContext(), typeInfoParser, valueResolver);
 
-    private final TypeContext typeContext = TypeContext.builder()
-        .typeDef(ConstantNamespaceDef.builder().qualifiedName("com.github.cuzfrog.Abc").build())
-        .dependingKind(DependingKind.COMPONENTS).build();
     private final ClassDef mainTypeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").annotated(true).build();
     private final Config config = mock(Config.class);
 
@@ -100,10 +96,10 @@ final class ConstantTypeDefParserTest {
                 nonStaticField.element()
             )
             .element();
-        when(typeInfoParser.parse(intStaticField.type(), typeContext)).thenReturn(Constants.INT_TYPE_INFO);
-        when(typeInfoParser.parse(stringStaticField.type(), typeContext)).thenReturn(Constants.STRING_TYPE_INFO);
-        when(valueResolver.resolve(intStaticField.element(), typeElement)).thenReturn(105);
-        when(valueResolver.resolve(stringStaticField.element(), typeElement)).thenReturn("abc123");
+        when(typeInfoParser.parse(intStaticField.type(), typeElement)).thenReturn(Constants.INT_TYPE_INFO);
+        when(typeInfoParser.parse(stringStaticField.type(), typeElement)).thenReturn(Constants.STRING_TYPE_INFO);
+        when(valueResolver.resolve(intStaticField.element(), typeElement)).thenReturn(ValueHolder.of(105));
+        when(valueResolver.resolve(stringStaticField.element(), typeElement)).thenReturn(ValueHolder.of("abc123"));
 
         var typeDef = (ConstantNamespaceDef)parser.parse(typeElement).get(0);
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
@@ -111,12 +107,14 @@ final class ConstantTypeDefParserTest {
             field1 -> {
                 assertThat(field1.name()).isEqualTo("CONST_INT_VALUE");
                 assertThat(field1.type()).isEqualTo(Constants.INT_TYPE_INFO);
-                assertThat(field1.value()).isEqualTo(105);
+                assertThat(field1.value().value()).isEqualTo(105);
+                assertThat(field1.value().literalValue()).isEqualTo("105");
             },
             field2 -> {
                 assertThat(field2.name()).isEqualTo("CONST_STRING_VALUE");
                 assertThat(field2.type()).isEqualTo(Constants.STRING_TYPE_INFO);
-                assertThat(field2.value()).isEqualTo("abc123");
+                assertThat(field2.value().value()).isEqualTo("abc123");
+                assertThat(field2.value().literalValue()).isEqualTo("\"abc123\"");
             }
         );
     }

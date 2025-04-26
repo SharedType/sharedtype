@@ -21,6 +21,8 @@ final class MyConstants extends IgnoredSuperClassB {
     static final long REFERENCED_SUPER_VALUE = LONG_VALUE_IN_SUPER;
     static final long SELECTED_SUPER_VALUE = IgnoredSuperClassB.LONG_VALUE_IN_SUPER;
     static final EnumGalaxy REFERENCED_ENUM_VALUE = EnumGalaxy.MilkyWay;
+    static final EnumTShirt REFERENCED_ENUM_VALUE2 = EnumTShirt.S;
+    static final EnumSize REFERENCED_ENUM_VALUE3 = EnumSize.SMALL;
 
     static final long REFERENCED_VALUE_IN_STATIC_BLOCK;
     static final long REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK;
@@ -34,6 +36,8 @@ final class MyConstants extends IgnoredSuperClassB {
     static final long SELECTED_SUPER_VALUE_IN_STATIC_BLOCK;
     static final long REFERENCED_STATIC_VALUE_IN_STATIC_BLOCK;
     static final EnumGalaxy REFERENCED_ENUM_VALUE_IN_STATIC_BLOCK;
+    static final EnumTShirt REFERENCED_ENUM_VALUE2_IN_STATIC_BLOCK;
+    static final EnumSize REFERENCED_ENUM_VALUE3_IN_STATIC_BLOCK;
     static {
         REFERENCED_VALUE_IN_STATIC_BLOCK = 112L;
         REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK = IGNORED_LOCAL_VALUE;
@@ -47,6 +51,8 @@ final class MyConstants extends IgnoredSuperClassB {
         SELECTED_SUPER_VALUE_IN_STATIC_BLOCK = IgnoredSuperClassB.LONG_VALUE_IN_SUPER;
         REFERENCED_STATIC_VALUE_IN_STATIC_BLOCK = OtherConstants.Inner1.INNER_LONG_VALUE_IN_STATIC_BLOCK;
         REFERENCED_ENUM_VALUE_IN_STATIC_BLOCK = EnumGalaxy.MilkyWay;
+        REFERENCED_ENUM_VALUE2_IN_STATIC_BLOCK = EnumTShirt.S;
+        REFERENCED_ENUM_VALUE3_IN_STATIC_BLOCK = EnumSize.SMALL;
     }
 
     @SharedType(constantNamespaced = SharedType.OptionalBool.FALSE, includes = SharedType.ComponentType.CONSTANTS)

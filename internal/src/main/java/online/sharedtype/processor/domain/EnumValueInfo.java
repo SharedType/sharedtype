@@ -19,7 +19,7 @@ public final class EnumValueInfo implements ComponentInfo {
     private static final long serialVersionUID = 1117324458104635595L;
     private final String name;
     private final TypeInfo type;
-    private final Object value;
+    private final EnumConstantValue value;
 
     public String name() {
         return name;
@@ -29,7 +29,7 @@ public final class EnumValueInfo implements ComponentInfo {
         return type;
     }
 
-    public Object value() {
+    public EnumConstantValue value() {
         return value;
     }
 

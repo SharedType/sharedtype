@@ -6,6 +6,7 @@ import online.sharedtype.processor.domain.TargetCodeType;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,13 +22,12 @@ final class MappableTypeInfoParserTest {
 
     @Test
     void addTypeMappings() {
-        TypeContext typeContext = TypeContext.builder().build();
-        TypeMirror typeMirror1 = ctxMocks.typeElement("a.b.MyDateTime").type();
+        TypeElement typeElement1 = ctxMocks.typeElement("a.b.MyDateTime").element();
 
         DateTimeInfo dateTimeInfo = new DateTimeInfo("a.b.MyDateTime");
-        when(delegate.parse(typeMirror1, typeContext)).thenReturn(dateTimeInfo);
+        when(delegate.parse(typeElement1.asType(), typeElement1)).thenReturn(dateTimeInfo);
 
-        var resTypeInfo = parser.parse(typeMirror1, typeContext);
+        var resTypeInfo = parser.parse(typeElement1.asType(), typeElement1);
         assertThat(resTypeInfo).isSameAs(dateTimeInfo);
         assertThat(dateTimeInfo.mappedNameOrDefault(TargetCodeType.TYPESCRIPT, "DefaultName")).isEqualTo("MyString");
         assertThat(dateTimeInfo.mappedNameOrDefault(TargetCodeType.RUST, "DefaultName")).isEqualTo("MyStringR");

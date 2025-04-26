@@ -8,13 +8,6 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 final class ConversionUtilsTest {
-
-    @Test
-    void literalValue() {
-        assertThat(ConversionUtils.literalValue("abc")).isEqualTo("\"abc\"");
-        assertThat(ConversionUtils.literalValue(105)).isEqualTo("105");
-    }
-
     @Test
     void toSnakeCase() {
         assertThat(ConversionUtils.toSnakeCase("camelCase")).isEqualTo("camel_case");

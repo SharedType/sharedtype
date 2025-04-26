@@ -8,8 +8,6 @@ import online.sharedtype.processor.context.TypeElementMock;
 import online.sharedtype.processor.domain.ClassDef;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.DependingKind;
-import online.sharedtype.processor.parser.type.TypeContext;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -35,12 +33,6 @@ final class ClassTypeDefParserTest {
     private final ArgumentCaptor<Config> configCaptor = ArgumentCaptor.forClass(Config.class);
 
     private final TypeElementMock string = ctxMocks.typeElement("java.lang.String");
-    private final TypeContext typeContextForComponents = TypeContext.builder()
-        .typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build())
-        .dependingKind(DependingKind.COMPONENTS).build();
-    private final TypeContext typeContextForSupertypes = TypeContext.builder()
-        .typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build())
-        .dependingKind(DependingKind.SUPER_TYPE).build();
 
     @Test
     void parseComplexClass() {
@@ -83,18 +75,15 @@ final class ClassTypeDefParserTest {
         var parsedSupertype1 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.SuperClassA").build();
         var parsedSupertype2 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.InterfaceA").build();
         var parsedSupertype3 = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.InterfaceB").build();
-        when(typeInfoParser.parse(field1.type(), typeContextForComponents)).thenReturn(parsedField1Type);
-        when(typeInfoParser.parse(field2.type(), typeContextForComponents)).thenReturn(parsedField2Type);
-        when(typeInfoParser.parse(method2.type(), typeContextForComponents)).thenReturn(parsedMethod2Type);
-        when(typeInfoParser.parse(supertype1.type(), typeContextForSupertypes)).thenReturn(parsedSupertype1);
-        when(typeInfoParser.parse(supertype2.type(), typeContextForSupertypes)).thenReturn(parsedSupertype2);
-        when(typeInfoParser.parse(supertype3.type(), typeContextForSupertypes)).thenReturn(parsedSupertype3);
+        when(typeInfoParser.parse(field1.type(), clazz)).thenReturn(parsedField1Type);
+        when(typeInfoParser.parse(field2.type(), clazz)).thenReturn(parsedField2Type);
+        when(typeInfoParser.parse(method2.type(), clazz)).thenReturn(parsedMethod2Type);
+        when(typeInfoParser.parse(supertype1.type(), clazz)).thenReturn(parsedSupertype1);
+        when(typeInfoParser.parse(supertype2.type(), clazz)).thenReturn(parsedSupertype2);
+        when(typeInfoParser.parse(supertype3.type(), clazz)).thenReturn(parsedSupertype3);
 
         var parsedSelfTypeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.Abc").build();
-        var typeContextForSelf = TypeContext.builder()
-            .typeDef(ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").build())
-            .dependingKind(DependingKind.SELF).build();
-        when(typeInfoParser.parse(clazz.asType(), typeContextForSelf)).thenReturn(parsedSelfTypeInfo);
+        when(typeInfoParser.parse(clazz.asType(), clazz)).thenReturn(parsedSelfTypeInfo);
         InOrder inOrder = inOrder(typeInfoParser);
 
         var classDefs = parser.parse(clazz);
@@ -132,12 +121,12 @@ final class ClassTypeDefParserTest {
         // supertypes
         assertThat(classDef.directSupertypes()).containsExactly(parsedSupertype1, parsedSupertype2, parsedSupertype3);
 
-        inOrder.verify(typeInfoParser).parse(field1.type(), typeContextForComponents);
-        inOrder.verify(typeInfoParser).parse(field2.type(), typeContextForComponents);
-        inOrder.verify(typeInfoParser).parse(method2.type(), typeContextForComponents);
-        inOrder.verify(typeInfoParser).parse(supertype1.type(), typeContextForSupertypes);
-        inOrder.verify(typeInfoParser).parse(supertype2.type(), typeContextForSupertypes);
-        inOrder.verify(typeInfoParser).parse(supertype3.type(), typeContextForSupertypes);
+        inOrder.verify(typeInfoParser).parse(field1.type(), clazz);
+        inOrder.verify(typeInfoParser).parse(field2.type(), clazz);
+        inOrder.verify(typeInfoParser).parse(method2.type(), clazz);
+        inOrder.verify(typeInfoParser).parse(supertype1.type(), clazz);
+        inOrder.verify(typeInfoParser).parse(supertype2.type(), clazz);
+        inOrder.verify(typeInfoParser).parse(supertype3.type(), clazz);
 
         // self typeInfo
         assertThat(classDef.typeInfoSet()).satisfiesExactly(typeInfo -> assertThat(typeInfo).isSameAs(parsedSelfTypeInfo));

@@ -5,12 +5,12 @@ import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.DependingKind;
+import online.sharedtype.processor.domain.EnumConstantValue;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.TypeDef;
 import online.sharedtype.processor.domain.TypeInfo;
-import online.sharedtype.processor.parser.type.TypeContext;
+import online.sharedtype.processor.domain.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.parser.value.ValueResolver;
 
@@ -58,23 +58,23 @@ final class EnumTypeDefParser implements TypeDefParser {
             .simpleName(config.getSimpleName())
             .annotated(config.isAnnotated())
             .build();
-        enumDef.components().addAll(parseEnumConstants(typeElement, enumConstantElems));
-        TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), TypeContext.builder().typeDef(enumDef).dependingKind(DependingKind.SELF).build());
+        enumDef.components().addAll(parseEnumConstants(typeElement, enumConstantElems, enumDef));
+        TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), typeElement);
         enumDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);
         ctx.getTypeStore().saveConfig(enumDef.qualifiedName(), config);
         return Collections.singletonList(enumDef);
     }
 
-    private List<EnumValueInfo> parseEnumConstants(TypeElement enumTypeElement, List<VariableElement> enumConstants) {
+    private List<EnumValueInfo> parseEnumConstants(TypeElement enumTypeElement, List<VariableElement> enumConstants, EnumDef enumDef) {
         List<EnumValueInfo> res = new ArrayList<>(enumConstants.size());
         for (VariableElement enumConstant : enumConstants) {
             String name = enumConstant.getSimpleName().toString();
-            Object value = valueResolver.resolve(enumConstant, enumTypeElement);
-            if (value != null) {
-                TypeInfo valueTypeInfo = ctx.getTypeStore().getTypeInfo(value.getClass().getCanonicalName(), Collections.emptyList());
-                res.add(new EnumValueInfo(name, valueTypeInfo, value));
+            ValueHolder value = valueResolver.resolve(enumConstant, enumTypeElement);
+            if (value instanceof EnumConstantValue) {
+                EnumConstantValue enumConstantValue = (EnumConstantValue) value;
+                res.add(new EnumValueInfo(name, enumConstantValue.getValueType(), (EnumConstantValue) value));
             } else {
-                ctx.warn(enumConstant, "Cannot resolve value for enum constant %s", name);
+                ctx.warn(enumConstant, "Cannot resolve value for enum constant %s, value: '%s'", name, value);
             }
         }
         return res;

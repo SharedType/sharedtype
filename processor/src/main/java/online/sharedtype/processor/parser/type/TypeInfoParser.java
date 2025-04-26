@@ -5,6 +5,7 @@ import online.sharedtype.processor.parser.TypeDefParser;
 import online.sharedtype.processor.domain.TypeInfo;
 import online.sharedtype.processor.context.Context;
 
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -27,7 +28,7 @@ public interface TypeInfoParser {
      * So there's no structural information, e.g. name, saved in global context yet.
      * </p>
      */
-    TypeInfo parse(TypeMirror typeMirror, TypeContext typeContext);
+    TypeInfo parse(TypeMirror typeMirror, TypeElement ctxTypeElement);
 
     static TypeInfoParser create(Context ctx) {
         return new MappableTypeInfoParser(ctx, new TypeInfoParserImpl(ctx));

@@ -29,7 +29,7 @@ public interface TypeDefParser {
 
     static TypeDefParser create(Context ctx) {
         TypeInfoParser typeInfoParser = TypeInfoParser.create(ctx);
-        ValueResolver valueResolver = ValueResolver.create(ctx);
+        ValueResolver valueResolver = ValueResolver.create(ctx, typeInfoParser);
         List<TypeDefParser> parsers = new ArrayList<>(3); // order matters! see #parse
         parsers.add(new ClassTypeDefParser(ctx, typeInfoParser));
         parsers.add(new EnumTypeDefParser(ctx, typeInfoParser, valueResolver));
