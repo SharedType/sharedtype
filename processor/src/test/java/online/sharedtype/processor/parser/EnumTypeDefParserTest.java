@@ -5,7 +5,7 @@ import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TestUtils;
 import online.sharedtype.processor.context.TypeElementMock;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.value.ValueHolder;
@@ -82,7 +82,7 @@ final class EnumTypeDefParserTest {
         );
         assertThat(typeDef.typeInfoSet()).containsExactly(typeInfo);
 
-        verify(ctxMocks.getTypeStore()).saveConfig(eq(typeDef.qualifiedName()), configCaptor.capture());
+        verify(ctxMocks.getTypeStore()).saveConfig(configCaptor.capture());
         var config = configCaptor.getValue();
         assertThat(config.getQualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(config.getAnno()).isSameAs(anno);

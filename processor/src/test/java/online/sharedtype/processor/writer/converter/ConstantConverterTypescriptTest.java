@@ -33,7 +33,8 @@ final class ConstantConverterTypescriptTest {
 
     @BeforeEach
     void setup() {
-        ctxMocks.getTypeStore().saveConfig("com.github.cuzfrog.Abc", config);
+        when(config.getQualifiedName()).thenReturn("com.github.cuzfrog.Abc");
+        ctxMocks.getTypeStore().saveConfig(config);
         when(config.isConstantNamespaced()).thenReturn(true);
     }
 

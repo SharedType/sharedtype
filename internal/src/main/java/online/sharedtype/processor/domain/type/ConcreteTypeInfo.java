@@ -1,9 +1,13 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.type;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.ConcreteTypeDef;
+import online.sharedtype.processor.domain.MappableType;
+import online.sharedtype.processor.domain.TargetCodeType;
+import online.sharedtype.processor.domain.TypeDef;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -65,7 +69,7 @@ public final class ConcreteTypeInfo implements TypeInfo, MappableType {
     private final Map<TargetCodeType, String> mappedNames = new EnumMap<>(TargetCodeType.class);
 
 
-    static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
+    public static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
         return ConcreteTypeInfo.builder().qualifiedName(qualifiedName).simpleName(simpleName).build();
     }
 

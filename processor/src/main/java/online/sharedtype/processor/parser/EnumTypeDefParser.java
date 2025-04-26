@@ -4,12 +4,12 @@ import com.sun.source.tree.Tree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.value.EnumConstantValue;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.parser.value.ValueResolver;
@@ -44,6 +44,8 @@ final class EnumTypeDefParser implements TypeDefParser {
         }
 
         Config config = new Config(typeElement, ctx);
+        ctx.getTypeStore().saveConfig(config);
+
         List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
         List<VariableElement> enumConstantElems = new ArrayList<>(enclosedElements.size());
 
@@ -58,14 +60,13 @@ final class EnumTypeDefParser implements TypeDefParser {
             .simpleName(config.getSimpleName())
             .annotated(config.isAnnotated())
             .build();
-        enumDef.components().addAll(parseEnumConstants(typeElement, enumConstantElems, enumDef));
+        enumDef.components().addAll(parseEnumConstants(typeElement, enumConstantElems));
         TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), typeElement);
         enumDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);
-        ctx.getTypeStore().saveConfig(enumDef.qualifiedName(), config);
         return Collections.singletonList(enumDef);
     }
 
-    private List<EnumValueInfo> parseEnumConstants(TypeElement enumTypeElement, List<VariableElement> enumConstants, EnumDef enumDef) {
+    private List<EnumValueInfo> parseEnumConstants(TypeElement enumTypeElement, List<VariableElement> enumConstants) {
         List<EnumValueInfo> res = new ArrayList<>(enumConstants.size());
         for (VariableElement enumConstant : enumConstants) {
             String name = enumConstant.getSimpleName().toString();

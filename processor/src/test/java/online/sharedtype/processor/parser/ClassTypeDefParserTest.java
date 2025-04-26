@@ -6,8 +6,8 @@ import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TestUtils;
 import online.sharedtype.processor.context.TypeElementMock;
 import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -19,7 +19,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -132,8 +131,9 @@ final class ClassTypeDefParserTest {
         assertThat(classDef.typeInfoSet()).satisfiesExactly(typeInfo -> assertThat(typeInfo).isSameAs(parsedSelfTypeInfo));
 
         // config
-        verify(ctxMocks.getTypeStore()).saveConfig(eq(classDef.qualifiedName()), configCaptor.capture());
+        verify(ctxMocks.getTypeStore()).saveConfig(configCaptor.capture());
         var config = configCaptor.getValue();
+        assertThat(config.getQualifiedName()).isEqualTo("com.github.cuzfrog.Abc");
         assertThat(config.getAnno()).isSameAs(anno);
         assertThat(classDef.isAnnotated()).isTrue();
     }

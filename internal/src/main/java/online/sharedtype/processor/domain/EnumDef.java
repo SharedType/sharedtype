@@ -3,6 +3,7 @@ package online.sharedtype.processor.domain;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 
 import java.util.ArrayList;
 import java.util.HashSet;

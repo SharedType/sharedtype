@@ -1,6 +1,6 @@
 package online.sharedtype.it;
 
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.EnumDef;
 import online.sharedtype.processor.domain.EnumValueInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;

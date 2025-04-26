@@ -1,5 +1,7 @@
 package online.sharedtype.processor.domain;
 
+import online.sharedtype.processor.domain.type.TypeInfo;
+
 import javax.lang.model.element.Element;
 import java.io.Serializable;
 import java.util.Collections;

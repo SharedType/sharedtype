@@ -1,6 +1,6 @@
 package online.sharedtype.processor.writer.converter;
 
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 
 import java.util.regex.Pattern;

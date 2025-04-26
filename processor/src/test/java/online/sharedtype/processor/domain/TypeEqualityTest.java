@@ -1,8 +1,8 @@
 package online.sharedtype.domain;
 
-import online.sharedtype.processor.domain.ArrayTypeInfo;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.type.ArrayTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

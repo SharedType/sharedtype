@@ -1,13 +1,12 @@
 package online.sharedtype.processor.parser.type;
 
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.domain.DateTimeInfo;
+import online.sharedtype.processor.domain.type.DateTimeInfo;
 import online.sharedtype.processor.domain.TargetCodeType;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

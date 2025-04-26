@@ -1,10 +1,10 @@
 package online.sharedtype.processor.parser.type;
 
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.domain.ArrayTypeInfo;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.DateTimeInfo;
-import online.sharedtype.processor.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.type.ArrayTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.DateTimeInfo;
+import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.support.annotation.Issue;
 import online.sharedtype.processor.support.annotation.SideEffect;
 import org.assertj.core.api.SoftAssertions;

@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)

@@ -1,6 +1,8 @@
 package online.sharedtype.processor.domain;
 
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 
 import javax.lang.model.type.TypeKind;
 import java.util.HashMap;

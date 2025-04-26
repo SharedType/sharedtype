@@ -1,9 +1,9 @@
 package online.sharedtype.processor.writer.converter.type;
 
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 final class RustLiteralTypeExpressionConverter implements TypeExpressionConverter {

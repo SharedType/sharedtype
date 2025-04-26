@@ -3,7 +3,7 @@ package online.sharedtype.processor.writer.converter;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.OutputTarget;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.ConstantField;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static online.sharedtype.processor.domain.ConcreteTypeInfo.Kind.ENUM;
+import static online.sharedtype.processor.domain.type.ConcreteTypeInfo.Kind.ENUM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -39,7 +39,8 @@ final class ConstantConverterRustTest {
 
     @BeforeEach
     void setup() {
-        ctxMocks.getTypeStore().saveConfig("com.github.cuzfrog.Abc", config);
+        when(config.getQualifiedName()).thenReturn("com.github.cuzfrog.Abc");
+        ctxMocks.getTypeStore().saveConfig(config);
         when(config.isConstantNamespaced()).thenReturn(true);
     }
 

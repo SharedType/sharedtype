@@ -3,6 +3,7 @@ package online.sharedtype.processor.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 
 import javax.lang.model.element.Element;
 import java.util.Set;

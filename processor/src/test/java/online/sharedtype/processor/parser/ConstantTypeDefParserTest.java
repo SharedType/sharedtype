@@ -4,7 +4,7 @@ import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.value.ValueHolder;
@@ -34,7 +34,8 @@ final class ConstantTypeDefParserTest {
     @BeforeEach
     void setup() {
         ctxMocks.getTypeStore().saveTypeDef("com.github.cuzfrog.Abc", mainTypeDef);
-        ctxMocks.getTypeStore().saveConfig(mainTypeDef.qualifiedName(), config);
+        when(config.getQualifiedName()).thenReturn("com.github.cuzfrog.Abc");
+        ctxMocks.getTypeStore().saveConfig(config);
     }
 
     @Test

@@ -2,12 +2,12 @@ package online.sharedtype.processor.resolver;
 
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
-import online.sharedtype.processor.domain.ArrayTypeInfo;
+import online.sharedtype.processor.domain.type.ArrayTypeInfo;
 import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.support.annotation.SideEffect;
 
 import java.util.ArrayList;

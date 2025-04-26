@@ -2,7 +2,7 @@ package online.sharedtype.processor.writer.converter.type;
 
 import lombok.experimental.UtilityClass;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 
 import java.util.HashMap;
 import java.util.Map;

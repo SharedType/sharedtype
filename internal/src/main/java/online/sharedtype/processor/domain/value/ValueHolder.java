@@ -1,7 +1,7 @@
 package online.sharedtype.processor.domain.value;
 
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 
 import java.io.Serializable;
 

@@ -3,7 +3,7 @@ package online.sharedtype.processor.writer.converter.type;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 
 public interface TypeExpressionConverter {
     String toTypeExpr(TypeInfo typeInfo, TypeDef contextTypeDef);

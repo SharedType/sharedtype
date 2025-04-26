@@ -3,6 +3,7 @@ package online.sharedtype.processor.domain;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.EnumConstantValue;
 
 /**

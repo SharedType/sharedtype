@@ -2,10 +2,10 @@ package online.sharedtype.processor.context;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeInfo;
-import online.sharedtype.processor.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.annotation.Nullable;
@@ -66,8 +66,8 @@ public final class TypeStore {
         return typeDefByQualifiedName.containsKey(qualifiedName);
     }
 
-    public void saveConfig(String qualifiedName, Config config) {
-        typeConfig.put(qualifiedName, config);
+    public void saveConfig(Config config) {
+        typeConfig.put(config.getQualifiedName(), config);
     }
 
     /**

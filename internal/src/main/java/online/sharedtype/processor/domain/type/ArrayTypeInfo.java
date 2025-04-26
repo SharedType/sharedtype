@@ -1,4 +1,4 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.type;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

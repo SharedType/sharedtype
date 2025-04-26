@@ -3,11 +3,11 @@ package online.sharedtype.processor.writer.converter.type;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.RenderFlags;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.DateTimeInfo;
+import online.sharedtype.processor.domain.type.DateTimeInfo;
 import online.sharedtype.processor.domain.TargetCodeType;
-import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 
 import javax.annotation.Nullable;
 

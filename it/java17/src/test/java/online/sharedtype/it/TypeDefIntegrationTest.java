@@ -1,15 +1,12 @@
 package online.sharedtype.it;
 
-import online.sharedtype.processor.domain.ArrayTypeInfo;
-import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.FieldComponentInfo;
+import online.sharedtype.processor.domain.type.ArrayTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.EnumDef;
-import online.sharedtype.processor.domain.EnumValueInfo;
-import online.sharedtype.processor.domain.FieldComponentInfo;
-import online.sharedtype.processor.domain.TypeVariableInfo;
 
 import static online.sharedtype.it.support.TypeDefDeserializer.deserializeTypeDef;
 import static org.assertj.core.api.Assertions.assertThat;

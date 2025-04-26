@@ -1,8 +1,10 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.type;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.MappableType;
+import online.sharedtype.processor.domain.TargetCodeType;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;

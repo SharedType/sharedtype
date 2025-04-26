@@ -1,8 +1,7 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.type;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 
 import java.util.Map;
 

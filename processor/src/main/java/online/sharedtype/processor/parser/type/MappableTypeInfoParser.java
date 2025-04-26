@@ -3,7 +3,7 @@ package online.sharedtype.processor.parser.type;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.MappableType;
 import online.sharedtype.processor.domain.TargetCodeType;
-import online.sharedtype.processor.domain.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;

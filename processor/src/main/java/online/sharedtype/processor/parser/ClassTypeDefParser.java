@@ -4,11 +4,11 @@ import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.FieldComponentInfo;
 import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeInfo;
-import online.sharedtype.processor.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.support.annotation.VisibleForTesting;
 import online.sharedtype.processor.support.utils.Tuple;
@@ -65,14 +65,15 @@ final class ClassTypeDefParser implements TypeDefParser {
             return Collections.emptyList();
         }
         Config config = new Config(typeElement, ctx);
+        ctx.getTypeStore().saveConfig(config);
 
         ClassDef classDef = ClassDef.builder().element(typeElement)
             .qualifiedName(config.getQualifiedName()).simpleName(config.getSimpleName()).annotated(config.isAnnotated())
             .build();
+
         classDef.typeVariables().addAll(parseTypeVariables(typeElement));
         classDef.components().addAll(parseComponents(typeElement, config, classDef));
         classDef.directSupertypes().addAll(parseSupertypes(typeElement));
-        ctx.getTypeStore().saveConfig(classDef.qualifiedName(), config);
 
         TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), typeElement);
         classDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);
@@ -131,7 +132,7 @@ final class ClassTypeDefParser implements TypeDefParser {
             TypeInfo fieldTypeInfo = typeInfoParser.parse(element.asType(), typeElement);
             if (fieldTypeInfo instanceof ConcreteTypeInfo) {
                 ((ConcreteTypeInfo) fieldTypeInfo).referencingTypes().add(classDef);
-            } // TODO: now, referencing type can be a wrapper typeInfo like array, need to unwrap them to get all referenced types in ReferenceResolver
+            } // TODO: now, referencing type can be a wrapper typeInfo like array
             FieldComponentInfo fieldInfo = FieldComponentInfo.builder()
                 .name(tuple.b())
                 .modifiers(element.getModifiers())
