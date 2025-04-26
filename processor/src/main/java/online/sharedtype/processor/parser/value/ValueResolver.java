@@ -7,17 +7,15 @@ import online.sharedtype.processor.parser.type.TypeInfoParser;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import java.util.EnumMap;
-import java.util.Map;
 
 public interface ValueResolver {
     ValueHolder resolve(Element element, TypeElement ctxTypeElement);
 
     static ValueResolver create(Context ctx, TypeInfoParser typeInfoParser) {
-        Map<ElementKind, ValueResolver> valueResolvers = new EnumMap<>(ElementKind.class);
-        ValueResolver enumValueResolver = new EnumValueResolver(ctx, typeInfoParser);
-        valueResolvers.put(ElementKind.ENUM_CONSTANT, enumValueResolver);
-        valueResolvers.put(ElementKind.FIELD, new ConstantValueResolver(ctx, enumValueResolver));
-        return new CompositeValueResolver(valueResolvers);
+        CompositeValueResolver compositeValueResolver = new CompositeValueResolver();
+        ValueResolverBackend backend = ValueResolverBackend.create(compositeValueResolver);
+        compositeValueResolver.registerResolver(ElementKind.ENUM_CONSTANT, new EnumValueResolver(ctx, typeInfoParser, backend));
+        compositeValueResolver.registerResolver(ElementKind.FIELD, new ConstantValueResolver(ctx, backend));
+        return compositeValueResolver;
     }
 }

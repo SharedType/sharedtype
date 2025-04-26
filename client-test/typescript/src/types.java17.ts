@@ -6,6 +6,7 @@ import {
     type JavaTimeClass,
     type JodaTimeClass,
     type MathClass,
+    type EnumComplicatedReferences,
 } from "./index.java17";
 
 export const list1: EnumGalaxy[] = ["Andromeda", "MilkyWay", "Triangulum"];
@@ -135,3 +136,6 @@ export const mathClass: MathClass = {
     bigDecimal: 1,
     bigInteger: 1,
 }
+
+  
+export const enumComplicatedReferences: EnumComplicatedReferences = 156;

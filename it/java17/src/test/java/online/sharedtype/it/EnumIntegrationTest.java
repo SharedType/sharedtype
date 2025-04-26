@@ -3,7 +3,6 @@ package online.sharedtype.it;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
-import online.sharedtype.processor.domain.value.ValueHolder;
 import org.junit.jupiter.api.Test;
 
 import static online.sharedtype.it.support.TypeDefDeserializer.deserializeTypeDef;
@@ -53,10 +52,13 @@ final class EnumIntegrationTest {
         assertThat(enumGalaxy.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumGalaxy");
         assertThat(enumGalaxy.components()).hasSize(3).allMatch(constant -> {
             ConcreteTypeInfo typeInfo = (ConcreteTypeInfo)constant.type();
-            return typeInfo.qualifiedName().equals("java.lang.String");
+            return typeInfo.qualifiedName().equals("online.sharedtype.it.java8.EnumGalaxy");
         });
         EnumValueInfo constant1 = enumGalaxy.components().get(0);
-        assertThat(constant1.value()).isEqualTo(ValueHolder.ofEnum("MilkyWay"));
+        assertThat(constant1.value().getValue()).isEqualTo("MilkyWay");
+        assertThat(constant1.value().getEnumConstantName()).isEqualTo("MilkyWay");
+        var constant1EnumType = (ConcreteTypeInfo)constant1.value().getValueType();
+        assertThat(constant1EnumType.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumGalaxy");
 
         EnumValueInfo constant2 = enumGalaxy.components().get(1);
         assertThat(constant2.value().getValue()).isEqualTo("Andromeda");

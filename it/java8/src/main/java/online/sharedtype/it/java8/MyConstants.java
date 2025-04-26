@@ -1,7 +1,10 @@
 package online.sharedtype.it.java8;
 
+import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
 import online.sharedtype.it.java8.other.OtherConstants;
+
+import java.lang.ref.Reference;
 
 import static online.sharedtype.it.java8.other.OtherConstants.Inner1.STATIC_IMPORTED_VALUE;
 
@@ -69,4 +72,15 @@ enum MyEnumConstants {
     ;
     private static final int INT_VALUE = 1;
     private static final String STR_VALUE = "abc";
+}
+
+@RequiredArgsConstructor
+@SharedType
+enum EnumComplicatedReferences {
+    ReferenceConstantInOther(MyConstants.LONG_VALUE),
+    ReferenceConstantLocally(EnumComplicatedReferences.LONG_VALUE),
+    ;
+    private static final long LONG_VALUE = 156L;
+    @SharedType.EnumValue
+    private final long longValue;
 }

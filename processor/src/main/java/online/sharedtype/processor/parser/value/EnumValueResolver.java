@@ -1,7 +1,6 @@
 package online.sharedtype.processor.parser.value;
 
 import com.sun.source.tree.ExpressionTree;
-import com.sun.source.tree.LiteralTree;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
@@ -9,9 +8,11 @@ import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.EnumCtorIndex;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.support.annotation.VisibleForTesting;
+import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.Element;
@@ -25,6 +26,7 @@ import static online.sharedtype.processor.support.utils.Utils.allInstanceFields;
 final class EnumValueResolver implements ValueResolver {
     private final Context ctx;
     private final TypeInfoParser typeInfoParser;
+    private final ValueResolverBackend valueResolverBackend;
 
     @Override
     public ValueHolder resolve(Element enumConstantElement, TypeElement enumTypeElement) {
@@ -32,13 +34,14 @@ final class EnumValueResolver implements ValueResolver {
         String enumConstantName = enumConstant.getSimpleName().toString();
         EnumCtorIndex ctorArgIdx = resolveCtorIndex(enumTypeElement);
         if (ctorArgIdx == EnumCtorIndex.NONE) {
-            return ValueHolder.ofEnum(enumConstantName, Constants.STRING_TYPE_INFO, enumConstantName);
+            TypeInfo typeInfo = typeInfoParser.parse(enumTypeElement.asType(), enumTypeElement);
+            return ValueHolder.ofEnum(enumConstantName, typeInfo, enumConstantName);
         }
 
         Tree tree = ctx.getTrees().getTree(enumConstant);
         if (tree instanceof VariableTree) {
             VariableTree variableTree = (VariableTree) tree;
-            Object value = resolveValue(enumTypeElement, variableTree, ctorArgIdx.getIdx());
+            Object value = resolveValue(enumTypeElement, enumTypeElement, variableTree, ctorArgIdx.getIdx());
             return ValueHolder.ofEnum(enumConstantName, typeInfoParser.parse(ctorArgIdx.getField().asType(), enumTypeElement), value);
         } else if (tree == null) {
             ctx.error(enumConstant, "Literal value cannot be parsed from enum constant: %s of enum %s, because source tree from the element is null." +
@@ -52,23 +55,25 @@ final class EnumValueResolver implements ValueResolver {
         return ValueHolder.NULL;
     }
 
-    private Object resolveValue(TypeElement enumTypeElement, VariableTree tree, int ctorArgIdx) {
+    private Object resolveValue(Element enumConstantElement, TypeElement enumTypeElement, VariableTree tree, int ctorArgIdx) {
         ExpressionTree init = tree.getInitializer();
         if (init instanceof NewClassTree) {
             NewClassTree newClassTree = (NewClassTree) init;
             try {
                 ExpressionTree argTree = newClassTree.getArguments().get(ctorArgIdx);
-                if (argTree instanceof LiteralTree) {
-                    LiteralTree argLiteralTree = (LiteralTree) argTree;
-                    return argLiteralTree.getValue();
-                } else {
-                    ctx.error(enumTypeElement, "Unsupported argument in enum type %s: %s in %s, argIndex: %s. Only literals are supported as enum value.",
-                        enumTypeElement, argTree, tree, ctorArgIdx);
-                    return null;
-                }
+                ValueResolveContext valueResolveContext = ValueResolveContext.builder(ctx)
+                    .enclosingTypeElement(enumTypeElement)
+                    .fieldElement(enumConstantElement)
+                    .tree(argTree)
+                    .build();
+                return valueResolverBackend.recursivelyResolve(valueResolveContext);
             } catch (IndexOutOfBoundsException e) {
                 throw new SharedTypeInternalError(String.format(
                     "Initializer in enum %s has incorrect number of arguments: %s in tree: %s, argIndex: %s", enumTypeElement, init, tree, ctorArgIdx));
+            } catch (SharedTypeException e) {
+                ctx.error(enumConstantElement, "Failed to parse argument value at index %s. Tree: %s Error message: %s",
+                    ctorArgIdx, tree, e.getMessage());
+                return null;
             }
         }
         throw new SharedTypeInternalError(String.format("Unsupported initializer in enum %s: %s in tree: %s", enumTypeElement, init, tree));

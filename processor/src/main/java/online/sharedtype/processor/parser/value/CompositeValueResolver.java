@@ -1,17 +1,20 @@
 package online.sharedtype.processor.parser.value;
 
-import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import java.util.EnumMap;
 import java.util.Map;
 
-@RequiredArgsConstructor
 final class CompositeValueResolver implements ValueResolver {
-    private final Map<ElementKind, ValueResolver> resolvers;
+    private final Map<ElementKind, ValueResolver> resolvers = new EnumMap<>(ElementKind.class);
+
+    void registerResolver(ElementKind kind, ValueResolver resolver) {
+        resolvers.put(kind, resolver);
+    }
 
     @Override
     public ValueHolder resolve(Element element, TypeElement ctxTypeElement) {
