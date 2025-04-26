@@ -1,5 +1,6 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.def;
 
+import online.sharedtype.processor.domain.component.ComponentInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 
 import javax.lang.model.element.Element;

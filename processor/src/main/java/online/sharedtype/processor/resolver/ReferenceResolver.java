@@ -1,7 +1,7 @@
 package online.sharedtype.processor.resolver;
 
-import online.sharedtype.processor.domain.ConcreteTypeDef;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.ConcreteTypeDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.support.annotation.SideEffect;
 
 import java.util.ArrayDeque;

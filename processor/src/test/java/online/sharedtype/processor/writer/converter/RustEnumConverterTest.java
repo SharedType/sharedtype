@@ -4,9 +4,8 @@ import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TestUtils;
-import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.EnumDef;
-import online.sharedtype.processor.domain.EnumValueInfo;
+import online.sharedtype.processor.domain.def.EnumDef;
+import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import org.junit.jupiter.api.Test;
 

@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.Props;
-import online.sharedtype.processor.domain.EnumDef;
-import online.sharedtype.processor.domain.EnumValueInfo;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.EnumDef;
+import online.sharedtype.processor.domain.component.EnumValueInfo;
+import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.render.Template;
 

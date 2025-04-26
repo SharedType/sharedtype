@@ -1,4 +1,4 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.def;
 
 import lombok.Getter;
 import lombok.Setter;

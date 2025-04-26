@@ -4,7 +4,7 @@ import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.RenderFlags;
 import online.sharedtype.processor.domain.type.ArrayTypeInfo;
-import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.DateTimeInfo;

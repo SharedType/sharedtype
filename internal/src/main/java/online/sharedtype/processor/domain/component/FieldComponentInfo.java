@@ -1,4 +1,4 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.component;
 
 import lombok.Builder;
 import lombok.Setter;

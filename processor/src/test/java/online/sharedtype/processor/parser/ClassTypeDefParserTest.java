@@ -5,7 +5,7 @@ import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TestUtils;
 import online.sharedtype.processor.context.TypeElementMock;
-import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.parser.type.TypeInfoParser;

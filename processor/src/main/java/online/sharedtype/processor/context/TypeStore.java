@@ -3,7 +3,7 @@ package online.sharedtype.processor.context;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.parser.type.TypeInfoParser;

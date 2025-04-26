@@ -1,7 +1,7 @@
 package online.sharedtype.processor.resolver;
 
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

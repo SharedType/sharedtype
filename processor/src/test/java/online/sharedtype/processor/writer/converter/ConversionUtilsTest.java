@@ -1,8 +1,8 @@
 package online.sharedtype.processor.writer.converter;
 
-import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.FieldComponentInfo;
+import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

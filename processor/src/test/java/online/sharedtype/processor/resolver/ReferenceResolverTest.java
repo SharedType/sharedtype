@@ -1,7 +1,7 @@
 package online.sharedtype.processor.resolver;
 
 
-import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import org.junit.jupiter.api.Test;

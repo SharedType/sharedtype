@@ -4,10 +4,10 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import online.sharedtype.SharedType;
-import online.sharedtype.processor.domain.ConcreteTypeDef;
+import online.sharedtype.processor.domain.def.ConcreteTypeDef;
 import online.sharedtype.processor.domain.MappableType;
 import online.sharedtype.processor.domain.TargetCodeType;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 
 import javax.annotation.Nullable;
 import java.util.Collections;

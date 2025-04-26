@@ -1,8 +1,8 @@
 package online.sharedtype.processor.resolver;
 
-import online.sharedtype.processor.domain.ConstantField;
-import online.sharedtype.processor.domain.ConstantNamespaceDef;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.component.ConstantField;
+import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.support.annotation.SideEffect;
 
 import javax.lang.model.element.Element;

@@ -1,6 +1,6 @@
 package online.sharedtype.processor.domain.type;
 
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 
 import java.io.Serializable;
 import java.util.Map;

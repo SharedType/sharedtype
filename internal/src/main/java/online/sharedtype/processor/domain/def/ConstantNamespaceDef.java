@@ -1,9 +1,10 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.def;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import online.sharedtype.processor.domain.component.ConstantField;
 
 import javax.lang.model.element.Element;
 import java.util.ArrayList;

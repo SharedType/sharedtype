@@ -1,8 +1,8 @@
 package online.sharedtype.processor.resolver;
 
-import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.domain.type.TypeInfo;
 
 import java.util.List;

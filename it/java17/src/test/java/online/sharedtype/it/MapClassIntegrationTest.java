@@ -1,6 +1,6 @@
 package online.sharedtype.it;
 
-import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import org.junit.jupiter.api.Test;

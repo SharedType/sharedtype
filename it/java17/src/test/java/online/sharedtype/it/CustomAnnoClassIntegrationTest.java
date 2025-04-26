@@ -1,7 +1,7 @@
 package online.sharedtype.it;
 
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.EnumDef;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.def.EnumDef;
 import org.junit.jupiter.api.Test;
 
 import static online.sharedtype.it.support.TypeDefDeserializer.deserializeTypeDef;

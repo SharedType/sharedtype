@@ -2,7 +2,7 @@ package online.sharedtype.processor.writer.converter.type;
 
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.domain.type.TypeInfo;
 
 public interface TypeExpressionConverter {

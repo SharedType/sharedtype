@@ -7,7 +7,7 @@ import online.sharedtype.processor.context.TestUtils;
 import online.sharedtype.processor.context.TypeElementMock;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.EnumDef;
+import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.parser.value.ValueResolver;

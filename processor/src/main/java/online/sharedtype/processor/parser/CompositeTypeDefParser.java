@@ -2,7 +2,7 @@ package online.sharedtype.processor.parser;
 
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;

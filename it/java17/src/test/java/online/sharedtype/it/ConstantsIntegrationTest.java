@@ -1,6 +1,6 @@
 package online.sharedtype.it;
 
-import online.sharedtype.processor.domain.ConstantNamespaceDef;
+import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
 import org.junit.jupiter.api.Test;
 
 import static online.sharedtype.it.support.TypeDefDeserializer.deserializeTypeDef;

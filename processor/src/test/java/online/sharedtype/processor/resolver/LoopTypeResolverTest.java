@@ -2,12 +2,12 @@ package online.sharedtype.processor.resolver;
 
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.type.ArrayTypeInfo;
-import online.sharedtype.processor.domain.ClassDef;
+import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.EnumDef;
-import online.sharedtype.processor.domain.EnumValueInfo;
-import online.sharedtype.processor.domain.FieldComponentInfo;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.EnumDef;
+import online.sharedtype.processor.domain.component.EnumValueInfo;
+import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.TypeDefParser;

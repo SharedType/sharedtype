@@ -1,8 +1,9 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.def;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
+import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 
 import java.util.ArrayList;
