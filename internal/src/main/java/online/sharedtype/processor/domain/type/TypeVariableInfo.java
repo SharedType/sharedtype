@@ -1,8 +1,7 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.type;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 
 import java.util.Map;
 
@@ -15,9 +14,9 @@ import java.util.Map;
  * @see ConcreteTypeInfo#typeArgs()
  * @author Cause Chung
  */
-@EqualsAndHashCode(of = {"contextTypeQualifiedName", "name"})
+@EqualsAndHashCode(of = {"contextTypeQualifiedName", "name"}, callSuper = false)
 @Builder
-public final class TypeVariableInfo implements TypeInfo {
+public final class TypeVariableInfo extends ReferableTypeInfo {
     private static final long serialVersionUID = 7632941203572660271L;
     private final String contextTypeQualifiedName; // TODO: reference to TypeDef to avoid string
     private final String name;

@@ -1,6 +1,6 @@
 package online.sharedtype.processor.resolver;
 
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 
 import java.util.Arrays;
 import java.util.List;

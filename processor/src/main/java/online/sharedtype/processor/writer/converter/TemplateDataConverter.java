@@ -2,7 +2,7 @@ package online.sharedtype.processor.writer.converter;
 
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.OutputTarget;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;

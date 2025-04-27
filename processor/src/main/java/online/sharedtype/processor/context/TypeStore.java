@@ -2,10 +2,10 @@ package online.sharedtype.processor.context;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeInfo;
-import online.sharedtype.processor.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.def.TypeDef;
+import online.sharedtype.processor.domain.type.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 
 import javax.annotation.Nullable;
@@ -30,7 +30,7 @@ public final class TypeStore {
     private final Map<String, List<TypeDef>> typeDefByQualifiedName = new HashMap<>();
     private final Map<TypeInfoKey, TypeInfo> typeInfoByKey = new HashMap<>();
     private final Map<String, Config> typeConfig = new HashMap<>();
-    private final Map<String, Integer> enumValueIndexByQualifiedName = new HashMap<>();
+    private final Map<String, EnumCtorIndex> enumValueIndexByQualifiedName = new HashMap<>();
 
     TypeStore() {
         for (Map.Entry<String, ConcreteTypeInfo> entry : PREDEFINED_OBJECT_TYPES.entrySet()) {
@@ -66,8 +66,8 @@ public final class TypeStore {
         return typeDefByQualifiedName.containsKey(qualifiedName);
     }
 
-    public void saveConfig(String qualifiedName, Config config) {
-        typeConfig.put(qualifiedName, config);
+    public void saveConfig(Config config) {
+        typeConfig.put(config.getQualifiedName(), config);
     }
 
     /**
@@ -77,12 +77,12 @@ public final class TypeStore {
         return typeConfig.get(typeDef.qualifiedName());
     }
 
-    public void saveEnumValueIndex(String qualifiedName, int index) {
+    public void saveEnumValueIndex(String qualifiedName, EnumCtorIndex index) {
         enumValueIndexByQualifiedName.put(qualifiedName, index);
     }
 
     @Nullable
-    public Integer getEnumValueIndex(String qualifiedName) {
+    public EnumCtorIndex getEnumValueIndex(String qualifiedName) {
         return enumValueIndexByQualifiedName.get(qualifiedName);
     }
 

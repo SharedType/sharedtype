@@ -1,11 +1,11 @@
 package online.sharedtype.processor.resolver;
 
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.domain.ArrayTypeInfo;
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.ArrayTypeInfo;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.FieldComponentInfo;
+import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

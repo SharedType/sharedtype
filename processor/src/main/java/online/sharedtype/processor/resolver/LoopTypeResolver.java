@@ -1,24 +1,23 @@
 package online.sharedtype.processor.resolver;
 
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.processor.domain.ArrayTypeInfo;
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.ConstantField;
-import online.sharedtype.processor.domain.ConstantNamespaceDef;
-import online.sharedtype.processor.domain.EnumDef;
-import online.sharedtype.processor.domain.EnumValueInfo;
-import online.sharedtype.processor.domain.FieldComponentInfo;
-import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeInfo;
-import online.sharedtype.processor.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.type.ArrayTypeInfo;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.component.ConstantField;
+import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
+import online.sharedtype.processor.domain.def.EnumDef;
+import online.sharedtype.processor.domain.component.EnumValueInfo;
+import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.def.TypeDef;
+import online.sharedtype.processor.domain.type.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.parser.TypeDefParser;
 import online.sharedtype.processor.support.annotation.SideEffect;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;

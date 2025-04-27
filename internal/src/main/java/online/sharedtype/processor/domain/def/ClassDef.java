@@ -1,8 +1,12 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.def;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
+import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeVariableInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;

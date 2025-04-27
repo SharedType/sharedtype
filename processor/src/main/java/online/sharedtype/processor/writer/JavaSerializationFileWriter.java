@@ -1,7 +1,7 @@
 package online.sharedtype.processor.writer;
 
-import online.sharedtype.processor.domain.ConstantNamespaceDef;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.support.exception.SharedTypeException;
 

@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  *
  * <p>
  * <b>Annotation Processing:</b><br>
- * This annotation is retained only in source code.
+ * This annotation is retained only at source code level.
  * That means it is not visible if source code is not directly participating in annotation processing.
  * E.g. if it is in a dependency jar in a project with multi-module build.
  * <br>
@@ -21,6 +21,13 @@ import java.lang.annotation.Target;
  * E.g. if getters are handled by Lombok @Getter, SharedType will not see the getter method.
  * It's recommended to execute SharedType before Lombok, since Lombok does not provide extra info to SharedType.
  * Also you may only want a fast execution of SharedType with "-proc:only" without other annotation processors.
+ * </p>
+ *
+ * <p>
+ * <b>Serialization:</b><br>
+ * Although SharedType does not depend on any serialization format, it assumes the contract of JSON.
+ * That means a client can use any format of serializations, but may not exceed JSON capacity.
+ * E.g. SharedType treats {@code List} and {@code Set} as arrays, and will not differentiate them in target code.
  * </p>
  *
  * <p>
@@ -57,11 +64,26 @@ import java.lang.annotation.Target;
  * </ul>
  *
  * <p>
+ * <b>Enums:</b><br>
+ * Enums are emitted as according to target schema:
+ * <ul>
+ *     <li>Typescript: type union or enum. By default enum values are strings.</li>
+ *     <li>Rust: plain enum (Enum values of different types are not supported yet.)</li>
+ * </ul>
+ * See {@link EnumValue} for how to mark an enum value.
+ *
+ * <p>
  * <b>Constants:</b><br>
- * Static fields are treated as constants. Only compile-time resolvable values are supported.
+ * Static fields are treated as constants.
  * By default, constants are not included, see {@link #includes()}.
  * Only constants in explicitly annotated types will be emitted.
- * </p>
+ * <br>
+ * Only compile-time resolvable values are supported, which include:
+ * <ul>
+ *     <li>literal values: primitives, boxed primitives, String</li>
+ *     <li>enums (with compile-time resolvable values)</li>
+ *     <li>references that eventually reach other compile-time resolvable values</li>
+ * </ul>
  *
  * <p>
  * <b>Generics:</b><br>
@@ -258,22 +280,25 @@ public @interface SharedType {
     }
 
     /**
-     * Mark enum value. By default, enum value is the enum constant name. The enum value must be literals (e.g. 1, "a", true) in enum constant expressions.
-     * <b>Note: When there are multiple enum constant constructor parameters, the value is resolved by field order.</b>
+     * Mark enum value. By default, enum value is the enum constant name.
+     * The enum value must be "compile-time resolvable" in enum constant expressions (See "Constant" section in {@link SharedType}).
+     * Note: When there are multiple enum constant constructor parameters, the value is resolved by field order.
      * If the constructor parameter order is different from the field order, value will not be resolved correctly.
+     * Additional custom annotation types can be configured via global properties.
      * <pre>
-     * Example:
      * {@code
+     * //A simple example:
      * enum Enum {
      *   A(1), B(2);
      *
      *   @SharedType.EnumValue
      *   private final int value;
      * }
+     * //output in typescript union:
+     * type Enum = 1 | 2;
      * }
      * </pre>
      * <br>
-     * Additional annotation types can be configured via global properties.
      */
     @Target({ElementType.FIELD})
     @Retention(RetentionPolicy.CLASS)

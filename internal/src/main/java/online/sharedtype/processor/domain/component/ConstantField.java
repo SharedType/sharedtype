@@ -1,8 +1,9 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.component;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import online.sharedtype.processor.domain.type.TypeInfo;
+import online.sharedtype.processor.domain.value.ValueHolder;
 
 /**
  * Represents a constant literal.
@@ -16,7 +17,7 @@ public final class ConstantField implements ComponentInfo {
     private static final long serialVersionUID = -155863067131290289L;
     private final String name;
     private final TypeInfo type;
-    private final Object value;
+    private final ValueHolder value;
 
     public String name() {
         return name;
@@ -26,7 +27,7 @@ public final class ConstantField implements ComponentInfo {
         return type;
     }
 
-    public Object value() {
+    public ValueHolder value() {
         return value;
     }
 

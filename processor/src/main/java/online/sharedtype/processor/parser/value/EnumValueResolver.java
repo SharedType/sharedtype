@@ -1,13 +1,18 @@
 package online.sharedtype.processor.parser.value;
 
 import com.sun.source.tree.ExpressionTree;
-import com.sun.source.tree.LiteralTree;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.context.EnumCtorIndex;
+import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.type.TypeInfo;
+import online.sharedtype.processor.domain.value.ValueHolder;
+import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.support.annotation.VisibleForTesting;
+import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.Element;
@@ -20,19 +25,24 @@ import static online.sharedtype.processor.support.utils.Utils.allInstanceFields;
 @RequiredArgsConstructor
 final class EnumValueResolver implements ValueResolver {
     private final Context ctx;
+    private final TypeInfoParser typeInfoParser;
+    private final ValueResolverBackend valueResolverBackend;
 
     @Override
-    public Object resolve(Element enumConstantElement, TypeElement enumTypeElement) {
+    public ValueHolder resolve(Element enumConstantElement, TypeElement enumTypeElement) {
         VariableElement enumConstant = (VariableElement) enumConstantElement;
-        int ctorArgIdx = resolveCtorIndex(enumTypeElement);
-        if (ctorArgIdx < 0) {
-            return enumConstant.getSimpleName().toString();
+        String enumConstantName = enumConstant.getSimpleName().toString();
+        EnumCtorIndex ctorArgIdx = resolveCtorIndex(enumTypeElement);
+        if (ctorArgIdx == EnumCtorIndex.NONE) {
+            TypeInfo typeInfo = typeInfoParser.parse(enumTypeElement.asType(), enumTypeElement);
+            return ValueHolder.ofEnum(enumConstantName, typeInfo, enumConstantName);
         }
 
         Tree tree = ctx.getTrees().getTree(enumConstant);
         if (tree instanceof VariableTree) {
             VariableTree variableTree = (VariableTree) tree;
-            return resolveValue(enumTypeElement, variableTree, ctorArgIdx);
+            Object value = resolveValue(enumTypeElement, enumTypeElement, variableTree, ctorArgIdx.getIdx());
+            return ValueHolder.ofEnum(enumConstantName, typeInfoParser.parse(ctorArgIdx.getField().asType(), enumTypeElement), value);
         } else if (tree == null) {
             ctx.error(enumConstant, "Literal value cannot be parsed from enum constant: %s of enum %s, because source tree from the element is null." +
                     " This could mean at the time of the annotation processing, the source tree was not available." +
@@ -42,47 +52,49 @@ final class EnumValueResolver implements ValueResolver {
             throw new SharedTypeInternalError(String.format(
                 "Unsupported tree during parsing enum %s, kind: %s, tree: %s, element: %s", enumTypeElement, tree.getKind(), tree, enumConstant));
         }
-        return null;
+        return ValueHolder.NULL;
     }
 
-    private Object resolveValue(TypeElement enumTypeElement, VariableTree tree, int ctorArgIdx) {
+    private Object resolveValue(Element enumConstantElement, TypeElement enumTypeElement, VariableTree tree, int ctorArgIdx) {
         ExpressionTree init = tree.getInitializer();
         if (init instanceof NewClassTree) {
             NewClassTree newClassTree = (NewClassTree) init;
             try {
                 ExpressionTree argTree = newClassTree.getArguments().get(ctorArgIdx);
-                if (argTree instanceof LiteralTree) {
-                    LiteralTree argLiteralTree = (LiteralTree) argTree;
-                    return argLiteralTree.getValue();
-                } else {
-                    ctx.error(enumTypeElement, "Unsupported argument in enum type %s: %s in %s, argIndex: %s. Only literals are supported as enum value.",
-                        enumTypeElement, argTree, tree, ctorArgIdx);
-                    return null;
-                }
+                ValueResolveContext valueResolveContext = ValueResolveContext.builder(ctx)
+                    .enclosingTypeElement(enumTypeElement)
+                    .fieldElement(enumConstantElement)
+                    .tree(argTree)
+                    .build();
+                return valueResolverBackend.recursivelyResolve(valueResolveContext);
             } catch (IndexOutOfBoundsException e) {
                 throw new SharedTypeInternalError(String.format(
                     "Initializer in enum %s has incorrect number of arguments: %s in tree: %s, argIndex: %s", enumTypeElement, init, tree, ctorArgIdx));
+            } catch (SharedTypeException e) {
+                ctx.error(enumConstantElement, "Failed to parse argument value at index %s. Tree: %s Error message: %s",
+                    ctorArgIdx, tree, e.getMessage());
+                return null;
             }
         }
         throw new SharedTypeInternalError(String.format("Unsupported initializer in enum %s: %s in tree: %s", enumTypeElement, init, tree));
     }
 
     @VisibleForTesting
-    int resolveCtorIndex(TypeElement enumTypeElement) {
-        Integer cachedIdx = ctx.getTypeStore().getEnumValueIndex(enumTypeElement.getQualifiedName().toString());
+    EnumCtorIndex resolveCtorIndex(TypeElement enumTypeElement) {
+        EnumCtorIndex cachedIdx = ctx.getTypeStore().getEnumValueIndex(enumTypeElement.getQualifiedName().toString());
         if (cachedIdx != null) {
             return cachedIdx;
         }
 
         List<VariableElement> instanceFields = allInstanceFields(enumTypeElement);
-        int idx = -1;
+        EnumCtorIndex idx = EnumCtorIndex.NONE;
         for (int i = 0; i < instanceFields.size(); i++) {
             VariableElement field = instanceFields.get(i);
             if (ctx.isAnnotatedAsEnumValue(field)) {
-                if (idx != -1) {
+                if (idx != EnumCtorIndex.NONE) {
                     ctx.error(field, "Multiple enum values in enum %s, only one field can be annotated as enum value.", enumTypeElement);
                 }
-                idx = i;
+                idx = new EnumCtorIndex(i, field);
             }
         }
         ctx.getTypeStore().saveEnumValueIndex(enumTypeElement.getQualifiedName().toString(), idx);

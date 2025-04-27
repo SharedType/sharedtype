@@ -1,8 +1,10 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.type;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.MappableType;
+import online.sharedtype.processor.domain.TargetCodeType;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
@@ -14,9 +16,9 @@ import java.util.Map;
  *
  * @author Cause Chung
  */
-@EqualsAndHashCode(of = "qualifiedName")
+@EqualsAndHashCode(of = "qualifiedName", callSuper = false)
 @RequiredArgsConstructor
-public final class DateTimeInfo implements TypeInfo, MappableType {
+public final class DateTimeInfo extends ReferableTypeInfo implements MappableType {
     private static final long serialVersionUID = 5428192893749821359L;
 
     private final String qualifiedName;

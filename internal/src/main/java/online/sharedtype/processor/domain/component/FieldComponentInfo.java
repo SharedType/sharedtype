@@ -1,7 +1,8 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.component;
 
 import lombok.Builder;
 import lombok.Setter;
+import online.sharedtype.processor.domain.type.TypeInfo;
 
 import javax.lang.model.element.Modifier;
 import java.util.Set;

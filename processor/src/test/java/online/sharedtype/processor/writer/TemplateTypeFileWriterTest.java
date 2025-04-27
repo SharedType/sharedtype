@@ -1,8 +1,8 @@
 package online.sharedtype.processor.writer;
 
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConstantNamespaceDef;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
 import online.sharedtype.processor.writer.adaptor.RenderDataAdaptor;
 import online.sharedtype.processor.writer.adaptor.RenderDataAdaptorFactory;
 import online.sharedtype.processor.writer.converter.TemplateDataConverter;

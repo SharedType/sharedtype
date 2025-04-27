@@ -1,20 +1,13 @@
 package online.sharedtype.processor.writer.converter;
 
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.FieldComponentInfo;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 final class ConversionUtilsTest {
-
-    @Test
-    void literalValue() {
-        assertThat(ConversionUtils.literalValue("abc")).isEqualTo("\"abc\"");
-        assertThat(ConversionUtils.literalValue(105)).isEqualTo("105");
-    }
-
     @Test
     void toSnakeCase() {
         assertThat(ConversionUtils.toSnakeCase("camelCase")).isEqualTo("camel_case");

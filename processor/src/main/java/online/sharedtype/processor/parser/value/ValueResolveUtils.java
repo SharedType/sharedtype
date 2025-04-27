@@ -1,7 +1,6 @@
 package online.sharedtype.processor.parser.value;
 
 import lombok.experimental.UtilityClass;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Element;

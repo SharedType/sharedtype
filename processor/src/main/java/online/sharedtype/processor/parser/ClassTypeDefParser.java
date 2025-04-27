@@ -1,15 +1,14 @@
 package online.sharedtype.processor.parser;
 
 import online.sharedtype.SharedType;
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.FieldComponentInfo;
-import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeInfo;
-import online.sharedtype.processor.domain.TypeVariableInfo;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
-import online.sharedtype.processor.parser.type.TypeContext;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.def.TypeDef;
+import online.sharedtype.processor.domain.type.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.support.annotation.VisibleForTesting;
 import online.sharedtype.processor.support.utils.Tuple;
@@ -35,10 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static online.sharedtype.processor.domain.DependingKind.COMPONENTS;
-import static online.sharedtype.processor.domain.DependingKind.SELF;
-import static online.sharedtype.processor.domain.DependingKind.SUPER_TYPE;
 
 /**
  * @author Cause Chung
@@ -70,16 +65,17 @@ final class ClassTypeDefParser implements TypeDefParser {
             return Collections.emptyList();
         }
         Config config = new Config(typeElement, ctx);
+        ctx.getTypeStore().saveConfig(config);
 
         ClassDef classDef = ClassDef.builder().element(typeElement)
             .qualifiedName(config.getQualifiedName()).simpleName(config.getSimpleName()).annotated(config.isAnnotated())
             .build();
-        classDef.typeVariables().addAll(parseTypeVariables(typeElement));
-        classDef.components().addAll(parseComponents(typeElement, config, TypeContext.builder().typeDef(classDef).dependingKind(COMPONENTS).build()));
-        classDef.directSupertypes().addAll(parseSupertypes(typeElement, TypeContext.builder().typeDef(classDef).dependingKind(SUPER_TYPE).build()));
-        ctx.getTypeStore().saveConfig(classDef.qualifiedName(), config);
 
-        TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), TypeContext.builder().typeDef(classDef).dependingKind(SELF).build());
+        classDef.typeVariables().addAll(parseTypeVariables(typeElement));
+        classDef.components().addAll(parseComponents(typeElement, config, classDef));
+        classDef.directSupertypes().addAll(parseSupertypes(typeElement));
+
+        TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), typeElement);
         classDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);
         return Collections.singletonList(classDef);
     }
@@ -106,7 +102,7 @@ final class ClassTypeDefParser implements TypeDefParser {
             .collect(Collectors.toList()); // TODO: type bounds
     }
 
-    private List<TypeInfo> parseSupertypes(TypeElement typeElement, TypeContext typeContext) {
+    private List<TypeInfo> parseSupertypes(TypeElement typeElement) {
         List<DeclaredType> supertypes = new ArrayList<>();
         TypeMirror superclass = typeElement.getSuperclass();
         if (superclass instanceof DeclaredType) { // superclass can be NoType.
@@ -121,23 +117,25 @@ final class ClassTypeDefParser implements TypeDefParser {
         List<TypeInfo> res = new ArrayList<>(supertypes.size());
         for (DeclaredType supertype : supertypes) {
             if (!ctx.isIgnored(supertype.asElement())) {
-                res.add(typeInfoParser.parse(supertype, typeContext));
+                res.add(typeInfoParser.parse(supertype, typeElement));
             }
         }
         return res;
     }
 
-    private List<FieldComponentInfo> parseComponents(TypeElement typeElement, Config config, TypeContext typeContext) {
+    private List<FieldComponentInfo> parseComponents(TypeElement typeElement, Config config, ClassDef classDef) {
         List<Tuple<Element, String>> componentElems = resolveComponents(typeElement, config);
 
         List<FieldComponentInfo> fields = new ArrayList<>(componentElems.size());
         for (Tuple<Element, String> tuple : componentElems) {
             Element element = tuple.a();
+            TypeInfo fieldTypeInfo = typeInfoParser.parse(element.asType(), typeElement);
+            fieldTypeInfo.addReferencingType(classDef);
             FieldComponentInfo fieldInfo = FieldComponentInfo.builder()
                 .name(tuple.b())
                 .modifiers(element.getModifiers())
                 .optional(ctx.isOptionalAnnotated(element))
-                .type(typeInfoParser.parse(element.asType(), typeContext))
+                .type(fieldTypeInfo)
                 .build();
             fields.add(fieldInfo);
         }

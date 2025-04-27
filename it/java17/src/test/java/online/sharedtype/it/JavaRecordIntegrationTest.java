@@ -1,10 +1,10 @@
 package online.sharedtype.it;
 
-import online.sharedtype.processor.domain.ArrayTypeInfo;
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.FieldComponentInfo;
-import online.sharedtype.processor.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.type.ArrayTypeInfo;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 

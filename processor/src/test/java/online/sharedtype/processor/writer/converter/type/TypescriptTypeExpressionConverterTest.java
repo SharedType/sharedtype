@@ -2,12 +2,12 @@ package online.sharedtype.processor.writer.converter.type;
 
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.DateTimeInfo;
+import online.sharedtype.processor.domain.type.DateTimeInfo;
 import online.sharedtype.processor.domain.TargetCodeType;
-import online.sharedtype.processor.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 

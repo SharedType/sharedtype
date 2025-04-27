@@ -1,8 +1,11 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.component;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.def.EnumDef;
+import online.sharedtype.processor.domain.type.TypeInfo;
+import online.sharedtype.processor.domain.value.EnumConstantValue;
 
 /**
  * Represents an enum value, which is the value in the target code that corresponds to an enum constant.
@@ -19,7 +22,7 @@ public final class EnumValueInfo implements ComponentInfo {
     private static final long serialVersionUID = 1117324458104635595L;
     private final String name;
     private final TypeInfo type;
-    private final Object value;
+    private final EnumConstantValue value;
 
     public String name() {
         return name;
@@ -29,7 +32,7 @@ public final class EnumValueInfo implements ComponentInfo {
         return type;
     }
 
-    public Object value() {
+    public EnumConstantValue value() {
         return value;
     }
 

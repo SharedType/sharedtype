@@ -1,6 +1,6 @@
 package online.sharedtype.it;
 
-import online.sharedtype.processor.domain.ConstantNamespaceDef;
+import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
 import org.junit.jupiter.api.Test;
 
 import static online.sharedtype.it.support.TypeDefDeserializer.deserializeTypeDef;
@@ -12,103 +12,119 @@ final class ConstantsIntegrationTest {
         ConstantNamespaceDef constantsDef = (ConstantNamespaceDef) deserializeTypeDef("$online.sharedtype.it.java8.MyConstants.ser");
         assertThat(constantsDef.simpleName()).isEqualTo("MyConstants");
         var components = constantsDef.components();
-        assertThat(components).hasSize(24);
+        assertThat(components).hasSize(28);
         assertThat(components).satisfiesExactly(
             component -> {
                 assertThat(component.name()).isEqualTo("FLOAT_VALUE");
-                assertThat(component.value()).isEqualTo(1.888f);
+                assertThat(component.value().getValue()).isEqualTo(1.888f);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("LONG_VALUE");
-                assertThat(component.value()).isEqualTo(999L);
+                assertThat(component.value().getValue()).isEqualTo(999L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_LOCAL_VALUE");
-                assertThat(component.value()).isEqualTo(555L);
+                assertThat(component.value().getValue()).isEqualTo(555L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("SELF_REFERENCED_LOCAL_VALUE");
-                assertThat(component.value()).isEqualTo(555L);
+                assertThat(component.value().getValue()).isEqualTo(555L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_IMPORTED_VALUE");
-                assertThat(component.value()).isEqualTo(666L);
+                assertThat(component.value().getValue()).isEqualTo(666L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_NESTED_VALUE");
-                assertThat(component.value()).isEqualTo(777L);
+                assertThat(component.value().getValue()).isEqualTo(777L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_STATIC_IMPORTED_VALUE");
-                assertThat(component.value()).isEqualTo(999L);
+                assertThat(component.value().getValue()).isEqualTo(999L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("DOUBLE_REFERENCED_VALUE");
-                assertThat(component.value()).isEqualTo(555L);
+                assertThat(component.value().getValue()).isEqualTo(555L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_PACKAGE_PRIVATE_VALUE");
-                assertThat(component.value()).isEqualTo(123L);
+                assertThat(component.value().getValue()).isEqualTo(123L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_SUPER_VALUE");
-                assertThat(component.value()).isEqualTo(345L);
+                assertThat(component.value().getValue()).isEqualTo(345L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("SELECTED_SUPER_VALUE");
-                assertThat(component.value()).isEqualTo(345L);
+                assertThat(component.value().getValue()).isEqualTo(345L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE");
-                assertThat(component.value()).isEqualTo("MilkyWay");
+                assertThat(component.value().getValue()).isEqualTo("MilkyWay");
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE2");
+                assertThat(component.value().getValue()).isEqualTo("S");
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE3");
+                assertThat(component.value().getValue()).isEqualTo(1);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value()).isEqualTo(112L);
+                assertThat(component.value().getValue()).isEqualTo(112L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value()).isEqualTo(555L);
+                assertThat(component.value().getValue()).isEqualTo(555L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("SELF_REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value()).isEqualTo(555L);
+                assertThat(component.value().getValue()).isEqualTo(555L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_IMPORTED_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value()).isEqualTo(666L);
+                assertThat(component.value().getValue()).isEqualTo(666L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_NESTED_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value()).isEqualTo(777L);
+                assertThat(component.value().getValue()).isEqualTo(777L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_STATIC_IMPORTED_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value()).isEqualTo(999L);
+                assertThat(component.value().getValue()).isEqualTo(999L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("DOUBLE_REFERENCED_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value()).isEqualTo(555L);
+                assertThat(component.value().getValue()).isEqualTo(555L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_PACKAGE_PRIVATE_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value()).isEqualTo(123L);
+                assertThat(component.value().getValue()).isEqualTo(123L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_SUPER_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value()).isEqualTo(345L);
+                assertThat(component.value().getValue()).isEqualTo(345L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("SELECTED_SUPER_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value()).isEqualTo(345L);
+                assertThat(component.value().getValue()).isEqualTo(345L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_STATIC_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value()).isEqualTo(787L);
+                assertThat(component.value().getValue()).isEqualTo(787L);
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value()).isEqualTo("MilkyWay");
+                assertThat(component.value().getValue()).isEqualTo("MilkyWay");
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE2_IN_STATIC_BLOCK");
+                assertThat(component.value().getValue()).isEqualTo("S");
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE3_IN_STATIC_BLOCK");
+                assertThat(component.value().getValue()).isEqualTo(1);
             }
         );
     }
@@ -121,7 +137,7 @@ final class ConstantsIntegrationTest {
         assertThat(components).satisfiesExactly(
             component -> {
                 assertThat(component.name()).isEqualTo("INNER_REFERENCED_SUPER_VALUE_IN_STATIC");
-                assertThat(component.value()).isEqualTo(345L);
+                assertThat(component.value().getValue()).isEqualTo(345L);
             }
         );
     }

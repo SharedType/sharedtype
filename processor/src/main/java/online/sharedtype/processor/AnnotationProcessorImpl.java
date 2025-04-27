@@ -1,7 +1,7 @@
 package online.sharedtype.processor;
 
 import com.google.auto.service.AutoService;
-import online.sharedtype.processor.domain.TypeDef;
+import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.PropsFactory;
 import online.sharedtype.processor.parser.TypeDefParser;

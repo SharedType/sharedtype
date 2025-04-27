@@ -2,12 +2,11 @@ package online.sharedtype.processor.parser.type;
 
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.TypeStore;
-import online.sharedtype.processor.domain.ArrayTypeInfo;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.DateTimeInfo;
-import online.sharedtype.processor.domain.DependingKind;
-import online.sharedtype.processor.domain.TypeInfo;
-import online.sharedtype.processor.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.type.ArrayTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.DateTimeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
+import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
@@ -41,32 +40,32 @@ final class TypeInfoParserImpl implements TypeInfoParser {
     }
 
     @Override
-    public TypeInfo parse(TypeMirror typeMirror, TypeContext typeContext) {
+    public TypeInfo parse(TypeMirror typeMirror, TypeElement ctxTypeElement) {
         TypeKind typeKind = typeMirror.getKind();
 
         // TODO: use enumMap
         if (typeKind.isPrimitive()) {
             return PRIMITIVES.get(typeKind);
         } else if (typeKind == TypeKind.ARRAY) {
-            return new ArrayTypeInfo(parse(((ArrayType) typeMirror).getComponentType(), typeContext));
+            return new ArrayTypeInfo(parse(((ArrayType) typeMirror).getComponentType(), ctxTypeElement));
         } else if (typeKind == TypeKind.DECLARED) {
-            return parseDeclared((DeclaredType) typeMirror, typeContext);
+            return parseDeclared((DeclaredType) typeMirror, ctxTypeElement);
         } else if (typeKind == TypeKind.TYPEVAR) {
-            return parseTypeVariable((TypeVariable) typeMirror, typeContext);
+            return parseTypeVariable((TypeVariable) typeMirror, ctxTypeElement);
         } else if (typeKind == TypeKind.EXECUTABLE) {
-            return parse(((ExecutableType) typeMirror).getReturnType(), typeContext);
+            return parse(((ExecutableType) typeMirror).getReturnType(), ctxTypeElement);
         } else if (typeKind == TypeKind.WILDCARD) {
             throw new SharedTypeException(String.format("Unsupported type: %s, typeKind: %s, contextType: %s." +
                     " SharedType currently does not support wildcard generic types." +
                     " If it's from a dependency type, consider ignore it via global properties.",
-                typeMirror, typeKind, typeContext.getTypeDef()));
+                typeMirror, typeKind, ctxTypeElement));
         }
         throw new SharedTypeInternalError(String.format("Unsupported type: %s, typeKind: %s, contextType: %s. " +
                 "If it's from a dependency type, consider ignore it via global properties.",
-            typeMirror, typeKind, typeContext.getTypeDef()));
+            typeMirror, typeKind, ctxTypeElement));
     }
 
-    private TypeInfo parseDeclared(DeclaredType declaredType, TypeContext typeContext) {
+    private TypeInfo parseDeclared(DeclaredType declaredType, TypeElement ctxTypeElement) {
         TypeElement typeElement = (TypeElement) declaredType.asElement();
         String qualifiedName = typeElement.getQualifiedName().toString();
         String simpleName = typeElement.getSimpleName().toString();
@@ -86,7 +85,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                 typeArgs = argDeclaredType.getTypeArguments();
             } else if (currentType instanceof TypeVariable) {
                 TypeVariable argTypeVariable = (TypeVariable) currentType;
-                TypeVariableInfo typeVarInfo = parseTypeVariable(argTypeVariable, typeContext);
+                TypeVariableInfo typeVarInfo = parseTypeVariable(argTypeVariable, ctxTypeElement);
                 qualifiedName = typeVarInfo.qualifiedName();
                 simpleName = typeVarInfo.name();
                 typeArgs = Collections.emptyList();
@@ -95,7 +94,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             }
         }
 
-        List<TypeInfo> parsedTypeArgs = typeArgs.stream().map(typeArg -> parse(typeArg, typeContext)).collect(Collectors.toList());
+        List<TypeInfo> parsedTypeArgs = typeArgs.stream().map(typeArg -> parse(typeArg, ctxTypeElement)).collect(Collectors.toList());
 
         if (typeInfo == null) {
             typeInfo = typeStore.getTypeInfo(qualifiedName, parsedTypeArgs);
@@ -118,11 +117,6 @@ final class TypeInfoParserImpl implements TypeInfoParser {
             typeStore.saveTypeInfo(qualifiedName, parsedTypeArgs, typeInfo);
         }
 
-        if (typeContext.getDependingKind() == DependingKind.COMPONENTS && typeInfo instanceof ConcreteTypeInfo) {
-            ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
-            concreteTypeInfo.referencingTypes().add(typeContext.getTypeDef());
-        }
-
         while (arrayStack > 0) {
             typeInfo = new ArrayTypeInfo(typeInfo);
             arrayStack--;
@@ -140,8 +134,8 @@ final class TypeInfoParserImpl implements TypeInfoParser {
         }
     }
 
-    private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable, TypeContext typeContext) {
-        String contextTypeQualifiedName = typeContext.getTypeDef().qualifiedName();
+    private TypeVariableInfo parseTypeVariable(TypeVariable typeVariable, TypeElement ctxTypeElement) {
+        String contextTypeQualifiedName = ctxTypeElement.getQualifiedName().toString();
         String simpleName = typeVariable.asElement().getSimpleName().toString();
         String qualifiedName = TypeVariableInfo.concatQualifiedName(contextTypeQualifiedName, simpleName);
         TypeInfo typeInfo = typeStore.getTypeInfo(qualifiedName, Collections.emptyList());

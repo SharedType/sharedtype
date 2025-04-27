@@ -1,4 +1,6 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.type;
+
+import online.sharedtype.processor.domain.def.TypeDef;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -36,4 +38,10 @@ public interface TypeInfo extends Serializable {
     default TypeInfo reify(Map<TypeVariableInfo, TypeInfo> mappings) {
         return this;
     }
+
+    /**
+     * Mark this type as referenced by another type. Used for e.g. cyclic reference detection.
+     * @param typeDef type that references this type
+     */
+    void addReferencingType(TypeDef typeDef);
 }

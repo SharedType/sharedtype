@@ -1,14 +1,15 @@
 package online.sharedtype.processor.resolver;
 
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.domain.ArrayTypeInfo;
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.EnumDef;
-import online.sharedtype.processor.domain.EnumValueInfo;
-import online.sharedtype.processor.domain.FieldComponentInfo;
-import online.sharedtype.processor.domain.TypeDef;
-import online.sharedtype.processor.domain.TypeVariableInfo;
+import online.sharedtype.processor.domain.type.ArrayTypeInfo;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.def.EnumDef;
+import online.sharedtype.processor.domain.component.EnumValueInfo;
+import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.def.TypeDef;
+import online.sharedtype.processor.domain.type.TypeVariableInfo;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.TypeDefParser;
 import org.junit.jupiter.api.Test;
 
@@ -158,8 +159,8 @@ final class LoopTypeResolverTest {
         EnumDef typeDef = EnumDef.builder()
             .qualifiedName("com.github.cuzfrog.EnumA").simpleName("EnumA")
             .enumValueInfos(Arrays.asList(
-                new EnumValueInfo("Value1", STRING_TYPE_INFO, "Value1"),
-                new EnumValueInfo("Value2", STRING_TYPE_INFO, "Value2")
+                new EnumValueInfo("Value1", STRING_TYPE_INFO, ValueHolder.ofEnum("Value1")),
+                new EnumValueInfo("Value2", STRING_TYPE_INFO, ValueHolder.ofEnum("Value2"))
             ))
             .build();
 

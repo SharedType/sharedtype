@@ -1,8 +1,8 @@
 package online.sharedtype.processor.parser;
 
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.domain.ClassDef;
-import online.sharedtype.processor.domain.ConstantNamespaceDef;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

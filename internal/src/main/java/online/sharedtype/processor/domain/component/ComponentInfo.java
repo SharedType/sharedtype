@@ -1,4 +1,6 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.component;
+
+import online.sharedtype.processor.domain.def.TypeDef;
 
 import java.io.Serializable;
 

@@ -1,9 +1,13 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.type;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.def.ConcreteTypeDef;
+import online.sharedtype.processor.domain.MappableType;
+import online.sharedtype.processor.domain.TargetCodeType;
+import online.sharedtype.processor.domain.def.TypeDef;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -27,9 +31,9 @@ import java.util.stream.Collectors;
  * @see ArrayTypeInfo
  * @see Kind
  */
-@EqualsAndHashCode(of = {"qualifiedName", "typeArgs"})
+@EqualsAndHashCode(of = {"qualifiedName", "typeArgs"}, callSuper = false)
 @Builder(toBuilder = true)
-public final class ConcreteTypeInfo implements TypeInfo, MappableType {
+public final class ConcreteTypeInfo extends ReferableTypeInfo implements MappableType {
     private static final long serialVersionUID = 6912267731376244613L;
     private final String qualifiedName;
     private final String simpleName;
@@ -45,11 +49,6 @@ public final class ConcreteTypeInfo implements TypeInfo, MappableType {
     @Getter
     private final boolean baseMapType;
 
-    /**
-     * Qualified names of types from where this typeInfo is strongly referenced, i.e. as a component type.
-     */
-    @Builder.Default
-    private final Set<TypeDef> referencingTypes = new HashSet<>();
     @Builder.Default
     private boolean resolved = true;
 
@@ -65,7 +64,7 @@ public final class ConcreteTypeInfo implements TypeInfo, MappableType {
     private final Map<TargetCodeType, String> mappedNames = new EnumMap<>(TargetCodeType.class);
 
 
-    static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
+    public static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
         return ConcreteTypeInfo.builder().qualifiedName(qualifiedName).simpleName(simpleName).build();
     }
 
@@ -118,10 +117,6 @@ public final class ConcreteTypeInfo implements TypeInfo, MappableType {
 
     public String simpleName() {
         return simpleName;
-    }
-
-    public Set<TypeDef> referencingTypes() {
-        return referencingTypes;
     }
 
     public List<TypeInfo> typeArgs() {

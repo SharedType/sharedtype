@@ -1,7 +1,8 @@
-package online.sharedtype.processor.domain;
+package online.sharedtype.processor.domain.type;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import online.sharedtype.processor.domain.def.TypeDef;
 
 import java.util.Map;
 
@@ -35,6 +36,10 @@ public final class ArrayTypeInfo implements TypeInfo {
     public TypeInfo reify(Map<TypeVariableInfo, TypeInfo> mappings) {
         TypeInfo reifiedComponent = component.reify(mappings);
         return reifiedComponent == component ? this : new ArrayTypeInfo(reifiedComponent);
+    }
+    @Override
+    public void addReferencingType(TypeDef typeDef) {
+        component.addReferencingType(typeDef);
     }
 
     @Override
