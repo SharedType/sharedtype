@@ -25,10 +25,13 @@ public interface TemplateDataConverter {
     }
 
     static Set<TemplateDataConverter> rust(Context ctx) {
+        RustMacroTraitsGenerator rustMacroTraitsGenerator = new RustMacroTraitsGeneratorImpl(ctx);
+        TypeExpressionConverter rustTypeExpressionConverter = TypeExpressionConverter.rust(ctx);
+        TypeExpressionConverter rustLiteralTypeExpressionConverter = TypeExpressionConverter.rustLiteral();
         Set<TemplateDataConverter> converters = new HashSet<>(3);
-        converters.add(new RustStructConverter(ctx, TypeExpressionConverter.rust(ctx)));
-        converters.add(new RustEnumConverter(ctx));
-        converters.add(new ConstantConverter(ctx, TypeExpressionConverter.rustLiteral(), OutputTarget.RUST));
+        converters.add(new RustStructConverter(ctx, rustTypeExpressionConverter, rustMacroTraitsGenerator));
+        converters.add(new RustEnumConverter(rustLiteralTypeExpressionConverter, rustMacroTraitsGenerator));
+        converters.add(new ConstantConverter(ctx, rustLiteralTypeExpressionConverter, OutputTarget.RUST));
         return converters;
     }
 }

@@ -4,10 +4,10 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import online.sharedtype.processor.context.Context;
-import online.sharedtype.processor.domain.def.ClassDef;
-import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.def.TypeDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
@@ -21,13 +21,11 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-final class RustStructConverter extends AbstractRustConverter {
+@RequiredArgsConstructor
+final class RustStructConverter implements TemplateDataConverter {
+    private final Context ctx;
     private final TypeExpressionConverter typeExpressionConverter;
-
-    RustStructConverter(Context ctx, TypeExpressionConverter typeExpressionConverter) {
-        super(ctx);
-        this.typeExpressionConverter = typeExpressionConverter;
-    }
+    private final RustMacroTraitsGenerator rustMacroTraitsGenerator;
 
     @Override
     public boolean shouldAccept(TypeDef typeDef) {
@@ -51,7 +49,7 @@ final class RustStructConverter extends AbstractRustConverter {
             classDef.simpleName(),
             classDef.typeVariables().stream().map(typeInfo -> typeExpressionConverter.toTypeExpr(typeInfo, typeDef)).collect(Collectors.toList()),
             gatherProperties(classDef),
-            macroTraits(classDef)
+            rustMacroTraitsGenerator.generate(classDef)
         );
         return Tuple.of(Template.TEMPLATE_RUST_STRUCT, value);
     }
@@ -109,7 +107,7 @@ final class RustStructConverter extends AbstractRustConverter {
         }
 
         String macroTraitsExpr() {
-            return buildMacroTraitsExpr(macroTraits);
+            return ConversionUtils.buildRustMacroTraitsExpr(macroTraits);
         }
     }
 

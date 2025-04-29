@@ -8,28 +8,22 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-abstract class AbstractRustConverter implements TemplateDataConverter {
+final class RustMacroTraitsGeneratorImpl implements RustMacroTraitsGenerator {
     final Context ctx;
     private final Set<String> defaultTraits;
 
-    AbstractRustConverter(Context ctx) {
+    RustMacroTraitsGeneratorImpl(Context ctx) {
         this.ctx = ctx;
         this.defaultTraits = ctx.getProps().getRust().getDefaultTypeMacros();
     }
 
-    final Set<String> macroTraits(TypeDef typeDef) {
+    @Override
+    public Set<String> generate(TypeDef typeDef) {
         Config config = ctx.getTypeStore().getConfig(typeDef);
         String[] typeMacroTraits = config.getAnno().rustMacroTraits();
         Set<String> traits = new LinkedHashSet<>(typeMacroTraits.length + defaultTraits.size());
         traits.addAll(defaultTraits);
         Collections.addAll(traits, typeMacroTraits);
         return traits;
-    }
-
-    static String buildMacroTraitsExpr(Set<String> macroTraits) {
-        if (macroTraits.isEmpty()) {
-            return null;
-        }
-        return String.format("#[derive(%s)]", String.join(", ", macroTraits));
     }
 }

@@ -17,7 +17,7 @@ public interface TypeExpressionConverter {
     }
 
     static TypeExpressionConverter rustLiteral() {
-        return new RustLiteralTypeExpressionConverter();
+        return new RustConstantLiteralTypeExpressionConverter();
     }
 
     @RequiredArgsConstructor
