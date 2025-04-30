@@ -72,8 +72,7 @@ final class EnumTypeDefParser implements TypeDefParser {
             String name = enumConstant.getSimpleName().toString();
             ValueHolder value = valueResolver.resolve(enumConstant, enumTypeElement);
             if (value instanceof EnumConstantValue) {
-                EnumConstantValue enumConstantValue = (EnumConstantValue) value;
-                res.add(new EnumValueInfo(name, enumConstantValue.getValueType(), (EnumConstantValue) value));
+                res.add(new EnumValueInfo(name, (EnumConstantValue) value));
             } else {
                 ctx.warn(enumConstant, "Cannot resolve value for enum constant %s, value: '%s'", name, value);
             }

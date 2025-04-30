@@ -82,7 +82,7 @@ final class LoopTypeResolver implements TypeResolver {
                 EnumDef enumDef = (EnumDef) typeDef;
                 for (EnumValueInfo component : enumDef.components()) {
                     if (!component.resolved()) {
-                        processingInfoStack.push(component.type());
+                        processingInfoStack.push(component.value().getValueType());
                     }
                 }
             } else if (typeDef instanceof ConstantNamespaceDef) {

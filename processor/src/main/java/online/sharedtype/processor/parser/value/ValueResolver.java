@@ -15,7 +15,7 @@ public interface ValueResolver {
         CompositeValueResolver compositeValueResolver = new CompositeValueResolver();
         ValueResolverBackend backend = new ValueResolverBackendImpl(compositeValueResolver);
         compositeValueResolver.registerResolver(ElementKind.ENUM_CONSTANT, new EnumValueResolver(ctx, typeInfoParser, backend));
-        compositeValueResolver.registerResolver(ElementKind.FIELD, new ConstantValueResolver(ctx, backend));
+        compositeValueResolver.registerResolver(ElementKind.FIELD, new ConstantValueResolver(ctx, typeInfoParser, backend));
         return compositeValueResolver;
     }
 }

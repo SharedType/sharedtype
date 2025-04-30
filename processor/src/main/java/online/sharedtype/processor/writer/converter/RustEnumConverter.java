@@ -1,9 +1,8 @@
 package online.sharedtype.processor.writer.converter;
 
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.processor.context.Context;
-import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
+import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.support.utils.Tuple;
@@ -30,11 +29,12 @@ final class RustEnumConverter implements TemplateDataConverter {
         EnumDef enumDef = (EnumDef) typeDef;
 
         String valueType = getValueTypeExpr(enumDef);
+        boolean hasLiteralValue = valueType != null;
         EnumExpr value = new EnumExpr(
             enumDef.simpleName(),
-            extractEnumValues(enumDef.components()),
+            extractEnumValues(enumDef.components(), hasLiteralValue),
             rustMacroTraitsGenerator.generate(enumDef),
-            valueType != null,
+            hasLiteralValue,
             valueType
         );
         return Tuple.of(Template.TEMPLATE_RUST_ENUM, value);
@@ -44,19 +44,19 @@ final class RustEnumConverter implements TemplateDataConverter {
     private String getValueTypeExpr(EnumDef enumDef) {
         EnumValueInfo component = enumDef.components().get(0);
         TypeInfo enumTypeInfo = enumDef.typeInfoSet().iterator().next();
-        if (enumTypeInfo.equals(component.type())) {
+        if (enumTypeInfo.equals(component.value().getValueType())) {
             return null;
         }
-        return typeExpressionConverter.toTypeExpr(component.type(), enumDef);
+        return typeExpressionConverter.toTypeExpr(component.value().getValueType(), enumDef);
     }
 
-    private List<EnumerationExpr> extractEnumValues(List<EnumValueInfo> components) {
+    private List<EnumerationExpr> extractEnumValues(List<EnumValueInfo> components, boolean hasLiteralValue) {
         List<EnumerationExpr> exprs = new ArrayList<>(components.size());
 
         for (EnumValueInfo component : components) {
             exprs.add(new EnumerationExpr(
                 component.name(),
-                component.value().literalValue()
+                hasLiteralValue ? component.value().literalValue() : component.name()
             ));
         }
         return exprs;

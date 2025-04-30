@@ -7,7 +7,7 @@ pub enum {{name}} {
 
 {{#hasLiteralValue}}
 impl {{name}} {
-    const fn value(self) -> {{{valueType}}} {
+    pub const fn value(self) -> {{{valueType}}} {
         use {{name}}::*;
         match self {
             {{#enumerations}}

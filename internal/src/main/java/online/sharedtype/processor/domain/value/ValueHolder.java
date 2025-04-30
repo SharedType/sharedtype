@@ -1,12 +1,13 @@
 package online.sharedtype.processor.domain.value;
 
-import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.TypeInfo;
 
 import java.io.Serializable;
 
 public interface ValueHolder extends Serializable {
+    TypeInfo getValueType();
     Object getValue();
+
     default String literalValue() {
         Object value = getValue();
         if (value instanceof CharSequence || value instanceof Character) {
@@ -16,21 +17,24 @@ public interface ValueHolder extends Serializable {
         }
     }
 
-    static ValueHolder of(Object value) {
+    static ValueHolder of(TypeInfo valueType, Object value) {
         if (value instanceof ValueHolder) {
             return (ValueHolder) value;
         } else {
-            return new LiteralValue(value);
+            return new LiteralValue(valueType, value);
         }
     }
 
     static EnumConstantValue ofEnum(String enumConstantName, TypeInfo valueType, Object value) {
-        return new EnumConstantValue(enumConstantName, valueType, of(value));
+        TypeInfo actualValueType = valueType;
+        Object actualValue = value;
+        while (actualValue instanceof ValueHolder) {
+            ValueHolder valueHolder = (ValueHolder) actualValue;
+            actualValueType = valueHolder.getValueType();
+            actualValue = valueHolder.getValue();
+        }
+        return new EnumConstantValue(enumConstantName, actualValueType, actualValue);
     }
 
-    static EnumConstantValue ofEnum(String enumConstantName) {
-        return new EnumConstantValue(enumConstantName, Constants.STRING_TYPE_INFO, enumConstantName);
-    }
-
-    LiteralValue NULL = new LiteralValue(null);
+    LiteralValue NULL = new LiteralValue(null,null);
 }

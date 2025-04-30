@@ -1,6 +1,7 @@
 package online.sharedtype.it;
 
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
+import online.sharedtype.processor.domain.value.EnumConstantValue;
 import org.junit.jupiter.api.Test;
 
 import static online.sharedtype.it.support.TypeDefDeserializer.deserializeTypeDef;
@@ -60,7 +61,8 @@ final class ConstantsIntegrationTest {
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE");
-                assertThat(component.value().getValue()).isEqualTo("MilkyWay");
+                EnumConstantValue value = (EnumConstantValue) component.value();
+                assertThat(value.getEnumConstantName()).isEqualTo("MilkyWay");
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE2");
@@ -116,7 +118,8 @@ final class ConstantsIntegrationTest {
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE_IN_STATIC_BLOCK");
-                assertThat(component.value().getValue()).isEqualTo("MilkyWay");
+                EnumConstantValue value = (EnumConstantValue) component.value();
+                assertThat(value.getEnumConstantName()).isEqualTo("MilkyWay");
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_ENUM_VALUE2_IN_STATIC_BLOCK");

@@ -99,8 +99,8 @@ final class ConstantTypeDefParserTest {
             .element();
         when(typeInfoParser.parse(intStaticField.type(), typeElement)).thenReturn(Constants.INT_TYPE_INFO);
         when(typeInfoParser.parse(stringStaticField.type(), typeElement)).thenReturn(Constants.STRING_TYPE_INFO);
-        when(valueResolver.resolve(intStaticField.element(), typeElement)).thenReturn(ValueHolder.of(105));
-        when(valueResolver.resolve(stringStaticField.element(), typeElement)).thenReturn(ValueHolder.of("abc123"));
+        when(valueResolver.resolve(intStaticField.element(), typeElement)).thenReturn(ValueHolder.of(Constants.INT_TYPE_INFO, 105));
+        when(valueResolver.resolve(stringStaticField.element(), typeElement)).thenReturn(ValueHolder.of(Constants.STRING_TYPE_INFO, "abc123"));
 
         var typeDef = (ConstantNamespaceDef)parser.parse(typeElement).get(0);
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");

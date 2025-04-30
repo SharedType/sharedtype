@@ -71,12 +71,12 @@ final class EnumTypeDefParserTest {
             c1 -> {
                 assertThat(c1.value().getValue()).isEqualTo("Value1");
                 assertThat(c1.value().getEnumConstantName()).isEqualTo("Value1");
-                assertThat(c1.type()).isEqualTo(Constants.STRING_TYPE_INFO);
+                assertThat(c1.value().getValueType()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(c1.name()).isEqualTo("Value1");
             },
             c2 -> {
                 assertThat(c2.value().getValue()).isEqualTo("Value2");
-                assertThat(c2.type()).isEqualTo(Constants.STRING_TYPE_INFO);
+                assertThat(c2.value().getValueType()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(c2.name()).isEqualTo("Value2");
             }
         );

@@ -54,7 +54,7 @@ final class EnumValueResolverTest {
         when(typeInfoParser.parse(enumType.type(), enumType.element())).thenReturn(enumTypeInfo);
 
         EnumConstantValue value1 = (EnumConstantValue) resolver.resolve(enumConstant1, enumType.element());
-        assertThat(value1.getValue()).isEqualTo("VALUE1");
+        assertThat(value1.getValue()).isNull();
         assertThat(value1.getEnumConstantName()).isEqualTo("VALUE1");
         assertThat(value1.getValueType()).isEqualTo(enumTypeInfo);
     }

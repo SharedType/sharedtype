@@ -7,7 +7,6 @@ import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.EnumCtorIndex;
-import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
@@ -35,14 +34,23 @@ final class EnumValueResolver implements ValueResolver {
         EnumCtorIndex ctorArgIdx = resolveCtorIndex(enumTypeElement);
         if (ctorArgIdx == EnumCtorIndex.NONE) {
             TypeInfo typeInfo = typeInfoParser.parse(enumTypeElement.asType(), enumTypeElement);
-            return ValueHolder.ofEnum(enumConstantName, typeInfo, enumConstantName);
+            return ValueHolder.ofEnum(enumConstantName, typeInfo, null);
         }
 
         Tree tree = ctx.getTrees().getTree(enumConstant);
         if (tree instanceof VariableTree) {
             VariableTree variableTree = (VariableTree) tree;
             Object value = resolveValue(enumTypeElement, enumTypeElement, variableTree, ctorArgIdx.getIdx());
-            return ValueHolder.ofEnum(enumConstantName, typeInfoParser.parse(ctorArgIdx.getField().asType(), enumTypeElement), value);
+            TypeInfo valueType = null;
+            while (value instanceof ValueHolder) {
+                ValueHolder valueHolder = (ValueHolder) value;
+                value = valueHolder.getValue();
+                valueType = valueHolder.getValueType();
+            }
+            if (valueType == null) {
+                valueType = typeInfoParser.parse(ctorArgIdx.getField().asType(), enumTypeElement);
+            }
+            return ValueHolder.ofEnum(enumConstantName, valueType, value);
         } else if (tree == null) {
             ctx.error(enumConstant, "Literal value cannot be parsed from enum constant: %s of enum %s, because source tree from the element is null." +
                     " This could mean at the time of the annotation processing, the source tree was not available." +

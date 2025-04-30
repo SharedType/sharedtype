@@ -21,15 +21,10 @@ import online.sharedtype.processor.domain.value.EnumConstantValue;
 public final class EnumValueInfo implements ComponentInfo {
     private static final long serialVersionUID = 1117324458104635595L;
     private final String name;
-    private final TypeInfo type;
     private final EnumConstantValue value;
 
     public String name() {
         return name;
-    }
-
-    public TypeInfo type() {
-        return type;
     }
 
     public EnumConstantValue value() {
@@ -38,7 +33,7 @@ public final class EnumValueInfo implements ComponentInfo {
 
     @Override
     public boolean resolved() {
-        return type.resolved();
+        return value.getValueType().resolved();
     }
 
     @Override

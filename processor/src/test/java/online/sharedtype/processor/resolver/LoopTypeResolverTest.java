@@ -8,6 +8,7 @@ import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import online.sharedtype.processor.domain.def.TypeDef;
+import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.TypeDefParser;
@@ -156,11 +157,12 @@ final class LoopTypeResolverTest {
 
     @Test
     void resolveSimpleEnum() {
+        ConcreteTypeInfo enumType = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").build();
         EnumDef typeDef = EnumDef.builder()
             .qualifiedName("com.github.cuzfrog.EnumA").simpleName("EnumA")
             .enumValueInfos(Arrays.asList(
-                new EnumValueInfo("Value1", STRING_TYPE_INFO, ValueHolder.ofEnum("Value1")),
-                new EnumValueInfo("Value2", STRING_TYPE_INFO, ValueHolder.ofEnum("Value2"))
+                new EnumValueInfo("Value1", ValueHolder.ofEnum("Value1", enumType, null)),
+                new EnumValueInfo("Value2", ValueHolder.ofEnum("Value2", enumType, null))
             ))
             .build();
 

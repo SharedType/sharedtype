@@ -51,8 +51,8 @@ final class RustEnumConverterTest {
             .simpleName("EnumA")
             .qualifiedName("com.github.cuzfrog.EnumA")
             .enumValueInfos(Arrays.asList(
-                new EnumValueInfo("Value1", enumType, ValueHolder.ofEnum("Value1")),
-                new EnumValueInfo("Value2", enumType, ValueHolder.ofEnum("Value2"))
+                new EnumValueInfo("Value1", ValueHolder.ofEnum("Value1", enumType, null)),
+                new EnumValueInfo("Value2", ValueHolder.ofEnum("Value2", enumType, null))
             ))
             .build();
         enumDef.linkTypeInfo(enumType);
@@ -69,11 +69,11 @@ final class RustEnumConverterTest {
         assertThat(model.enumerations).satisfiesExactly(
             v1 -> {
                 assertThat(v1.name).isEqualTo("Value1");
-                assertThat(v1.value).isEqualTo("\"Value1\"");
+                assertThat(v1.value).isEqualTo("Value1");
             },
             v2 -> {
                 assertThat(v2.name).isEqualTo("Value2");
-                assertThat(v2.value).isEqualTo("\"Value2\"");
+                assertThat(v2.value).isEqualTo("Value2");
             }
         );
     }
@@ -84,9 +84,9 @@ final class RustEnumConverterTest {
             .simpleName("EnumA")
             .qualifiedName("com.github.cuzfrog.EnumA")
             .enumValueInfos(Arrays.asList(
-                new EnumValueInfo("Value1", INT_TYPE_INFO, ValueHolder.ofEnum("Value1", INT_TYPE_INFO, 11)),
-                new EnumValueInfo("Value2", INT_TYPE_INFO, ValueHolder.ofEnum("Value2", INT_TYPE_INFO, 22)),
-                new EnumValueInfo("Value3", INT_TYPE_INFO, ValueHolder.ofEnum("Value3", INT_TYPE_INFO, 33))
+                new EnumValueInfo("Value1", ValueHolder.ofEnum("Value1", INT_TYPE_INFO, 11)),
+                new EnumValueInfo("Value2", ValueHolder.ofEnum("Value2", INT_TYPE_INFO, 22)),
+                new EnumValueInfo("Value3", ValueHolder.ofEnum("Value3", INT_TYPE_INFO, 33))
             ))
             .build();
         enumDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").build());
@@ -102,7 +102,6 @@ final class RustEnumConverterTest {
         assertThat(model.macroTraits).containsExactly("TestMacro");
         assertThat(model.hasLiteralValue).isTrue();
         assertThat(model.valueType).isEqualTo("i32");
-        assertThat(model.isStringType).isFalse();
         assertThat(model.enumerations).satisfiesExactly(
             v1 -> {
                 assertThat(v1.name).isEqualTo("Value1");

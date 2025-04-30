@@ -28,9 +28,9 @@ final class ConstantConverterRustTest {
         .simpleName("Abc")
         .qualifiedName("com.github.cuzfrog.Abc")
         .constants(List.of(
-            new ConstantField("VALUE1", Constants.BOOLEAN_TYPE_INFO, ValueHolder.of(true)),
-            new ConstantField("VALUE2", Constants.STRING_TYPE_INFO, ValueHolder.of("value2")),
-            new ConstantField("VALUE3", Constants.FLOAT_TYPE_INFO, ValueHolder.of(3.5f)),
+            new ConstantField("VALUE1", Constants.BOOLEAN_TYPE_INFO, ValueHolder.of(Constants.BOOLEAN_TYPE_INFO, true)),
+            new ConstantField("VALUE2", Constants.STRING_TYPE_INFO, ValueHolder.of(Constants.STRING_TYPE_INFO, "value2")),
+            new ConstantField("VALUE3", Constants.FLOAT_TYPE_INFO, ValueHolder.of(Constants.FLOAT_TYPE_INFO, 3.5f)),
             new ConstantField("VALUE4", ConcreteTypeInfo.builder().simpleName("MyEnum").kind(ENUM).build(),
                 ValueHolder.ofEnum("ENUM_CONST", Constants.BOXED_INT_TYPE_INFO, 1))
         ))
@@ -56,7 +56,7 @@ final class ConstantConverterRustTest {
             },
             constantExpr -> {
                 assertThat(constantExpr.name).isEqualTo("VALUE2");
-                assertThat(constantExpr.type).isEqualTo("&str");
+                assertThat(constantExpr.type).isEqualTo("&'static str");
                 assertThat(constantExpr.value).isEqualTo("\"value2\"");
             },
             constantExpr -> {

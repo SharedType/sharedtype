@@ -128,4 +128,13 @@ mod tests {
             r#"{"valueOptional":"foo","nestedValueOptional":null,"setNestedValueOptional":null,"mapNestedValueOptional":{"1":"foo"}}"#
         );
     }
+
+    #[test]
+    fn enum_values() {
+        assert_eq!(EnumTShirt::S.value(), "S");
+        assert_eq!(EnumSize::LARGE.value(), 3);
+        assert_eq!(EnumConstReference::ReferenceConstantInOther.value(), 999);
+        assert_eq!(EnumConstReference::ReferenceConstantLocally.value(), 156);
+        assert_eq!(EnumEnumReference::ReferenceAnother.value(), 3);
+    }
 }
