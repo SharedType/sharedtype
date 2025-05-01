@@ -107,13 +107,13 @@ final class ConstantTypeDefParserTest {
         assertThat(typeDef.components()).satisfiesExactly(
             field1 -> {
                 assertThat(field1.name()).isEqualTo("CONST_INT_VALUE");
-                assertThat(field1.type()).isEqualTo(Constants.INT_TYPE_INFO);
+                assertThat(field1.value().getValueType()).isEqualTo(Constants.INT_TYPE_INFO);
                 assertThat(field1.value().getValue()).isEqualTo(105);
                 assertThat(field1.value().literalValue()).isEqualTo("105");
             },
             field2 -> {
                 assertThat(field2.name()).isEqualTo("CONST_STRING_VALUE");
-                assertThat(field2.type()).isEqualTo(Constants.STRING_TYPE_INFO);
+                assertThat(field2.value().getValueType()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(field2.value().getValue()).isEqualTo("abc123");
                 assertThat(field2.value().literalValue()).isEqualTo("\"abc123\"");
             }

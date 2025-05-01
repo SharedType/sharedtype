@@ -3,10 +3,9 @@ package online.sharedtype.processor.writer.converter;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.OutputTarget;
-import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.component.ConstantField;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
-import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static online.sharedtype.processor.domain.type.ConcreteTypeInfo.Kind.ENUM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,11 +26,10 @@ final class ConstantConverterRustTest {
         .simpleName("Abc")
         .qualifiedName("com.github.cuzfrog.Abc")
         .constants(List.of(
-            new ConstantField("VALUE1", Constants.BOOLEAN_TYPE_INFO, ValueHolder.of(Constants.BOOLEAN_TYPE_INFO, true)),
-            new ConstantField("VALUE2", Constants.STRING_TYPE_INFO, ValueHolder.of(Constants.STRING_TYPE_INFO, "value2")),
-            new ConstantField("VALUE3", Constants.FLOAT_TYPE_INFO, ValueHolder.of(Constants.FLOAT_TYPE_INFO, 3.5f)),
-            new ConstantField("VALUE4", ConcreteTypeInfo.builder().simpleName("MyEnum").kind(ENUM).build(),
-                ValueHolder.ofEnum("ENUM_CONST", Constants.BOXED_INT_TYPE_INFO, 1))
+            new ConstantField("VALUE1", ValueHolder.of(Constants.BOOLEAN_TYPE_INFO, true)),
+            new ConstantField("VALUE2", ValueHolder.of(Constants.STRING_TYPE_INFO, "value2")),
+            new ConstantField("VALUE3", ValueHolder.of(Constants.FLOAT_TYPE_INFO, 3.5f)),
+            new ConstantField("VALUE4", ValueHolder.ofEnum("ENUM_CONST", Constants.BOXED_INT_TYPE_INFO, 1))
         ))
         .build();
     private final Config config = mock(Config.class);
@@ -66,8 +63,8 @@ final class ConstantConverterRustTest {
             },
             constantExpr -> {
                 assertThat(constantExpr.name).isEqualTo("VALUE4");
-                assertThat(constantExpr.type).isEqualTo("MyEnum");
-                assertThat(constantExpr.value).isEqualTo("MyEnum::ENUM_CONST");
+                assertThat(constantExpr.type).isEqualTo("i32");
+                assertThat(constantExpr.value).isEqualTo("1");
             }
         );
         var template = tuple.a();

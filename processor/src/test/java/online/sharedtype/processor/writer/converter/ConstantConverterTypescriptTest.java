@@ -24,9 +24,9 @@ final class ConstantConverterTypescriptTest {
         .simpleName("Abc")
         .qualifiedName("com.github.cuzfrog.Abc")
         .constants(List.of(
-            new ConstantField("VALUE1", Constants.BOOLEAN_TYPE_INFO, ValueHolder.of(Constants.BOOLEAN_TYPE_INFO, true)),
-            new ConstantField("VALUE2", Constants.STRING_TYPE_INFO, ValueHolder.of(Constants.STRING_TYPE_INFO, "value2")),
-            new ConstantField("VALUE3", Constants.FLOAT_TYPE_INFO, ValueHolder.of(Constants.FLOAT_TYPE_INFO, 3.5f))
+            new ConstantField("VALUE1", ValueHolder.of(Constants.BOOLEAN_TYPE_INFO, true)),
+            new ConstantField("VALUE2", ValueHolder.of(Constants.STRING_TYPE_INFO, "value2")),
+            new ConstantField("VALUE3", ValueHolder.of(Constants.FLOAT_TYPE_INFO, 3.5f))
         ))
         .build();
     private final Config config = mock(Config.class);

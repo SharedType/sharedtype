@@ -89,7 +89,7 @@ final class LoopTypeResolver implements TypeResolver {
                 ConstantNamespaceDef constantNamespaceDef = (ConstantNamespaceDef) typeDef;
                 for (ConstantField constantField : constantNamespaceDef.components()) {
                     if (!constantField.resolved()) {
-                        processingInfoStack.push(constantField.type());
+                        processingInfoStack.push(constantField.value().getValueType());
                     }
                 }
             } else {
