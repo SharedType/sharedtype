@@ -56,7 +56,7 @@ final class EnumIntegrationTest {
         });
         EnumValueInfo constant1 = enumGalaxy.components().get(0);
         assertThat(constant1.value().getEnumConstantName()).isEqualTo("MilkyWay");
-        assertThat(constant1.value().getValue()).isNull();
+        assertThat(constant1.value().getValue()).isEqualTo("MilkyWay");
         var constant1EnumType = (ConcreteTypeInfo)constant1.value().getValueType();
         assertThat(constant1EnumType.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumGalaxy");
 
@@ -100,7 +100,34 @@ final class EnumIntegrationTest {
         assertThat(constant1.value().getValue()).isEqualTo(3);
         assertThat(constant1.value().getEnumConstantName()).isEqualTo("ReferenceAnother");
         var constant1TypeInfo = (ConcreteTypeInfo)constant1.value().getValueType();
-        assertThat(constant1.value().getValueType()).isEqualTo(constant1TypeInfo);
         assertThat(constant1TypeInfo.qualifiedName()).isEqualTo("int");
+    }
+
+    @Test
+    void parseEnumSimpleEnumReference() {
+        EnumDef enumDef = (EnumDef) deserializeTypeDef("online.sharedtype.it.java8.EnumSimpleEnumReference.ser");
+        assertThat(enumDef.simpleName()).isEqualTo("EnumSimpleEnumReference");
+        assertThat(enumDef.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumSimpleEnumReference");
+        assertThat(enumDef.components()).hasSize(1);
+
+        EnumValueInfo constant1 = enumDef.components().get(0);
+        assertThat(constant1.value().getValue()).isEqualTo("Andromeda");
+        assertThat(constant1.value().getEnumConstantName()).isEqualTo("ReferenceAnother");
+        var constant1TypeInfo = (ConcreteTypeInfo)constant1.value().getValueType();
+        assertThat(constant1TypeInfo.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumGalaxy");
+    }
+
+    @Test
+    void parseEnumEnumEnumReference() {
+        EnumDef enumDef = (EnumDef) deserializeTypeDef("online.sharedtype.it.java8.EnumEnumEnumReference.ser");
+        assertThat(enumDef.simpleName()).isEqualTo("EnumEnumEnumReference");
+        assertThat(enumDef.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumEnumEnumReference");
+        assertThat(enumDef.components()).hasSize(1);
+
+        EnumValueInfo constant1 = enumDef.components().get(0);
+        assertThat(constant1.value().getValue()).isEqualTo("Andromeda");
+        assertThat(constant1.value().getEnumConstantName()).isEqualTo("ReferenceAnother2");
+        var constant1TypeInfo = (ConcreteTypeInfo)constant1.value().getValueType();
+        assertThat(constant1TypeInfo.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumGalaxy");
     }
 }

@@ -3,6 +3,7 @@ package online.sharedtype.processor.parser.value;
 import com.sun.source.tree.Tree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
@@ -32,8 +33,14 @@ final class ConstantValueResolver implements ValueResolver {
                 .fieldElement(fieldElement)
                 .tree(tree).enclosingTypeElement(ctxTypeElement)
                 .build();
-            TypeInfo valueType = typeInfoParser.parse(fieldElement.asType(), ctxTypeElement);
-            return ValueHolder.of(valueType, valueResolverBackend.recursivelyResolve(parsingContext));
+            TypeInfo fieldTypeInfo = typeInfoParser.parse(fieldElement.asType(), ctxTypeElement);
+            if (fieldTypeInfo instanceof ConcreteTypeInfo) {
+                ConcreteTypeInfo valueType = (ConcreteTypeInfo) fieldTypeInfo;
+                return ValueHolder.of(valueType, valueResolverBackend.recursivelyResolve(parsingContext));
+            }
+            ctx.error(fieldElement, "Complex field types are not supported for value resolving. Only literal types or references are supported," +
+                    " the type is '%s'.", fieldElement.asType());
+            return ValueHolder.NULL;
         } catch (SharedTypeException e) {
             ctx.error(fieldElement, "Failed to resolve constant value. " +
                     "Field tree: %s in %s. Consider to ignore this field or exclude constants generation for this type. " +

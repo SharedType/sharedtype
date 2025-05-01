@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.def.TypeDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
+import online.sharedtype.processor.domain.value.EnumConstantValue;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
@@ -12,6 +14,7 @@ import online.sharedtype.processor.writer.render.Template;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -29,12 +32,12 @@ final class RustEnumConverter implements TemplateDataConverter {
         EnumDef enumDef = (EnumDef) typeDef;
 
         String valueType = getValueTypeExpr(enumDef);
-        boolean hasLiteralValue = valueType != null;
+        // value can be literal or enum
         EnumExpr value = new EnumExpr(
             enumDef.simpleName(),
-            extractEnumValues(enumDef.components(), hasLiteralValue),
+            extractEnumValues(enumDef.components()),
             rustMacroTraitsGenerator.generate(enumDef),
-            hasLiteralValue,
+            valueType != null,
             valueType
         );
         return Tuple.of(Template.TEMPLATE_RUST_ENUM, value);
@@ -50,16 +53,23 @@ final class RustEnumConverter implements TemplateDataConverter {
         return typeExpressionConverter.toTypeExpr(component.value().getValueType(), enumDef);
     }
 
-    private List<EnumerationExpr> extractEnumValues(List<EnumValueInfo> components, boolean hasLiteralValue) {
+    private List<EnumerationExpr> extractEnumValues(List<EnumValueInfo> components) {
         List<EnumerationExpr> exprs = new ArrayList<>(components.size());
 
         for (EnumValueInfo component : components) {
+            boolean isEnum = component.value().getValueType().getKind() == ConcreteTypeInfo.Kind.ENUM;
             exprs.add(new EnumerationExpr(
                 component.name(),
-                hasLiteralValue ? component.value().literalValue() : component.name()
+                isEnum ? rustEnumSelectExpr(component.value()) : component.value().literalValue()
             ));
         }
         return exprs;
+    }
+
+    private static String rustEnumSelectExpr(EnumConstantValue enumConstantValue) {
+        String enumName = enumConstantValue.getValueType().simpleName();
+        String variantName = Objects.toString(enumConstantValue.getValue());
+        return String.format("%s::%s", enumName, variantName);
     }
 
     @SuppressWarnings("unused")
@@ -68,7 +78,7 @@ final class RustEnumConverter implements TemplateDataConverter {
         final String name;
         final List<EnumerationExpr> enumerations;
         final Set<String> macroTraits;
-        final boolean hasLiteralValue;
+        final boolean hasValue;
         final String valueType;
 
         String macroTraitsExpr() {

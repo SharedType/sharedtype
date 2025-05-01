@@ -2,6 +2,7 @@ package online.sharedtype.processor.domain.value;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 
 @Getter
@@ -9,7 +10,7 @@ import online.sharedtype.processor.domain.type.TypeInfo;
 public final class EnumConstantValue extends LiteralValue {
     private static final long serialVersionUID = -6711930218877737970L;
     private final String enumConstantName;
-    EnumConstantValue(String enumConstantName, TypeInfo valueType, Object value) {
+    EnumConstantValue(String enumConstantName, ConcreteTypeInfo valueType, Object value) {
         super(valueType, value);
         this.enumConstantName = enumConstantName;
     }

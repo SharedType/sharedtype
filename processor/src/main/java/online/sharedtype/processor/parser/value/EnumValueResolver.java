@@ -7,6 +7,7 @@ import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.EnumCtorIndex;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
@@ -33,22 +34,29 @@ final class EnumValueResolver implements ValueResolver {
         String enumConstantName = enumConstant.getSimpleName().toString();
         EnumCtorIndex ctorArgIdx = resolveCtorIndex(enumTypeElement);
         if (ctorArgIdx == EnumCtorIndex.NONE) {
-            TypeInfo typeInfo = typeInfoParser.parse(enumTypeElement.asType(), enumTypeElement);
-            return ValueHolder.ofEnum(enumConstantName, typeInfo, null);
+            ConcreteTypeInfo typeInfo = (ConcreteTypeInfo) typeInfoParser.parse(enumTypeElement.asType(), enumTypeElement);
+            return ValueHolder.ofEnum(enumConstantName, typeInfo, enumConstantName);
         }
 
         Tree tree = ctx.getTrees().getTree(enumConstant);
         if (tree instanceof VariableTree) {
             VariableTree variableTree = (VariableTree) tree;
             Object value = resolveValue(enumTypeElement, enumTypeElement, variableTree, ctorArgIdx.getIdx());
-            TypeInfo valueType = null;
+            ConcreteTypeInfo valueType = null;
             while (value instanceof ValueHolder) {
                 ValueHolder valueHolder = (ValueHolder) value;
                 value = valueHolder.getValue();
                 valueType = valueHolder.getValueType();
             }
             if (valueType == null) {
-                valueType = typeInfoParser.parse(ctorArgIdx.getField().asType(), enumTypeElement);
+                TypeInfo fieldTypeInfo = typeInfoParser.parse(ctorArgIdx.getField().asType(), enumTypeElement);
+                if (fieldTypeInfo instanceof ConcreteTypeInfo) {
+                    valueType = (ConcreteTypeInfo) fieldTypeInfo;
+                } else {
+                    ctx.error(enumConstant, "Complex field types are not supported for value resolving. Only literal types or references are supported," +
+                        " the type is '%s'.", ctorArgIdx.getField().asType());
+                    return ValueHolder.NULL;
+                }
             }
             return ValueHolder.ofEnum(enumConstantName, valueType, value);
         } else if (tree == null) {

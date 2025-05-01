@@ -5,7 +5,7 @@ pub enum {{name}} {
 {{/enumerations}}
 }
 
-{{#hasLiteralValue}}
+{{#hasValue}}
 impl {{name}} {
     pub const fn value(self) -> {{{valueType}}} {
         use {{name}}::*;
@@ -16,5 +16,5 @@ impl {{name}} {
         }
     }
 }
-{{/hasLiteralValue}}
 
+{{/hasValue}}
