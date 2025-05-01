@@ -3,10 +3,12 @@ package online.sharedtype.processor.parser.value;
 import com.sun.source.tree.LiteralTree;
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.ContextMocks;
+import online.sharedtype.processor.context.EnumCtorIndex;
 import online.sharedtype.processor.context.TypeElementMock;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.value.EnumConstantValue;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.support.exception.SharedTypeException;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,8 +62,28 @@ final class EnumValueParserTest {
     }
 
     @Test
-    void enumReferencingEnumWithValue() {
+    void enumReferencingEnum() {
+        var anotherEnumTypeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.AnotherEnum").kind(ConcreteTypeInfo.Kind.ENUM).build();
+        var enumConstant1 = ctxMocks.declaredTypeVariable("Value1", enumType.type())
+            .withElementKind(ElementKind.ENUM_CONSTANT)
+            .ofTree(
+                ctxMocks.variableTree().withInitializer(
+                    ctxMocks.newClassTree().withArguments(
+                        ctxMocks.identifierTree("AnotherEnumConstant1")
+                    ).getTree()
+                )
+            )
+            .element();
+        when(ctxMocks.getContext().getTypeStore().getEnumValueIndex("com.github.cuzfrog.EnumA"))
+            .thenReturn(new EnumCtorIndex(0, enumConstant1));
+        reset(valueResolverBackend);
+        when(valueResolverBackend.recursivelyResolve(any()))
+            .thenReturn(ValueHolder.ofEnum("AnotherEnumConstant1", anotherEnumTypeInfo, "AnotherEnumConstant1"));
 
+        EnumConstantValue value1 = (EnumConstantValue) resolver.resolve(enumConstant1, enumType.element());
+        assertThat(value1.getEnumConstantName()).isEqualTo(enumConstant1.getSimpleName().toString());
+        assertThat(value1.getValue()).isEqualTo("AnotherEnumConstant1");
+        assertThat(value1.getValueType()).isEqualTo(anotherEnumTypeInfo);
     }
 
     @Test
