@@ -16,15 +16,10 @@ import online.sharedtype.processor.domain.value.ValueHolder;
 public final class ConstantField implements ComponentInfo {
     private static final long serialVersionUID = -155863067131290289L;
     private final String name;
-    private final TypeInfo type;
     private final ValueHolder value;
 
     public String name() {
         return name;
-    }
-
-    public TypeInfo type() {
-        return type;
     }
 
     public ValueHolder value() {
@@ -33,7 +28,7 @@ public final class ConstantField implements ComponentInfo {
 
     @Override
     public boolean resolved() {
-        return type.resolved();
+        return value.getValueType().resolved();
     }
 
     @Override

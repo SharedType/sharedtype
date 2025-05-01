@@ -65,10 +65,10 @@ import java.lang.annotation.Target;
  *
  * <p>
  * <b>Enums:</b><br>
- * Enums are emitted as according to target schema:
+ * Enums are emitted as below:
  * <ul>
- *     <li>Typescript: type union or enum. By default enum values are strings.</li>
- *     <li>Rust: plain enum (Enum values of different types are not supported yet.)</li>
+ *     <li>Typescript: type union or enum. For simple enums, values are enum constants' names.</li>
+ *     <li>Rust: plain enum for simple enums; impl a const fun {@code value()} for custom enum values.</li>
  * </ul>
  * See {@link EnumValue} for how to mark an enum value.
  *

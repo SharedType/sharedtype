@@ -1,12 +1,12 @@
 package online.sharedtype.processor.writer.converter.type;
 
-import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.def.TypeDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
-final class RustLiteralTypeExpressionConverter implements TypeExpressionConverter {
+final class RustConstantLiteralTypeExpressionConverter implements TypeExpressionConverter {
     @Override
     public String toTypeExpr(TypeInfo typeInfo, TypeDef contextTypeDef) {
         if (!(typeInfo instanceof ConcreteTypeInfo)) {
@@ -14,7 +14,7 @@ final class RustLiteralTypeExpressionConverter implements TypeExpressionConverte
         }
         ConcreteTypeInfo concreteTypeInfo = (ConcreteTypeInfo) typeInfo;
         if (concreteTypeInfo.equals(Constants.STRING_TYPE_INFO)) {
-            return "&str";
+            return "&'static str";
         }
         return RustTypeNameMappings.getOrDefault(concreteTypeInfo, concreteTypeInfo.simpleName());
     }

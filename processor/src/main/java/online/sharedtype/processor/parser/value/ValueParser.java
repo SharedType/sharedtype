@@ -8,14 +8,14 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
-public interface ValueResolver {
+public interface ValueParser {
     ValueHolder resolve(Element element, TypeElement ctxTypeElement);
 
-    static ValueResolver create(Context ctx, TypeInfoParser typeInfoParser) {
-        CompositeValueResolver compositeValueResolver = new CompositeValueResolver();
+    static ValueParser create(Context ctx, TypeInfoParser typeInfoParser) {
+        CompositeValueParser compositeValueResolver = new CompositeValueParser();
         ValueResolverBackend backend = new ValueResolverBackendImpl(compositeValueResolver);
-        compositeValueResolver.registerResolver(ElementKind.ENUM_CONSTANT, new EnumValueResolver(ctx, typeInfoParser, backend));
-        compositeValueResolver.registerResolver(ElementKind.FIELD, new ConstantValueResolver(ctx, backend));
+        compositeValueResolver.registerResolver(ElementKind.ENUM_CONSTANT, new EnumValueParser(ctx, typeInfoParser, backend));
+        compositeValueResolver.registerResolver(ElementKind.FIELD, new ConstantValueParser(ctx, typeInfoParser, backend));
         return compositeValueResolver;
     }
 }

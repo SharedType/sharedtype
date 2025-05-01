@@ -7,7 +7,7 @@ import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.EnumCtorIndex;
-import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
@@ -23,7 +23,7 @@ import java.util.List;
 import static online.sharedtype.processor.support.utils.Utils.allInstanceFields;
 
 @RequiredArgsConstructor
-final class EnumValueResolver implements ValueResolver {
+final class EnumValueParser implements ValueParser {
     private final Context ctx;
     private final TypeInfoParser typeInfoParser;
     private final ValueResolverBackend valueResolverBackend;
@@ -34,7 +34,7 @@ final class EnumValueResolver implements ValueResolver {
         String enumConstantName = enumConstant.getSimpleName().toString();
         EnumCtorIndex ctorArgIdx = resolveCtorIndex(enumTypeElement);
         if (ctorArgIdx == EnumCtorIndex.NONE) {
-            TypeInfo typeInfo = typeInfoParser.parse(enumTypeElement.asType(), enumTypeElement);
+            ConcreteTypeInfo typeInfo = (ConcreteTypeInfo) typeInfoParser.parse(enumTypeElement.asType(), enumTypeElement);
             return ValueHolder.ofEnum(enumConstantName, typeInfo, enumConstantName);
         }
 
@@ -42,7 +42,23 @@ final class EnumValueResolver implements ValueResolver {
         if (tree instanceof VariableTree) {
             VariableTree variableTree = (VariableTree) tree;
             Object value = resolveValue(enumTypeElement, enumTypeElement, variableTree, ctorArgIdx.getIdx());
-            return ValueHolder.ofEnum(enumConstantName, typeInfoParser.parse(ctorArgIdx.getField().asType(), enumTypeElement), value);
+            ConcreteTypeInfo valueType = null;
+            while (value instanceof ValueHolder) {
+                ValueHolder valueHolder = (ValueHolder) value;
+                value = valueHolder.getValue();
+                valueType = valueHolder.getValueType();
+            }
+            if (valueType == null) {
+                TypeInfo fieldTypeInfo = typeInfoParser.parse(ctorArgIdx.getField().asType(), enumTypeElement);
+                if (fieldTypeInfo instanceof ConcreteTypeInfo) {
+                    valueType = (ConcreteTypeInfo) fieldTypeInfo;
+                } else {
+                    ctx.error(enumConstant, "Complex field types are not supported for value resolving. Only literal types or references are supported," +
+                        " the type is '%s'.", ctorArgIdx.getField().asType());
+                    return ValueHolder.NULL;
+                }
+            }
+            return ValueHolder.ofEnum(enumConstantName, valueType, value);
         } else if (tree == null) {
             ctx.error(enumConstant, "Literal value cannot be parsed from enum constant: %s of enum %s, because source tree from the element is null." +
                     " This could mean at the time of the annotation processing, the source tree was not available." +

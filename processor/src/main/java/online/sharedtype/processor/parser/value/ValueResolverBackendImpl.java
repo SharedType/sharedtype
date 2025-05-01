@@ -34,7 +34,7 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
         TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.FIELD.name());
         TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.ENUM_CONSTANT.name());
     }
-    private final ValueResolver valueResolver;
+    private final ValueParser valueParser;
 
     @Override
     public Object recursivelyResolve(ValueResolveContext parsingContext) {
@@ -62,7 +62,7 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
             throw new SharedTypeException(String.format("Cannot find enclosing type for field: '%s'", referencedFieldElement));
         }
         if (referencedFieldElement.getKind() == ElementKind.ENUM_CONSTANT) {
-            return valueResolver.resolve(referencedFieldElement, referencedFieldEnclosingTypeElement);
+            return valueParser.resolve(referencedFieldElement, referencedFieldEnclosingTypeElement);
         }
 
         ValueResolveContext nextParsingContext = parsingContext.toBuilder()

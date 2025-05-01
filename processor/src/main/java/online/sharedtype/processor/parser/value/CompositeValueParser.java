@@ -9,16 +9,16 @@ import javax.lang.model.element.TypeElement;
 import java.util.EnumMap;
 import java.util.Map;
 
-final class CompositeValueResolver implements ValueResolver {
-    private final Map<ElementKind, ValueResolver> resolvers = new EnumMap<>(ElementKind.class);
+final class CompositeValueParser implements ValueParser {
+    private final Map<ElementKind, ValueParser> resolvers = new EnumMap<>(ElementKind.class);
 
-    void registerResolver(ElementKind kind, ValueResolver resolver) {
+    void registerResolver(ElementKind kind, ValueParser resolver) {
         resolvers.put(kind, resolver);
     }
 
     @Override
     public ValueHolder resolve(Element element, TypeElement ctxTypeElement) {
-        ValueResolver resolver = resolvers.get(element.getKind());
+        ValueParser resolver = resolvers.get(element.getKind());
         if (resolver != null) {
             return resolver.resolve(element, ctxTypeElement);
         }

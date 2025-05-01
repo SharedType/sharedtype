@@ -1,31 +1,22 @@
 package online.sharedtype.processor.domain.value;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public final class EnumConstantValue implements ValueHolder {
+@Getter
+@EqualsAndHashCode(callSuper = true)
+public final class EnumConstantValue extends LiteralValue {
     private static final long serialVersionUID = -6711930218877737970L;
-    @Getter
     private final String enumConstantName;
-    @Getter
-    private final TypeInfo valueType;
-    private final Object value;
-
-    @Override
-    public Object getValue() {
-        if (value instanceof ValueHolder) {
-            return ((ValueHolder) value).getValue();
-        }
-        return value;
+    EnumConstantValue(String enumConstantName, ConcreteTypeInfo valueType, Object value) {
+        super(valueType, value);
+        this.enumConstantName = enumConstantName;
     }
 
     @Override
     public String toString() {
-        return String.format("%s(%s)", enumConstantName, value);
+        return String.format("%s(%s)", enumConstantName, getValue());
     }
 }

@@ -1,13 +1,13 @@
 package online.sharedtype.processor.resolver;
 
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.domain.type.ArrayTypeInfo;
-import online.sharedtype.processor.domain.def.ClassDef;
-import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.def.TypeDef;
+import online.sharedtype.processor.domain.type.ArrayTypeInfo;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.TypeDefParser;
@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static online.sharedtype.processor.domain.Constants.STRING_TYPE_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -156,11 +155,12 @@ final class LoopTypeResolverTest {
 
     @Test
     void resolveSimpleEnum() {
+        ConcreteTypeInfo enumType = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").build();
         EnumDef typeDef = EnumDef.builder()
             .qualifiedName("com.github.cuzfrog.EnumA").simpleName("EnumA")
             .enumValueInfos(Arrays.asList(
-                new EnumValueInfo("Value1", STRING_TYPE_INFO, ValueHolder.ofEnum("Value1")),
-                new EnumValueInfo("Value2", STRING_TYPE_INFO, ValueHolder.ofEnum("Value2"))
+                new EnumValueInfo("Value1", ValueHolder.ofEnum("Value1", enumType, "Value1")),
+                new EnumValueInfo("Value2", ValueHolder.ofEnum("Value2", enumType, "Value2"))
             ))
             .build();
 

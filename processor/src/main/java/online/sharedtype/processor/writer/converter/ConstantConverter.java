@@ -45,16 +45,16 @@ final class ConstantConverter implements TemplateDataConverter {
     private ConstantExpr toConstantExpr(ConstantField constantField, TypeDef contextTypeDef) {
         return new ConstantExpr(
             constantField.name(),
-            typeExpressionConverter == null ? null : typeExpressionConverter.toTypeExpr(constantField.type(), contextTypeDef),
+            typeExpressionConverter == null ? null : typeExpressionConverter.toTypeExpr(constantField.value().getValueType(), contextTypeDef),
             toConstantValue(constantField)
         );
     }
 
     private String toConstantValue(ConstantField constantField) {
-        if (constantField.type() instanceof ConcreteTypeInfo) {
-            ConcreteTypeInfo type = (ConcreteTypeInfo) constantField.type();
+        if (outputTarget == OutputTarget.RUST) {
+            ConcreteTypeInfo type = constantField.value().getValueType();
             ValueHolder value = constantField.value();
-            if (value instanceof EnumConstantValue && outputTarget == OutputTarget.RUST) {
+            if (value instanceof EnumConstantValue && value.getValueType().getKind() == ConcreteTypeInfo.Kind.ENUM) {
                 EnumConstantValue enumConstantValue = (EnumConstantValue) value;
                 return String.format("%s::%s",type.simpleName(), enumConstantValue.getEnumConstantName());
             }

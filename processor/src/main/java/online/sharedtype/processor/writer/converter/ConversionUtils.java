@@ -3,6 +3,7 @@ package online.sharedtype.processor.writer.converter;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
 
+import java.util.Set;
 import java.util.regex.Pattern;
 
 final class ConversionUtils {
@@ -26,5 +27,12 @@ final class ConversionUtils {
             return type.typeDef() != null && type.typeDef().isCyclicReferenced();
         }
         return false;
+    }
+
+    static String buildRustMacroTraitsExpr(Set<String> macroTraits) {
+        if (macroTraits.isEmpty()) {
+            return null;
+        }
+        return String.format("#[derive(%s)]", String.join(", ", macroTraits));
     }
 }

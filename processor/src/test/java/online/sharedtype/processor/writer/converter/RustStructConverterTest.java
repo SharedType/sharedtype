@@ -14,15 +14,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-final class RustStructConverterIntegrationTest {
+final class RustStructConverterTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final RustStructConverter converter = new RustStructConverter(ctxMocks.getContext(), TypeExpressionConverter.rust(ctxMocks.getContext()));
+    private final TypeExpressionConverter rustTypeExpressionConverter = TypeExpressionConverter.rust(ctxMocks.getContext());
+    private final RustMacroTraitsGenerator rustMacroTraitsGenerator = mock(RustMacroTraitsGenerator.class);
+
+    private final RustStructConverter converter = new RustStructConverter(
+        ctxMocks.getContext(), rustTypeExpressionConverter, rustMacroTraitsGenerator);
 
     private final Config config = mock(Config.class);
 
@@ -133,12 +138,14 @@ final class RustStructConverterIntegrationTest {
             .build();
         when(ctxMocks.getTypeStore().getConfig(classDef)).thenReturn(config);
         when(config.getAnno()).thenReturn(TestUtils.defaultSharedTypeAnnotation());
+        when(rustMacroTraitsGenerator.generate(classDef)).thenReturn(Set.of("TestMacro"));
 
         var data = converter.convert(classDef);
         assertThat(data).isNotNull();
         var model = (RustStructConverter.StructExpr) data.b();
         assertThat(model.name).isEqualTo("ClassA");
         assertThat(model.typeParameters).containsExactly("T");
+        assertThat(model.macroTraits).containsExactly("TestMacro");
 
         assertThat(model.properties).hasSize(5);
         RustStructConverter.PropertyExpr prop1 = model.properties.get(0);

@@ -11,7 +11,7 @@ import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
-import online.sharedtype.processor.parser.value.ValueResolver;
+import online.sharedtype.processor.parser.value.ValueParser;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.lang.model.element.Element;
@@ -35,7 +35,7 @@ final class ConstantTypeDefParser implements TypeDefParser {
 
     private final Context ctx;
     private final TypeInfoParser typeInfoParser;
-    private final ValueResolver valueResolver;
+    private final ValueParser valueParser;
 
     @Override
     public List<TypeDef> parse(TypeElement typeElement) {
@@ -72,9 +72,8 @@ final class ConstantTypeDefParser implements TypeDefParser {
             }
 
             if (enclosedElement.getKind() == ElementKind.FIELD && enclosedElement.getModifiers().contains(Modifier.STATIC)) {
-                TypeInfo fieldTypeInfo = typeInfoParser.parse(enclosedElement.asType(), typeElement);
-                ValueHolder value = valueResolver.resolve(enclosedElement, typeElement);
-                ConstantField constantField = new ConstantField(enclosedElement.getSimpleName().toString(), fieldTypeInfo, value);
+                ValueHolder value = valueParser.resolve(enclosedElement, typeElement);
+                ConstantField constantField = new ConstantField(enclosedElement.getSimpleName().toString(), value);
                 constantNamespaceDef.components().add(constantField);
             }
         }

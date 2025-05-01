@@ -5,3 +5,16 @@ pub enum {{name}} {
 {{/enumerations}}
 }
 
+{{#hasValue}}
+impl {{name}} {
+    pub const fn value(self) -> {{{valueType}}} {
+        use {{name}}::*;
+        match self {
+            {{#enumerations}}
+                {{name}} => {{{value}}},
+            {{/enumerations}}
+        }
+    }
+}
+
+{{/hasValue}}

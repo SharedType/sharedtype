@@ -10,7 +10,7 @@ import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
-import online.sharedtype.processor.parser.value.ValueResolver;
+import online.sharedtype.processor.parser.value.ValueParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -28,8 +28,8 @@ import static org.mockito.Mockito.when;
 final class EnumTypeDefParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
-    private final ValueResolver valueResolver = mock(ValueResolver.class);
-    private final EnumTypeDefParser parser = new EnumTypeDefParser(ctxMocks.getContext(), typeInfoParser, valueResolver);
+    private final ValueParser valueParser = mock(ValueParser.class);
+    private final EnumTypeDefParser parser = new EnumTypeDefParser(ctxMocks.getContext(), typeInfoParser, valueParser);
 
     private final ArgumentCaptor<Config> configCaptor = ArgumentCaptor.forClass(Config.class);
 
@@ -60,9 +60,9 @@ final class EnumTypeDefParserTest {
         ConcreteTypeInfo typeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").build();
         when(typeInfoParser.parse(enumType.type(), enumType.element())).thenReturn(typeInfo);
         var value1 = ValueHolder.ofEnum(enumConstant1.getSimpleName().toString(), Constants.STRING_TYPE_INFO, "Value1");
-        when(valueResolver.resolve(enumConstant1, enumType.element())).thenReturn(value1);
+        when(valueParser.resolve(enumConstant1, enumType.element())).thenReturn(value1);
         var value2 = ValueHolder.ofEnum(enumConstant2.getSimpleName().toString(), Constants.STRING_TYPE_INFO,"Value2");
-        when(valueResolver.resolve(enumConstant2, enumType.element())).thenReturn(value2);
+        when(valueParser.resolve(enumConstant2, enumType.element())).thenReturn(value2);
 
         EnumDef typeDef = (EnumDef) parser.parse(enumType.element()).getFirst();
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
@@ -71,12 +71,12 @@ final class EnumTypeDefParserTest {
             c1 -> {
                 assertThat(c1.value().getValue()).isEqualTo("Value1");
                 assertThat(c1.value().getEnumConstantName()).isEqualTo("Value1");
-                assertThat(c1.type()).isEqualTo(Constants.STRING_TYPE_INFO);
+                assertThat(c1.value().getValueType()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(c1.name()).isEqualTo("Value1");
             },
             c2 -> {
                 assertThat(c2.value().getValue()).isEqualTo("Value2");
-                assertThat(c2.type()).isEqualTo(Constants.STRING_TYPE_INFO);
+                assertThat(c2.value().getValueType()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(c2.name()).isEqualTo("Value2");
             }
         );

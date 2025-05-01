@@ -5,6 +5,9 @@ import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 final class ConversionUtilsTest {
@@ -37,5 +40,14 @@ final class ConversionUtilsTest {
 
         typeDef.setCyclicReferenced(true);
         assertThat(ConversionUtils.isOptionalField(field)).isTrue();
+    }
+
+    @Test
+    void buildRustMacroTraitsExpr() {
+        assertThat(ConversionUtils.buildRustMacroTraitsExpr(Set.of())).isNull();
+        var macros = new LinkedHashSet<String>(2);
+        macros.add("A");
+        macros.add("B");
+        assertThat(ConversionUtils.buildRustMacroTraitsExpr(macros)).isEqualTo("#[derive(A, B)]");
     }
 }

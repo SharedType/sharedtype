@@ -2,24 +2,20 @@ package online.sharedtype.processor.domain.value;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 
 import java.util.Objects;
 
+@Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public final class LiteralValue implements ValueHolder {
+public class LiteralValue implements ValueHolder {
     private static final long serialVersionUID = -7324230239169028973L;
+    private final ConcreteTypeInfo valueType;
     private final Object value;
-
-    @Override
-    public Object getValue() {
-        Object v = value;
-        while (v instanceof ValueHolder) {
-            v = ((ValueHolder) v).getValue();
-        }
-        return v;
-    }
 
     @Override
     public String toString() {

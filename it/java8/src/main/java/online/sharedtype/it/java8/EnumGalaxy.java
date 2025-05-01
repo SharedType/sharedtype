@@ -3,6 +3,9 @@ package online.sharedtype.it.java8;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
 
+@SharedType(
+    rustMacroTraits = {"PartialEq", "Eq", "Hash", "serde::Serialize", "serde::Deserialize"}
+)
 public enum EnumGalaxy {
     MilkyWay, Andromeda, Triangulum;
 }
@@ -25,4 +28,22 @@ enum EnumEnumReference {
     ;
     @SharedType.EnumValue
     private final EnumSize enumValue;
+}
+
+@RequiredArgsConstructor
+@SharedType
+enum EnumSimpleEnumReference {
+    ReferenceAnother(EnumGalaxy.Andromeda),
+    ;
+    @SharedType.EnumValue
+    private final EnumGalaxy enumValue;
+}
+
+@RequiredArgsConstructor
+@SharedType
+enum EnumEnumEnumReference {
+    ReferenceAnother2(EnumSimpleEnumReference.ReferenceAnother),
+    ;
+    @SharedType.EnumValue
+    private final EnumSimpleEnumReference enumValue;
 }
