@@ -24,11 +24,11 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-final class EnumValueResolverTest {
+final class EnumValueParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
     private final ValueResolverBackend valueResolverBackend = mock(ValueResolverBackend.class);
-    private final EnumValueResolver resolver = new EnumValueResolver(ctxMocks.getContext(), typeInfoParser, valueResolverBackend);
+    private final EnumValueParser resolver = new EnumValueParser(ctxMocks.getContext(), typeInfoParser, valueResolverBackend);
 
     private final ArgumentCaptor<String> msgCaptor = ArgumentCaptor.forClass(String.class);
     private final TypeElementMock enumType = ctxMocks.typeElement("com.github.cuzfrog.EnumA");

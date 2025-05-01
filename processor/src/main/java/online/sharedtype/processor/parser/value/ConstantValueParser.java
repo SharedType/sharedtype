@@ -13,7 +13,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 
 @RequiredArgsConstructor
-final class ConstantValueResolver implements ValueResolver {
+final class ConstantValueParser implements ValueParser {
     private final Context ctx;
     private final TypeInfoParser typeInfoParser;
     private final ValueResolverBackend valueResolverBackend;

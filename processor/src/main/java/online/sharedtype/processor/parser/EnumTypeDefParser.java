@@ -12,7 +12,7 @@ import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
-import online.sharedtype.processor.parser.value.ValueResolver;
+import online.sharedtype.processor.parser.value.ValueParser;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -31,7 +31,7 @@ import java.util.List;
 final class EnumTypeDefParser implements TypeDefParser {
     private final Context ctx;
     private final TypeInfoParser typeInfoParser;
-    private final ValueResolver valueResolver;
+    private final ValueParser valueParser;
 
     @Override
     public List<TypeDef> parse(TypeElement typeElement) {
@@ -70,7 +70,7 @@ final class EnumTypeDefParser implements TypeDefParser {
         List<EnumValueInfo> res = new ArrayList<>(enumConstants.size());
         for (VariableElement enumConstant : enumConstants) {
             String name = enumConstant.getSimpleName().toString();
-            ValueHolder value = valueResolver.resolve(enumConstant, enumTypeElement);
+            ValueHolder value = valueParser.resolve(enumConstant, enumTypeElement);
             if (value instanceof EnumConstantValue) {
                 res.add(new EnumValueInfo(name, (EnumConstantValue) value));
             } else {

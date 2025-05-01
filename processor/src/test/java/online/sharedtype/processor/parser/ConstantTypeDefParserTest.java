@@ -9,7 +9,7 @@ import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
-import online.sharedtype.processor.parser.value.ValueResolver;
+import online.sharedtype.processor.parser.value.ValueParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,8 +25,8 @@ import static org.mockito.Mockito.when;
 final class ConstantTypeDefParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
-    private final ValueResolver valueResolver = mock(ValueResolver.class);
-    private final ConstantTypeDefParser parser = new ConstantTypeDefParser(ctxMocks.getContext(), typeInfoParser, valueResolver);
+    private final ValueParser valueParser = mock(ValueParser.class);
+    private final ConstantTypeDefParser parser = new ConstantTypeDefParser(ctxMocks.getContext(), typeInfoParser, valueParser);
 
     private final ClassDef mainTypeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").annotated(true).build();
     private final Config config = mock(Config.class);
@@ -99,8 +99,8 @@ final class ConstantTypeDefParserTest {
             .element();
         when(typeInfoParser.parse(intStaticField.type(), typeElement)).thenReturn(Constants.INT_TYPE_INFO);
         when(typeInfoParser.parse(stringStaticField.type(), typeElement)).thenReturn(Constants.STRING_TYPE_INFO);
-        when(valueResolver.resolve(intStaticField.element(), typeElement)).thenReturn(ValueHolder.of(Constants.INT_TYPE_INFO, 105));
-        when(valueResolver.resolve(stringStaticField.element(), typeElement)).thenReturn(ValueHolder.of(Constants.STRING_TYPE_INFO, "abc123"));
+        when(valueParser.resolve(intStaticField.element(), typeElement)).thenReturn(ValueHolder.of(Constants.INT_TYPE_INFO, 105));
+        when(valueParser.resolve(stringStaticField.element(), typeElement)).thenReturn(ValueHolder.of(Constants.STRING_TYPE_INFO, "abc123"));
 
         var typeDef = (ConstantNamespaceDef)parser.parse(typeElement).get(0);
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.Abc");

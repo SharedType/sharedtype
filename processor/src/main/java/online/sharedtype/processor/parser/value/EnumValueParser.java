@@ -23,7 +23,7 @@ import java.util.List;
 import static online.sharedtype.processor.support.utils.Utils.allInstanceFields;
 
 @RequiredArgsConstructor
-final class EnumValueResolver implements ValueResolver {
+final class EnumValueParser implements ValueParser {
     private final Context ctx;
     private final TypeInfoParser typeInfoParser;
     private final ValueResolverBackend valueResolverBackend;
