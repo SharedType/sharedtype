@@ -7,40 +7,42 @@ import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.LiteralTree;
 import com.sun.source.tree.MemberSelectTree;
+import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.Scope;
 import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.support.exception.SharedTypeException;
-import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
-import java.util.HashSet;
-import java.util.Set;
+import javax.lang.model.type.TypeMirror;
+
+import java.util.List;
+import java.util.Objects;
+
+import static online.sharedtype.processor.domain.Constants.MATH_TYPE_QUALIFIED_NAMES;
+import static online.sharedtype.processor.parser.value.ValueResolveUtils.findElementInLocalScope;
+import static online.sharedtype.processor.parser.value.ValueResolveUtils.findEnclosedElement;
 
 @RequiredArgsConstructor
 final class ValueResolverBackendImpl implements ValueResolverBackend {
-    private final static Set<String> TO_FIND_ENCLOSED_ELEMENT_KIND_SET = new HashSet<>(6);
-    static {
-        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.ENUM.name());
-        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.CLASS.name());
-        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.INTERFACE.name());
-        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add("RECORD");
-        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.FIELD.name());
-        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.ENUM_CONSTANT.name());
-    }
     private final ValueParser valueParser;
 
     @Override
     public Object recursivelyResolve(ValueResolveContext parsingContext) {
-        ExpressionTree valueTree = getValueTree(parsingContext);
+        ExpressionTree valueTree = ValueResolveUtils.getValueTree(parsingContext.getTree(), parsingContext.getEnclosingTypeElement());
         if (valueTree instanceof LiteralTree) {
             return ((LiteralTree) valueTree).getValue();
+        }
+        if (valueTree instanceof NewClassTree) {
+            NewClassTree newClassTree = (NewClassTree) valueTree;
+            return resolveMathTypeNewClassValue(newClassTree, parsingContext);
         }
 
         Tree tree = parsingContext.getTree();
@@ -54,9 +56,6 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
         }
 
         Element referencedFieldElement = recursivelyResolveReferencedElement(valueTree, parsingContext);
-        if (referencedFieldElement == null) {
-            throw new SharedTypeException(String.format("Cannot find referenced field for tree: '%s' in '%s'", tree, enclosingTypeElement));
-        }
         TypeElement referencedFieldEnclosingTypeElement = ValueResolveUtils.getEnclosingTypeElement(referencedFieldElement);
         if (referencedFieldEnclosingTypeElement == null) {
             throw new SharedTypeException(String.format("Cannot find enclosing type for field: '%s'", referencedFieldElement));
@@ -69,29 +68,6 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
             .tree(parsingContext.getTrees().getTree(referencedFieldElement)).enclosingTypeElement(referencedFieldEnclosingTypeElement)
             .build();
         return recursivelyResolve(nextParsingContext);
-    }
-
-    @Nullable
-    private static ExpressionTree getValueTree(ValueResolveContext parsingContext) {
-        final ExpressionTree valueTree;
-        Tree tree = parsingContext.getTree();
-        if (tree instanceof LiteralTree) {
-            valueTree = (LiteralTree) tree;
-        } else if (tree instanceof VariableTree) {
-            valueTree = ((VariableTree) tree).getInitializer();
-        } else if (tree instanceof AssignmentTree) {
-            valueTree = ((AssignmentTree) tree).getExpression();
-        } else if (tree instanceof IdentifierTree) {
-            valueTree = (IdentifierTree) tree;
-        } else if (tree instanceof MemberSelectTree) {
-            valueTree = (MemberSelectTree) tree;
-        } else {
-            throw new SharedTypeInternalError(String.format(
-                "Not supported tree type for constant field parsing. Field: '%s' of kind '%s' and type '%s' in '%s'",
-                tree, tree.getKind(), tree.getClass().getSimpleName(), parsingContext.getEnclosingTypeElement()
-            ));
-        }
-        return valueTree;
     }
 
     private Object resolveEvaluationInStaticBlock(Name variableName, ValueResolveContext parsingContext) {
@@ -117,39 +93,66 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
             "No static evaluation found for constant field: %s in %s", parsingContext.getFieldElement(), parsingContext.getEnclosingTypeElement()));
     }
 
+    private String resolveMathTypeNewClassValue(NewClassTree newClassTree, ValueResolveContext parsingContext) {
+        ExpressionTree typeIdentifierTree = newClassTree.getIdentifier();
+        Element referencedElement = recursivelyResolveReferencedElement(typeIdentifierTree, parsingContext);
+        if (!(referencedElement instanceof TypeElement)) {
+            throw new SharedTypeException(String.format(
+                "A new class type element must be typeElement, but found: %s in %s, new class tree: %s",
+                referencedElement, parsingContext.getEnclosingTypeElement(), typeIdentifierTree));
+        }
+
+        TypeElement typeElement = (TypeElement) referencedElement;
+        if (!MATH_TYPE_QUALIFIED_NAMES.contains(typeElement.getQualifiedName().toString())) {
+            throw new SharedTypeException(String.format("Math type must be one of %s, but found: %s", MATH_TYPE_QUALIFIED_NAMES, typeElement));
+        }
+
+        List<? extends ExpressionTree> arguments = newClassTree.getArguments();
+        if (arguments.size() != 1) {
+            throw new SharedTypeException(String.format("Math type constructor must have only one argument: %s", newClassTree));
+        }
+        ExpressionTree argument = arguments.get(0);
+
+        ValueResolveContext nextParsingContext = parsingContext.toBuilder().tree(argument).build();
+        return Objects.toString(recursivelyResolve(nextParsingContext));
+    }
+
     private static Element recursivelyResolveReferencedElement(ExpressionTree valueTree, ValueResolveContext parsingContext) {
-        Scope scope = parsingContext.getScope();
         TypeElement enclosingTypeElement = parsingContext.getEnclosingTypeElement();
+        Element referencedElement = null;
         if (valueTree instanceof IdentifierTree) {
             IdentifierTree identifierTree = (IdentifierTree) valueTree;
             String name = identifierTree.getName().toString();
-            Element referencedElement = findElementInLocalScope(scope, name, enclosingTypeElement);
+            Scope scope = parsingContext.getScope();
+            referencedElement = findElementInLocalScope(scope, name, enclosingTypeElement);
             if (referencedElement == null) { // find package scope references
                 referencedElement = findEnclosedElement(parsingContext.getPackageElement(), name);
             }
             if (referencedElement == null) {
                 referencedElement = findElementInInheritedScope(name, parsingContext);
             }
-            return referencedElement;
-        }
-        if (valueTree instanceof MemberSelectTree) {
+        } else if (valueTree instanceof MemberSelectTree) {
             MemberSelectTree memberSelectTree = (MemberSelectTree) valueTree;
+            TypeElement typeElementFromQualifiedName = parsingContext.getElements().getTypeElement(memberSelectTree.toString());
+            if (typeElementFromQualifiedName != null) {
+                return typeElementFromQualifiedName;
+            }
             ExpressionTree expressionTree = memberSelectTree.getExpression();
             Element selecteeElement = recursivelyResolveReferencedElement(expressionTree, parsingContext);
             if (!(selecteeElement instanceof TypeElement)) {
                 throw new SharedTypeException(String.format(
                     "A selectee element must be typeElement, but found: %s in %s", selecteeElement, enclosingTypeElement));
             }
-            return findEnclosedElement(selecteeElement, memberSelectTree.getIdentifier().toString());
+            referencedElement = findEnclosedElement(selecteeElement, memberSelectTree.getIdentifier().toString());
         }
-        return null;
-    }
-
-    private static Element findElementInLocalScope(Scope scope, String name, TypeElement enclosingTypeElement) {
-        Element referencedElement = findElementInTree(scope, name);
-        if (referencedElement == null) { // find local scope references that cannot be found via tree
-            // no need to check all enclosing elements, since constants are only parsed in the directly annotated type
-            referencedElement = findEnclosedElement(enclosingTypeElement, name);
+        if (referencedElement == null) {
+            String hint = "";
+            if (valueTree instanceof MethodInvocationTree) {
+                hint = " Method invocation is not support for parsing value at compile time.";
+            }
+            throw new SharedTypeException(String.format(
+                "Failed find referenced element from tree[Kind=%s]: '%s', when trying to parse value from field '%s' in '%s'." + hint,
+                valueTree.getKind(), valueTree, parsingContext.getFieldElement(), enclosingTypeElement));
         }
         return referencedElement;
     }
@@ -158,43 +161,14 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
     private static Element findElementInInheritedScope(String name, ValueResolveContext parsingContext) {
         TypeElement curEnclosingTypeElement = parsingContext.getEnclosingTypeElement();
         while (curEnclosingTypeElement != null) {
-            Element referencedElement = findEnclosedElement(parsingContext.getTypes().asElement(curEnclosingTypeElement.getSuperclass()), name);
-            if (referencedElement != null) {
-                return referencedElement;
+            List<? extends TypeMirror> superTypes = parsingContext.getTypes().directSupertypes(curEnclosingTypeElement.asType());
+            for (TypeMirror superType : superTypes) {
+                Element referencedElement = findEnclosedElement(parsingContext.getTypes().asElement(superType), name);
+                if (referencedElement != null) {
+                    return referencedElement;
+                }
             }
             curEnclosingTypeElement = ValueResolveUtils.getEnclosingTypeElement(curEnclosingTypeElement);
-        }
-        return null;
-    }
-
-    @Nullable
-    private static Element findEnclosedElement(Element enclosingElement, String name) {
-        for (Element element : enclosingElement.getEnclosedElements()) {
-            if (element.getSimpleName().contentEquals(name)) {
-                if (!TO_FIND_ENCLOSED_ELEMENT_KIND_SET.contains(element.getKind().name())) {
-                    throw new SharedTypeException(String.format(
-                        "Enclosed field '%s' is of element kind '%s': element '%s' in '%s', which is not supported. Supported element kinds: %s.",
-                        name, element.getKind(), element, enclosingElement, String.join(", ", TO_FIND_ENCLOSED_ELEMENT_KIND_SET)));
-                }
-                return element;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Only element in the file scope, not including package private or inherited.
-     */
-    @Nullable
-    private static Element findElementInTree(Scope scope, String name) {
-        Scope curScope = scope;
-        while (curScope != null) {
-            for (Element element : curScope.getLocalElements()) {
-                if (element.getSimpleName().contentEquals(name) && TO_FIND_ENCLOSED_ELEMENT_KIND_SET.contains(element.getKind().name())) {
-                    return element;
-                }
-            }
-            curScope = curScope.getEnclosingScope();
         }
         return null;
     }

@@ -38,6 +38,7 @@ public final class Constants {
 
     public static final ConcreteTypeInfo STRING_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.String", "String");
     public static final ConcreteTypeInfo VOID_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Void", "Void");
+    public static final ConcreteTypeInfo NULL_TYPE_INFO = ConcreteTypeInfo.ofPredefined("null", "null");
     public static final ConcreteTypeInfo OBJECT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Object", "Object");
     public static final ConcreteTypeInfo CLASS_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Class", "Class");
     public static final ConcreteTypeInfo ENUM_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Enum", "Enum");
@@ -90,6 +91,18 @@ public final class Constants {
         LITERAL_TYPES.add(BOXED_FLOAT_TYPE_INFO);
         LITERAL_TYPES.add(BOXED_DOUBLE_TYPE_INFO);
         LITERAL_TYPES.add(BOXED_CHAR_TYPE_INFO);
+    }
+
+    public static final Set<ConcreteTypeInfo> MATH_TYPES = new HashSet<>(2);
+    static {
+        MATH_TYPES.add(BIG_DECIMAL_TYPE_INFO);
+        MATH_TYPES.add(BIG_INTEGER_TYPE_INFO);
+    }
+    public static final Set<String> MATH_TYPE_QUALIFIED_NAMES = new HashSet<>(2);
+    static {
+        for (ConcreteTypeInfo mathType : MATH_TYPES) {
+            MATH_TYPE_QUALIFIED_NAMES.add(mathType.qualifiedName());
+        }
     }
 
     private Constants() {

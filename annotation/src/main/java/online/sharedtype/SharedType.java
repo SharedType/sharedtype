@@ -127,12 +127,12 @@ import java.lang.annotation.Target;
  *
  * <p>
  * <b>Math types:</b><br>
- * By default {@link java.math.BigInteger} and {@link java.math.BigDecimal} are emitted number types.
- * A client can use type mappings to override the emitted types. Default mappings are:
- * <ul>
- *     <li>Typescript: {@code number}</li>
- *     <li>Rust: {@code i128} and {@code f64}</li>
- * </ul>
+ * By default {@link java.math.BigInteger} and {@link java.math.BigDecimal} are emitted as strings.
+ * A client can use type mappings to override the emitted types.
+ * <br>
+ * Note: Constants' values with math types are converted to strings. Custom mapping of math types will not affect constant value type.
+ * See "Constants" section for details.
+ * </p><br>
  *
  * <p>
  * <b>Type literal mappings:</b><br>

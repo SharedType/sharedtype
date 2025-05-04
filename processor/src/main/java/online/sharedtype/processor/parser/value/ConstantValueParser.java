@@ -42,8 +42,8 @@ final class ConstantValueParser implements ValueParser {
                     " the type is '%s'.", fieldElement.asType());
             return ValueHolder.NULL;
         } catch (SharedTypeException e) {
-            ctx.error(fieldElement, "Failed to resolve constant value. " +
-                    "Field tree: %s in %s. Consider to ignore this field or exclude constants generation for this type. " +
+            ctx.error(fieldElement, "Failed to parse constant value. " +
+                    "Field tree: '%s' in '%s'. Consider to ignore this field or exclude constants generation for this type. " +
                     "Error message: %s",
                 tree, ctxTypeElement, e.getMessage());
         }

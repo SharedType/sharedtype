@@ -5,6 +5,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
@@ -12,6 +13,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -88,6 +90,21 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
         return returnThis();
     }
 
+    public M withEnclosingElement(Element enclosingElement) {
+        when(element.getEnclosingElement()).thenReturn(enclosingElement);
+        var existingEnclosedElements = enclosingElement.getEnclosedElements();
+        List<Element> newEnclosedElements = new ArrayList<>(existingEnclosedElements.size() + 1);
+        newEnclosedElements.addAll(existingEnclosedElements);
+        newEnclosedElements.add(element);
+        when(enclosingElement.getEnclosedElements()).thenAnswer(invoc -> newEnclosedElements);
+        return returnThis();
+    }
+
+    public M withPackageElement(PackageElement packageElement) {
+        when(elements.getPackageOf(element)).thenReturn(packageElement);
+        return returnThis();
+    }
+
     public final M ofTree(VariableTreeMock tree) {
         tree.fromElement(element);
         return returnThis();
@@ -102,15 +119,15 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
     }
 
     static void setQualifiedName(TypeElement typeElement, String qualifiedName) {
-        Name typeElementName = mock(Name.class);
-        when(typeElement.getQualifiedName()).thenReturn(typeElementName);
-        when(typeElementName.toString()).thenReturn(qualifiedName);
+        when(typeElement.getQualifiedName()).thenReturn(new MockName(qualifiedName));
+    }
+
+    static void setQualifiedName(PackageElement packageElement, String qualifiedName) {
+        when(packageElement.getQualifiedName()).thenReturn(new MockName(qualifiedName));
     }
 
     static void setSimpleName(Element element, String simpleName) {
-        Name elementName = mock(Name.class);
-        when(element.getSimpleName()).thenReturn(elementName);
-        when(elementName.toString()).thenReturn(simpleName);
+        when(element.getSimpleName()).thenReturn(new MockName(simpleName));
     }
 
     @SuppressWarnings("unchecked")

@@ -28,8 +28,8 @@ final class RustTypeNameMappings {
         typeNameMappings.put(Constants.BOXED_INT_TYPE_INFO, "i32");
         typeNameMappings.put(Constants.BOXED_LONG_TYPE_INFO, "i64");
         typeNameMappings.put(Constants.BOXED_SHORT_TYPE_INFO, "i16");
-        typeNameMappings.put(Constants.BIG_INTEGER_TYPE_INFO, "i128");
-        typeNameMappings.put(Constants.BIG_DECIMAL_TYPE_INFO, "f64");
+        typeNameMappings.put(Constants.BIG_INTEGER_TYPE_INFO, "String");
+        typeNameMappings.put(Constants.BIG_DECIMAL_TYPE_INFO, "String");
 
         typeNameMappings.put(Constants.STRING_TYPE_INFO, "String");
         typeNameMappings.put(Constants.VOID_TYPE_INFO, "!");

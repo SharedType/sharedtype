@@ -3,6 +3,7 @@ package online.sharedtype.processor.parser.value;
 import com.sun.source.tree.BlockTree;
 import com.sun.source.tree.Scope;
 import com.sun.source.tree.Tree;
+import com.sun.source.util.TreePath;
 import com.sun.source.util.Trees;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -47,7 +48,8 @@ final class ValueResolveContext {
     }
 
     Scope getScope() {
-        return trees.getScope(trees.getPath(enclosingTypeElement));
+        TreePath treePath = trees.getPath(enclosingTypeElement);
+        return treePath == null ? null : trees.getScope(treePath);
     }
 
     BlockTree getStaticBlock() {

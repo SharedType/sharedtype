@@ -69,7 +69,7 @@ final class EnumValueParserTest {
             .ofTree(
                 ctxMocks.variableTree().withInitializer(
                     ctxMocks.newClassTree().withArguments(
-                        ctxMocks.identifierTree("AnotherEnumConstant1")
+                        ctxMocks.identifierTree("AnotherEnumConstant1").getTree()
                     ).getTree()
                 )
             )
@@ -97,7 +97,7 @@ final class EnumValueParserTest {
             .ofTree(
                 ctxMocks.variableTree().withInitializer(
                     ctxMocks.newClassTree().withArguments(
-                        ctxMocks.literalTree(100), valueTree1
+                        ctxMocks.literalTree(100).getTree(), valueTree1.getTree()
                     ).getTree()
                 )
             )
@@ -107,7 +107,7 @@ final class EnumValueParserTest {
             .ofTree(
                 ctxMocks.variableTree().withInitializer(
                     ctxMocks.newClassTree().withArguments(
-                        ctxMocks.literalTree(200), valueTree2
+                        ctxMocks.literalTree(200).getTree(), valueTree2.getTree()
                     ).getTree()
                 )
             )
@@ -139,7 +139,7 @@ final class EnumValueParserTest {
                 .ofTree(
                     ctxMocks.variableTree().withInitializer(
                         ctxMocks.newClassTree().withArguments(
-                            ctxMocks.literalTree(100), ctxMocks.literalTree('a')
+                            ctxMocks.literalTree(100).getTree(), ctxMocks.literalTree('a').getTree()
                         ).getTree()
                     )
                 )
@@ -166,7 +166,7 @@ final class EnumValueParserTest {
             .ofTree(
                 ctxMocks.variableTree().withInitializer(
                     ctxMocks.newClassTree().withArguments(
-                        ctxMocks.identifierTree("FOO")
+                        ctxMocks.identifierTree("FOO").getTree()
                     ).getTree()
                 )
             )
