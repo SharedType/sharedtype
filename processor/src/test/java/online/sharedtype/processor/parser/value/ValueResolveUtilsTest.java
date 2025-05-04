@@ -1,9 +1,18 @@
 package online.sharedtype.processor.parser.value;
 
+import com.sun.source.tree.Scope;
 import online.sharedtype.processor.context.ContextMocks;
 import org.junit.jupiter.api.Test;
 
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.type.TypeKind;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 final class ValueResolveUtilsTest {
     private final ContextMocks ctxMocks = new ContextMocks();
@@ -32,5 +41,26 @@ final class ValueResolveUtilsTest {
 
         var memberSelectTree = ctxMocks.memberSelectTree("a.b").getTree();
         assertThat(ValueResolveUtils.getValueTree(memberSelectTree, null)).isSameAs(memberSelectTree);
+    }
+
+    @Test
+    void findElementInLocalScopeFromTreeScope() {
+        var fieldElement = ctxMocks.primitiveVariable("field1", TypeKind.INT).withElementKind(ElementKind.FIELD).element();
+        Scope scope = mock(Scope.class);
+        Scope enclosingScope = mock(Scope.class);
+        when(scope.getEnclosingScope()).thenReturn(enclosingScope);
+        when(enclosingScope.getLocalElements()).thenAnswer(invoc -> List.of(fieldElement));
+
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc").element();
+        assertThat(ValueResolveUtils.findElementInLocalScope(scope, "field1", typeElement)).isSameAs(fieldElement);
+    }
+
+    @Test
+    void findElementInLocalScopeFromEnclosedElements() {
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc").element();
+        var fieldElement = ctxMocks.primitiveVariable("field1", TypeKind.INT)
+            .withElementKind(ElementKind.FIELD)
+            .withEnclosingElement(typeElement).element();
+        assertThat(ValueResolveUtils.findElementInLocalScope(null, "field1", typeElement)).isSameAs(fieldElement);
     }
 }
