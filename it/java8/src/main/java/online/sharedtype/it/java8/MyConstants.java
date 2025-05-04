@@ -3,6 +3,9 @@ package online.sharedtype.it.java8;
 import online.sharedtype.SharedType;
 import online.sharedtype.it.java8.other.OtherConstants;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import static online.sharedtype.it.java8.other.OtherConstants.Inner1.STATIC_IMPORTED_VALUE;
 
 @SharedType(constantNamespaced = SharedType.OptionalBool.FALSE, includes = SharedType.ComponentType.CONSTANTS)
@@ -54,6 +57,8 @@ final class MyConstants extends IgnoredSuperClassB {
         REFERENCED_ENUM_VALUE2_IN_STATIC_BLOCK = EnumTShirt.S;
         REFERENCED_ENUM_VALUE3_IN_STATIC_BLOCK = EnumSize.SMALL;
     }
+    static final BigDecimal MATH_VALUE = new BigDecimal("1.1");
+//    static final BigInteger MATH_VALUE_QUALIFIED_NAME = new java.math.BigInteger("88885555");
 
     @SharedType(constantNamespaced = SharedType.OptionalBool.FALSE, includes = SharedType.ComponentType.CONSTANTS)
     static final class InnerConstantClass {

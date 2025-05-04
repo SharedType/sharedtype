@@ -7,6 +7,7 @@ import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.LiteralTree;
 import com.sun.source.tree.MemberSelectTree;
+import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.Scope;
 import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.Tree;
@@ -20,6 +21,10 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 
+import java.util.List;
+import java.util.Objects;
+
+import static online.sharedtype.processor.domain.Constants.MATH_TYPE_QUALIFIED_NAMES;
 import static online.sharedtype.processor.parser.value.ValueResolveUtils.findElementInLocalScope;
 import static online.sharedtype.processor.parser.value.ValueResolveUtils.findEnclosedElement;
 
@@ -32,6 +37,10 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
         ExpressionTree valueTree = ValueResolveUtils.getValueTree(parsingContext.getTree(), parsingContext.getEnclosingTypeElement());
         if (valueTree instanceof LiteralTree) {
             return ((LiteralTree) valueTree).getValue();
+        }
+        if (valueTree instanceof NewClassTree) {
+            NewClassTree newClassTree = (NewClassTree) valueTree;
+            return resolveMathTypeNewClassValue(newClassTree, parsingContext);
         }
 
         Tree tree = parsingContext.getTree();
@@ -83,6 +92,31 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
         }
         throw new SharedTypeException(String.format(
             "No static evaluation found for constant field: %s in %s", parsingContext.getFieldElement(), parsingContext.getEnclosingTypeElement()));
+    }
+
+    private String resolveMathTypeNewClassValue(NewClassTree newClassTree, ValueResolveContext parsingContext) {
+        ExpressionTree typeIdentifierTree = newClassTree.getIdentifier();
+        Element referencedElement = recursivelyResolveReferencedElement(typeIdentifierTree, parsingContext);
+        if (!(referencedElement instanceof TypeElement)) {
+            throw new SharedTypeException(String.format(
+                "A new class type element must be typeElement, but found: %s in %s, new class tree: %s",
+                referencedElement, parsingContext.getEnclosingTypeElement(), typeIdentifierTree));
+        }
+
+        TypeElement typeElement = (TypeElement) referencedElement;
+        if (!MATH_TYPE_QUALIFIED_NAMES.contains(typeElement.getQualifiedName().toString())) {
+            throw new SharedTypeException(String.format("Math type must be one of %s, but found: %s", MATH_TYPE_QUALIFIED_NAMES, typeElement));
+        }
+
+        List<? extends ExpressionTree> arguments = newClassTree.getArguments();
+        if (arguments.size() != 1) {
+            throw new SharedTypeException(String.format("Math type constructor must have only one argument: %s", newClassTree));
+        }
+        ExpressionTree argument = arguments.get(0);
+
+        ValueResolveContext nextParsingContext = parsingContext.toBuilder()
+            .tree(argument).enclosingTypeElement(typeElement).build();
+        return Objects.toString(recursivelyResolve(nextParsingContext));
     }
 
     private static Element recursivelyResolveReferencedElement(ExpressionTree valueTree, ValueResolveContext parsingContext) {

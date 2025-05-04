@@ -4,11 +4,6 @@ pub static CUSTOM_CODE_TYPE: types::CustomInjectedStruct = types::CustomInjected
     field: 33,
 };
 
-pub static MATH_CLASS: types::MathClass = types::MathClass {
-    bigInteger: 500000000i128,
-    bigDecimal: 6.534543474564f64,
-};
-
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
@@ -96,10 +91,19 @@ mod tests {
     }
 
     #[test]
+    fn math_classes() {
+        let _: MathClass = MathClass {
+            bigInteger: String::from("500000000"),
+            bigDecimal: String::from("500000000.123456789"),
+        };
+    }
+
+    #[test]
     fn constants() {
         assert_eq!(STATIC_FIELD_FROM_JAVA_RECORD, 888);
         assert_eq!(FLOAT_VALUE, 1.888);
         assert_eq!(LONG_VALUE, 999);
+        assert_eq!(MATH_VALUE, "1.1");
 
         assert_eq!(MyEnumConstants::INT_VALUE, 1);
         assert_eq!(MyEnumConstants::STR_VALUE, "abc");

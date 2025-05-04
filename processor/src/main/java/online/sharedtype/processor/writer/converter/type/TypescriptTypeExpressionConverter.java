@@ -37,8 +37,8 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
         typeNameMappings.put(Constants.BOXED_INT_TYPE_INFO, "number");
         typeNameMappings.put(Constants.BOXED_LONG_TYPE_INFO, "number");
         typeNameMappings.put(Constants.BOXED_SHORT_TYPE_INFO, "number");
-        typeNameMappings.put(Constants.BIG_DECIMAL_TYPE_INFO, "number");
-        typeNameMappings.put(Constants.BIG_INTEGER_TYPE_INFO, "number");
+        typeNameMappings.put(Constants.BIG_DECIMAL_TYPE_INFO, "string");
+        typeNameMappings.put(Constants.BIG_INTEGER_TYPE_INFO, "string");
 
         typeNameMappings.put(Constants.STRING_TYPE_INFO, "string");
         typeNameMappings.put(Constants.VOID_TYPE_INFO, "never");

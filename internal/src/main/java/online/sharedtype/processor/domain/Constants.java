@@ -93,6 +93,18 @@ public final class Constants {
         LITERAL_TYPES.add(BOXED_CHAR_TYPE_INFO);
     }
 
+    public static final Set<ConcreteTypeInfo> MATH_TYPES = new HashSet<>(2);
+    static {
+        MATH_TYPES.add(BIG_DECIMAL_TYPE_INFO);
+        MATH_TYPES.add(BIG_INTEGER_TYPE_INFO);
+    }
+    public static final Set<String> MATH_TYPE_QUALIFIED_NAMES = new HashSet<>(2);
+    static {
+        for (ConcreteTypeInfo mathType : MATH_TYPES) {
+            MATH_TYPE_QUALIFIED_NAMES.add(mathType.qualifiedName());
+        }
+    }
+
     private Constants() {
     }
 }

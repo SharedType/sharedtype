@@ -134,8 +134,8 @@ export const jodaTime: JodaTimeClass = {
 }
 
 export const mathClass: MathClass = {
-    bigDecimal: 1,
-    bigInteger: 1,
+    bigDecimal: "1.1",
+    bigInteger: "8888888555555",
 }
 
   
