@@ -5,6 +5,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
@@ -88,6 +89,16 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
         return returnThis();
     }
 
+    public M withEnclosingElement(Element enclosingElement) {
+        when(element.getEnclosingElement()).thenReturn(enclosingElement);
+        return returnThis();
+    }
+
+    public M withPackageElement(PackageElement packageElement) {
+        when(elements.getPackageOf(element)).thenReturn(packageElement);
+        return returnThis();
+    }
+
     public final M ofTree(VariableTreeMock tree) {
         tree.fromElement(element);
         return returnThis();
@@ -104,6 +115,12 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
     static void setQualifiedName(TypeElement typeElement, String qualifiedName) {
         Name typeElementName = mock(Name.class);
         when(typeElement.getQualifiedName()).thenReturn(typeElementName);
+        when(typeElementName.toString()).thenReturn(qualifiedName);
+    }
+
+    static void setQualifiedName(PackageElement packageElement, String qualifiedName) {
+        Name typeElementName = mock(Name.class);
+        when(packageElement.getQualifiedName()).thenReturn(typeElementName);
         when(typeElementName.toString()).thenReturn(qualifiedName);
     }
 

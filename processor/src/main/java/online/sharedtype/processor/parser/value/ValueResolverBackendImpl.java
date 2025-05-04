@@ -13,32 +13,23 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.support.exception.SharedTypeException;
-import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
-import java.util.HashSet;
-import java.util.Set;
+
+import static online.sharedtype.processor.parser.value.ValueResolveUtils.findElementInLocalScope;
+import static online.sharedtype.processor.parser.value.ValueResolveUtils.findEnclosedElement;
 
 @RequiredArgsConstructor
 final class ValueResolverBackendImpl implements ValueResolverBackend {
-    private final static Set<String> TO_FIND_ENCLOSED_ELEMENT_KIND_SET = new HashSet<>(6);
-    static {
-        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.ENUM.name());
-        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.CLASS.name());
-        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.INTERFACE.name());
-        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add("RECORD");
-        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.FIELD.name());
-        TO_FIND_ENCLOSED_ELEMENT_KIND_SET.add(ElementKind.ENUM_CONSTANT.name());
-    }
     private final ValueParser valueParser;
 
     @Override
     public Object recursivelyResolve(ValueResolveContext parsingContext) {
-        ExpressionTree valueTree = getValueTree(parsingContext);
+        ExpressionTree valueTree = ValueResolveUtils.getValueTree(parsingContext.getTree(), parsingContext.getEnclosingTypeElement());
         if (valueTree instanceof LiteralTree) {
             return ((LiteralTree) valueTree).getValue();
         }
@@ -71,29 +62,6 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
         return recursivelyResolve(nextParsingContext);
     }
 
-    @Nullable
-    private static ExpressionTree getValueTree(ValueResolveContext parsingContext) {
-        final ExpressionTree valueTree;
-        Tree tree = parsingContext.getTree();
-        if (tree instanceof LiteralTree) {
-            valueTree = (LiteralTree) tree;
-        } else if (tree instanceof VariableTree) {
-            valueTree = ((VariableTree) tree).getInitializer();
-        } else if (tree instanceof AssignmentTree) {
-            valueTree = ((AssignmentTree) tree).getExpression();
-        } else if (tree instanceof IdentifierTree) {
-            valueTree = (IdentifierTree) tree;
-        } else if (tree instanceof MemberSelectTree) {
-            valueTree = (MemberSelectTree) tree;
-        } else {
-            throw new SharedTypeInternalError(String.format(
-                "Not supported tree type for constant field parsing. Field: '%s' of kind '%s' and type '%s' in '%s'",
-                tree, tree.getKind(), tree.getClass().getSimpleName(), parsingContext.getEnclosingTypeElement()
-            ));
-        }
-        return valueTree;
-    }
-
     private Object resolveEvaluationInStaticBlock(Name variableName, ValueResolveContext parsingContext) {
         BlockTree blockTree = parsingContext.getStaticBlock();
         for (StatementTree statement : blockTree.getStatements()) {
@@ -118,11 +86,11 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
     }
 
     private static Element recursivelyResolveReferencedElement(ExpressionTree valueTree, ValueResolveContext parsingContext) {
-        Scope scope = parsingContext.getScope();
         TypeElement enclosingTypeElement = parsingContext.getEnclosingTypeElement();
         if (valueTree instanceof IdentifierTree) {
             IdentifierTree identifierTree = (IdentifierTree) valueTree;
             String name = identifierTree.getName().toString();
+            Scope scope = parsingContext.getScope();
             Element referencedElement = findElementInLocalScope(scope, name, enclosingTypeElement);
             if (referencedElement == null) { // find package scope references
                 referencedElement = findEnclosedElement(parsingContext.getPackageElement(), name);
@@ -145,15 +113,6 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
         return null;
     }
 
-    private static Element findElementInLocalScope(Scope scope, String name, TypeElement enclosingTypeElement) {
-        Element referencedElement = findElementInTree(scope, name);
-        if (referencedElement == null) { // find local scope references that cannot be found via tree
-            // no need to check all enclosing elements, since constants are only parsed in the directly annotated type
-            referencedElement = findEnclosedElement(enclosingTypeElement, name);
-        }
-        return referencedElement;
-    }
-
     @Nullable
     private static Element findElementInInheritedScope(String name, ValueResolveContext parsingContext) {
         TypeElement curEnclosingTypeElement = parsingContext.getEnclosingTypeElement();
@@ -163,38 +122,6 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
                 return referencedElement;
             }
             curEnclosingTypeElement = ValueResolveUtils.getEnclosingTypeElement(curEnclosingTypeElement);
-        }
-        return null;
-    }
-
-    @Nullable
-    private static Element findEnclosedElement(Element enclosingElement, String name) {
-        for (Element element : enclosingElement.getEnclosedElements()) {
-            if (element.getSimpleName().contentEquals(name)) {
-                if (!TO_FIND_ENCLOSED_ELEMENT_KIND_SET.contains(element.getKind().name())) {
-                    throw new SharedTypeException(String.format(
-                        "Enclosed field '%s' is of element kind '%s': element '%s' in '%s', which is not supported. Supported element kinds: %s.",
-                        name, element.getKind(), element, enclosingElement, String.join(", ", TO_FIND_ENCLOSED_ELEMENT_KIND_SET)));
-                }
-                return element;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Only element in the file scope, not including package private or inherited.
-     */
-    @Nullable
-    private static Element findElementInTree(Scope scope, String name) {
-        Scope curScope = scope;
-        while (curScope != null) {
-            for (Element element : curScope.getLocalElements()) {
-                if (element.getSimpleName().contentEquals(name) && TO_FIND_ENCLOSED_ELEMENT_KIND_SET.contains(element.getKind().name())) {
-                    return element;
-                }
-            }
-            curScope = curScope.getEnclosingScope();
         }
         return null;
     }

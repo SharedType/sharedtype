@@ -1,5 +1,6 @@
 package online.sharedtype.processor.domain.value;
 
+import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 
@@ -37,5 +38,5 @@ public interface ValueHolder extends Serializable {
         return new EnumConstantValue(enumConstantName, actualValueType, actualValue);
     }
 
-    LiteralValue NULL = new LiteralValue(null,null);
+    LiteralValue NULL = new LiteralValue(Constants.NULL_TYPE_INFO,null);
 }

@@ -1,9 +1,12 @@
 package online.sharedtype.processor.context;
 
+import com.sun.source.tree.ExpressionTree;
 import com.sun.source.util.Trees;
 import lombok.Getter;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -34,6 +37,10 @@ public final class ContextMocks {
         when(context.getTypeStore()).thenReturn(typeStore);
         when(context.getRenderFlags()).thenReturn(renderFlags);
         when(context.getTrees()).thenReturn(trees);
+    }
+
+    public PackageElementMock packageElement(String qualifiedName) {
+        return new PackageElementMock(qualifiedName, context);
     }
 
     public TypeElementMock typeElement(String qualifiedName) {
@@ -68,6 +75,10 @@ public final class ContextMocks {
         return new VariableTreeMock(context);
     }
 
+    public AssignmentTreeMock assignmentTree() {
+        return new AssignmentTreeMock(context);
+    }
+
     public NewClassTreeMock newClassTree() {
         return new NewClassTreeMock(context);
     }
@@ -78,6 +89,10 @@ public final class ContextMocks {
 
     public IdentifierTreeMock identifierTree(String name) {
         return new IdentifierTreeMock(name, context);
+    }
+
+    public MemberSelectTreeMock memberSelectTree(String name) {
+        return new MemberSelectTreeMock(name, context);
     }
 
     public AnnotationMirrorMock annotationMirror(DeclaredType declaredType) {

@@ -38,6 +38,7 @@ public final class Constants {
 
     public static final ConcreteTypeInfo STRING_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.String", "String");
     public static final ConcreteTypeInfo VOID_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Void", "Void");
+    public static final ConcreteTypeInfo NULL_TYPE_INFO = ConcreteTypeInfo.ofPredefined("null", "null");
     public static final ConcreteTypeInfo OBJECT_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Object", "Object");
     public static final ConcreteTypeInfo CLASS_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Class", "Class");
     public static final ConcreteTypeInfo ENUM_TYPE_INFO = ConcreteTypeInfo.ofPredefined("java.lang.Enum", "Enum");
