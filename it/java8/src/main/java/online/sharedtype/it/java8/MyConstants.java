@@ -62,6 +62,7 @@ final class MyConstants extends IgnoredSuperClassB {
     }
     static final BigDecimal MATH_VALUE = new BigDecimal("1.1");
     static final BigInteger MATH_VALUE_QUALIFIED_NAME = new java.math.BigInteger("88885555");
+    static final BigDecimal MATH_VALUE_REFERENCED_LOCAL_VALUE = new java.math.BigDecimal(MyConstants.REFERENCED_LOCAL_VALUE);
 
     @SharedType(constantNamespaced = SharedType.OptionalBool.FALSE, includes = SharedType.ComponentType.CONSTANTS)
     static final class InnerConstantClass {

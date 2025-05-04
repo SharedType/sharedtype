@@ -2,6 +2,7 @@ package online.sharedtype.processor.parser.value;
 
 import com.sun.source.tree.Scope;
 import com.sun.source.tree.Tree;
+import com.sun.source.util.TreePath;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +14,6 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
-
-import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,9 +33,7 @@ final class ValueResolverBackendImplTest {
         .fieldElement(fieldElement);
 
     private final Scope scope = mock(Scope.class);
-    @BeforeEach
-    void setup() {
-    }
+    private final TreePath treePath = mock(TreePath.class);
 
     @Test
     void getValueOfSimpleLiteralTree() {
@@ -59,7 +56,8 @@ final class ValueResolverBackendImplTest {
         Tree treeOfAnotherField = ctxMocks.variableTree().withInitializer(ctxMocks.literalTree(55).getTree()).getTree();
         when(ctxMocks.getTrees().getTree(anotherFieldElement)).thenReturn(treeOfAnotherField);
 
-        when(ctxMocks.getTrees().getScope(any())).thenReturn(scope);
+        when(ctxMocks.getTrees().getPath(enclosingTypeElement)).thenReturn(treePath);
+        when(ctxMocks.getTrees().getScope(treePath)).thenReturn(scope);
         try(var mockedUtils = Mockito.mockStatic(ValueResolveUtils.class, Mockito.CALLS_REAL_METHODS)) {
             mockedUtils.when(() -> ValueResolveUtils.findElementInLocalScope(scope, "field2", enclosingTypeElement)).thenReturn(anotherFieldElement);
             Tree tree = ctxMocks.variableTree().withInitializer(ctxMocks.identifierTree("field2").getTree()).getTree();

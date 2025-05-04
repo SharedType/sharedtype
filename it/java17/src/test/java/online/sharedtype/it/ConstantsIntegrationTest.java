@@ -13,7 +13,7 @@ final class ConstantsIntegrationTest {
         ConstantNamespaceDef constantsDef = (ConstantNamespaceDef) deserializeTypeDef("$online.sharedtype.it.java8.MyConstants.ser");
         assertThat(constantsDef.simpleName()).isEqualTo("MyConstants");
         var components = constantsDef.components();
-        assertThat(components).hasSize(32);
+        assertThat(components).hasSize(33);
         assertThat(components).satisfiesExactly(
             component -> {
                 assertThat(component.name()).isEqualTo("FLOAT_VALUE");
@@ -144,6 +144,10 @@ final class ConstantsIntegrationTest {
             component -> {
                 assertThat(component.name()).isEqualTo("MATH_VALUE_QUALIFIED_NAME");
                 assertThat(component.value().getValue()).isEqualTo("88885555");
+            },
+            component -> {
+                assertThat(component.name()).isEqualTo("MATH_VALUE_REFERENCED_LOCAL_VALUE");
+                assertThat(component.value().getValue()).isEqualTo("555");
             }
         );
     }

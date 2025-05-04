@@ -111,8 +111,7 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
         }
         ExpressionTree argument = arguments.get(0);
 
-        ValueResolveContext nextParsingContext = parsingContext.toBuilder()
-            .tree(argument).enclosingTypeElement(typeElement).build();
+        ValueResolveContext nextParsingContext = parsingContext.toBuilder().tree(argument).build();
         return Objects.toString(recursivelyResolve(nextParsingContext));
     }
 

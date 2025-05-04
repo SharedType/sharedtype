@@ -61,7 +61,8 @@ final class ValueResolveUtils {
         return valueTree;
     }
 
-    static Element findElementInLocalScope(Scope scope, String name, TypeElement enclosingTypeElement) {
+    @Nullable
+    static Element findElementInLocalScope(@Nullable Scope scope, String name, TypeElement enclosingTypeElement) {
         Element referencedElement = findElementInTree(scope, name);
         if (referencedElement == null) { // find local scope references that cannot be found via tree
             // no need to check all enclosing elements, since constants are only parsed in the directly annotated type
