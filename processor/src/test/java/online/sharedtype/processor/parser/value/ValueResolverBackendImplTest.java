@@ -5,7 +5,6 @@ import com.sun.source.tree.Tree;
 import com.sun.source.util.TreePath;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.value.ValueHolder;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -26,7 +25,9 @@ final class ValueResolverBackendImplTest {
     private final ValueResolverBackendImpl valueResolverBackend = new ValueResolverBackendImpl(valueParser);
 
     private final PackageElement packageElement = ctxMocks.packageElement("com.github.cuzfrog").element();
-    private final TypeElement enclosingTypeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc").withPackageElement(packageElement).element();
+    private final TypeElement superTypeElement = ctxMocks.typeElement("com.github.cuzfrog.Super").element();
+    private final TypeElement enclosingTypeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+        .withPackageElement(packageElement).withSuperTypes(superTypeElement.asType()).element();
     private final VariableElement fieldElement = ctxMocks.primitiveVariable("field1", TypeKind.INT).element();
     private final ValueResolveContext.Builder valueResolveContextBuilder = ValueResolveContext.builder(ctxMocks.getContext())
         .enclosingTypeElement(enclosingTypeElement)
@@ -64,6 +65,18 @@ final class ValueResolverBackendImplTest {
             var valueResolveContext = valueResolveContextBuilder.tree(tree).build();
             assertThat(valueResolverBackend.recursivelyResolve(valueResolveContext)).isEqualTo(55);
         }
+    }
+
+    @Test
+    void getValueFromInheritedReference() {
+        VariableElement fieldElementInSuper = ctxMocks.primitiveVariable("field2", TypeKind.INT)
+            .withEnclosingElement(superTypeElement).element();
+        Tree treeOfFieldInSuper = ctxMocks.variableTree().withInitializer(ctxMocks.literalTree(88).getTree()).getTree();
+        when(ctxMocks.getTrees().getTree(fieldElementInSuper)).thenReturn(treeOfFieldInSuper);
+
+        Tree tree = ctxMocks.variableTree().withInitializer(ctxMocks.identifierTree("field2").getTree()).getTree();
+        var valueResolveContext = valueResolveContextBuilder.tree(tree).build();
+        assertThat(valueResolverBackend.recursivelyResolve(valueResolveContext)).isEqualTo(88);
     }
 
     @Test

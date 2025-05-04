@@ -13,6 +13,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -91,6 +92,11 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
 
     public M withEnclosingElement(Element enclosingElement) {
         when(element.getEnclosingElement()).thenReturn(enclosingElement);
+        var existingEnclosedElements = enclosingElement.getEnclosedElements();
+        List<Element> newEnclosedElements = new ArrayList<>(existingEnclosedElements.size() + 1);
+        newEnclosedElements.addAll(existingEnclosedElements);
+        newEnclosedElements.add(element);
+        when(enclosingElement.getEnclosedElements()).thenAnswer(invoc -> newEnclosedElements);
         return returnThis();
     }
 
@@ -113,21 +119,15 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
     }
 
     static void setQualifiedName(TypeElement typeElement, String qualifiedName) {
-        Name typeElementName = mock(Name.class);
-        when(typeElement.getQualifiedName()).thenReturn(typeElementName);
-        when(typeElementName.toString()).thenReturn(qualifiedName);
+        when(typeElement.getQualifiedName()).thenReturn(new MockName(qualifiedName));
     }
 
     static void setQualifiedName(PackageElement packageElement, String qualifiedName) {
-        Name typeElementName = mock(Name.class);
-        when(packageElement.getQualifiedName()).thenReturn(typeElementName);
-        when(typeElementName.toString()).thenReturn(qualifiedName);
+        when(packageElement.getQualifiedName()).thenReturn(new MockName(qualifiedName));
     }
 
     static void setSimpleName(Element element, String simpleName) {
-        Name elementName = mock(Name.class);
-        when(element.getSimpleName()).thenReturn(elementName);
-        when(elementName.toString()).thenReturn(simpleName);
+        when(element.getSimpleName()).thenReturn(new MockName(simpleName));
     }
 
     @SuppressWarnings("unchecked")

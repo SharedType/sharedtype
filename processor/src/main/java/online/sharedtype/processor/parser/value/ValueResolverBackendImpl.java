@@ -7,6 +7,7 @@ import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.LiteralTree;
 import com.sun.source.tree.MemberSelectTree;
+import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.Scope;
 import com.sun.source.tree.StatementTree;
@@ -20,6 +21,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 
 import java.util.List;
 import java.util.Objects;
@@ -144,8 +146,12 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
             referencedElement = findEnclosedElement(selecteeElement, memberSelectTree.getIdentifier().toString());
         }
         if (referencedElement == null) {
+            String hint = "";
+            if (valueTree instanceof MethodInvocationTree) {
+                hint = " Method invocation is not support for parsing value at compile time.";
+            }
             throw new SharedTypeException(String.format(
-                "Failed find referenced element from tree[Kind=%s]: '%s', when trying to parse value from field '%s' in '%s'",
+                "Failed find referenced element from tree[Kind=%s]: '%s', when trying to parse value from field '%s' in '%s'." + hint,
                 valueTree.getKind(), valueTree, parsingContext.getFieldElement(), enclosingTypeElement));
         }
         return referencedElement;
@@ -155,9 +161,12 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
     private static Element findElementInInheritedScope(String name, ValueResolveContext parsingContext) {
         TypeElement curEnclosingTypeElement = parsingContext.getEnclosingTypeElement();
         while (curEnclosingTypeElement != null) {
-            Element referencedElement = findEnclosedElement(parsingContext.getTypes().asElement(curEnclosingTypeElement.getSuperclass()), name);
-            if (referencedElement != null) {
-                return referencedElement;
+            List<? extends TypeMirror> superTypes = parsingContext.getTypes().directSupertypes(curEnclosingTypeElement.asType());
+            for (TypeMirror superType : superTypes) {
+                Element referencedElement = findEnclosedElement(parsingContext.getTypes().asElement(superType), name);
+                if (referencedElement != null) {
+                    return referencedElement;
+                }
             }
             curEnclosingTypeElement = ValueResolveUtils.getEnclosingTypeElement(curEnclosingTypeElement);
         }

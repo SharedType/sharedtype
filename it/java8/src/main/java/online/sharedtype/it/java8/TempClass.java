@@ -6,5 +6,5 @@ import java.math.BigDecimal;
 
 @SharedType(includes = SharedType.ComponentType.CONSTANTS)
 public class TempClass extends IgnoredSuperClassB {
-    static final BigDecimal VALUE2 = new java.math.BigDecimal(MyConstants.REFERENCED_LOCAL_VALUE);
+//    static final BigDecimal VALUE2 = BigDecimal.valueOf(555);
 }

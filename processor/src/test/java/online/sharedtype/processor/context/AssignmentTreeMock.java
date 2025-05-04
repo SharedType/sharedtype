@@ -2,6 +2,7 @@ package online.sharedtype.processor.context;
 
 import com.sun.source.tree.AssignmentTree;
 import com.sun.source.tree.ExpressionTree;
+import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 
 import static org.mockito.Mockito.mock;
@@ -10,6 +11,7 @@ import static org.mockito.Mockito.when;
 public final class AssignmentTreeMock extends AbstractTreeMock<AssignmentTree, AssignmentTreeMock> {
     AssignmentTreeMock(Context ctx) {
         super(mock(AssignmentTree.class), ctx);
+        when(tree.getKind()).thenReturn(Tree.Kind.ASSIGNMENT);
     }
 
     public AssignmentTreeMock withVariable(ExpressionTree variableTree) {
