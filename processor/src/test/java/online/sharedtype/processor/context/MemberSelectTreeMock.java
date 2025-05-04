@@ -13,6 +13,7 @@ public final class MemberSelectTreeMock extends AbstractTreeMock<MemberSelectTre
     MemberSelectTreeMock(String identifier, Context ctx) {
         super(mock(MemberSelectTree.class), ctx);
         when(tree.getIdentifier()).thenReturn(new MockName(identifier));
+        when(tree.toString()).thenReturn(identifier);
     }
 
     public MemberSelectTreeMock withExpression(ExpressionTree expressionTree) {

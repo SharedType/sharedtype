@@ -54,9 +54,6 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
         }
 
         Element referencedFieldElement = recursivelyResolveReferencedElement(valueTree, parsingContext);
-        if (referencedFieldElement == null) {
-            throw new SharedTypeException(String.format("Cannot find referenced field for tree: '%s' in '%s'", tree, enclosingTypeElement));
-        }
         TypeElement referencedFieldEnclosingTypeElement = ValueResolveUtils.getEnclosingTypeElement(referencedFieldElement);
         if (referencedFieldEnclosingTypeElement == null) {
             throw new SharedTypeException(String.format("Cannot find enclosing type for field: '%s'", referencedFieldElement));
@@ -121,30 +118,38 @@ final class ValueResolverBackendImpl implements ValueResolverBackend {
 
     private static Element recursivelyResolveReferencedElement(ExpressionTree valueTree, ValueResolveContext parsingContext) {
         TypeElement enclosingTypeElement = parsingContext.getEnclosingTypeElement();
+        Element referencedElement = null;
         if (valueTree instanceof IdentifierTree) {
             IdentifierTree identifierTree = (IdentifierTree) valueTree;
             String name = identifierTree.getName().toString();
             Scope scope = parsingContext.getScope();
-            Element referencedElement = findElementInLocalScope(scope, name, enclosingTypeElement);
+            referencedElement = findElementInLocalScope(scope, name, enclosingTypeElement);
             if (referencedElement == null) { // find package scope references
                 referencedElement = findEnclosedElement(parsingContext.getPackageElement(), name);
             }
             if (referencedElement == null) {
                 referencedElement = findElementInInheritedScope(name, parsingContext);
             }
-            return referencedElement;
-        }
-        if (valueTree instanceof MemberSelectTree) {
+        } else if (valueTree instanceof MemberSelectTree) {
             MemberSelectTree memberSelectTree = (MemberSelectTree) valueTree;
+            TypeElement typeElementFromQualifiedName = parsingContext.getElements().getTypeElement(memberSelectTree.toString());
+            if (typeElementFromQualifiedName != null) {
+                return typeElementFromQualifiedName;
+            }
             ExpressionTree expressionTree = memberSelectTree.getExpression();
             Element selecteeElement = recursivelyResolveReferencedElement(expressionTree, parsingContext);
             if (!(selecteeElement instanceof TypeElement)) {
                 throw new SharedTypeException(String.format(
                     "A selectee element must be typeElement, but found: %s in %s", selecteeElement, enclosingTypeElement));
             }
-            return findEnclosedElement(selecteeElement, memberSelectTree.getIdentifier().toString());
+            referencedElement = findEnclosedElement(selecteeElement, memberSelectTree.getIdentifier().toString());
         }
-        return null;
+        if (referencedElement == null) {
+            throw new SharedTypeException(String.format(
+                "Failed find referenced element from tree[Kind=%s]: '%s', when trying to parse value from field '%s' in '%s'",
+                valueTree.getKind(), valueTree, parsingContext.getFieldElement(), enclosingTypeElement));
+        }
+        return referencedElement;
     }
 
     @Nullable

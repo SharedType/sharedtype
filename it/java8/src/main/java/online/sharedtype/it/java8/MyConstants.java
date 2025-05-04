@@ -16,6 +16,7 @@ final class MyConstants extends IgnoredSuperClassB {
     static final long IGNORED_LOCAL_VALUE = 555L;
     static final long REFERENCED_LOCAL_VALUE = IGNORED_LOCAL_VALUE;
     static final long SELF_REFERENCED_LOCAL_VALUE = MyConstants.IGNORED_LOCAL_VALUE;
+    static final long SELF_REFERENCED_LOCAL_VALUE_QUALIFIED_NAME = online.sharedtype.it.java8.MyConstants.IGNORED_LOCAL_VALUE;
     static final long REFERENCED_IMPORTED_VALUE = OtherConstants.LONG_VALUE;
     static final long REFERENCED_NESTED_VALUE = OtherConstants.Inner1.Inner2.INNER_LONG_VALUE;
     static final long REFERENCED_STATIC_IMPORTED_VALUE = STATIC_IMPORTED_VALUE;
@@ -30,6 +31,7 @@ final class MyConstants extends IgnoredSuperClassB {
     static final long REFERENCED_VALUE_IN_STATIC_BLOCK;
     static final long REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK;
     static final long SELF_REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK;
+    static final long SELF_REFERENCED_LOCAL_VALUE_QUALIFIED_NAME_IN_STATIC_BLOCK;
     static final long REFERENCED_IMPORTED_VALUE_IN_STATIC_BLOCK;
     static final long REFERENCED_NESTED_VALUE_IN_STATIC_BLOCK;
     static final long REFERENCED_STATIC_IMPORTED_VALUE_IN_STATIC_BLOCK;
@@ -45,6 +47,7 @@ final class MyConstants extends IgnoredSuperClassB {
         REFERENCED_VALUE_IN_STATIC_BLOCK = 112L;
         REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK = IGNORED_LOCAL_VALUE;
         SELF_REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK = MyConstants.IGNORED_LOCAL_VALUE;
+        SELF_REFERENCED_LOCAL_VALUE_QUALIFIED_NAME_IN_STATIC_BLOCK = online.sharedtype.it.java8.MyConstants.IGNORED_LOCAL_VALUE;
         REFERENCED_IMPORTED_VALUE_IN_STATIC_BLOCK = OtherConstants.LONG_VALUE;
         REFERENCED_NESTED_VALUE_IN_STATIC_BLOCK = OtherConstants.Inner1.Inner2.INNER_LONG_VALUE;
         REFERENCED_STATIC_IMPORTED_VALUE_IN_STATIC_BLOCK = STATIC_IMPORTED_VALUE;
@@ -58,7 +61,7 @@ final class MyConstants extends IgnoredSuperClassB {
         REFERENCED_ENUM_VALUE3_IN_STATIC_BLOCK = EnumSize.SMALL;
     }
     static final BigDecimal MATH_VALUE = new BigDecimal("1.1");
-//    static final BigInteger MATH_VALUE_QUALIFIED_NAME = new java.math.BigInteger("88885555");
+    static final BigInteger MATH_VALUE_QUALIFIED_NAME = new java.math.BigInteger("88885555");
 
     @SharedType(constantNamespaced = SharedType.OptionalBool.FALSE, includes = SharedType.ComponentType.CONSTANTS)
     static final class InnerConstantClass {

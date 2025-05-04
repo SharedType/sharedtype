@@ -14,9 +14,13 @@ public final class NewClassTreeMock extends AbstractTreeMock<NewClassTree, NewCl
         super(mock(NewClassTree.class), ctx);
     }
 
-    @SafeVarargs
-    public final <T extends ExpressionTree, M extends AbstractTreeMock<T, M>> NewClassTreeMock withArguments(ExpressionTreeMock<T, M>... arguments) {
-        when(tree.getArguments()).then(invoc -> Arrays.stream(arguments).map(arg -> arg.tree).collect(Collectors.toList()));
+    public NewClassTreeMock withArguments(ExpressionTree... arguments) {
+        when(tree.getArguments()).then(invoc -> Arrays.stream(arguments).collect(Collectors.toList()));
+        return this;
+    }
+
+    public NewClassTreeMock withIdentifier(ExpressionTree identifier) {
+        when(tree.getIdentifier()).thenReturn(identifier);
         return this;
     }
 }

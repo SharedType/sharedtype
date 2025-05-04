@@ -14,6 +14,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -82,5 +84,21 @@ final class ValueResolverBackendImplTest {
             var valueResolveContext = valueResolveContextBuilder.tree(tree).build();
             assertThat(valueResolverBackend.recursivelyResolve(valueResolveContext)).isEqualTo(enumValue);
         }
+    }
+
+    @Test
+    void getValueFromBigDecimalLiteral() {
+        TypeElement bigDecimalTypeElement = ctxMocks.typeElement("java.math.BigDecimal").element();
+        when(ctxMocks.getElements().getTypeElement("java.math.BigDecimal")).thenReturn(bigDecimalTypeElement);
+
+        Tree tree = ctxMocks.variableTree().withInitializer(
+            ctxMocks.newClassTree()
+                .withIdentifier(ctxMocks.memberSelectTree("java.math.BigDecimal").getTree())
+                .withArguments(ctxMocks.literalTree("123.456").getTree())
+                .getTree()
+        ).getTree();
+
+        var valueResolveContext = valueResolveContextBuilder.tree(tree).build();
+        assertThat(valueResolverBackend.recursivelyResolve(valueResolveContext)).isEqualTo("123.456");
     }
 }
