@@ -19,5 +19,12 @@ else
   return
 fi
 
-export PATH=$JAVA_HOME/bin:$PATH
-java -version
+export MAVEN_OPTS="-Xmx512m -Xms512m"
+export PATH=$JAVA_HOME/bin:$MVND_HOME/bin:$PATH
+
+if [ -z "$MVND_HOME" ];then
+    echo "MVND_HOME is not set, mvnd is recommended for local development, see https://github.com/apache/maven-mvnd"
+    java -version
+else
+    mvnd -version
+fi

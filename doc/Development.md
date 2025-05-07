@@ -27,6 +27,7 @@ Optionally mount tmpfs to save your disk by:
 ```bash
 ./mount-tmpfs.sh
 ```
+Optionally setup `MVND_HOME` to use [maven daemon](https://github.com/apache/maven-mvnd) by `./mvnd`
 
 ### Maven profiles
 * `dev` and `release` - control whether to include test maven modules during build.
@@ -63,9 +64,9 @@ Style check:
 ```
 Debug annotation processor by run maven build:
 ```bash
-./mvnd <your args goes here>
+./mvne <your args goes here>
 ```
-Then attach your debugger on it. E.g. [IDEA run config](../.run/mvnd.run.xml).
+Then attach your debugger on it. E.g. [IDEA run config](../.run/mvnDebug.run.xml).
 
 Compile specific classes, **along with debug, this is useful for developing a specific feature**, e.g.:
 ```bash
