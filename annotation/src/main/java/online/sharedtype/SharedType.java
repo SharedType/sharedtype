@@ -251,6 +251,12 @@ public @interface SharedType {
     String typescriptTargetDatetimeTypeLiteral() default "";
 
     /**
+     * Type literal to be emitted for date/time types. How a java type is considered a date/time type is defined by global properties.
+     * @return any literal, e.g. "string", "Date". When empty, fallback to global default.
+     */
+    String goTargetDatetimeTypeLiteral() default "";
+
+    /**
      * Mark a method as an accessor regardless of its name.
      * Getter prefixes are configured in global properties.
      * This annotation will be ignored if {@link #includes()} does not include {@link ComponentType#ACCESSORS}.

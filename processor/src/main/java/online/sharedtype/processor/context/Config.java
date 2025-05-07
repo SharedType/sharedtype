@@ -31,8 +31,9 @@ public final class Config {
     private final Set<Props.Typescript.OptionalFieldFormat> typescriptOptionalFieldFormats;
     private final Props.Typescript.EnumFormat typescriptEnumFormat;
     private final Props.Typescript.FieldReadonlyType typescriptFieldReadonly;
-    private final String rustTargetDatetimeTypeLiteral;
     private final String typescriptTargetDatetimeTypeLiteral;
+    private final String goTargetDatetimeTypeLiteral;
+    private final String rustTargetDatetimeTypeLiteral;
 
     @Retention(RetentionPolicy.RUNTIME)
     @interface AnnoContainer {
@@ -56,15 +57,20 @@ public final class Config {
         typescriptOptionalFieldFormats = parseTsOptionalFieldFormats(anno, ctx);
         typescriptEnumFormat = parseTsEnumFormat(anno, ctx);
         typescriptFieldReadonly = parseTsFieldReadonlyType(anno, ctx);
-        rustTargetDatetimeTypeLiteral = notEmptyOrDefault(
-            anno.rustTargetDatetimeTypeLiteral(),
-            ctx.getProps().getRust().getTargetDatetimeTypeLiteral(),
-            () -> String.format("Loading rustTargetDatetimeTypeLiteral failed. Please check your configuration for '%s'", qualifiedName)
-        );
         typescriptTargetDatetimeTypeLiteral = notEmptyOrDefault(
             anno.typescriptTargetDatetimeTypeLiteral(),
             ctx.getProps().getTypescript().getTargetDatetimeTypeLiteral(),
             () -> String.format("Loading typescriptTargetDatetimeTypeLiteral failed. Please check your configuration for '%s'", qualifiedName)
+        );
+        goTargetDatetimeTypeLiteral = notEmptyOrDefault(
+            anno.goTargetDatetimeTypeLiteral(),
+            ctx.getProps().getGo().getTargetDatetimeTypeLiteral(),
+            () -> String.format("Loading goTargetDatetimeTypeLiteral failed. Please check your configuration for '%s'", qualifiedName)
+        );
+        rustTargetDatetimeTypeLiteral = notEmptyOrDefault(
+            anno.rustTargetDatetimeTypeLiteral(),
+            ctx.getProps().getRust().getTargetDatetimeTypeLiteral(),
+            () -> String.format("Loading rustTargetDatetimeTypeLiteral failed. Please check your configuration for '%s'", qualifiedName)
         );
     }
 

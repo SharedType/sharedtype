@@ -18,6 +18,7 @@ import java.util.Set;
 public final class Props {
     private final Set<OutputTarget> targets;
     private final Typescript typescript;
+    private final Go go;
     private final Rust rust;
 
     private final Set<String> optionalAnnotations;
@@ -81,6 +82,16 @@ public final class Props {
                 return FieldReadonlyType.valueOf(value.toUpperCase());
             }
         }
+    }
+
+    @Builder(access = AccessLevel.PACKAGE)
+    @Getter
+    public static final class Go {
+        private final String outputFileName;
+        private final String javaObjectMapType;
+        private final String targetDatetimeTypeLiteral;
+        private final Map<String, String> typeMappings;
+        private final String customCodePath;
     }
 
     @Builder(access = AccessLevel.PACKAGE)

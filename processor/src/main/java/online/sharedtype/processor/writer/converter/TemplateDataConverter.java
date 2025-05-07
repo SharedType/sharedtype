@@ -24,6 +24,11 @@ public interface TemplateDataConverter {
         return converters;
     }
 
+    static Set<TemplateDataConverter> go(Context ctx) {
+        Set<TemplateDataConverter> converters = new HashSet<>(3);
+        return converters;
+    }
+
     static Set<TemplateDataConverter> rust(Context ctx) {
         RustMacroTraitsGenerator rustMacroTraitsGenerator = new RustMacroTraitsGeneratorImpl(ctx);
         TypeExpressionConverter rustTypeExpressionConverter = TypeExpressionConverter.rust(ctx);

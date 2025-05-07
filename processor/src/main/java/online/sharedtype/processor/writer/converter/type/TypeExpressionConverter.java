@@ -12,6 +12,10 @@ public interface TypeExpressionConverter {
         return new TypescriptTypeExpressionConverter(ctx);
     }
 
+    static TypeExpressionConverter go(Context ctx) {
+        return new GoTypeExpressionConverter(ctx);
+    }
+
     static TypeExpressionConverter rust(Context ctx) {
         return new RustTypeExpressionConverter(ctx);
     }

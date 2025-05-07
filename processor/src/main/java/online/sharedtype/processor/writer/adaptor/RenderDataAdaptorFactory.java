@@ -14,4 +14,8 @@ public interface RenderDataAdaptorFactory {
     static Tuple<Template, RenderDataAdaptor> rust(Context ctx) {
         return Tuple.of(Template.TEMPLATE_RUST_HEADER, new RustHeaderDataAdaptor(ctx));
     }
+
+    static Tuple<Template, RenderDataAdaptor> go(Context ctx) {
+        return Tuple.of(Template.TEMPLATE_GO_HEADER, new GoHeaderDataAdaptor(ctx));
+    }
 }

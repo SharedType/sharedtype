@@ -19,6 +19,9 @@ public final class Template {
     public static final Template TEMPLATE_RUST_HEADER = new Template(OutputTarget.RUST, "header");
     public static final Template TEMPLATE_RUST_STRUCT = new Template(OutputTarget.RUST, "struct");
     public static final Template TEMPLATE_RUST_ENUM = new Template(OutputTarget.RUST, "enum");
+    public static final Template TEMPLATE_GO_HEADER = new Template(OutputTarget.GO, "header");
+    public static final Template TEMPLATE_GO_STRUCT = new Template(OutputTarget.GO, "struct");
+//    public static final Template TEMPLATE_GO_ENUM = new Template(OutputTarget.GO, "enum");
 
     private final OutputTarget outputTarget;
     private final String resourcePath;

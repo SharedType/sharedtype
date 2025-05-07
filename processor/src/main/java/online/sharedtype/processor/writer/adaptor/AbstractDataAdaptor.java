@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 abstract class AbstractDataAdaptor implements RenderDataAdaptor {
     final Context ctx;
 
+    @SuppressWarnings("unused")
     final RenderFlags renderFlags() {
         return ctx.getRenderFlags();
     }

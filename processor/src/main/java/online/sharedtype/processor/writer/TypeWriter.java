@@ -41,6 +41,11 @@ public interface TypeWriter {
                 ctx, renderer, RenderDataAdaptorFactory::typescript, TemplateDataConverter.typescript(ctx), ctx.getProps().getTypescript().getOutputFileName()
             ));
         }
+        if (ctx.getProps().getTargets().contains(OutputTarget.GO)) {
+            writers.add(new TemplateTypeFileWriter(
+                ctx, renderer, RenderDataAdaptorFactory::go, TemplateDataConverter.go(ctx), ctx.getProps().getGo().getOutputFileName()
+            ));
+        }
         if (ctx.getProps().getTargets().contains(OutputTarget.RUST)) {
             writers.add(new TemplateTypeFileWriter(
                 ctx, renderer, RenderDataAdaptorFactory::rust, TemplateDataConverter.rust(ctx), ctx.getProps().getRust().getOutputFileName()
