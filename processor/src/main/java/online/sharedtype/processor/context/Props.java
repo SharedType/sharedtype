@@ -88,6 +88,7 @@ public final class Props {
     @Getter
     public static final class Go {
         private final String outputFileName;
+        private final String outputFilePackageName;
         private final String javaObjectMapType;
         private final String targetDatetimeTypeLiteral;
         private final Map<String, String> typeMappings;

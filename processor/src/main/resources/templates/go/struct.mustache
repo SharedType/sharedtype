@@ -1,5 +1,5 @@
-type {{name}} struct {
+type {{name}}{{typeParametersExpr}} struct {
 {{#properties}}
-    {{name}}: {{{typeExpr}}},
+    {{name}} {{{typeExpr}}}
 {{/properties}}
 }

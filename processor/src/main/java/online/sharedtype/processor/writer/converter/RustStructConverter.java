@@ -52,7 +52,7 @@ final class RustStructConverter extends AbstractStructTemplateDataConverter {
     }
 
     private List<PropertyExpr> gatherProperties(ClassDef classDef) {
-        List<PropertyExpr> properties = new ArrayList<>(); // TODO: init cap
+        List<PropertyExpr> properties = new ArrayList<>();
         Set<String> propertyNames = new HashSet<>();
         for (FieldComponentInfo component : classDef.components()) {
             properties.add(toPropertyExpr(component, classDef));

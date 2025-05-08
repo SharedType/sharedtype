@@ -1,0 +1,6 @@
+type {{name}} = {{valueType}}
+const (
+{{#enumerations}}
+    {{name}} {{valueType}} = {{{value}}}
+{{/enumerations}}
+)

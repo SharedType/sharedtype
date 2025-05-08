@@ -12,8 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class GoTypeExpressionConverter extends AbstractTypeExpressionConverter {
-    private static final ArraySpec ARRAY_SPEC = new ArraySpec("[]", "");
+    private static final String ARRAY_LITERAL = "[]";
+    private static final ArraySpec ARRAY_SPEC = new ArraySpec(ARRAY_LITERAL, "");
     private static final MapSpec DEFAULT_MAP_SPEC = new MapSpec("map[", "]", "");
+    private static final TypeArgsSpec TYPE_ARGS_SPEC = new TypeArgsSpec("[", ", ", "]");
+    private static final TypeArgsSpec ARRAY_TYPE_ARGS_SPEC = new TypeArgsSpec("", "", "");
     final Map<TypeInfo, String> typeNameMappings = new HashMap<>(32);
 
     public GoTypeExpressionConverter(Context ctx) {
@@ -48,6 +51,13 @@ final class GoTypeExpressionConverter extends AbstractTypeExpressionConverter {
     @Override
     MapSpec mapSpec(ConcreteTypeInfo typeInfo) {
         return DEFAULT_MAP_SPEC;
+    }
+    @Override
+    TypeArgsSpec typeArgsSpec(ConcreteTypeInfo typeInfo) {
+        if (ARRAY_LITERAL.equals(typeInfo.mappedName(TargetCodeType.GO))) {
+            return ARRAY_TYPE_ARGS_SPEC;
+        }
+        return TYPE_ARGS_SPEC;
     }
     @Override
     String dateTimeTypeExpr(DateTimeInfo dateTimeInfo, Config config) {

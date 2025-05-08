@@ -22,6 +22,7 @@ import static online.sharedtype.processor.support.Preconditions.requireNonNull;
 @RequiredArgsConstructor
 abstract class AbstractTypeExpressionConverter implements TypeExpressionConverter {
     private static final int BUILDER_INIT_SIZE = 128; // TODO: better estimate
+    private static final TypeArgsSpec DEFAULT_TYPE_ARGS_SPEC = new TypeArgsSpec("<", ", ", ">");
     final Context ctx;
 
     @Override
@@ -38,6 +39,10 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
 
     abstract MapSpec mapSpec(ConcreteTypeInfo typeInfo);
 
+    TypeArgsSpec typeArgsSpec(ConcreteTypeInfo typeInfo) {
+        return DEFAULT_TYPE_ARGS_SPEC;
+    }
+
     abstract String dateTimeTypeExpr(DateTimeInfo dateTimeInfo, Config config);
 
     abstract String toTypeExpression(ConcreteTypeInfo typeInfo, String defaultExpr);
@@ -51,13 +56,14 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
             } else {
                 exprBuilder.append(toTypeExpression(concreteTypeInfo, concreteTypeInfo.simpleName()));
                 if (!concreteTypeInfo.typeArgs().isEmpty()) {
-                    exprBuilder.append("<");
+                    TypeArgsSpec typeArgsSpec = typeArgsSpec(concreteTypeInfo);
+                    exprBuilder.append(typeArgsSpec.prefix);
                     for (TypeInfo typeArg : concreteTypeInfo.typeArgs()) {
                         buildTypeExprRecursively(typeArg, exprBuilder, contextTypeDef, config);
-                        exprBuilder.append(", ");
+                        exprBuilder.append(typeArgsSpec.delimiter);
                     }
-                    exprBuilder.setLength(exprBuilder.length() - 2);
-                    exprBuilder.append(">");
+                    exprBuilder.setLength(exprBuilder.length() - typeArgsSpec.delimiter.length());
+                    exprBuilder.append(typeArgsSpec.suffix);
                 }
             }
         } else if (typeInfo instanceof TypeVariableInfo) {

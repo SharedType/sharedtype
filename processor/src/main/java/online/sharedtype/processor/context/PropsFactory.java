@@ -71,6 +71,7 @@ public final class PropsFactory {
                 .build())
             .go(Props.Go.builder()
                 .outputFileName(properties.getProperty("sharedtype.go.output-file-name"))
+                .outputFilePackageName(properties.getProperty("sharedtype.go.output-file-package-name"))
                 .javaObjectMapType(properties.getProperty("sharedtype.go.java-object-map-type"))
                 .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.go.target-datetime-type"))
                 .typeMappings(parseMap(properties, "sharedtype.go.type-mappings"))

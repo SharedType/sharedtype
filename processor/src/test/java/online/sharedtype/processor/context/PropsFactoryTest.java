@@ -59,6 +59,7 @@ final class PropsFactoryTest {
 
         Props.Go goProps = props.getGo();
         assertThat(goProps.getOutputFileName()).isEqualTo("types.go");
+        assertThat(goProps.getOutputFilePackageName()).isEqualTo("sharedtype");
         assertThat(goProps.getJavaObjectMapType()).isEqualTo("any");
         assertThat(goProps.getTargetDatetimeTypeLiteral()).isEqualTo("string");
         assertThat(goProps.getTypeMappings()).isEmpty();

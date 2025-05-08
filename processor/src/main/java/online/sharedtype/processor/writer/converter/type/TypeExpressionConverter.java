@@ -36,4 +36,11 @@ public interface TypeExpressionConverter {
         final String delimiter;
         final String suffix;
     }
+
+    @RequiredArgsConstructor
+    final class TypeArgsSpec {
+        final String prefix;
+        final String delimiter;
+        final String suffix;
+    }
 }

@@ -31,15 +31,6 @@ final class TypescriptInterfaceConverter extends AbstractStructTemplateDataConve
     }
 
     @Override
-    public boolean shouldAccept(TypeDef typeDef) {
-        if (!super.shouldAccept(typeDef)) {
-            return false;
-        }
-        ClassDef classDef = (ClassDef) typeDef;
-        return  !classDef.components().isEmpty() || classDef.isDepended();
-    }
-
-    @Override
     public Tuple<Template, Object> convert(TypeDef typeDef) {
         ClassDef classDef = (ClassDef) typeDef;
         Config config = ctx.getTypeStore().getConfig(typeDef);
