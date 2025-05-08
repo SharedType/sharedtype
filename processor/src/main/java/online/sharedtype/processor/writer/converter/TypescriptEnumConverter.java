@@ -15,12 +15,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-final class TypescriptEnumConverter implements TemplateDataConverter {
+final class TypescriptEnumConverter extends AbstractEnumTemplateDataConverter {
     private final Context ctx;
-    @Override
-    public boolean shouldAccept(TypeDef typeDef) {
-        return typeDef instanceof EnumDef && !((EnumDef) typeDef).components().isEmpty();
-    }
 
     @Override
     public Tuple<Template, Object> convert(TypeDef typeDef) {

@@ -22,20 +22,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-final class RustStructConverter implements TemplateDataConverter {
+final class RustStructConverter extends AbstractStructTemplateDataConverter {
     private final Context ctx;
     private final TypeExpressionConverter typeExpressionConverter;
     private final RustMacroTraitsGenerator rustMacroTraitsGenerator;
 
     @Override
     public boolean shouldAccept(TypeDef typeDef) {
-        if (!(typeDef instanceof ClassDef)) {
+        if (!super.shouldAccept(typeDef)) {
             return false;
         }
         ClassDef classDef = (ClassDef) typeDef;
-        if (classDef.isMapType()) {
-            return false;
-        }
         if (classDef.isAnnotated()) {
             return !classDef.components().isEmpty();
         }

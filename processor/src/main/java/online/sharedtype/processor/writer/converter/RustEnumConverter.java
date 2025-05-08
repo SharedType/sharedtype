@@ -18,14 +18,9 @@ import java.util.Objects;
 import java.util.Set;
 
 @RequiredArgsConstructor
-final class RustEnumConverter implements TemplateDataConverter {
+final class RustEnumConverter extends AbstractEnumTemplateDataConverter {
     private final TypeExpressionConverter typeExpressionConverter;
     private final RustMacroTraitsGenerator rustMacroTraitsGenerator;
-
-    @Override
-    public boolean shouldAccept(TypeDef typeDef) {
-        return typeDef instanceof EnumDef && !((EnumDef) typeDef).components().isEmpty();
-    }
 
     @Override
     public Tuple<Template, Object> convert(TypeDef typeDef) {
