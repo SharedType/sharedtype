@@ -19,7 +19,7 @@ import static online.sharedtype.processor.context.Props.Typescript.OptionalField
 import static online.sharedtype.processor.context.Props.Typescript.OptionalFieldFormat.QUESTION_MARK;
 import static online.sharedtype.processor.context.Props.Typescript.OptionalFieldFormat.UNDEFINED;
 
-final class TypescriptInterfaceConverter extends AbstractStructTemplateDataConverter {
+final class TypescriptInterfaceConverter extends AbstractStructConverter {
     private final Context ctx;
     private final TypeExpressionConverter typeExpressionConverter;
     private final char interfacePropertyDelimiter;

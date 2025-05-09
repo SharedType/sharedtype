@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-final class TypescriptEnumConverter extends AbstractEnumTemplateDataConverter {
+final class TypescriptEnumConverter extends AbstractEnumConverter {
     private final Context ctx;
 
     @Override

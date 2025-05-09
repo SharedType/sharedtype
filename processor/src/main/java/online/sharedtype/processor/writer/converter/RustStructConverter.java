@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-final class RustStructConverter extends AbstractStructTemplateDataConverter {
+final class RustStructConverter extends AbstractStructConverter {
     private final Context ctx;
     private final TypeExpressionConverter typeExpressionConverter;
     private final RustMacroTraitsGenerator rustMacroTraitsGenerator;

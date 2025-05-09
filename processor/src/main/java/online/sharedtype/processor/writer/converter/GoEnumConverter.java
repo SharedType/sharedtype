@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-final class GoEnumTemplateDataConverter extends AbstractEnumTemplateDataConverter {
+final class GoEnumConverter extends AbstractEnumConverter {
     private final TypeExpressionConverter typeExpressionConverter;
     @Override
     public Tuple<Template, Object> convert(TypeDef typeDef) {

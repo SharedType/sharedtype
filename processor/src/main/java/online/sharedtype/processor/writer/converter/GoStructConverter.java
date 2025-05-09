@@ -3,7 +3,6 @@ package online.sharedtype.processor.writer.converter;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.def.TypeDef;
@@ -16,8 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-final class GoStructTemplateDataConverter extends AbstractStructTemplateDataConverter {
-    private final Context ctx;
+final class GoStructConverter extends AbstractStructConverter {
     private final TypeExpressionConverter typeExpressionConverter;
 
     @Override
@@ -26,6 +24,7 @@ final class GoStructTemplateDataConverter extends AbstractStructTemplateDataConv
         StructExpr value = new StructExpr(
             classDef.simpleName(),
             classDef.typeVariables().stream().map(typeInfo -> typeExpressionConverter.toTypeExpr(typeInfo, typeDef)).collect(Collectors.toList()),
+            classDef.directSupertypes().stream().map(typeInfo1 -> typeExpressionConverter.toTypeExpr(typeInfo1, typeDef)).collect(Collectors.toList()),
             gatherProperties(classDef)
         );
         return Tuple.of(Template.TEMPLATE_GO_STRUCT, value);
@@ -52,6 +51,7 @@ final class GoStructTemplateDataConverter extends AbstractStructTemplateDataConv
     static final class StructExpr {
         final String name;
         final List<String> typeParameters;
+        final List<String> supertypes;
         final List<PropertyExpr> properties;
 
         String typeParametersExpr() {

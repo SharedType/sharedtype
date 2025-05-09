@@ -1,4 +1,7 @@
 type {{name}}{{typeParametersExpr}} struct {
+{{#supertypes}}
+    {{.}}
+{{/supertypes}}
 {{#properties}}
     {{name}} {{{typeExpr}}}
 {{/properties}}

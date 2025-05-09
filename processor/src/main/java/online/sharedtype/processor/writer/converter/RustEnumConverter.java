@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @RequiredArgsConstructor
-final class RustEnumConverter extends AbstractEnumTemplateDataConverter {
+final class RustEnumConverter extends AbstractEnumConverter {
     private final TypeExpressionConverter typeExpressionConverter;
     private final RustMacroTraitsGenerator rustMacroTraitsGenerator;
 

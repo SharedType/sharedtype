@@ -27,8 +27,8 @@ public interface TemplateDataConverter {
     static Set<TemplateDataConverter> go(Context ctx) {
         Set<TemplateDataConverter> converters = new HashSet<>(3);
         TypeExpressionConverter typeExpressionConverter = TypeExpressionConverter.go(ctx);
-        converters.add(new GoStructTemplateDataConverter(ctx, typeExpressionConverter));
-        converters.add(new GoEnumTemplateDataConverter(typeExpressionConverter));
+        converters.add(new GoStructConverter(typeExpressionConverter));
+        converters.add(new GoEnumConverter(typeExpressionConverter));
         return converters;
     }
 
