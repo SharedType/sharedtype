@@ -69,7 +69,7 @@ import java.lang.annotation.Target;
  * Enums are emitted as below:
  * <ul>
  *     <li>Typescript: type union or enum. For simple enums, values are enum constants' names.</li>
- *     <li>Go: const (no namespace, so potential name conflict across enums) or var struct. </li>
+ *     <li>Go: const (no namespace, so potential name conflict across enums) or var struct (namespace suffixed with 'Enums'). </li>
  *     <li>Rust: plain enum for simple enums; impl a const fun {@code value()} for custom enum values.</li>
  * </ul>
  * See {@link EnumValue} for how to mark an enum value.

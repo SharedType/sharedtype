@@ -42,7 +42,7 @@ final class GoStructConverter extends AbstractStructConverter {
         return new PropertyExpr(
             ConversionUtils.capitalize(field.name()),
             typeExpressionConverter.toTypeExpr(field.type(), contextTypeDef),
-            ConversionUtils.isOfCyclicReferencedType(field)
+            ConversionUtils.isOptionalField(field)
         );
     }
 
@@ -69,10 +69,10 @@ final class GoStructConverter extends AbstractStructConverter {
     static final class PropertyExpr {
         final String name;
         final String type;
-        final boolean cyclicReferenced;
+        final boolean optional;
 
         String typeExpr() {
-            if (cyclicReferenced) {
+            if (optional) {
                 return String.format("*%s", type);
             }
             return type;

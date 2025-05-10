@@ -5,7 +5,8 @@ import online.sharedtype.SharedType;
 
 @SharedType(
     rustMacroTraits = {"PartialEq", "Eq", "Hash", "serde::Serialize", "serde::Deserialize"},
-    typescriptEnumFormat = "const_enum"
+    typescriptEnumFormat = "const_enum",
+    goEnumFormat = "struct"
 )
 @RequiredArgsConstructor
 public enum EnumSize {

@@ -94,6 +94,7 @@ final class GoStructConverterTest {
         assertThat(prop1.name).isEqualTo("Field1");
         assertThat(prop1.type).isEqualTo("int32");
         assertThat(prop1.typeExpr()).isEqualTo("int32");
+        assertThat(prop1.optional).isFalse();
 
         GoStructConverter.PropertyExpr prop2 = model.properties.get(1);
         assertThat(prop2.name).isEqualTo("Field2");
@@ -103,6 +104,7 @@ final class GoStructConverterTest {
         assertThat(prop3.name).isEqualTo("Field3");
         assertThat(prop3.type).isEqualTo("RecursiveClass");
         assertThat(prop3.typeExpr()).isEqualTo("*RecursiveClass");
+        assertThat(prop3.optional).isTrue();
 
         GoStructConverter.PropertyExpr prop5 = model.properties.get(3);
         assertThat(prop5.name).isEqualTo("MapField");
