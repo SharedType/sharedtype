@@ -76,6 +76,25 @@ final class ConfigTest {
     }
 
     @Test
+    void parseGoEnumFormat() {
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.class, m -> when(m.goEnumFormat()).thenReturn("const"))
+            .element();
+        Config config = new Config(typeElement, ctxMocks.getContext());
+        assertThat(config.getGoEnumFormat()).isEqualTo(Props.Go.EnumFormat.CONST);
+    }
+
+    @Test
+    void invalidGoEnumFormat() {
+        var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.class, m -> when(m.goEnumFormat()).thenReturn("abc"))
+            .element();
+        assertThatThrownBy(() -> new Config(typeElement, ctxMocks.getContext()))
+            .isInstanceOf(SharedTypeException.class)
+            .hasMessageContaining("Invalid value for SharedType.goEnumFormat: 'abc', only 'const' or 'struct' is allowed.");
+    }
+
+    @Test
     void overrideTsFieldReadonly() {
         var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
             .withAnnotation(SharedType.class, m -> when(m.typescriptFieldReadonlyType()).thenReturn("all"))

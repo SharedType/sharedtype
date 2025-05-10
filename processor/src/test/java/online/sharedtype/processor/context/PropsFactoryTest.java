@@ -57,6 +57,15 @@ final class PropsFactoryTest {
         assertThat(typescriptProps.getTypeMappings()).isEmpty();
         assertThat(typescriptProps.getCustomCodePath()).isEqualTo("sharedtype-custom-code.ts");
 
+        Props.Go goProps = props.getGo();
+        assertThat(goProps.getOutputFileName()).isEqualTo("types.go");
+        assertThat(goProps.getOutputFilePackageName()).isEqualTo("sharedtype");
+        assertThat(goProps.getJavaObjectMapType()).isEqualTo("any");
+        assertThat(goProps.getTargetDatetimeTypeLiteral()).isEqualTo("string");
+        assertThat(goProps.getEnumFormat()).isEqualTo(Props.Go.EnumFormat.CONST);
+        assertThat(goProps.getTypeMappings()).isEmpty();
+        assertThat(goProps.getCustomCodePath()).isEqualTo("sharedtype-custom-code.go");
+
         Props.Rust rustProps = props.getRust();
         assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");
         assertThat(rustProps.isAllowDeadcode()).isEqualTo(true);

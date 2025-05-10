@@ -16,7 +16,7 @@ final class TypescriptTypeExpressionConverter extends AbstractTypeExpressionConv
     private static final ArraySpec ARRAY_SPEC = new ArraySpec("", "[]");
     private static final MapSpec DEFAULT_MAP_SPEC = new MapSpec("Record<", ", ", ">");
     private static final MapSpec ENUM_KEY_MAP_SPEC = new MapSpec("Partial<Record<", ", ", ">>");
-    final Map<TypeInfo, String> typeNameMappings = new HashMap<>(20);
+    final Map<TypeInfo, String> typeNameMappings = new HashMap<>(32);
 
     TypescriptTypeExpressionConverter(Context ctx) {
         super(ctx);

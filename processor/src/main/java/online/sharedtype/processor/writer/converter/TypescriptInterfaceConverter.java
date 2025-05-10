@@ -19,7 +19,7 @@ import static online.sharedtype.processor.context.Props.Typescript.OptionalField
 import static online.sharedtype.processor.context.Props.Typescript.OptionalFieldFormat.QUESTION_MARK;
 import static online.sharedtype.processor.context.Props.Typescript.OptionalFieldFormat.UNDEFINED;
 
-final class TypescriptInterfaceConverter implements TemplateDataConverter {
+final class TypescriptInterfaceConverter extends AbstractStructConverter {
     private final Context ctx;
     private final TypeExpressionConverter typeExpressionConverter;
     private final char interfacePropertyDelimiter;
@@ -28,18 +28,6 @@ final class TypescriptInterfaceConverter implements TemplateDataConverter {
         this.ctx = ctx;
         interfacePropertyDelimiter = ctx.getProps().getTypescript().getInterfacePropertyDelimiter();
         this.typeExpressionConverter = typeExpressionConverter;
-    }
-
-    @Override
-    public boolean shouldAccept(TypeDef typeDef) {
-        if (typeDef instanceof ClassDef) {
-            ClassDef classDef = (ClassDef) typeDef;
-            if (classDef.isMapType()) {
-                return false;
-            }
-            return !classDef.components().isEmpty() || classDef.isDepended();
-        }
-        return false;
     }
 
     @Override

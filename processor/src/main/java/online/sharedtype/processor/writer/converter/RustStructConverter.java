@@ -22,20 +22,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-final class RustStructConverter implements TemplateDataConverter {
+final class RustStructConverter extends AbstractStructConverter {
     private final Context ctx;
     private final TypeExpressionConverter typeExpressionConverter;
     private final RustMacroTraitsGenerator rustMacroTraitsGenerator;
 
     @Override
     public boolean shouldAccept(TypeDef typeDef) {
-        if (!(typeDef instanceof ClassDef)) {
+        if (!super.shouldAccept(typeDef)) {
             return false;
         }
         ClassDef classDef = (ClassDef) typeDef;
-        if (classDef.isMapType()) {
-            return false;
-        }
         if (classDef.isAnnotated()) {
             return !classDef.components().isEmpty();
         }
@@ -55,7 +52,7 @@ final class RustStructConverter implements TemplateDataConverter {
     }
 
     private List<PropertyExpr> gatherProperties(ClassDef classDef) {
-        List<PropertyExpr> properties = new ArrayList<>(); // TODO: init cap
+        List<PropertyExpr> properties = new ArrayList<>();
         Set<String> propertyNames = new HashSet<>();
         for (FieldComponentInfo component : classDef.components()) {
             properties.add(toPropertyExpr(component, classDef));

@@ -9,7 +9,7 @@ import java.util.Map;
 
 @UtilityClass
 final class RustTypeNameMappings {
-    private static final Map<TypeInfo, String> typeNameMappings = new HashMap<>(20);
+    private static final Map<TypeInfo, String> typeNameMappings = new HashMap<>(32);
     static {
         typeNameMappings.put(Constants.BOOLEAN_TYPE_INFO, "bool");
         typeNameMappings.put(Constants.BYTE_TYPE_INFO, "i8");

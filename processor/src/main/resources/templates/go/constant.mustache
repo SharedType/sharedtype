@@ -1,0 +1,9 @@
+var {{name}} = struct {
+{{#constants}}
+    {{name}} {{type}}
+{{/constants}}
+}{
+{{#constants}}
+    {{{value}}},
+{{/constants}}
+}

@@ -12,6 +12,10 @@ public interface TypeExpressionConverter {
         return new TypescriptTypeExpressionConverter(ctx);
     }
 
+    static TypeExpressionConverter go(Context ctx) {
+        return new GoTypeExpressionConverter(ctx);
+    }
+
     static TypeExpressionConverter rust(Context ctx) {
         return new RustTypeExpressionConverter(ctx);
     }
@@ -28,6 +32,13 @@ public interface TypeExpressionConverter {
 
     @RequiredArgsConstructor
     final class MapSpec {
+        final String prefix;
+        final String delimiter;
+        final String suffix;
+    }
+
+    @RequiredArgsConstructor
+    final class TypeArgsSpec {
         final String prefix;
         final String delimiter;
         final String suffix;

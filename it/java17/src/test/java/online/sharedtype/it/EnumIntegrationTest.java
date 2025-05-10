@@ -112,7 +112,7 @@ final class EnumIntegrationTest {
 
         EnumValueInfo constant1 = enumDef.components().get(0);
         assertThat(constant1.value().getValue()).isEqualTo("Andromeda");
-        assertThat(constant1.value().getEnumConstantName()).isEqualTo("ReferenceAnother");
+        assertThat(constant1.value().getEnumConstantName()).isEqualTo("ReferenceAnother1");
         var constant1TypeInfo = (ConcreteTypeInfo)constant1.value().getValueType();
         assertThat(constant1TypeInfo.qualifiedName()).isEqualTo("online.sharedtype.it.java8.EnumGalaxy");
     }

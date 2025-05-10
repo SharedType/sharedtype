@@ -24,6 +24,15 @@ public interface TemplateDataConverter {
         return converters;
     }
 
+    static Set<TemplateDataConverter> go(Context ctx) {
+        Set<TemplateDataConverter> converters = new HashSet<>(3);
+        TypeExpressionConverter typeExpressionConverter = TypeExpressionConverter.go(ctx);
+        converters.add(new GoStructConverter(typeExpressionConverter));
+        converters.add(new GoEnumConverter(ctx, typeExpressionConverter));
+        converters.add(new ConstantConverter(ctx, typeExpressionConverter, OutputTarget.GO));
+        return converters;
+    }
+
     static Set<TemplateDataConverter> rust(Context ctx) {
         RustMacroTraitsGenerator rustMacroTraitsGenerator = new RustMacroTraitsGeneratorImpl(ctx);
         TypeExpressionConverter rustTypeExpressionConverter = TypeExpressionConverter.rust(ctx);

@@ -51,13 +51,11 @@ final class RustStructConverterTest {
 
     @Test
     void shouldAcceptClassDefAnnotated() {
+        var components = List.of(FieldComponentInfo.builder().build());
         assertThat(converter.shouldAccept(ClassDef.builder().build())).isFalse();
-        assertThat(converter.shouldAccept(ClassDef.builder().annotated(true).components(
-            List.of(FieldComponentInfo.builder().build())
-        ).build())).isTrue();
-        assertThat(converter.shouldAccept(ClassDef.builder().referencedByAnnotated(true).build())).isTrue();
+        assertThat(converter.shouldAccept(ClassDef.builder().annotated(true).components(components).build())).isTrue();
+        assertThat(converter.shouldAccept(ClassDef.builder().referencedByAnnotated(true).depended(true).build())).isTrue();
     }
-
 
     @Test
     void convert() {

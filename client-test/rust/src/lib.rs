@@ -141,7 +141,7 @@ mod tests {
         assert_eq!(EnumConstReference::ReferenceConstantInOther.value(), 999);
         assert_eq!(EnumConstReference::ReferenceConstantLocally.value(), 156);
         assert_eq!(EnumEnumReference::ReferenceAnother.value(), 3);
-        assert_eq!(EnumSimpleEnumReference::ReferenceAnother.value(), EnumGalaxy::Andromeda);
+        assert_eq!(EnumSimpleEnumReference::ReferenceAnother1.value(), EnumGalaxy::Andromeda);
         assert_eq!(EnumEnumEnumReference::ReferenceAnother2.value(), EnumGalaxy::Andromeda);
     }
 }

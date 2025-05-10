@@ -13,6 +13,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @SetSystemProperty(key = "sharedtype.typescript.type-mappings", value = "a.b.MyDateTime:MyString")
+@SetSystemProperty(key = "sharedtype.go.type-mappings", value = "a.b.MyDateTime:MyStringG")
 @SetSystemProperty(key = "sharedtype.rust.type-mappings", value = "a.b.MyDateTime:MyStringR")
 final class MappableTypeInfoParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
@@ -29,6 +30,7 @@ final class MappableTypeInfoParserTest {
         var resTypeInfo = parser.parse(typeElement1.asType(), typeElement1);
         assertThat(resTypeInfo).isSameAs(dateTimeInfo);
         assertThat(dateTimeInfo.mappedNameOrDefault(TargetCodeType.TYPESCRIPT, "DefaultName")).isEqualTo("MyString");
+        assertThat(dateTimeInfo.mappedNameOrDefault(TargetCodeType.GO, "DefaultName")).isEqualTo("MyStringG");
         assertThat(dateTimeInfo.mappedNameOrDefault(TargetCodeType.RUST, "DefaultName")).isEqualTo("MyStringR");
     }
 }

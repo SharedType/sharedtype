@@ -18,7 +18,7 @@ export interface User {
     email: string;
 }
 ```
-Go (Planed):
+Go:
 ```golang
 type User struct {
     Name string

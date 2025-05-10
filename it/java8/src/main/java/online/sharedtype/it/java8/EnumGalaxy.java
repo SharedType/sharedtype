@@ -33,7 +33,7 @@ enum EnumEnumReference {
 @RequiredArgsConstructor
 @SharedType
 enum EnumSimpleEnumReference {
-    ReferenceAnother(EnumGalaxy.Andromeda),
+    ReferenceAnother1(EnumGalaxy.Andromeda),
     ;
     @SharedType.EnumValue
     private final EnumGalaxy enumValue;
@@ -42,7 +42,7 @@ enum EnumSimpleEnumReference {
 @RequiredArgsConstructor
 @SharedType
 enum EnumEnumEnumReference {
-    ReferenceAnother2(EnumSimpleEnumReference.ReferenceAnother),
+    ReferenceAnother2(EnumSimpleEnumReference.ReferenceAnother1),
     ;
     @SharedType.EnumValue
     private final EnumSimpleEnumReference enumValue;

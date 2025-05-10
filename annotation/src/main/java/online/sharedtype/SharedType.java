@@ -59,8 +59,9 @@ import java.lang.annotation.Target;
  * <p>
  * <b>Cyclic Reference:</b>
  * <ul>
- *     <li>Typescript: Cyclic referenced field will be optional.</li>
- *     <li>Rust: Cyclic references will be wrapped in {@code Option<Box<T>>}.</li>
+ *     <li>Typescript: optional.</li>
+ *     <li>Go: pointer.</li>
+ *     <li>Rust: wrapped in {@code Option<Box<T>>}.</li>
  * </ul>
  *
  * <p>
@@ -68,6 +69,7 @@ import java.lang.annotation.Target;
  * Enums are emitted as below:
  * <ul>
  *     <li>Typescript: type union or enum. For simple enums, values are enum constants' names.</li>
+ *     <li>Go: const (no namespace, so potential name conflict across enums) or var struct (namespace suffixed with 'Enums'). </li>
  *     <li>Rust: plain enum for simple enums; impl a const fun {@code value()} for custom enum values.</li>
  * </ul>
  * See {@link EnumValue} for how to mark an enum value.
@@ -95,6 +97,7 @@ import java.lang.annotation.Target;
  * Iterables and arrays are treated as arrays and, by default, are mapped to:
  * <ul>
  *     <li>Typescript: {@code T[]}</li>
+ *     <li>Go: {@code []T}</li>
  *     <li>Rust: {@code Vec<T>}</li>
  * </ul>
  *
@@ -106,6 +109,7 @@ import java.lang.annotation.Target;
  * E.g. a type {@code Optional<Optional<List<Optional<String>>>} can be emitted as:
  * <ul>
  *     <li>Typescript: {@code String[] | undefined}</li>
+ *     <li>Go: pointers</li>
  *     <li>Rust: {@code Option<Vec<String>>}</li>
  * </ul>
  *
@@ -115,6 +119,7 @@ import java.lang.annotation.Target;
  * Custom map types are supported, e.g. a class that extends HashMap. But the type itself is treated as a mapType, so its structure will not be emitted.
  * <ul>
  *     <li>Typescript: e.g. {@code Record<string, T>} where {@code T} can be a reified type. If the key is enum, it will be a {@code Partial<Record<?, ?>>}</li>
+ *     <li>Go: e.g. {@code map[string]T}</li>
  *     <li>Rust: e.g. {@code HashMap<String, T>}, {@code HashMap<EnumType, T>}</li>
  * </ul>
  *
@@ -249,6 +254,18 @@ public @interface SharedType {
      * @return any literal, e.g. "string", "Date". When empty, fallback to global default.
      */
     String typescriptTargetDatetimeTypeLiteral() default "";
+
+    /**
+     * Type literal to be emitted for date/time types. How a java type is considered a date/time type is defined by global properties.
+     * @return any literal, e.g. "string", "Date". When empty, fallback to global default.
+     */
+    String goTargetDatetimeTypeLiteral() default "";
+
+    /**
+     * Format of enum in Go.
+     * @return "const" or "struct". If empty, fallback to global default.
+     */
+    String goEnumFormat() default "";
 
     /**
      * Mark a method as an accessor regardless of its name.

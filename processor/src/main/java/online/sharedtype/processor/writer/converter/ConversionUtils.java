@@ -14,6 +14,13 @@ final class ConversionUtils {
         return CAMEL_CASE_PATTERN.matcher(camelCase).replaceAll("$1_$2").toLowerCase();
     }
 
+    static String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
     static boolean isOptionalField(FieldComponentInfo field) {
         if (field.optional()) {
             return true;

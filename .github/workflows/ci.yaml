@@ -111,6 +111,13 @@ jobs:
         working-directory: client-test/rust
         run: cargo test
 
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.24
+      - name: Test Golang
+        working-directory: client-test/go
+        run: go get && go test
+
 #  clean-artifact:
 #    needs: [ jdk_compatibility_test, client_test ]
 #    runs-on: ubuntu-latest

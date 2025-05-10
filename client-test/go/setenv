@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PATH=$GO_HOME/bin:$PATH
+go version
+
