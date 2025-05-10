@@ -11,7 +11,9 @@ import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter
 import online.sharedtype.processor.writer.render.Template;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -40,7 +42,7 @@ final class GoStructConverter extends AbstractStructConverter {
 
     private PropertyExpr toPropertyExpr(FieldComponentInfo field, TypeDef contextTypeDef) {
         return new PropertyExpr(
-            ConversionUtils.capitalize(field.name()),
+            field.name(),
             typeExpressionConverter.toTypeExpr(field.type(), contextTypeDef),
             ConversionUtils.isOptionalField(field)
         );
@@ -71,11 +73,24 @@ final class GoStructConverter extends AbstractStructConverter {
         final String type;
         final boolean optional;
 
+        String capitalizedName() {
+            return ConversionUtils.capitalize(name);
+        }
+
         String typeExpr() {
             if (optional) {
                 return String.format("*%s", type);
             }
             return type;
+        }
+
+        String tagsExpr() {
+            Set<String> jsonTags = new HashSet<>(2);
+            jsonTags.add(name);
+            if (optional) {
+                jsonTags.add("omitempty");
+            }
+            return String.format("json:\"%s\"", String.join(",", jsonTags));
         }
     }
 }

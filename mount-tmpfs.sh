@@ -16,6 +16,7 @@ function mountTmpfs() {
   echo "tmpfs mounted at $1 of size $2"
 }
 
+mountTmpfs "$DIR/target" 8M
 mountTmpfs "$DIR/annotation/target" 32M
 mountTmpfs "$DIR/processor/target" 64M
 mountTmpfs "$DIR/it/java17/target" 64M

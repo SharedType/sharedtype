@@ -116,7 +116,7 @@ jobs:
           go-version: 1.24
       - name: Test Golang
         working-directory: client-test/go
-        run: go get && go test
+        run: go get && go test $(go list ./...)
 
 #  clean-artifact:
 #    needs: [ jdk_compatibility_test, client_test ]

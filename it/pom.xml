@@ -123,6 +123,10 @@
                                     <value>it/custom-code.ts</value>
                                 </property>
                                 <property>
+                                    <name>sharedtype.go.custom-code-path</name>
+                                    <value>it/custom-code.go</value>
+                                </property>
+                                <property>
                                     <name>sharedtype.rust.custom-code-path</name>
                                     <value>it/custom-code.rs</value>
                                 </property>
@@ -143,6 +147,9 @@
                 <module>java8</module>
                 <module>java17</module>
             </modules>
+            <properties>
+                <tests.excluded>**/e2e/*Test.java</tests.excluded>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -175,8 +182,23 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>${tests.excluded}</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>e2e-test</id>
+            <properties>
+                <tests.excluded>**/it/*Test.java</tests.excluded>
+            </properties>
         </profile>
     </profiles>
 </project>

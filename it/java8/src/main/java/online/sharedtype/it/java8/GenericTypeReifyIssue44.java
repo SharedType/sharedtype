@@ -18,7 +18,7 @@ public class GenericTypeReifyIssue44 {
     }
 
     @SharedType
-    static class SubtypeWithString implements GenericInterface<String> {
+    public static class SubtypeWithString implements GenericInterface<String> {
         @Override
         public String getValue() {
             return "Generic type reified as String";
