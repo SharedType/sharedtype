@@ -103,3 +103,5 @@ You have to execute the annotation processing on the same classpath with source 
 For multiple module builds, a workaround is to execute on every module.
 * Non-static inner classes are not supported. Instance class may refer to its enclosing class's generic type without the type declaration on its own,
 which could break the generated code. Later version of SharedType may loosen this limitation.
+* Although SharedType does not depend on any serialization format, it assumes the contract of JSON.
+That means a client can use any format of serializations, but may not exceed JSON capacity.
