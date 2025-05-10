@@ -22,6 +22,7 @@ public final class Template {
     public static final Template TEMPLATE_GO_HEADER = new Template(OutputTarget.GO, "header");
     public static final Template TEMPLATE_GO_STRUCT = new Template(OutputTarget.GO, "struct");
     public static final Template TEMPLATE_GO_CONST_ENUM = new Template(OutputTarget.GO, "const-enum");
+    public static final Template TEMPLATE_GO_STRUCT_ENUM = new Template(OutputTarget.GO, "struct-enum");
 
     private final OutputTarget outputTarget;
     private final String resourcePath;

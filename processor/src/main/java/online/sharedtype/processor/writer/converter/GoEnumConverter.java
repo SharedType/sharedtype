@@ -1,6 +1,8 @@
 package online.sharedtype.processor.writer.converter;
 
 import lombok.RequiredArgsConstructor;
+import online.sharedtype.processor.context.Config;
+import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.def.TypeDef;
@@ -13,8 +15,13 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static online.sharedtype.processor.context.Props.Go.EnumFormat.CONST;
+import static online.sharedtype.processor.writer.render.Template.TEMPLATE_GO_CONST_ENUM;
+import static online.sharedtype.processor.writer.render.Template.TEMPLATE_GO_STRUCT_ENUM;
+
 @RequiredArgsConstructor
 final class GoEnumConverter extends AbstractEnumConverter {
+    private final Context ctx;
     private final TypeExpressionConverter typeExpressionConverter;
     @Override
     public Tuple<Template, Object> convert(TypeDef typeDef) {
@@ -27,7 +34,9 @@ final class GoEnumConverter extends AbstractEnumConverter {
             enumDef.components().stream().map(comp -> buildEnumExpr(comp, enumDef.simpleName())).collect(Collectors.toList()),
             valueType
         );
-        return Tuple.of(Template.TEMPLATE_GO_CONST_ENUM, value);
+
+        Config config = ctx.getTypeStore().getConfig(typeDef);
+        return Tuple.of(config.getGoEnumFormat() == CONST ? TEMPLATE_GO_CONST_ENUM : TEMPLATE_GO_STRUCT_ENUM, value);
     }
 
     private static EnumerationExpr buildEnumExpr(EnumValueInfo component, String valueTypeExpr) {
@@ -59,7 +68,7 @@ final class GoEnumConverter extends AbstractEnumConverter {
     @RequiredArgsConstructor
     static final class EnumerationExpr {
         final String name;
-        final String valueType;
+        final String enumName;
         @Nullable
         final String value;
     }

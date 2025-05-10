@@ -91,8 +91,17 @@ public final class Props {
         private final String outputFilePackageName;
         private final String javaObjectMapType;
         private final String targetDatetimeTypeLiteral;
+        private final EnumFormat enumFormat;
         private final Map<String, String> typeMappings;
         private final String customCodePath;
+
+        public enum EnumFormat {
+            CONST, STRUCT,
+            ;
+            public static EnumFormat fromString(String value) {
+                return EnumFormat.valueOf(value.toUpperCase());
+            }
+        }
     }
 
     @Builder(access = AccessLevel.PACKAGE)

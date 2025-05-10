@@ -1,0 +1,10 @@
+type {{name}} = {{valueType}}
+var {{name}} = struct {
+{{#enumerations}}
+    {{name}} {{enumName}}
+{{/enumerations}}
+}{
+{{#enumerations}}
+    {{{value}}},
+{{/enumerations}}
+}

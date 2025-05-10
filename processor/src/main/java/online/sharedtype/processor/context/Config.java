@@ -31,6 +31,7 @@ public final class Config {
     private final Set<Props.Typescript.OptionalFieldFormat> typescriptOptionalFieldFormats;
     private final Props.Typescript.EnumFormat typescriptEnumFormat;
     private final Props.Typescript.FieldReadonlyType typescriptFieldReadonly;
+    private final Props.Go.EnumFormat goEnumFormat;
     private final String typescriptTargetDatetimeTypeLiteral;
     private final String goTargetDatetimeTypeLiteral;
     private final String rustTargetDatetimeTypeLiteral;
@@ -57,6 +58,7 @@ public final class Config {
         typescriptOptionalFieldFormats = parseTsOptionalFieldFormats(anno, ctx);
         typescriptEnumFormat = parseTsEnumFormat(anno, ctx);
         typescriptFieldReadonly = parseTsFieldReadonlyType(anno, ctx);
+        goEnumFormat = parseGoEnumFormat(anno, ctx);
         typescriptTargetDatetimeTypeLiteral = notEmptyOrDefault(
             anno.typescriptTargetDatetimeTypeLiteral(),
             ctx.getProps().getTypescript().getTargetDatetimeTypeLiteral(),
@@ -127,5 +129,18 @@ public final class Config {
             }
         }
         return ctx.getProps().getTypescript().getFieldReadonlyType();
+    }
+
+    private Props.Go.EnumFormat parseGoEnumFormat(SharedType anno, Context ctx) {
+        if (anno.goEnumFormat() != null && !anno.goEnumFormat().isEmpty()) {
+            try {
+                return Props.Go.EnumFormat.fromString(anno.goEnumFormat());
+            } catch (IllegalArgumentException e) {
+                throw new SharedTypeException(String.format(
+                    "Invalid value for SharedType.goEnumFormat: '%s', only 'const' or 'struct' is allowed. " +
+                        "When parsing annotation for '%s'.", anno.goEnumFormat(), qualifiedName), e);
+            }
+        }
+        return ctx.getProps().getGo().getEnumFormat();
     }
 }

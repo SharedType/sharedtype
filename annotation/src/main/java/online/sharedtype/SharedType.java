@@ -69,7 +69,7 @@ import java.lang.annotation.Target;
  * Enums are emitted as below:
  * <ul>
  *     <li>Typescript: type union or enum. For simple enums, values are enum constants' names.</li>
- *     <li>Go: const (no namespace, so potential name conflict across enums). </li>
+ *     <li>Go: const (no namespace, so potential name conflict across enums) or var struct. </li>
  *     <li>Rust: plain enum for simple enums; impl a const fun {@code value()} for custom enum values.</li>
  * </ul>
  * See {@link EnumValue} for how to mark an enum value.
@@ -260,6 +260,12 @@ public @interface SharedType {
      * @return any literal, e.g. "string", "Date". When empty, fallback to global default.
      */
     String goTargetDatetimeTypeLiteral() default "";
+
+    /**
+     * Format of enum in Go.
+     * @return "const" or "struct". If empty, fallback to global default.
+     */
+    String goEnumFormat() default "";
 
     /**
      * Mark a method as an accessor regardless of its name.
