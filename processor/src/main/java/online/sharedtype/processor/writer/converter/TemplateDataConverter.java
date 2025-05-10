@@ -29,6 +29,7 @@ public interface TemplateDataConverter {
         TypeExpressionConverter typeExpressionConverter = TypeExpressionConverter.go(ctx);
         converters.add(new GoStructConverter(typeExpressionConverter));
         converters.add(new GoEnumConverter(ctx, typeExpressionConverter));
+        converters.add(new ConstantConverter(ctx, typeExpressionConverter, OutputTarget.GO));
         return converters;
     }
 

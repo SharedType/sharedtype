@@ -78,7 +78,7 @@ var MapClass1 = MapClass{
 		55: "abc",
 	},
 	NestedMapField: map[string]map[string]int32{
-		"M1": map[string]int32{
+		"M1": {
 			"V": 1,
 		},
 	},
