@@ -67,13 +67,7 @@
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-api</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-params</artifactId>
+                <artifactId>junit-jupiter</artifactId>
                 <version>${junit-jupiter.version}</version>
                 <scope>test</scope>
             </dependency>
@@ -269,6 +263,12 @@
                 <module>annotation</module>
                 <module>processor</module>
                 <module>it</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>e2e</id>
+            <modules>
+                <module>e2e</module>
             </modules>
         </profile>
         <profile>

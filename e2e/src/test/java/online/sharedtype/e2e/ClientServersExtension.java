@@ -16,7 +16,7 @@ final class ClientServersExtension implements TestInstancePreConstructCallback, 
 
     @Override
     public void preConstructTestInstance(TestInstanceFactoryContext testInstanceFactoryContext, ExtensionContext extensionContext) throws Exception {
-        ProcessBuilder builder = new ProcessBuilder("../../misc/start-client-servers.sh");
+        ProcessBuilder builder = new ProcessBuilder("../misc/start-client-servers.sh");
         builder.redirectErrorStream(true);
         System.out.println("Executing server starting script...");
         process = builder.start();
@@ -39,12 +39,12 @@ final class ClientServersExtension implements TestInstancePreConstructCallback, 
         var retryLeft = 10;
         while (retryLeft > 0) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
                 if (caller.isHealthy(TargetCodeType.GO)) {
                     return;
                 }
             } catch (Exception e) {
-                System.out.println("Error checking server health: " + e.getMessage());
+                System.out.println("Error checking server health: " + e);
                 System.out.println("Retrying...");
             }
             retryLeft--;

@@ -1,7 +1,6 @@
 package online.sharedtype.e2e;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.domain.TargetCodeType;
 
 import java.net.URI;
@@ -10,7 +9,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
 
-@RequiredArgsConstructor
 final class ObjectRemoteClientCaller {
     private static final Map<TargetCodeType, URI> endpoints = Map.of(
         TargetCodeType.TYPESCRIPT, URI.create("http://localhost:3000/"),

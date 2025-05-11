@@ -44,12 +44,7 @@
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -75,11 +70,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -152,9 +142,6 @@
                 <module>java8</module>
                 <module>java17</module>
             </modules>
-            <properties>
-                <tests.excluded>**/e2e/*Test.java</tests.excluded>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -187,23 +174,8 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <excludes>
-                                <exclude>${tests.excluded}</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>e2e</id>
-            <properties>
-                <tests.excluded>**/it/*Test.java</tests.excluded>
-            </properties>
         </profile>
     </profiles>
 </project>

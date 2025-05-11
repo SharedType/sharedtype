@@ -21,5 +21,6 @@ mountTmpfs "$DIR/annotation/target" 32M
 mountTmpfs "$DIR/processor/target" 64M
 mountTmpfs "$DIR/it/java17/target" 64M
 mountTmpfs "$DIR/it/java8/target" 64M
+mountTmpfs "$DIR/e2e/target" 64M
 mountTmpfs "$MAVEN_REPO_DIR" 64M
 mountTmpfs "$DIR/client-test/rust/target" 128M
