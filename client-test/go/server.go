@@ -58,6 +58,8 @@ func createStruct(typename string) any {
 		return &sharedtype.DependencyClassA{}
 	case "MapClass":
 		return &sharedtype.MapClass{}
+	case "ArrayClass":
+		return &sharedtype.ArrayClass{}
 	default:
 		return nil
 	}

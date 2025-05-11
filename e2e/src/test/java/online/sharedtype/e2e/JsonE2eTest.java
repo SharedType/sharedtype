@@ -1,5 +1,7 @@
 package online.sharedtype.e2e;
 
+import online.sharedtype.it.java8.ArrayClass;
+import online.sharedtype.it.java8.CustomList;
 import online.sharedtype.it.java8.CustomMap;
 import online.sharedtype.it.java8.DependencyClassA;
 import online.sharedtype.it.java8.DependencyClassB;
@@ -135,6 +137,16 @@ final class JsonE2eTest {
         obj.setNestedMapField(new HashMap<>());
         obj.getNestedMapField().put("foo", new HashMap<>());
         obj.getNestedMapField().get("foo").put("bar", 5);
+        var res = caller.call(obj, targetCodeType);
+        assertThat(res).isEqualTo(obj);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TargetCodeType.class, names = "GO")
+    void arrayClass(TargetCodeType targetCodeType) throws Exception {
+        var obj = new ArrayClass();
+        obj.setArr(new CustomList());
+        obj.getArr().add("foo");
         var res = caller.call(obj, targetCodeType);
         assertThat(res).isEqualTo(obj);
     }
