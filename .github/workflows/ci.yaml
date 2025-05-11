@@ -60,6 +60,7 @@ jobs:
           name: jars
           path: |
               ~/.m2/repository/online/sharedtype
+              ./it/java17/target
           if-no-files-found: error
           retention-days: 3
       - name: Remove jars from cache
@@ -118,16 +119,23 @@ jobs:
         run: cargo test
 
       - uses: actions/setup-go@v5
+        working-directory: client-test/go
         with:
-          go-version:
+          go-version: ${{env.GO_VERSION}}
       - name: Test Golang
         working-directory: client-test/go
         run: go get && go test ./...
 
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{env.JAVA_VERSION}}
       - uses: actions/download-artifact@v4
         with:
           name: jars
-          path: ~/.m2/repository/online/sharedtype
+          path: |
+            ~/.m2/repository/online/sharedtype
+            ./it/java17/target
       - name: E2E Test
         run: ./mvnw verify -pl it/java17 -Pe2e,it -e --ntp -B
 
