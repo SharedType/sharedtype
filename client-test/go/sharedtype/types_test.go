@@ -52,7 +52,7 @@ var dependencyClassA1 = &DependencyClassA{
 var Obj = JavaRecord[string]{
 	BoxedBoolean:                  false,
 	BoxedByte:                     0,
-	BoxedChar:                     'a',
+	BoxedChar:                     "a",
 	BoxedDouble:                   0,
 	BoxedFloat:                    0,
 	BoxedInt:                      0,
@@ -72,7 +72,7 @@ var Obj = JavaRecord[string]{
 	Object:                        nil,
 	PrimitiveBoolean:              false,
 	PrimitiveByte:                 0,
-	PrimitiveChar:                 'b',
+	PrimitiveChar:                 "b",
 	PrimitiveDouble:               0,
 	PrimitiveFloat:                0,
 	PrimitiveInt:                  0,

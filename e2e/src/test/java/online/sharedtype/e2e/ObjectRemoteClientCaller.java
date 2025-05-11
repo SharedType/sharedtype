@@ -1,10 +1,15 @@
 package online.sharedtype.e2e;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import online.sharedtype.processor.domain.TargetCodeType;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -21,6 +26,10 @@ final class ObjectRemoteClientCaller {
     private final ObjectMapper objectMapper = new ObjectMapper();
     {
         objectMapper.registerModules(new JavaTimeModule(), new Jdk8Module());
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(BigInteger.class, ToStringSerializer.instance);
+        module.addSerializer(BigDecimal.class, ToStringSerializer.instance);
+        objectMapper.registerModule(module);
     }
 
     <T> T call(T t, TargetCodeType targetCodeType) throws Exception {

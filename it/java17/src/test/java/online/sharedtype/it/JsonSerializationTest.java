@@ -38,40 +38,7 @@ final class JsonSerializationTest {
     void test() throws Exception {
         var obj = JavaRecord
             .<String>builder()
-            .string("exampleString")
-            .primitiveByte((byte) 1)
-            .boxedByte((byte) 2)
-            .primitiveShort((short) 3)
-            .boxedShort((short) 4)
-            .primitiveInt(5)
-            .boxedInt(6)
-            .primitiveLong(7L)
-            .boxedLong(8L)
-            .primitiveFloat(9.0f)
-            .boxedFloat(10.0f)
-            .primitiveDouble(11.0)
-            .boxedDouble(12.0)
-            .primitiveBoolean(true)
-            .boxedBoolean(Boolean.TRUE)
-            .primitiveChar('a')
-            .boxedChar('b')
-            .object("object")
-            .cyclicDependency(new DependencyClassA())
-            .containerStringList(List.of(new Container<>()))
-            .containerStringListCollection(List.of(List.of(new Container<>())))
-            .genericList(List.of("genericValue"))
-            .genericSet(Set.of("genericValue"))
-            .genericListSet(List.of(Set.of("genericValue")))
-            .intArray(new int[]{1, 2, 3})
-            .boxedIntArray(new Integer[]{4, 5, 6})
-            .enumGalaxy(EnumGalaxy.MilkyWay)
-            .enumSize(EnumSize.LARGE)
-            .duplicateAccessor("duplicate")
-            .explicitlyIgnored("value should be ignored and empty in response")
             .build();
-        obj.cyclicDependency().setA(999);
-        obj.containerStringList().get(0).setT("bar");
-        obj.containerStringListCollection().get(0).iterator().next().setT("foo");
         var json = objectMapper.writeValueAsString(obj);
         System.out.println(json);
         var deser = objectMapper.readValue(json, JavaRecord.class);

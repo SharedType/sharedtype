@@ -62,6 +62,8 @@ func createStruct(typename string) any {
 		return &sharedtype.ArrayClass{}
 	case "JavaRecord":
 		return &sharedtype.JavaRecord[any]{}
+	case "MathClass":
+		return &sharedtype.MathClass{}
 	default:
 		return nil
 	}

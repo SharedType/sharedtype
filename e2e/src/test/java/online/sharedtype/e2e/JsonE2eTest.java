@@ -14,7 +14,7 @@ import online.sharedtype.it.java8.GenericTypeReifyIssue44;
 import online.sharedtype.it.java8.JavaClass;
 import online.sharedtype.it.java8.JavaTimeClass;
 import online.sharedtype.it.java8.MapClass;
-import online.sharedtype.it.java8.OptionalMethod;
+import online.sharedtype.it.java8.MathClass;
 import online.sharedtype.processor.domain.TargetCodeType;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
@@ -24,16 +24,15 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -203,5 +202,15 @@ final class JsonE2eTest {
         assertThat(res).usingRecursiveComparison(RecursiveComparisonConfiguration.builder().withIgnoredFields("explicitlyIgnored").build())
             .isEqualTo(obj);
         assertThat(res.explicitlyIgnored()).isNull();
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TargetCodeType.class, names = "GO")
+    void mathClass(TargetCodeType targetCodeType) throws Exception {
+        var obj = new MathClass();
+        obj.setBigDecimal(new BigDecimal("1.2345"));
+        obj.setBigInteger(new BigInteger("123456789"));
+        var res = caller.call(obj, targetCodeType);
+        assertThat(res).isEqualTo(obj);
     }
 }
