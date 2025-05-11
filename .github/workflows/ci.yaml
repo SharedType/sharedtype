@@ -119,9 +119,9 @@ jobs:
         run: cargo test
 
       - uses: actions/setup-go@v5
-        working-directory: client-test/go
         with:
-          go-version: ${{env.GO_VERSION}}
+          cache-dependency-path: client-test/go/go.sum
+          go-version-file: client-test/go/go.mod
       - name: Test Golang
         working-directory: client-test/go
         run: go get && go test ./...
