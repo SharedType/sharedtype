@@ -1,5 +1,6 @@
 package online.sharedtype.e2e;
 
+import online.sharedtype.it.java8.CustomMap;
 import online.sharedtype.it.java8.DependencyClassA;
 import online.sharedtype.it.java8.DependencyClassB;
 import online.sharedtype.it.java8.DependencyClassC;
@@ -7,6 +8,8 @@ import online.sharedtype.it.java8.EnumSize;
 import online.sharedtype.it.java8.GenericTypeReifyIssue44;
 import online.sharedtype.it.java8.JavaClass;
 import online.sharedtype.it.java8.JavaTimeClass;
+import online.sharedtype.it.java8.MapClass;
+import online.sharedtype.it.java8.OptionalMethod;
 import online.sharedtype.processor.domain.TargetCodeType;
 import org.assertj.core.api.SoftAssertions;
 import org.awaitility.Awaitility;
@@ -20,6 +23,9 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,5 +120,22 @@ final class JsonE2eTest {
 
         var res = caller.call(objA, targetCodeType);
         assertThat(res).isEqualTo(objA);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TargetCodeType.class, names = "GO")
+    void mapClass(TargetCodeType targetCodeType) throws Exception {
+        var obj = new MapClass();
+        obj.setMapField(new ConcurrentHashMap<>());
+        obj.getMapField().put(5, "bar");
+        obj.setEnumKeyMapField(new HashMap<>());
+        obj.getEnumKeyMapField().put(EnumSize.LARGE, "bar3");
+        obj.setCustomMapField(new CustomMap());
+        obj.getCustomMapField().put(33, "bar22");
+        obj.setNestedMapField(new HashMap<>());
+        obj.getNestedMapField().put("foo", new HashMap<>());
+        obj.getNestedMapField().get("foo").put("bar", 5);
+        var res = caller.call(obj, targetCodeType);
+        assertThat(res).isEqualTo(obj);
     }
 }

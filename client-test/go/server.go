@@ -56,6 +56,8 @@ func createStruct(typename string) any {
 		return &sharedtype.SubtypeWithNestedCustomTypeString{}
 	case "DependencyClassA":
 		return &sharedtype.DependencyClassA{}
+	case "MapClass":
+		return &sharedtype.MapClass{}
 	default:
 		return nil
 	}
