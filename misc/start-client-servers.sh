@@ -1,4 +1,5 @@
 #!/bin/bash
+# this script is used by JsonE2eTest to spin up client servers
 
 if [ -e "$GO_HOME" ]; then
   export PATH=$GO_HOME/bin:$PATH

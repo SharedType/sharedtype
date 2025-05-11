@@ -24,13 +24,7 @@ func main() {
 
 func route(w http.ResponseWriter, r *http.Request) {
 	typeName := chi.URLParam(r, "typeName")
-	var res any
-	switch typeName {
-	case "SubtypeWithString":
-		res = &sharedtype.SubtypeWithString{}
-	case "JavaClass":
-		res = &sharedtype.JavaClass{}
-	}
+	res := createStruct(typeName)
 
 	if res == nil {
 		http.Error(w, fmt.Sprintf("Unknown typeName: %s", typeName), 400)
@@ -47,5 +41,16 @@ func route(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(res); err != nil {
 		http.Error(w, err.Error(), 500)
 		return
+	}
+}
+
+func createStruct(typename string) any {
+	switch typename {
+	case "SubtypeWithString":
+		return &sharedtype.SubtypeWithString{}
+	case "JavaClass":
+		return &sharedtype.JavaClass{}
+	default:
+		return nil
 	}
 }
