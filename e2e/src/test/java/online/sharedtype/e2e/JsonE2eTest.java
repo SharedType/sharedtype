@@ -1,11 +1,14 @@
 package online.sharedtype.e2e;
 
+import online.sharedtype.it.java17.JavaRecord;
 import online.sharedtype.it.java8.ArrayClass;
+import online.sharedtype.it.java8.Container;
 import online.sharedtype.it.java8.CustomList;
 import online.sharedtype.it.java8.CustomMap;
 import online.sharedtype.it.java8.DependencyClassA;
 import online.sharedtype.it.java8.DependencyClassB;
 import online.sharedtype.it.java8.DependencyClassC;
+import online.sharedtype.it.java8.EnumGalaxy;
 import online.sharedtype.it.java8.EnumSize;
 import online.sharedtype.it.java8.GenericTypeReifyIssue44;
 import online.sharedtype.it.java8.JavaClass;
@@ -14,6 +17,7 @@ import online.sharedtype.it.java8.MapClass;
 import online.sharedtype.it.java8.OptionalMethod;
 import online.sharedtype.processor.domain.TargetCodeType;
 import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
@@ -25,8 +29,12 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -37,11 +45,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <pre>
  * Java Objects =serialize=> JSON =deserialize=> Target Types instances =serialize=> JSON =deserialize=> Java Objects
  * </pre>
- *
+ * <p>
  * Call client language http servers and compare the response with request values.
  * Target language servers simply deserialize the request body and serialize again as the response body.
  * Target servers are implemented in "/client-test" directory.
  * To start the target servers, run "misc/start-client-servers.sh"
+ *
  * @author Cause Chung
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -149,5 +158,50 @@ final class JsonE2eTest {
         obj.getArr().add("foo");
         var res = caller.call(obj, targetCodeType);
         assertThat(res).isEqualTo(obj);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TargetCodeType.class, names = "GO")
+    void complexJavaRecord(TargetCodeType targetCodeType) throws Exception {
+        var obj = JavaRecord
+            .<String>builder()
+            .string("exampleString")
+            .primitiveByte((byte) 1)
+            .boxedByte((byte) 2)
+            .primitiveShort((short) 3)
+            .boxedShort((short) 4)
+            .primitiveInt(5)
+            .boxedInt(6)
+            .primitiveLong(7L)
+            .boxedLong(8L)
+            .primitiveFloat(9.0f)
+            .boxedFloat(10.0f)
+            .primitiveDouble(11.0)
+            .boxedDouble(12.0)
+            .primitiveBoolean(true)
+            .boxedBoolean(Boolean.TRUE)
+            .primitiveChar('a')
+            .boxedChar('b')
+            .object("object")
+            .cyclicDependency(new DependencyClassA())
+            .containerStringList(List.of(new Container<>()))
+            .containerStringListCollection(List.of(List.of(new Container<>())))
+            .genericList(List.of("genericValue"))
+            .genericSet(Set.of("genericValue"))
+            .genericListSet(List.of(Set.of("genericValue")))
+            .intArray(new int[]{1, 2, 3})
+            .boxedIntArray(new Integer[]{4, 5, 6})
+            .enumGalaxy(EnumGalaxy.MilkyWay)
+            .enumSize(EnumSize.LARGE)
+            .duplicateAccessor("duplicate")
+            .explicitlyIgnored("value should be ignored and empty in response")
+            .build();
+        obj.cyclicDependency().setA(999);
+        obj.containerStringList().get(0).setT("bar");
+        obj.containerStringListCollection().get(0).iterator().next().setT("foo");
+        var res = caller.call(obj, targetCodeType);
+        assertThat(res).usingRecursiveComparison(RecursiveComparisonConfiguration.builder().withIgnoredFields("explicitlyIgnored").build())
+            .isEqualTo(obj);
+        assertThat(res.explicitlyIgnored()).isNull();
     }
 }

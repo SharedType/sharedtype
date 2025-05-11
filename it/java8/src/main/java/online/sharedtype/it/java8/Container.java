@@ -1,10 +1,8 @@
 package online.sharedtype.it.java8;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public final class Container<T> {
     private T t;
 }
