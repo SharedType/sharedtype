@@ -14,7 +14,7 @@ final class JsonSerializationTest {
     }
 
     @Test
-    void jsonOptionalMethod() throws Exception{
+    void jsonOptionalMethod() throws Exception {
         var obj = new OptionalMethod();
         obj.setValue("value");
         var json = objectMapper.writeValueAsString(obj);

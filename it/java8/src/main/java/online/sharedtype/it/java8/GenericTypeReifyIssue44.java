@@ -1,5 +1,9 @@
 package online.sharedtype.it.java8;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
 
 /**
@@ -65,15 +69,18 @@ public class GenericTypeReifyIssue44 {
         }
     }
 
-    static final class CustomContainer<T> {
-        T value;
+    @Data
+    public static final class CustomContainer<T> {
+        private T value;
     }
 
+    @Data
     @SharedType
-    static class SubtypeWithNestedCustomTypeString implements GenericInterface<CustomContainer<String>>, GenericInterfaceNoNeedToImplement<CustomContainer<String>> {
+    public static class SubtypeWithNestedCustomTypeString implements GenericInterface<CustomContainer<String>>, GenericInterfaceNoNeedToImplement<CustomContainer<String>> {
+        private CustomContainer<String> value;
         @Override
         public CustomContainer<String> getValue() {
-            return null;
+            return value;
         }
     }
 

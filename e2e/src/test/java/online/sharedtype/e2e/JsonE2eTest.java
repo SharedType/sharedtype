@@ -1,6 +1,7 @@
 package online.sharedtype.e2e;
 
 import online.sharedtype.it.java8.EnumSize;
+import online.sharedtype.it.java8.GenericTypeReifyIssue44;
 import online.sharedtype.it.java8.JavaClass;
 import online.sharedtype.it.java8.JavaTimeClass;
 import online.sharedtype.processor.domain.TargetCodeType;
@@ -81,5 +82,16 @@ final class JsonE2eTest {
             softly.assertThat(res.getOffsetTime()).isEqualTo(obj.getOffsetTime());
             softly.assertThat(res.getZonedDateTime()).isEqualTo(obj.getZonedDateTime());
         });
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TargetCodeType.class, names = "GO")
+    void subtypeWithNestedCustomTypeString(TargetCodeType targetCodeType) throws Exception {
+        var obj = new GenericTypeReifyIssue44.SubtypeWithNestedCustomTypeString();
+        var value = new GenericTypeReifyIssue44.CustomContainer<String>();
+        value.setValue("foo");
+        obj.setValue(value);
+        var res = caller.call(obj, targetCodeType);
+        assertThat(res).isEqualTo(obj);
     }
 }
