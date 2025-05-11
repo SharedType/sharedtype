@@ -13,9 +13,13 @@ import (
 func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(`ok`))
+	})
 	r.Post("/{typeName}", route)
-	defer http.ListenAndServe(":3001", r)
 	fmt.Println("Server started on :3001, waiting for requests...")
+	http.ListenAndServe(":3001", r)
+	defer fmt.Println("Server stopped.")
 }
 
 func route(w http.ResponseWriter, r *http.Request) {

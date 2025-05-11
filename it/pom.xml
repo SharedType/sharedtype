@@ -77,6 +77,11 @@
             <artifactId>jackson-datatype-jdk8</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -195,7 +200,7 @@
             </build>
         </profile>
         <profile>
-            <id>e2e-test</id>
+            <id>e2e</id>
             <properties>
                 <tests.excluded>**/it/*Test.java</tests.excluded>
             </properties>
