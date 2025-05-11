@@ -15,8 +15,8 @@ final class ObjectRemoteClientCaller {
         TargetCodeType.GO, URI.create("http://localhost:3001/"),
         TargetCodeType.RUST, URI.create("http://localhost:3002/")
     );
-    private static final HttpClient client = HttpClient.newHttpClient();
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final HttpClient client = HttpClient.newHttpClient();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     <T> T call(T t, TargetCodeType targetCodeType) throws Exception {
         String simpleName = t.getClass().getSimpleName();

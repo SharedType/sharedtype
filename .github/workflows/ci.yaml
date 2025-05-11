@@ -137,7 +137,9 @@ jobs:
           name: jars
           path: ~/.m2/repository/online/sharedtype
       - name: E2E Test
-        run: ./mvnw verify -Pe2e -e --ntp -B
+        run: |
+          misc/start-client-servers.sh &
+          ./mvnw verify -Pe2e -e --ntp -B
 
 #  clean-artifact:
 #    needs: [ jdk_compatibility_test, client_test ]

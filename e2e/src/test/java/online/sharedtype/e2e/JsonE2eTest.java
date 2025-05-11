@@ -3,9 +3,13 @@ package online.sharedtype.e2e;
 import online.sharedtype.it.java8.EnumSize;
 import online.sharedtype.it.java8.JavaClass;
 import online.sharedtype.processor.domain.TargetCodeType;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,11 +22,17 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Call client language http servers and compare the response with request values.
  * Target language servers simply deserialize the request body and serialize again as the response body.
  * Target servers are implemented in "/client-test" directory.
+ * To start the target servers, run "misc/start-client-servers.sh"
  * @author Cause Chung
  */
-@ExtendWith(ClientServersExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class JsonE2eTest {
-    private static final ObjectRemoteClientCaller caller = new ObjectRemoteClientCaller();
+    private final ObjectRemoteClientCaller caller = new ObjectRemoteClientCaller();
+
+    @BeforeAll
+    void waitForServers() {
+        Awaitility.await().atMost(10, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).until(() -> caller.isHealthy(TargetCodeType.GO));
+    }
 
     @ParameterizedTest
     @EnumSource(value = TargetCodeType.class, names = "GO")
