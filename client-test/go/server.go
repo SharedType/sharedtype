@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -13,7 +14,7 @@ import (
 func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`ok`))
 	})
 	r.Post("/{typeName}", route)
@@ -33,6 +34,7 @@ func route(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(res); err != nil {
 		http.Error(w, err.Error(), 400)
+		slog.Error("Failed to decode request body", "error", err)
 		return
 	}
 
@@ -46,10 +48,12 @@ func route(w http.ResponseWriter, r *http.Request) {
 
 func createStruct(typename string) any {
 	switch typename {
-	case "SubtypeWithString":
-		return &sharedtype.SubtypeWithString{}
 	case "JavaClass":
 		return &sharedtype.JavaClass{}
+	case "JavaTimeClass":
+		return &sharedtype.JavaTimeClass{}
+	case "SubtypeWithNestedCustomTypeString":
+		return &sharedtype.SubtypeWithNestedCustomTypeString{}
 	default:
 		return nil
 	}

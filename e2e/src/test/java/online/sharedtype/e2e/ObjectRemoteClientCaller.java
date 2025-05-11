@@ -1,6 +1,8 @@
 package online.sharedtype.e2e;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import online.sharedtype.processor.domain.TargetCodeType;
 
 import java.net.URI;
@@ -17,11 +19,15 @@ final class ObjectRemoteClientCaller {
     );
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    {
+        objectMapper.registerModules(new JavaTimeModule(), new Jdk8Module());
+    }
 
     <T> T call(T t, TargetCodeType targetCodeType) throws Exception {
         String simpleName = t.getClass().getSimpleName();
         String json = objectMapper.writeValueAsString(t);
 
+        System.out.printf("Request[%s]: %s%n%n", t.getClass().getCanonicalName(), json);
         var req = HttpRequest.newBuilder()
             .header("Content-Type", "application/json")
             .uri(endpoints.get(targetCodeType).resolve(simpleName))
@@ -36,7 +42,7 @@ final class ObjectRemoteClientCaller {
 
     boolean isHealthy(TargetCodeType targetCodeType) throws Exception {
         var req = HttpRequest.newBuilder()
-            .uri(endpoints.get(targetCodeType))
+            .uri(endpoints.get(targetCodeType).resolve("health"))
             .build();
         var response = client.send(req, HttpResponse.BodyHandlers.ofString());
         var code = response.statusCode();
