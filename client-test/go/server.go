@@ -54,6 +54,8 @@ func createStruct(typename string) any {
 		return &sharedtype.JavaTimeClass{}
 	case "SubtypeWithNestedCustomTypeString":
 		return &sharedtype.SubtypeWithNestedCustomTypeString{}
+	case "DependencyClassA":
+		return &sharedtype.DependencyClassA{}
 	default:
 		return nil
 	}

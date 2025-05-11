@@ -27,7 +27,7 @@ final class ObjectRemoteClientCaller {
         String simpleName = t.getClass().getSimpleName();
         String json = objectMapper.writeValueAsString(t);
 
-        System.out.printf("Request[%s]: %s%n%n", t.getClass().getCanonicalName(), json);
+        System.out.printf("Request[%s]: %s%n", t.getClass().getCanonicalName(), json);
         var req = HttpRequest.newBuilder()
             .header("Content-Type", "application/json")
             .uri(endpoints.get(targetCodeType).resolve(simpleName))

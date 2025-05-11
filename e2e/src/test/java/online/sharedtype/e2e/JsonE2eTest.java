@@ -1,5 +1,8 @@
 package online.sharedtype.e2e;
 
+import online.sharedtype.it.java8.DependencyClassA;
+import online.sharedtype.it.java8.DependencyClassB;
+import online.sharedtype.it.java8.DependencyClassC;
 import online.sharedtype.it.java8.EnumSize;
 import online.sharedtype.it.java8.GenericTypeReifyIssue44;
 import online.sharedtype.it.java8.JavaClass;
@@ -93,5 +96,23 @@ final class JsonE2eTest {
         obj.setValue(value);
         var res = caller.call(obj, targetCodeType);
         assertThat(res).isEqualTo(obj);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TargetCodeType.class, names = "GO")
+    void cyclicDependencyClass(TargetCodeType targetCodeType) throws Exception {
+        var objC = new DependencyClassC();
+        var objB = new DependencyClassB();
+        objB.setC(objC);
+        var objA = new DependencyClassA();
+        objA.setB(objB);
+        objA.setA(100);
+
+        var objA2 = new DependencyClassA();
+        objA2.setA(200);
+        objC.setA(objA2);
+
+        var res = caller.call(objA, targetCodeType);
+        assertThat(res).isEqualTo(objA);
     }
 }
