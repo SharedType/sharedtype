@@ -9,6 +9,7 @@ export default defineConfig([
   {
     rules: {
       semi: ["warn", "always"],
+      "@typescript-eslint/no-explicit-any": "off",
       // tsc will handle below:
       "@typescript-eslint/no-unused-vars": "off",
       "no-undef": "off",

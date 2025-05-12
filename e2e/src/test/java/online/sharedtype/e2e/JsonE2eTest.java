@@ -22,7 +22,6 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
@@ -60,7 +59,7 @@ final class JsonE2eTest {
     private final Instant NOW = Instant.now();
 
     static TargetCodeType[] testTypes() {
-        return new TargetCodeType[]{TargetCodeType.TYPESCRIPT};
+        return new TargetCodeType[]{TargetCodeType.TYPESCRIPT, TargetCodeType.GO};
     }
 
     @BeforeAll
@@ -84,7 +83,7 @@ final class JsonE2eTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = TargetCodeType.class, names = "GO")
+    @MethodSource("testTypes")
     void javaTimeClass(TargetCodeType targetCodeType) throws Exception {
         var obj = new JavaTimeClass();
         obj.setInstant(NOW);
@@ -111,7 +110,7 @@ final class JsonE2eTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = TargetCodeType.class, names = "GO")
+    @MethodSource("testTypes")
     void subtypeWithNestedCustomTypeString(TargetCodeType targetCodeType) throws Exception {
         var obj = new GenericTypeReifyIssue44.SubtypeWithNestedCustomTypeString();
         var value = new GenericTypeReifyIssue44.CustomContainer<String>();
@@ -122,7 +121,7 @@ final class JsonE2eTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = TargetCodeType.class, names = "GO")
+    @MethodSource("testTypes")
     void cyclicDependencyClass(TargetCodeType targetCodeType) throws Exception {
         var objC = new DependencyClassC();
         var objB = new DependencyClassB();
@@ -140,7 +139,7 @@ final class JsonE2eTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = TargetCodeType.class, names = "GO")
+    @MethodSource("testTypes")
     void mapClass(TargetCodeType targetCodeType) throws Exception {
         var obj = new MapClass();
         obj.setMapField(new ConcurrentHashMap<>());
@@ -157,17 +156,18 @@ final class JsonE2eTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = TargetCodeType.class, names = "GO")
+    @MethodSource("testTypes")
     void arrayClass(TargetCodeType targetCodeType) throws Exception {
         var obj = new ArrayClass();
         obj.setArr(new CustomList());
         obj.getArr().add("foo");
+        obj.getArr().add("bar");
         var res = caller.call(obj, targetCodeType);
         assertThat(res).isEqualTo(obj);
     }
 
     @ParameterizedTest
-    @EnumSource(value = TargetCodeType.class, names = "GO")
+    @MethodSource("testTypes")
     void complexJavaRecord(TargetCodeType targetCodeType) throws Exception {
         var obj = JavaRecord
             .<String>builder()
@@ -180,10 +180,10 @@ final class JsonE2eTest {
             .boxedInt(6)
             .primitiveLong(7L)
             .boxedLong(8L)
-            .primitiveFloat(9.0f)
-            .boxedFloat(10.0f)
-            .primitiveDouble(11.0)
-            .boxedDouble(12.0)
+            .primitiveFloat(9.5f)
+            .boxedFloat(10.5f)
+            .primitiveDouble(11.5d)
+            .boxedDouble(12.5d)
             .primitiveBoolean(true)
             .boxedBoolean(Boolean.TRUE)
             .primitiveChar('a')
@@ -212,7 +212,7 @@ final class JsonE2eTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = TargetCodeType.class, names = "GO")
+    @MethodSource("testTypes")
     void mathClass(TargetCodeType targetCodeType) throws Exception {
         var obj = new MathClass();
         obj.setBigDecimal(new BigDecimal("1.2345"));
