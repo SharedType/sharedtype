@@ -1,6 +1,5 @@
 package online.sharedtype.e2e;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -18,11 +17,11 @@ import java.util.Map;
 
 final class ObjectRemoteClientCaller {
     private static final Map<TargetCodeType, URI> endpoints = Map.of(
-        TargetCodeType.TYPESCRIPT, URI.create("http://localhost:3000/"),
+        TargetCodeType.TYPESCRIPT, URI.create("http://localhost:3005/"),
         TargetCodeType.GO, URI.create("http://localhost:3001/"),
         TargetCodeType.RUST, URI.create("http://localhost:3002/")
     );
-    private final HttpClient client = HttpClient.newHttpClient();
+    private final HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
     private final ObjectMapper objectMapper = new ObjectMapper();
     {
         objectMapper.registerModules(new JavaTimeModule(), new Jdk8Module());

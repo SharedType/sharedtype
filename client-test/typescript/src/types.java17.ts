@@ -15,7 +15,7 @@ export const record1: Record<EnumTShirt, number> = {
     S: 1,
     M: 2,
     L: 3,
-}
+};
 export const size1: EnumSize = 1;
 export const tshirtSize1: EnumTShirt = EnumTShirt.S;
 
@@ -24,7 +24,7 @@ export const dependencyClassC: DependencyClassC = {
 
 export const dependencyClassB: DependencyClassB = {
     c: dependencyClassC
-}
+};
 
 export const dependencyClassA: DependencyClassA = {
     a: 0,
@@ -32,7 +32,7 @@ export const dependencyClassA: DependencyClassA = {
     notIgnoredImplementedMethod: 0,
     value: 0,
 };
-dependencyClassC.a = dependencyClassA
+dependencyClassC.a = dependencyClassA;
 
 export const obj: Omit<JavaRecord<string>, "aVoid" | "genericMap"> = {
     boxedBoolean: false,
@@ -69,7 +69,7 @@ export const obj: Omit<JavaRecord<string>, "aVoid" | "genericMap"> = {
 
 export const anotherJavaClass: AnotherJavaClass = {
     value: 333,
-}
+};
 
 export const recursiveClass: RecursiveClass = {
     directRef: {
@@ -77,7 +77,7 @@ export const recursiveClass: RecursiveClass = {
         arrayRef: [],
     },
     arrayRef: [],
-}
+};
 recursiveClass.directRef = {
     directRef: undefined,
     arrayRef: [],
@@ -96,7 +96,7 @@ export const mapClass: MapClass = {
             v: 1
         }
     }
-}
+};
 
 export const optionalMethods: OptionalMethod = {
     valueOptional: undefined,
@@ -110,7 +110,7 @@ optionalMethods.nestedValueOptional = "bar";
 
 export const arrayClass: ArrayClass = {
     arr: ["abc"],
-}
+};
 
 export const javaTime: JavaTimeClass = {
     utilDate: new Date(),
@@ -122,7 +122,7 @@ export const javaTime: JavaTimeClass = {
     offsetDateTime: new Date(),
     offsetTime: new Date(),
     instant: new Date(),
-}
+};
 
 export const jodaTime: JodaTimeClass = {
     jodaDateTime: "2022-01-01T00:00:00.000+08:00",
@@ -131,12 +131,12 @@ export const jodaTime: JodaTimeClass = {
     jodaLocalTime: "2022-01-01T00:00:00.000+08:00",
     jodaLocalDateTime: "2022-01-01T00:00:00.000+08:00",
     jodaOffsetDateTime: "2022-01-01T00:00:00.000+08:00",
-}
+};
 
 export const mathClass: MathClass = {
     bigDecimal: "1.1",
     bigInteger: "8888888555555",
-}
+};
 
   
 export const enumConstValue1: EnumConstReference = 156;

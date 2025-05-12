@@ -24,3 +24,4 @@ mountTmpfs "$DIR/it/java8/target" 64M
 mountTmpfs "$DIR/e2e/target" 64M
 mountTmpfs "$MAVEN_REPO_DIR" 64M
 mountTmpfs "$DIR/client-test/rust/target" 128M
+mountTmpfs "$DIR/client-test/typescript/dist" 32M

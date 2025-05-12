@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -58,13 +59,19 @@ final class JsonE2eTest {
 
     private final Instant NOW = Instant.now();
 
+    static TargetCodeType[] testTypes() {
+        return new TargetCodeType[]{TargetCodeType.TYPESCRIPT};
+    }
+
     @BeforeAll
     void waitForServers() {
-        Awaitility.await().atMost(10, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).until(() -> caller.isHealthy(TargetCodeType.GO));
+        for (TargetCodeType targetCodeType : testTypes()) {
+            Awaitility.await().atMost(10, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).until(() -> caller.isHealthy(targetCodeType));
+        }
     }
 
     @ParameterizedTest
-    @EnumSource(value = TargetCodeType.class, names = "GO")
+    @MethodSource("testTypes")
     void javaClassWithSuperType(TargetCodeType targetCodeType) throws Exception {
         JavaClass obj = new JavaClass();
         obj.setSize(EnumSize.LARGE);
