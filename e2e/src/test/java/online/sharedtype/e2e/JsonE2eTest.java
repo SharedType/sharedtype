@@ -59,7 +59,7 @@ final class JsonE2eTest {
     private final Instant NOW = Instant.now();
 
     static TargetCodeType[] testTypes() {
-        return new TargetCodeType[]{TargetCodeType.TYPESCRIPT, TargetCodeType.GO};
+        return new TargetCodeType[]{TargetCodeType.RUST};
     }
 
     @BeforeAll

@@ -21,7 +21,7 @@ final class ObjectRemoteClientCaller {
         TargetCodeType.GO, URI.create("http://localhost:3001/"),
         TargetCodeType.RUST, URI.create("http://localhost:3002/")
     );
-    private final HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
+    private final HttpClient client = HttpClient.newBuilder().build();
     private final ObjectMapper objectMapper = new ObjectMapper();
     {
         objectMapper.registerModules(new JavaTimeModule(), new Jdk8Module());

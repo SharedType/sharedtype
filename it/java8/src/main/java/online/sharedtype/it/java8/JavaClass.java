@@ -7,7 +7,9 @@ import online.sharedtype.SharedType;
 
 @EqualsAndHashCode(callSuper = true)
 @Setter
-@SharedType
+@SharedType(
+    rustMacroTraits = {"PartialEq", "Eq", "Hash", "serde::Serialize", "serde::Deserialize"}
+)
 public final class JavaClass extends SuperClassA {
     static final long SOME_LONG_VALUE = 123L;
 
