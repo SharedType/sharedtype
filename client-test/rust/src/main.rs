@@ -35,7 +35,7 @@ fn main() {
         status: 400,
     };
 
-    let server = Server::http("localhost:3002").unwrap();
+    let server = Server::http("0.0.0.0:3002").unwrap();
     println!("Server listening on port 3002");
 
     for mut request in server.incoming_requests() {
@@ -52,13 +52,11 @@ fn main() {
                 } else {
                     let json_opt = route_obj(path, &content);
                     match json_opt {
-                        Some(json) => {
-                            ResponseValue {
-                                body: json,
-                                status: 200,
-                            }
-                        }
-                        None => not_found_response_value.clone()
+                        Some(json) => ResponseValue {
+                            body: json,
+                            status: 200,
+                        },
+                        None => not_found_response_value.clone(),
                     }
                 }
             }
@@ -80,8 +78,14 @@ fn main() {
 fn route_obj(path: &str, content: &str) -> Option<String> {
     let obj_opt = match path {
         "/JavaClass" => {
-            let obj: JavaClass = serde_json::from_str(content).unwrap();
-            Option::Some(obj)
+            let res = serde_json::from_str::<JavaClass>(content);
+            match res {
+                Ok(obj) => Option::Some(obj),
+                Err(e) => {
+                    println!("Error parsing JavaClass: {:?}, content: {:?}", e, content);
+                    None
+                }
+            }
         }
         _ => None,
     };

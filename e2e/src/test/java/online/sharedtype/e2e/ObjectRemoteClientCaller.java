@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import online.sharedtype.processor.domain.TargetCodeType;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -21,7 +22,7 @@ final class ObjectRemoteClientCaller {
         TargetCodeType.GO, URI.create("http://localhost:3001/"),
         TargetCodeType.RUST, URI.create("http://localhost:3002/")
     );
-    private final HttpClient client = HttpClient.newBuilder().build();
+    private final HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
     private final ObjectMapper objectMapper = new ObjectMapper();
     {
         objectMapper.registerModules(new JavaTimeModule(), new Jdk8Module());
@@ -48,11 +49,18 @@ final class ObjectRemoteClientCaller {
         return (T)objectMapper.readValue(body, t.getClass());
     }
 
-    boolean isHealthy(TargetCodeType targetCodeType) throws Exception {
+    boolean isHealthy(TargetCodeType targetCodeType) {
         var req = HttpRequest.newBuilder()
             .uri(endpoints.get(targetCodeType).resolve("health"))
             .build();
-        var response = client.send(req, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response;
+        try {
+            response = client.send(req, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.printf("Failed health check for %s, request: %s", targetCodeType, req);
+            e.printStackTrace();
+            return false;
+        }
         var code = response.statusCode();
         System.out.printf("Health[%s]: %d%n", targetCodeType, code);
         return code >= 200 && code < 400;

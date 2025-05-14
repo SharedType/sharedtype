@@ -65,7 +65,7 @@ final class JsonE2eTest {
     @BeforeAll
     void waitForServers() {
         for (TargetCodeType targetCodeType : testTypes()) {
-            Awaitility.await().atMost(10, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).until(() -> caller.isHealthy(targetCodeType));
+            Awaitility.await().atMost(4, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).until(() -> caller.isHealthy(targetCodeType));
         }
     }
 
