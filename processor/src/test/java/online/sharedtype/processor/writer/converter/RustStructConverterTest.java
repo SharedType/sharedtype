@@ -3,12 +3,14 @@ package online.sharedtype.processor.writer.converter;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TestUtils;
+import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -16,6 +18,7 @@ import org.junit.jupiter.api.TestInstance;
 import java.util.List;
 import java.util.Set;
 
+import static online.sharedtype.processor.domain.type.ConcreteTypeInfo.Kind.ENUM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -58,7 +61,61 @@ final class RustStructConverterTest {
     }
 
     @Test
-    void convert() {
+    void convertTypeWithEnumField() {
+        var enumATypeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").simpleName("EnumA").kind(ENUM).build();
+        EnumDef enumADef = EnumDef.builder()
+            .simpleName("EnumA")
+            .qualifiedName("com.github.cuzfrog.EnumA")
+            .enumValueInfos(List.of(
+                new EnumValueInfo("Value1", ValueHolder.ofEnum("Value1", Constants.BOOLEAN_TYPE_INFO, true)),
+                new EnumValueInfo("Value2", ValueHolder.ofEnum("Value2", Constants.BOOLEAN_TYPE_INFO, false))
+            ))
+            .build();
+        enumATypeInfo.markShallowResolved(enumADef);
+
+        var enumBTypeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumB").simpleName("EnumB").kind(ENUM).build();
+        EnumDef enumBDef = EnumDef.builder()
+            .simpleName("EnumB")
+            .qualifiedName("com.github.cuzfrog.EnumB")
+            .enumValueInfos(List.of(
+                new EnumValueInfo("ValueB1", ValueHolder.ofEnum("ValueB1", enumBTypeInfo, "ValueB1"))
+            ))
+            .build();
+        enumBTypeInfo.markShallowResolved(enumBDef);
+
+        ClassDef classDef = ClassDef.builder()
+            .simpleName("ClassA")
+            .qualifiedName("com.github.cuzfrog.ClassA")
+            .components(List.of(
+                FieldComponentInfo.builder()
+                    .name("field1")
+                    .type(enumATypeInfo)
+                    .build(),
+                FieldComponentInfo.builder()
+                    .name("field2")
+                    .type(enumBTypeInfo)
+                    .build()
+            ))
+            .build();
+
+        var data = converter.convert(classDef);
+        var model = (RustStructConverter.StructExpr)data.b();
+
+        assertThat(model.name).isEqualTo("ClassA");
+        assertThat(model.properties).satisfiesExactly(
+            v1 -> {
+                assertThat(v1.name).isEqualTo("field1");
+                assertThat(v1.type).isEqualTo("bool");
+            },
+            v2 -> {
+                assertThat(v2.name).isEqualTo("field2");
+                assertThat(v2.type).isEqualTo("EnumB");
+            }
+        );
+    }
+
+    @Test
+    void convertComplexType() {
         ConcreteTypeInfo recursiveTypeInfo = ConcreteTypeInfo.builder()
             .qualifiedName("com.github.cuzfrog.RecursiveClass")
             .simpleName("RecursiveClass")

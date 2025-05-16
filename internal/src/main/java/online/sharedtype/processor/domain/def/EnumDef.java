@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,6 +45,14 @@ public final class EnumDef extends ConcreteTypeDef {
     @Override
     public List<EnumValueInfo> components() {
         return enumValueInfos;
+    }
+
+    /** If the enum is empty, return this enum type. */
+    public TypeInfo getComponentValueType() {
+        if (enumValueInfos.isEmpty()) {
+            return typeInfo;
+        }
+        return enumValueInfos.get(0).value().getValueType();
     }
 
     @Override
