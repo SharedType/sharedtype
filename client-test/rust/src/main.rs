@@ -2,7 +2,7 @@ mod types;
 
 use std::io::Cursor;
 use tiny_http::{Method, Response, Server, StatusCode};
-use types::JavaClass;
+use types::*;
 
 #[derive(Debug, Clone)]
 struct ResponseValue {
@@ -19,6 +19,26 @@ impl From<ResponseValue> for Response<Cursor<String>> {
             None,
         )
     }
+}
+
+macro_rules! parse_obj {
+    ( $path:expr, $content:expr, $( $t:ty ),* ) => {
+        match $path {
+            $(
+                concat!("/", stringify!($t)) => {
+                    let res = serde_json::from_str::<$t>($content);
+                    match res {
+                        Ok(obj) => Some(serde_json::to_string(&obj).unwrap()),
+                        Err(e) => {
+                            println!("Error parsing {}: {:?}, content: {:?}", stringify!($t), e, $content);
+                            None
+                        }
+                    }
+                }
+            )*
+            _ => None,
+        }
+    };
 }
 
 fn main() {
@@ -50,7 +70,18 @@ fn main() {
                 if content.len() == 0 {
                     empty_body_response_value.clone()
                 } else {
-                    let json_opt = route_obj(path, &content);
+                    let json_opt = {
+                        let path = path;
+                        let content: &str = &content;
+                        parse_obj!(
+                            path,
+                            content,
+                            JavaClass,
+                            JavaTimeClass,
+                            SubtypeWithNestedCustomTypeString,
+                            DependencyClassA
+                        )
+                    };
                     match json_opt {
                         Some(json) => ResponseValue {
                             body: json,
@@ -73,21 +104,4 @@ fn main() {
             println!("Error responding to request: {:?}", res.err());
         }
     }
-}
-
-fn route_obj(path: &str, content: &str) -> Option<String> {
-    let obj_opt = match path {
-        "/JavaClass" => {
-            let res = serde_json::from_str::<JavaClass>(content);
-            match res {
-                Ok(obj) => Option::Some(obj),
-                Err(e) => {
-                    println!("Error parsing JavaClass: {:?}, content: {:?}", e, content);
-                    None
-                }
-            }
-        }
-        _ => None,
-    };
-    obj_opt.map(|obj| serde_json::to_string(&obj).unwrap())
 }

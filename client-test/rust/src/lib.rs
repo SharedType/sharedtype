@@ -14,7 +14,7 @@ mod tests {
     fn test_java_class() {
         let java_class = JavaClass {
             a: 5,
-            size: EnumSize::LARGE,
+            size: EnumSize::LARGE.value(),
             value: 4,
             notIgnoredImplementedMethod: 5,
             string: String::from("test"),

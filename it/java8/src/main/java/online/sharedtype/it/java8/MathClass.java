@@ -6,7 +6,9 @@ import online.sharedtype.SharedType;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-@SharedType
+@SharedType(
+    rustMacroTraits = {"PartialEq", "Eq", "Hash", "serde::Serialize", "serde::Deserialize"}
+)
 @Data
 public final class MathClass {
     private BigInteger bigInteger;

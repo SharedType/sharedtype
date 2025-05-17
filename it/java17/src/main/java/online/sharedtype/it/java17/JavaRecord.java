@@ -20,7 +20,8 @@ import java.util.Set;
         SharedType.ComponentType.CONSTANTS,
         SharedType.ComponentType.FIELDS,
         SharedType.ComponentType.ACCESSORS,
-    }
+    },
+    rustMacroTraits = {"serde::Serialize", "serde::Deserialize"}
 )
 @Builder
 public record JavaRecord<T>(

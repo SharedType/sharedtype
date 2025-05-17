@@ -12,6 +12,7 @@ import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 
 @SharedType(
+    rustMacroTraits = {"PartialEq", "Eq", "Hash", "serde::Serialize", "serde::Deserialize"},
     typescriptTargetDatetimeTypeLiteral = "Date"
 )
 @Data

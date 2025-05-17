@@ -70,12 +70,17 @@ public class GenericTypeReifyIssue44 {
     }
 
     @Data
+    @SharedType(
+        rustMacroTraits = {"PartialEq", "Eq", "Hash", "serde::Serialize", "serde::Deserialize"}
+    )
     public static final class CustomContainer<T> {
         private T value;
     }
 
     @Data
-    @SharedType
+    @SharedType(
+        rustMacroTraits = {"PartialEq", "Eq", "Hash", "serde::Serialize", "serde::Deserialize"}
+    )
     public static class SubtypeWithNestedCustomTypeString implements GenericInterface<CustomContainer<String>>, GenericInterfaceNoNeedToImplement<CustomContainer<String>> {
         private CustomContainer<String> value;
         @Override
