@@ -1,7 +1,7 @@
 package online.sharedtype.processor.domain.component;
 
-import lombok.Builder;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import online.sharedtype.processor.domain.type.TypeInfo;
 
 import javax.lang.model.element.Modifier;
@@ -12,8 +12,8 @@ import java.util.Set;
  *
  * @author Cause Chung
  */
-@Builder(toBuilder = true)
-public final class FieldComponentInfo implements ComponentInfo {
+@SuperBuilder(toBuilder = true)
+public final class FieldComponentInfo extends AbstractComponentInfo {
     private static final long serialVersionUID = -155863067131290289L;
     private final String name;
     private final Set<Modifier> modifiers;

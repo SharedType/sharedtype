@@ -28,9 +28,9 @@ final class TypescriptEnumConverterTest {
         .simpleName("EnumA")
         .qualifiedName("com.github.cuzfrog.EnumA")
         .enumValueInfos(Arrays.asList(
-            new EnumValueInfo("Value1", ValueHolder.ofEnum("Value1", STRING_TYPE_INFO, "Value1")),
-            new EnumValueInfo("Value2", ValueHolder.ofEnum("Value2", INT_TYPE_INFO, 123)),
-            new EnumValueInfo("Value3", ValueHolder.ofEnum("Value3", BOXED_INT_TYPE_INFO, null))
+            EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", STRING_TYPE_INFO, "Value1")).build(),
+            EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", INT_TYPE_INFO, 123)).build(),
+            EnumValueInfo.builder().name("Value3").value(ValueHolder.ofEnum("Value3", BOXED_INT_TYPE_INFO, null)).build()
         ))
         .build();
 

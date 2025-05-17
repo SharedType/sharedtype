@@ -30,7 +30,7 @@ final class EnumDefTest {
         EnumDef enumDef = EnumDef.builder()
             .qualifiedName("com.github.cuzfrog.EnumA").simpleName("EnumA")
             .enumValueInfos(Collections.singletonList(
-                new EnumValueInfo("Value1", ValueHolder.ofEnum("Value1", Constants.BOOLEAN_TYPE_INFO, true))
+                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", Constants.BOOLEAN_TYPE_INFO, true)).build()
             ))
             .typeInfo(enumTypeInfo)
             .build();

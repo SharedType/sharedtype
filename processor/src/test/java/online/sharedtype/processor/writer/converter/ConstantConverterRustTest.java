@@ -26,10 +26,10 @@ final class ConstantConverterRustTest {
         .simpleName("Abc")
         .qualifiedName("com.github.cuzfrog.Abc")
         .constants(List.of(
-            new ConstantField("VALUE1", ValueHolder.of(Constants.BOOLEAN_TYPE_INFO, true)),
-            new ConstantField("VALUE2", ValueHolder.of(Constants.STRING_TYPE_INFO, "value2")),
-            new ConstantField("VALUE3", ValueHolder.of(Constants.FLOAT_TYPE_INFO, 3.5f)),
-            new ConstantField("VALUE4", ValueHolder.ofEnum("ENUM_CONST", Constants.BOXED_INT_TYPE_INFO, 1))
+            ConstantField.builder().name("VALUE1").value(ValueHolder.of(Constants.BOOLEAN_TYPE_INFO, true)).build(),
+            ConstantField.builder().name("VALUE2").value(ValueHolder.of(Constants.STRING_TYPE_INFO, "value2")).build(),
+            ConstantField.builder().name("VALUE3").value(ValueHolder.of(Constants.FLOAT_TYPE_INFO, 3.5f)).build(),
+            ConstantField.builder().name("VALUE4").value(ValueHolder.ofEnum("ENUM_CONST", Constants.BOXED_INT_TYPE_INFO, 1)).build()
         ))
         .build();
     private final Config config = mock(Config.class);

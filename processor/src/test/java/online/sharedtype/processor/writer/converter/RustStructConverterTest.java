@@ -54,7 +54,7 @@ final class RustStructConverterTest {
 
     @Test
     void shouldAcceptClassDefAnnotated() {
-        var components = List.of(FieldComponentInfo.builder().build());
+        List<FieldComponentInfo> components = List.of(FieldComponentInfo.builder().build());
         assertThat(converter.shouldAccept(ClassDef.builder().build())).isFalse();
         assertThat(converter.shouldAccept(ClassDef.builder().annotated(true).components(components).build())).isTrue();
         assertThat(converter.shouldAccept(ClassDef.builder().referencedByAnnotated(true).depended(true).build())).isTrue();
@@ -67,8 +67,8 @@ final class RustStructConverterTest {
             .simpleName("EnumA")
             .qualifiedName("com.github.cuzfrog.EnumA")
             .enumValueInfos(List.of(
-                new EnumValueInfo("Value1", ValueHolder.ofEnum("Value1", Constants.BOOLEAN_TYPE_INFO, true)),
-                new EnumValueInfo("Value2", ValueHolder.ofEnum("Value2", Constants.BOOLEAN_TYPE_INFO, false))
+                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", Constants.BOOLEAN_TYPE_INFO, true)).build(),
+                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", Constants.BOOLEAN_TYPE_INFO, false)).build()
             ))
             .build();
         enumATypeInfo.markShallowResolved(enumADef);
@@ -78,7 +78,7 @@ final class RustStructConverterTest {
             .simpleName("EnumB")
             .qualifiedName("com.github.cuzfrog.EnumB")
             .enumValueInfos(List.of(
-                new EnumValueInfo("ValueB1", ValueHolder.ofEnum("ValueB1", enumBTypeInfo, "ValueB1"))
+                EnumValueInfo.builder().name("ValueB1").value(ValueHolder.ofEnum("ValueB1", enumBTypeInfo, "ValueB1")).build()
             ))
             .build();
         enumBTypeInfo.markShallowResolved(enumBDef);
