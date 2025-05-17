@@ -5,9 +5,9 @@ import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TestUtils;
 import online.sharedtype.processor.context.TypeElementMock;
-import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.def.EnumDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.parser.value.ValueParser;
@@ -18,12 +18,8 @@ import org.mockito.ArgumentCaptor;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 
-import java.util.List;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,8 +63,6 @@ final class EnumTypeDefParserTest {
         var value2 = ValueHolder.ofEnum(enumConstant2.getSimpleName().toString(), Constants.STRING_TYPE_INFO,"Value2");
         when(valueParser.resolve(enumConstant2, enumType.element())).thenReturn(value2);
 
-        when(ctxMocks.getContext().extractTagLiterals(enumConstant1)).thenReturn(Map.of(SharedType.TargetType.RUST, List.of("a", "b")));
-
         EnumDef typeDef = (EnumDef) parser.parse(enumType.element()).getFirst();
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
@@ -78,12 +72,13 @@ final class EnumTypeDefParserTest {
                 assertThat(c1.value().getEnumConstantName()).isEqualTo("Value1");
                 assertThat(c1.value().getValueType()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(c1.name()).isEqualTo("Value1");
-                assertThat(c1.getTagLiterals(SharedType.TargetType.RUST)).containsExactly("a", "b");
+                assertThat(c1.getElement()).isSameAs(enumConstant1);
             },
             c2 -> {
                 assertThat(c2.value().getValue()).isEqualTo("Value2");
                 assertThat(c2.value().getValueType()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(c2.name()).isEqualTo("Value2");
+                assertThat(c2.getElement()).isSameAs(enumConstant2);
             }
         );
         assertThat(typeDef.typeInfoSet()).containsExactly(typeInfo);
