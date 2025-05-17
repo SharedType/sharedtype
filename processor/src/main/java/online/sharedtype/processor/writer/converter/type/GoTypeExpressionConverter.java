@@ -1,9 +1,9 @@
 package online.sharedtype.processor.writer.converter.type;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.TargetCodeType;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.DateTimeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
@@ -54,18 +54,18 @@ final class GoTypeExpressionConverter extends AbstractTypeExpressionConverter {
     }
     @Override
     TypeArgsSpec typeArgsSpec(ConcreteTypeInfo typeInfo) {
-        if (ARRAY_LITERAL.equals(typeInfo.mappedName(TargetCodeType.GO))) {
+        if (ARRAY_LITERAL.equals(typeInfo.mappedName(SharedType.TargetType.GO))) {
             return ARRAY_TYPE_ARGS_SPEC;
         }
         return TYPE_ARGS_SPEC;
     }
     @Override
     String dateTimeTypeExpr(DateTimeInfo dateTimeInfo, Config config) {
-        return dateTimeInfo.mappedNameOrDefault(TargetCodeType.GO, config.getGoTargetDatetimeTypeLiteral());
+        return dateTimeInfo.mappedNameOrDefault(SharedType.TargetType.GO, config.getGoTargetDatetimeTypeLiteral());
     }
     @Override
     String toTypeExpression(ConcreteTypeInfo typeInfo, String defaultExpr) {
-        String expr = typeInfo.mappedName(TargetCodeType.GO);
+        String expr = typeInfo.mappedName(SharedType.TargetType.GO);
         if (expr == null) {
             expr = typeNameMappings.getOrDefault(typeInfo, defaultExpr);
         }

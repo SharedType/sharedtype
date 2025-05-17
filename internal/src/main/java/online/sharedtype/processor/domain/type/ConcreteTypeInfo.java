@@ -6,16 +6,13 @@ import lombok.Getter;
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.domain.def.ConcreteTypeDef;
 import online.sharedtype.processor.domain.MappableType;
-import online.sharedtype.processor.domain.TargetCodeType;
 import online.sharedtype.processor.domain.def.TypeDef;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -61,7 +58,7 @@ public final class ConcreteTypeInfo extends ReferableTypeInfo implements Mappabl
     private TypeDef typeDef;
 
     /** Defined type mapping, see {@link SharedType} for details */
-    private final Map<TargetCodeType, String> mappedNames = new EnumMap<>(TargetCodeType.class);
+    private final Map<SharedType.TargetType, String> mappedNames = new EnumMap<>(SharedType.TargetType.class);
 
 
     public static ConcreteTypeInfo ofPredefined(String qualifiedName, String simpleName) {
@@ -106,13 +103,13 @@ public final class ConcreteTypeInfo extends ReferableTypeInfo implements Mappabl
 
     @Nullable
     @Override
-    public String mappedName(@Nullable TargetCodeType targetCodeType) {
-        return targetCodeType == null ? null : mappedNames.get(targetCodeType);
+    public String mappedName(@Nullable SharedType.TargetType targetType) {
+        return targetType == null ? null : mappedNames.get(targetType);
     }
 
     @Override
-    public void addMappedName(TargetCodeType targetCodeType, String mappedName) {
-        mappedNames.put(targetCodeType, mappedName);
+    public void addMappedName(SharedType.TargetType targetType, String mappedName) {
+        mappedNames.put(targetType, mappedName);
     }
 
     public String simpleName() {

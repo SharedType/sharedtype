@@ -243,9 +243,11 @@ public @interface SharedType {
      * Whether to mark generated type fields as readonly. Default fallback to global properties.
      *
      * @return value can be one of:
-     * "all" - all fields are readonly
-     * "acyclic" - only fields of not cyclic-referenced types are readonly
-     * "none" - no fields are readonly
+     * <ul>
+     *     <li>"all" - all fields are readonly</li>
+     *     <li>"acyclic" - only fields of not cyclic-referenced types are readonly</li>
+     *     <li>"none" - no fields are readonly</li>
+     * </ul>
      */
     String typescriptFieldReadonlyType() default "";
 
@@ -327,18 +329,18 @@ public @interface SharedType {
      * Add any tag literals to a field. E.g.
      * <pre>
      *     {@code
-     *     @SharedType.TagLiterals(tags = "#[serde(skip)]", targets = "rust")
+     *     @SharedType.TagLiterals(tags = "#[serde(skip)]", targets = RUST)
      *     private final Object ignoredField;
      *     }
      * </pre>
      */
-    @Target({ElementType.FIELD})
+    @Target({ElementType.FIELD, ElementType.METHOD})
     @Retention(RetentionPolicy.SOURCE)
     @Repeatable(TagLiterals.class)
     @interface TagLiteral {
         String[] tags();
-        /** Target languages that can be "typescript", "rust", "go". If empty, fallback to globally enabled targets. */
-        String[] targets() default {};
+        /** If empty, fallback to globally enabled targets. */
+        TargetType[] targets() default {};
     }
 
     enum ComponentType {
@@ -378,5 +380,9 @@ public @interface SharedType {
          * Fallback to global default.
          */
         DEFAULT,
+    }
+
+    enum TargetType {
+        TYPESCRIPT, GO, RUST
     }
 }

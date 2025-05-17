@@ -1,12 +1,12 @@
 package online.sharedtype.processor.writer.converter.type;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.DateTimeInfo;
-import online.sharedtype.processor.domain.TargetCodeType;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -85,13 +85,13 @@ final class TypescriptTypeExpressionConverterTest {
     void typeMapping() {
         ConcreteTypeInfo typeInfo = ConcreteTypeInfo.builder().qualifiedName("a.b.A1").build();
         assertThat(converter.toTypeExpression(typeInfo, "DefaultName")).isEqualTo("DefaultName");
-        typeInfo.addMappedName(TargetCodeType.TYPESCRIPT, "AAA");
+        typeInfo.addMappedName(SharedType.TargetType.TYPESCRIPT, "AAA");
         assertThat(converter.toTypeExpression(typeInfo, "DefaultName")).isEqualTo("AAA");
 
         when(config.getTypescriptTargetDatetimeTypeLiteral()).thenReturn("DefaultDateLiteral");
         DateTimeInfo dateTimeInfo = new DateTimeInfo("a.b.A2");
         assertThat(converter.dateTimeTypeExpr(dateTimeInfo, config)).isEqualTo("DefaultDateLiteral");
-        dateTimeInfo.addMappedName(TargetCodeType.TYPESCRIPT, "BBB");
+        dateTimeInfo.addMappedName(SharedType.TargetType.TYPESCRIPT, "BBB");
         assertThat(converter.dateTimeTypeExpr(dateTimeInfo, config)).isEqualTo("BBB");
     }
 }

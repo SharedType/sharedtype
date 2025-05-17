@@ -19,7 +19,12 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -137,6 +142,18 @@ public final class Context {
             return true;
         }
         return isAnnotatedByQualifiedNames(element, props.getEnumValueAnnotations());
+    }
+
+    public Map<SharedType.TargetType, List<String>> extractTagLiterals(Element element) {
+        SharedType.TagLiteral[] tagLiterals = element.getAnnotationsByType(SharedType.TagLiteral.class);
+        Map<SharedType.TargetType, List<String>> tagLiteralsByTargetCodeType = new HashMap<>();
+        for (SharedType.TagLiteral tagLiteral : tagLiterals) {
+            Iterable<SharedType.TargetType> targets = tagLiteral.targets().length > 0 ? Arrays.asList(tagLiteral.targets()) : props.getTargetTypes();
+            for (SharedType.TargetType target : targets) {
+                tagLiteralsByTargetCodeType.compute(target, (k, v) -> v == null ? new ArrayList<>() : v).addAll(Arrays.asList(tagLiteral.tags()));
+            }
+        }
+        return tagLiteralsByTargetCodeType;
     }
 
     public FileObject createSourceOutput(String filename) throws IOException {

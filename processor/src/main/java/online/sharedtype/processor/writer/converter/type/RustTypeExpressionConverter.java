@@ -1,12 +1,12 @@
 package online.sharedtype.processor.writer.converter.type;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.RenderFlags;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.DateTimeInfo;
-import online.sharedtype.processor.domain.TargetCodeType;
 import online.sharedtype.processor.domain.type.TypeInfo;
 
 import javax.annotation.Nullable;
@@ -42,13 +42,13 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
 
     @Override
     String dateTimeTypeExpr(DateTimeInfo dateTimeInfo, Config config) {
-        return dateTimeInfo.mappedNameOrDefault(TargetCodeType.RUST, config.getRustTargetDatetimeTypeLiteral());
+        return dateTimeInfo.mappedNameOrDefault(SharedType.TargetType.RUST, config.getRustTargetDatetimeTypeLiteral());
     }
 
     @Override
     @Nullable
     String toTypeExpression(ConcreteTypeInfo typeInfo, @Nullable String defaultExpr) {
-        String expr = typeInfo.mappedName(TargetCodeType.RUST);
+        String expr = typeInfo.mappedName(SharedType.TargetType.RUST);
         if (expr == null) {
             expr = RustTypeNameMappings.getOrDefault(typeInfo, defaultExpr);
         }

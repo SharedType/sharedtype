@@ -13,6 +13,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -72,6 +73,15 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
         var mockAnnotationType = mock(DeclaredType.class);
         when(mockAnnotationMirror.getAnnotationType()).thenAnswer(invoc -> mockAnnotationType);
         when(mockAnnotationType.toString()).thenReturn(annotationClazz.getCanonicalName());
+
+        var existingAnnotations = element.getAnnotationsByType(annotationClazz);
+        int arrLength = existingAnnotations != null ? existingAnnotations.length + 1 : 1;
+        A[] arr = (A[]) Array.newInstance(annotationClazz, arrLength);
+        arr[arrLength - 1] = supplier.get();
+        if (existingAnnotations != null) {
+            System.arraycopy(existingAnnotations, 0, arr, 0, existingAnnotations.length);
+        }
+        when(element.getAnnotationsByType(annotationClazz)).thenAnswer(invoc -> arr);
         return returnThis();
     }
 

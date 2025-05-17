@@ -1,8 +1,8 @@
 package online.sharedtype.processor.parser.type;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.MappableType;
-import online.sharedtype.processor.domain.TargetCodeType;
 import online.sharedtype.processor.domain.type.TypeInfo;
 
 import javax.lang.model.element.TypeElement;
@@ -28,17 +28,17 @@ final class MappableTypeInfoParser implements TypeInfoParser {
 
         if (typeInfo instanceof MappableType) {
             MappableType mappableType = (MappableType) typeInfo;
-            updateTypeMappings(mappableType, TargetCodeType.TYPESCRIPT, typescriptTypeMappings);
-            updateTypeMappings(mappableType, TargetCodeType.GO, goTypeMappings);
-            updateTypeMappings(mappableType, TargetCodeType.RUST, rustTypeMappings);
+            updateTypeMappings(mappableType, SharedType.TargetType.TYPESCRIPT, typescriptTypeMappings);
+            updateTypeMappings(mappableType, SharedType.TargetType.GO, goTypeMappings);
+            updateTypeMappings(mappableType, SharedType.TargetType.RUST, rustTypeMappings);
         }
         return typeInfo;
     }
 
-    private static void updateTypeMappings(MappableType mappableType, TargetCodeType targetCodeType, Map<String, String> typeMappings) {
+    private static void updateTypeMappings(MappableType mappableType, SharedType.TargetType targetType, Map<String, String> typeMappings) {
         String mappedName = typeMappings.get(mappableType.qualifiedName());
         if (mappedName != null) {
-            mappableType.addMappedName(targetCodeType, mappedName);
+            mappableType.addMappedName(targetType, mappedName);
         }
     }
 }
