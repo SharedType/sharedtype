@@ -73,7 +73,11 @@ final class ConstantTypeDefParser implements TypeDefParser {
 
             if (enclosedElement.getKind() == ElementKind.FIELD && enclosedElement.getModifiers().contains(Modifier.STATIC)) {
                 ValueHolder value = valueParser.resolve(enclosedElement, typeElement);
-                ConstantField constantField = ConstantField.builder().name(enclosedElement.getSimpleName().toString()).value(value).build();
+                ConstantField constantField = ConstantField.builder()
+                    .name(enclosedElement.getSimpleName().toString())
+                    .tagLiterals(ctx.extractTagLiterals(enclosedElement))
+                    .value(value)
+                    .build();
                 constantNamespaceDef.components().add(constantField);
             }
         }

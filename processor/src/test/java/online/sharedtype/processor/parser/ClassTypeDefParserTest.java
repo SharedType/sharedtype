@@ -18,6 +18,9 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -40,6 +43,7 @@ final class ClassTypeDefParserTest {
         var field1 = ctxMocks.primitiveVariable("field1", TypeKind.BOOLEAN);
         var field2 = ctxMocks.declaredTypeVariable("field2", string.type()).withElementKind(ElementKind.FIELD).withAnnotation(Nullable.class);
         when(ctxMocks.getContext().isOptionalAnnotated(field2.element())).thenReturn(true);
+        when(ctxMocks.getContext().extractTagLiterals(field2.element())).thenReturn(Map.of(SharedType.TargetType.RUST, List.of("a", "b")));
         var method1 = ctxMocks.executable("method1").withElementKind(ElementKind.METHOD);
         var method2 = ctxMocks.executable("getValue").withElementKind(ElementKind.METHOD);
         var supertype1 = ctxMocks.typeElement("com.github.cuzfrog.SuperClassA");
@@ -101,6 +105,7 @@ final class ClassTypeDefParserTest {
                 assertThat(component.name()).isEqualTo("field2");
                 assertThat(component.type()).isEqualTo(parsedField2Type);
                 assertThat(component.optional()).isTrue();
+                assertThat(component.getTagLiterals(SharedType.TargetType.RUST)).isEqualTo(List.of("a", "b"));
             },
             component -> {
                 assertThat(component.name()).isEqualTo("value");

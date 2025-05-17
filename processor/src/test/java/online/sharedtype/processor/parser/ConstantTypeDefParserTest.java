@@ -18,6 +18,10 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -83,6 +87,7 @@ final class ConstantTypeDefParserTest {
                     ctxMocks.literalTree("abc123").getTree()
                 )
             );
+        when(ctxMocks.getContext().extractTagLiterals(stringStaticField.element())).thenReturn(Map.of(SharedType.TargetType.RUST, List.of("a", "b")));
         var nonStaticField = ctxMocks.primitiveVariable("nonStaticField", TypeKind.LONG)
             .ofTree(
                 ctxMocks.variableTree().withInitializer(
@@ -116,6 +121,7 @@ final class ConstantTypeDefParserTest {
                 assertThat(field2.value().getValueType()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(field2.value().getValue()).isEqualTo("abc123");
                 assertThat(field2.value().literalValue()).isEqualTo("\"abc123\"");
+                assertThat(field2.getTagLiterals(SharedType.TargetType.RUST)).isEqualTo(List.of("a", "b"));
             }
         );
     }

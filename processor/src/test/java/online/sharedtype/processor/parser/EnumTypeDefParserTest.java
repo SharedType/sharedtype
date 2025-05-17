@@ -18,6 +18,9 @@ import org.mockito.ArgumentCaptor;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -64,6 +67,8 @@ final class EnumTypeDefParserTest {
         var value2 = ValueHolder.ofEnum(enumConstant2.getSimpleName().toString(), Constants.STRING_TYPE_INFO,"Value2");
         when(valueParser.resolve(enumConstant2, enumType.element())).thenReturn(value2);
 
+        when(ctxMocks.getContext().extractTagLiterals(enumConstant1)).thenReturn(Map.of(SharedType.TargetType.RUST, List.of("a", "b")));
+
         EnumDef typeDef = (EnumDef) parser.parse(enumType.element()).getFirst();
         assertThat(typeDef.qualifiedName()).isEqualTo("com.github.cuzfrog.EnumA");
         assertThat(typeDef.simpleName()).isEqualTo("EnumA");
@@ -73,6 +78,7 @@ final class EnumTypeDefParserTest {
                 assertThat(c1.value().getEnumConstantName()).isEqualTo("Value1");
                 assertThat(c1.value().getValueType()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(c1.name()).isEqualTo("Value1");
+                assertThat(c1.getTagLiterals(SharedType.TargetType.RUST)).containsExactly("a", "b");
             },
             c2 -> {
                 assertThat(c2.value().getValue()).isEqualTo("Value2");

@@ -333,6 +333,7 @@ public @interface SharedType {
      *     private final Object ignoredField;
      *     }
      * </pre>
+     * It's treated as plain string, thus can also be used to emit comments or documentation.
      */
     @Target({ElementType.FIELD, ElementType.METHOD})
     @Retention(RetentionPolicy.SOURCE)

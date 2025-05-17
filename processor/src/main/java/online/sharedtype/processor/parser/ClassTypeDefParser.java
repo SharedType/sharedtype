@@ -135,6 +135,7 @@ final class ClassTypeDefParser implements TypeDefParser {
                 .name(tuple.b())
                 .modifiers(element.getModifiers())
                 .optional(ctx.isOptionalAnnotated(element))
+                .tagLiterals(ctx.extractTagLiterals(element))
                 .type(fieldTypeInfo)
                 .build();
             fields.add(fieldInfo);

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -146,6 +147,9 @@ public final class Context {
 
     public Map<SharedType.TargetType, List<String>> extractTagLiterals(Element element) {
         SharedType.TagLiteral[] tagLiterals = element.getAnnotationsByType(SharedType.TagLiteral.class);
+        if (tagLiterals.length == 0) {
+            return Collections.emptyMap();
+        }
         Map<SharedType.TargetType, List<String>> tagLiteralsByTargetCodeType = new HashMap<>();
         for (SharedType.TagLiteral tagLiteral : tagLiterals) {
             Iterable<SharedType.TargetType> targets = tagLiteral.targets().length > 0 ? Arrays.asList(tagLiteral.targets()) : props.getTargetTypes();
