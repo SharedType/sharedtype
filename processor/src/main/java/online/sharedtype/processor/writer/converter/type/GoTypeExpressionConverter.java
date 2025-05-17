@@ -23,7 +23,7 @@ final class GoTypeExpressionConverter extends AbstractTypeExpressionConverter {
         super(ctx);
         typeNameMappings.put(Constants.BOOLEAN_TYPE_INFO, "bool");
         typeNameMappings.put(Constants.BYTE_TYPE_INFO, "byte");
-        typeNameMappings.put(Constants.CHAR_TYPE_INFO, "rune");
+        typeNameMappings.put(Constants.CHAR_TYPE_INFO, "string");
         typeNameMappings.put(Constants.DOUBLE_TYPE_INFO, "float64");
         typeNameMappings.put(Constants.FLOAT_TYPE_INFO, "float32");
         typeNameMappings.put(Constants.INT_TYPE_INFO, "int32");
@@ -32,7 +32,7 @@ final class GoTypeExpressionConverter extends AbstractTypeExpressionConverter {
 
         typeNameMappings.put(Constants.BOXED_BOOLEAN_TYPE_INFO, "bool");
         typeNameMappings.put(Constants.BOXED_BYTE_TYPE_INFO, "byte");
-        typeNameMappings.put(Constants.BOXED_CHAR_TYPE_INFO, "rune");
+        typeNameMappings.put(Constants.BOXED_CHAR_TYPE_INFO, "string");
         typeNameMappings.put(Constants.BOXED_DOUBLE_TYPE_INFO, "float64");
         typeNameMappings.put(Constants.BOXED_FLOAT_TYPE_INFO, "float32");
         typeNameMappings.put(Constants.BOXED_INT_TYPE_INFO, "int32");

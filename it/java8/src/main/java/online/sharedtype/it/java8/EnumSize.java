@@ -1,5 +1,6 @@
 package online.sharedtype.it.java8;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
 
@@ -12,6 +13,7 @@ import online.sharedtype.SharedType;
 public enum EnumSize {
     SMALL(1), MEDIUM(2), LARGE(3);
 
+    @JsonValue
     @SharedType.EnumValue
     private final int size;
 }

@@ -6,6 +6,7 @@ import lombok.ToString;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
@@ -83,9 +84,19 @@ final class RustStructConverter extends AbstractStructConverter {
     private PropertyExpr toPropertyExpr(FieldComponentInfo field, TypeDef contextTypeDef) {
         return new PropertyExpr(
             ctx.getProps().getRust().isConvertToSnakeCase() ? ConversionUtils.toSnakeCase(field.name()) : field.name(),
-            typeExpressionConverter.toTypeExpr(field.type(), contextTypeDef),
+            typeExpressionConverter.toTypeExpr(getFieldValueType(field), contextTypeDef),
             ConversionUtils.isOptionalField(field)
         );
+    }
+
+    private TypeInfo getFieldValueType(FieldComponentInfo field) {
+        if (field.type() instanceof ConcreteTypeInfo) {
+            ConcreteTypeInfo type = (ConcreteTypeInfo) field.type();
+            if (type.getKind() == ConcreteTypeInfo.Kind.ENUM && type.typeDef() instanceof EnumDef) {
+                return ((EnumDef) type.typeDef()).getComponentValueType();
+            }
+        }
+        return field.type();
     }
 
     @SuppressWarnings("unused")

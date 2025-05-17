@@ -2,6 +2,7 @@ package online.sharedtype;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -320,6 +321,24 @@ public @interface SharedType {
     @Target({ElementType.FIELD})
     @Retention(RetentionPolicy.CLASS)
     @interface EnumValue {
+    }
+
+    /**
+     * Add any tag literals to a field. E.g.
+     * <pre>
+     *     {@code
+     *     @SharedType.TagLiterals(tags = "#[serde(skip)]", targets = "rust")
+     *     private final Object ignoredField;
+     *     }
+     * </pre>
+     */
+    @Target({ElementType.FIELD})
+    @Retention(RetentionPolicy.SOURCE)
+    @Repeatable(TagLiterals.class)
+    @interface TagLiteral {
+        String[] tags();
+        /** Target languages that can be "typescript", "rust", "go". If empty, fallback to globally enabled targets. */
+        String[] targets() default {};
     }
 
     enum ComponentType {

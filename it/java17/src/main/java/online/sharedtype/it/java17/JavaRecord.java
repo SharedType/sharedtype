@@ -1,5 +1,8 @@
 package online.sharedtype.it.java17;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import online.sharedtype.SharedType;
 import online.sharedtype.it.java8.Container;
 import online.sharedtype.it.java8.DependencyClassA;
@@ -17,8 +20,10 @@ import java.util.Set;
         SharedType.ComponentType.CONSTANTS,
         SharedType.ComponentType.FIELDS,
         SharedType.ComponentType.ACCESSORS,
-    }
+    },
+    rustMacroTraits = {"serde::Serialize", "serde::Deserialize"}
 )
+@Builder
 public record JavaRecord<T>(
     String string,
     byte primitiveByte,
@@ -57,7 +62,7 @@ public record JavaRecord<T>(
     EnumSize enumSize,
 
     String duplicateAccessor,
-    @SharedType.Ignore String explicitlyIgnored
+    @SharedType.Ignore @JsonIgnore String explicitlyIgnored
 ) implements InterfaceA<T> {
     static final int STATIC_FIELD_FROM_JAVA_RECORD = 888;
 
@@ -70,6 +75,7 @@ public record JavaRecord<T>(
         return null;
     }
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Override
     public T getValue() {
         return null;

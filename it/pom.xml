@@ -44,12 +44,7 @@
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -121,6 +116,10 @@
                                 <property>
                                     <name>sharedtype.typescript.custom-code-path</name>
                                     <value>it/custom-code.ts</value>
+                                </property>
+                                <property>
+                                    <name>sharedtype.go.custom-code-path</name>
+                                    <value>it/custom-code.go</value>
                                 </property>
                                 <property>
                                     <name>sharedtype.rust.custom-code-path</name>

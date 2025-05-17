@@ -1,5 +1,9 @@
 package online.sharedtype.it.java8;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
 
 /**
@@ -18,7 +22,7 @@ public class GenericTypeReifyIssue44 {
     }
 
     @SharedType
-    static class SubtypeWithString implements GenericInterface<String> {
+    public static class SubtypeWithString implements GenericInterface<String> {
         @Override
         public String getValue() {
             return "Generic type reified as String";
@@ -65,15 +69,23 @@ public class GenericTypeReifyIssue44 {
         }
     }
 
-    static final class CustomContainer<T> {
-        T value;
+    @Data
+    @SharedType(
+        rustMacroTraits = {"PartialEq", "Eq", "Hash", "serde::Serialize", "serde::Deserialize"}
+    )
+    public static final class CustomContainer<T> {
+        private T value;
     }
 
-    @SharedType
-    static class SubtypeWithNestedCustomTypeString implements GenericInterface<CustomContainer<String>>, GenericInterfaceNoNeedToImplement<CustomContainer<String>> {
+    @Data
+    @SharedType(
+        rustMacroTraits = {"PartialEq", "Eq", "Hash", "serde::Serialize", "serde::Deserialize"}
+    )
+    public static class SubtypeWithNestedCustomTypeString implements GenericInterface<CustomContainer<String>>, GenericInterfaceNoNeedToImplement<CustomContainer<String>> {
+        private CustomContainer<String> value;
         @Override
         public CustomContainer<String> getValue() {
-            return null;
+            return value;
         }
     }
 

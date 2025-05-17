@@ -1,12 +1,21 @@
 package online.sharedtype.it.java8;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import online.sharedtype.SharedType;
 
-@SharedType
-class JavaClass extends SuperClassA {
+@EqualsAndHashCode(callSuper = true)
+@Setter
+@SharedType(
+    rustMacroTraits = {"PartialEq", "Eq", "Hash", "serde::Serialize", "serde::Deserialize"}
+)
+public final class JavaClass extends SuperClassA {
     static final long SOME_LONG_VALUE = 123L;
 
+    @Getter
     private String string;
+    @Getter
     private EnumSize size;
 //    private IgnoredInterfaceB b; // compilation failure
     private @SharedType.Ignore IgnoredInterfaceB ignoredB;

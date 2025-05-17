@@ -1,12 +1,10 @@
 package online.sharedtype.it.java8;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import online.sharedtype.SharedType;
 
 @SharedType(rustMacroTraits = {"PartialEq", "serde::Serialize", "serde::Deserialize"})
-@Getter
-@Setter
+@Data
 public final class DependencyClassC {
     private DependencyClassA a;
 }

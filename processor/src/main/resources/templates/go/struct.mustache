@@ -3,6 +3,6 @@ type {{name}}{{typeParametersExpr}} struct {
     {{.}}
 {{/supertypes}}
 {{#properties}}
-    {{name}} {{{typeExpr}}}
+    {{capitalizedName}} {{{typeExpr}}} `{{{tagsExpr}}}`
 {{/properties}}
 }

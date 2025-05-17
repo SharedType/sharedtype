@@ -48,8 +48,8 @@ final class RustEnumConverterTest {
             .simpleName("EnumA")
             .qualifiedName("com.github.cuzfrog.EnumA")
             .enumValueInfos(Arrays.asList(
-                new EnumValueInfo("Value1", ValueHolder.ofEnum("Value1", enumType, "Value1")),
-                new EnumValueInfo("Value2", ValueHolder.ofEnum("Value2", enumType, "Value2"))
+                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", enumType, "Value1")).build(),
+                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", enumType, "Value2")).build()
             ))
             .build();
         enumDef.linkTypeInfo(enumType);
@@ -81,9 +81,9 @@ final class RustEnumConverterTest {
             .simpleName("EnumA")
             .qualifiedName("com.github.cuzfrog.EnumA")
             .enumValueInfos(Arrays.asList(
-                new EnumValueInfo("Value1", ValueHolder.ofEnum("Value1", INT_TYPE_INFO, 11)),
-                new EnumValueInfo("Value2", ValueHolder.ofEnum("Value2", INT_TYPE_INFO, 22)),
-                new EnumValueInfo("Value3", ValueHolder.ofEnum("Value3", INT_TYPE_INFO, 33))
+                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", INT_TYPE_INFO, 11)).build(),
+                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", INT_TYPE_INFO, 22)).build(),
+                EnumValueInfo.builder().name("Value3").value(ValueHolder.ofEnum("Value3", INT_TYPE_INFO, 33)).build()
             ))
             .build();
         enumDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").build());

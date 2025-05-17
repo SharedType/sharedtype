@@ -9,4 +9,4 @@ export const javaClass: JavaClass = {
 };
 
 export const customCodeType: CustomCode = {
-}
+};

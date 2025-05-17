@@ -1,5 +1,30 @@
 package sharedtype
 
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestMain(t *testing.T) {
+	dependencyClassC1.A = dependencyClassA1
+
+	RecursiveClass1.DirectRef = &RecursiveClass{
+		DirectRef: nil,
+		ArrayRef:  []RecursiveClass{},
+	}
+
+	OptionalMethods1.MapNestedValueOptional = &map[int32]string{1: "foo"}
+	OptionalMethods1.SetNestedValueOptional = &[]string{"foo", "bar"}
+	OptionalMethods1.NestedValueOptional = &List1[0]
+}
+
+func TestConstants(t *testing.T) {
+	assert.Equal(t, float32(1.888), FLOAT_VALUE)
+	assert.Equal(t, "MilkyWay", REFERENCED_ENUM_VALUE)
+	assert.Equal(t, int32(1), MyEnumConstants.INT_VALUE)
+}
+
 var List1 = []EnumGalaxy{"Andromeda", "MilkyWay", "Triangulum"}
 var Record1 = map[EnumTShirt]int32{
 	S: 1,
@@ -27,7 +52,7 @@ var dependencyClassA1 = &DependencyClassA{
 var Obj = JavaRecord[string]{
 	BoxedBoolean:                  false,
 	BoxedByte:                     0,
-	BoxedChar:                     'a',
+	BoxedChar:                     "a",
 	BoxedDouble:                   0,
 	BoxedFloat:                    0,
 	BoxedInt:                      0,
@@ -47,7 +72,7 @@ var Obj = JavaRecord[string]{
 	Object:                        nil,
 	PrimitiveBoolean:              false,
 	PrimitiveByte:                 0,
-	PrimitiveChar:                 'b',
+	PrimitiveChar:                 "b",
 	PrimitiveDouble:               0,
 	PrimitiveFloat:                0,
 	PrimitiveInt:                  0,

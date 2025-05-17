@@ -91,23 +91,27 @@ final class GoStructConverterTest {
 
         assertThat(model.properties).hasSize(4);
         GoStructConverter.PropertyExpr prop1 = model.properties.get(0);
-        assertThat(prop1.name).isEqualTo("Field1");
+        assertThat(prop1.name).isEqualTo("field1");
+        assertThat(prop1.capitalizedName()).isEqualTo("Field1");
         assertThat(prop1.type).isEqualTo("int32");
         assertThat(prop1.typeExpr()).isEqualTo("int32");
         assertThat(prop1.optional).isFalse();
+        assertThat(prop1.tagsExpr()).isEqualTo("json:\"field1\"");
 
         GoStructConverter.PropertyExpr prop2 = model.properties.get(1);
-        assertThat(prop2.name).isEqualTo("Field2");
+        assertThat(prop2.name).isEqualTo("field2");
         assertThat(prop2.type).isEqualTo("T");
 
         GoStructConverter.PropertyExpr prop3 = model.properties.get(2);
-        assertThat(prop3.name).isEqualTo("Field3");
+        assertThat(prop3.name).isEqualTo("field3");
         assertThat(prop3.type).isEqualTo("RecursiveClass");
         assertThat(prop3.typeExpr()).isEqualTo("*RecursiveClass");
         assertThat(prop3.optional).isTrue();
+        assertThat(prop3.tagsExpr()).isEqualTo("json:\"field3,omitempty\"");
 
         GoStructConverter.PropertyExpr prop5 = model.properties.get(3);
-        assertThat(prop5.name).isEqualTo("MapField");
+        assertThat(prop5.name).isEqualTo("mapField");
+        assertThat(prop5.capitalizedName()).isEqualTo("MapField");
         assertThat(prop5.type).isEqualTo("map[string]int32");
     }
 }

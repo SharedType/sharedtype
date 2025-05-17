@@ -40,12 +40,12 @@ final class RustEnumConverter extends AbstractEnumConverter {
 
     @Nullable
     private String getValueTypeExpr(EnumDef enumDef) {
-        EnumValueInfo component = enumDef.components().get(0);
+        TypeInfo componentValueType = enumDef.getComponentValueType();
         TypeInfo enumTypeInfo = enumDef.typeInfoSet().iterator().next();
-        if (enumTypeInfo.equals(component.value().getValueType())) {
+        if (enumTypeInfo.equals(componentValueType)) {
             return null;
         }
-        return typeExpressionConverter.toTypeExpr(component.value().getValueType(), enumDef);
+        return typeExpressionConverter.toTypeExpr(componentValueType, enumDef);
     }
 
     private List<EnumerationExpr> extractEnumValues(List<EnumValueInfo> components) {
