@@ -1,6 +1,9 @@
 {{macroTraitsExpr}}
 pub struct {{name}}{{{typeParametersExpr}}} {
 {{#properties}}
+    {{#tagLiterals}}
+    {{{.}}}
+    {{/tagLiterals}}
     pub {{name}}: {{{typeExpr}}},
 {{/properties}}
 }

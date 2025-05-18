@@ -133,7 +133,6 @@ final class ClassTypeDefParser implements TypeDefParser {
             fieldTypeInfo.addReferencingType(classDef);
             FieldComponentInfo fieldInfo = FieldComponentInfo.builder()
                 .name(tuple.b())
-                .modifiers(element.getModifiers())
                 .optional(ctx.isOptionalAnnotated(element))
                 .element(element)
                 .type(fieldTypeInfo)

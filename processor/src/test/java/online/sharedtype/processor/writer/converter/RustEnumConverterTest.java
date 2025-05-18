@@ -1,5 +1,6 @@
 package online.sharedtype.processor.writer.converter;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TestUtils;
@@ -12,6 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static online.sharedtype.processor.domain.Constants.INT_TYPE_INFO;
@@ -49,7 +52,9 @@ final class RustEnumConverterTest {
             .qualifiedName("com.github.cuzfrog.EnumA")
             .enumValueInfos(Arrays.asList(
                 EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", enumType, "Value1")).build(),
-                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", enumType, "Value2")).build()
+                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", enumType, "Value2"))
+                    .tagLiterals(Map.of(SharedType.TargetType.RUST, List.of("tag1", "tag2")))
+                    .build()
             ))
             .build();
         enumDef.linkTypeInfo(enumType);
@@ -67,10 +72,12 @@ final class RustEnumConverterTest {
             v1 -> {
                 assertThat(v1.name).isEqualTo("Value1");
                 assertThat(v1.value).isEqualTo("EnumA::Value1");
+                assertThat(v1.tagLiterals).isEmpty();
             },
             v2 -> {
                 assertThat(v2.name).isEqualTo("Value2");
                 assertThat(v2.value).isEqualTo("EnumA::Value2");
+                assertThat(v2.tagLiterals).containsExactly("tag1", "tag2");
             }
         );
     }

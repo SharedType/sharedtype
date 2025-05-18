@@ -16,16 +16,11 @@ import online.sharedtype.processor.domain.value.EnumConstantValue;
  * @see SharedType.EnumValue
  * @author Cause Chung
  */
-@EqualsAndHashCode(of = {"name", "value"}, callSuper = false)
+@EqualsAndHashCode(of = {"value"}, callSuper = true)
 @SuperBuilder
 public final class EnumValueInfo extends AbstractComponentInfo {
     private static final long serialVersionUID = 1117324458104635595L;
-    private final String name;
     private final EnumConstantValue value;
-
-    public String name() {
-        return name;
-    }
 
     public EnumConstantValue value() {
         return value;

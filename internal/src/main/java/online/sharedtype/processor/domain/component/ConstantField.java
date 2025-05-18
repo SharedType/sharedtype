@@ -12,16 +12,11 @@ import online.sharedtype.processor.domain.value.ValueHolder;
  *
  * @author Cause Chung
  */
-@EqualsAndHashCode(of = {"name", "value"}, callSuper = false)
+@EqualsAndHashCode(of = {"value"}, callSuper = true)
 @SuperBuilder
 public final class ConstantField extends AbstractComponentInfo {
     private static final long serialVersionUID = -155863067131290289L;
-    private final String name;
     private final ValueHolder value;
-
-    public String name() {
-        return name;
-    }
 
     public ValueHolder value() {
         return value;
@@ -34,6 +29,6 @@ public final class ConstantField extends AbstractComponentInfo {
 
     @Override
     public String toString() {
-        return String.format("%s=%s", name, value);
+        return String.format("%s=%s", name(), value);
     }
 }

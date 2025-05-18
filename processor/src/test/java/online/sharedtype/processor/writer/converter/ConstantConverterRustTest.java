@@ -1,8 +1,8 @@
 package online.sharedtype.processor.writer.converter;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.context.OutputTarget;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.component.ConstantField;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 final class ConstantConverterRustTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeExpressionConverter typeExpressionConverter = TypeExpressionConverter.rustLiteral();
-    private final ConstantConverter typescriptConverter = new ConstantConverter(ctxMocks.getContext(), typeExpressionConverter, OutputTarget.RUST);
+    private final ConstantConverter typescriptConverter = new ConstantConverter(ctxMocks.getContext(), typeExpressionConverter, SharedType.TargetType.RUST);
 
     private final ConstantNamespaceDef constantNamespaceDef = ConstantNamespaceDef.builder()
         .simpleName("Abc")
@@ -68,6 +68,6 @@ final class ConstantConverterRustTest {
             }
         );
         var template = tuple.a();
-        assertThat(template.getOutputTarget()).isEqualTo(OutputTarget.RUST);
+        assertThat(template.getTargetType()).isEqualTo(SharedType.TargetType.RUST);
     }
 }

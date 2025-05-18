@@ -43,7 +43,7 @@ final class GoEnumConverterTest {
         when(ctxMocks.getContext().getTypeStore().getConfig(enumDef)).thenReturn(config);
         when(config.getGoEnumFormat()).thenReturn(Props.Go.EnumFormat.CONST);
 
-        Tuple<Template, Object> tuple = converter.convert(enumDef);
+        Tuple<Template, AbstractTypeExpr> tuple = converter.convert(enumDef);
         assertThat(tuple.a()).isEqualTo(Template.TEMPLATE_GO_CONST_ENUM);
         GoEnumConverter.EnumExpr value = (GoEnumConverter.EnumExpr) tuple.b();
         assertThat(value.name).isEqualTo("EnumA");
@@ -75,7 +75,7 @@ final class GoEnumConverterTest {
         when(ctxMocks.getContext().getTypeStore().getConfig(enumDef)).thenReturn(config);
         when(config.getGoEnumFormat()).thenReturn(Props.Go.EnumFormat.STRUCT);
 
-        Tuple<Template, Object> tuple = converter.convert(enumDef);
+        Tuple<Template, AbstractTypeExpr> tuple = converter.convert(enumDef);
         assertThat(tuple.a()).isEqualTo(Template.TEMPLATE_GO_STRUCT_ENUM);
         GoEnumConverter.EnumExpr value = (GoEnumConverter.EnumExpr) tuple.b();
         assertThat(value.name).isEqualTo("EnumA");

@@ -1,6 +1,8 @@
 package online.sharedtype.processor.writer.converter;
 
 import lombok.RequiredArgsConstructor;
+import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.component.ComponentInfo;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.def.TypeDef;
@@ -23,7 +25,7 @@ final class RustEnumConverter extends AbstractEnumConverter {
     private final RustMacroTraitsGenerator rustMacroTraitsGenerator;
 
     @Override
-    public Tuple<Template, Object> convert(TypeDef typeDef) {
+    public Tuple<Template, AbstractTypeExpr> convert(TypeDef typeDef) {
         EnumDef enumDef = (EnumDef) typeDef;
 
         String valueType = getValueTypeExpr(enumDef);
@@ -54,7 +56,7 @@ final class RustEnumConverter extends AbstractEnumConverter {
         for (EnumValueInfo component : components) {
             boolean isEnum = component.value().getValueType().getKind() == ConcreteTypeInfo.Kind.ENUM;
             exprs.add(new EnumerationExpr(
-                component.name(),
+                component,
                 isEnum ? rustEnumSelectExpr(component.value()) : component.value().literalValue()
             ));
         }
@@ -69,7 +71,7 @@ final class RustEnumConverter extends AbstractEnumConverter {
 
     @SuppressWarnings("unused")
     @RequiredArgsConstructor
-    static final class EnumExpr {
+    static final class EnumExpr extends AbstractTypeExpr {
         final String name;
         final List<EnumerationExpr> enumerations;
         final Set<String> macroTraits;
@@ -82,10 +84,12 @@ final class RustEnumConverter extends AbstractEnumConverter {
     }
 
     @SuppressWarnings("unused")
-    @RequiredArgsConstructor
-    static final class EnumerationExpr {
-        final String name;
+    static final class EnumerationExpr extends AbstractFieldExpr {
         @Nullable
         final String value;
+        EnumerationExpr(ComponentInfo componentInfo, @Nullable String value) {
+            super(componentInfo, SharedType.TargetType.RUST);
+            this.value = value;
+        }
     }
 }

@@ -5,6 +5,7 @@ import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
 import online.sharedtype.processor.writer.adaptor.RenderDataAdaptor;
 import online.sharedtype.processor.writer.adaptor.RenderDataAdaptorFactory;
+import online.sharedtype.processor.writer.converter.AbstractTypeExpr;
 import online.sharedtype.processor.writer.converter.TemplateDataConverter;
 import online.sharedtype.processor.writer.render.Template;
 import online.sharedtype.processor.writer.render.TemplateRenderer;
@@ -67,8 +68,8 @@ final class TemplateTypeFileWriterTest {
         when(renderDataAdaptorFactory.header(ctxMocks.getContext())).thenReturn(Tuple.of(Template.TEMPLATE_TYPESCRIPT_HEADER, renderDataAdaptor));
 
         ClassDef classDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.ClassA").build();
-        var data1 = new Object();
-        var data2 = new Object();
+        var data1 = mock(AbstractTypeExpr.class);
+        var data2 = mock(AbstractTypeExpr.class);
         when(converter1.shouldAccept(classDef)).thenReturn(true);
         when(converter2.shouldAccept(classDef)).thenReturn(true);
         when(converter3.shouldAccept(classDef)).thenReturn(false);

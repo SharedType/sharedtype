@@ -3,7 +3,9 @@ package online.sharedtype.processor.writer.converter;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.domain.component.ComponentInfo;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.def.EnumDef;
@@ -41,7 +43,7 @@ final class RustStructConverter extends AbstractStructConverter {
     }
 
     @Override
-    public Tuple<Template, Object> convert(TypeDef typeDef) {
+    public Tuple<Template, AbstractTypeExpr> convert(TypeDef typeDef) {
         ClassDef classDef = (ClassDef) typeDef;
         StructExpr value = new StructExpr(
             classDef.simpleName(),
@@ -83,6 +85,7 @@ final class RustStructConverter extends AbstractStructConverter {
 
     private PropertyExpr toPropertyExpr(FieldComponentInfo field, TypeDef contextTypeDef) {
         return new PropertyExpr(
+            field,
             ctx.getProps().getRust().isConvertToSnakeCase() ? ConversionUtils.toSnakeCase(field.name()) : field.name(),
             typeExpressionConverter.toTypeExpr(getFieldValueType(field), contextTypeDef),
             ConversionUtils.isOptionalField(field)
@@ -101,7 +104,7 @@ final class RustStructConverter extends AbstractStructConverter {
 
     @SuppressWarnings("unused")
     @RequiredArgsConstructor
-    static final class StructExpr {
+    static final class StructExpr extends AbstractTypeExpr {
         final String name;
         final List<String> typeParameters;
         final List<PropertyExpr> properties;
@@ -121,12 +124,17 @@ final class RustStructConverter extends AbstractStructConverter {
 
     @ToString
     @SuppressWarnings("unused")
-    @EqualsAndHashCode(of = "name")
-    @RequiredArgsConstructor
-    static final class PropertyExpr {
+    @EqualsAndHashCode(of = {}, callSuper = false)
+    static final class PropertyExpr extends AbstractFieldExpr {
         final String name;
         final String type;
         final boolean optional;
+        PropertyExpr(ComponentInfo componentInfo, String name, String type, boolean optional) {
+            super(componentInfo, SharedType.TargetType.RUST);
+            this.name = name;
+            this.type = type;
+            this.optional = optional;
+        }
 
         String typeExpr() {
             return optional ? String.format("Option<%s>", type) : type;

@@ -1,11 +1,11 @@
 package online.sharedtype.processor.writer.converter;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.context.OutputTarget;
+import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.component.ConstantField;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
-import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 final class ConstantConverterTypescriptTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final ConstantConverter typescriptConverter = new ConstantConverter(ctxMocks.getContext(), null, OutputTarget.TYPESCRIPT);
+    private final ConstantConverter typescriptConverter = new ConstantConverter(ctxMocks.getContext(), null, SharedType.TargetType.TYPESCRIPT);
 
     private final ConstantNamespaceDef constantNamespaceDef = ConstantNamespaceDef.builder()
         .simpleName("Abc")
@@ -58,7 +58,7 @@ final class ConstantConverterTypescriptTest {
             }
         );
         var template = tuple.a();
-        assertThat(template.getOutputTarget()).isEqualTo(OutputTarget.TYPESCRIPT);
+        assertThat(template.getTargetType()).isEqualTo(SharedType.TargetType.TYPESCRIPT);
         assertThat(template.getResourcePath()).contains("constant.mustache");
     }
 
@@ -67,7 +67,7 @@ final class ConstantConverterTypescriptTest {
         when(config.isConstantNamespaced()).thenReturn(false);
         var tuple = typescriptConverter.convert(constantNamespaceDef);
         var template = tuple.a();
-        assertThat(template.getOutputTarget()).isEqualTo(OutputTarget.TYPESCRIPT);
+        assertThat(template.getTargetType()).isEqualTo(SharedType.TargetType.TYPESCRIPT);
         assertThat(template.getResourcePath()).contains("constant-inline");
     }
 }
