@@ -4,6 +4,7 @@ import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.RenderFlags;
+import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.DateTimeInfo;
@@ -58,5 +59,10 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
             }
         }
         return expr;
+    }
+
+    @Override
+    TypeInfo mapEnumValueType(ConcreteTypeInfo enumType, EnumDef enumDef) {
+        return enumDef.getComponentValueType();
     }
 }

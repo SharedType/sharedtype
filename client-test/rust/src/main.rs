@@ -2,7 +2,7 @@ mod types;
 
 use std::io::Cursor;
 use tiny_http::{Method, Response, Server, StatusCode};
-use types::{JavaClass, JavaTimeClass, SubtypeWithNestedCustomTypeString, DependencyClassA};
+use types::{ArrayClass, DependencyClassA, JavaClass, JavaTimeClass, MapClass, MathClass, SubtypeWithNestedCustomTypeString};
 
 type JavaRecord = types::JavaRecord<String>;
 
@@ -82,7 +82,10 @@ fn main() {
                             JavaTimeClass,
                             SubtypeWithNestedCustomTypeString,
                             DependencyClassA,
-                            JavaRecord
+                            MapClass,
+                            ArrayClass,
+                            JavaRecord,
+                            MathClass
                         )
                     };
                     match json_opt {
@@ -98,7 +101,7 @@ fn main() {
         };
 
         println!(
-            "{:?} {:?} - {:?} : {:?}",
+            "{:?} {:?} - {:?} : {}",
             response_value.status, request_method, request_url, response_value.body
         );
 

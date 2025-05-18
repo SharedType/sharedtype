@@ -3,6 +3,7 @@ package online.sharedtype.processor.writer.converter.type;
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.type.ArrayTypeInfo;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
@@ -46,6 +47,10 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
     abstract String dateTimeTypeExpr(DateTimeInfo dateTimeInfo, Config config);
 
     abstract String toTypeExpression(ConcreteTypeInfo typeInfo, String defaultExpr);
+
+    TypeInfo mapEnumValueType(ConcreteTypeInfo enumType, EnumDef enumDef) {
+        return enumType;
+    }
 
     private void buildTypeExprRecursively(TypeInfo typeInfo, @SideEffect StringBuilder exprBuilder, TypeDef contextTypeDef, Config config) {
         beforeVisitTypeInfo(typeInfo);
@@ -103,6 +108,16 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
         boolean validKey = false;
         if (keyType instanceof ConcreteTypeInfo && ((ConcreteTypeInfo) keyType).getKind() == ConcreteTypeInfo.Kind.ENUM) {
             validKey = true;
+            ConcreteTypeInfo enumType = (ConcreteTypeInfo) keyType;
+            if (enumType.typeDef() instanceof EnumDef) {
+                EnumDef enumDef = (EnumDef) enumType.typeDef();
+                keyType = mapEnumValueType(enumType, enumDef);
+            } else {
+                throw new SharedTypeInternalError(String.format(
+                    "Key type of %s is enum %s, but failed to get actual enumValue type, because TypeDef is not EnumDef, key typeDef: %s, contextType: %s.",
+                    baseMapType, keyType, ((ConcreteTypeInfo) keyType).typeDef(), contextTypeDef
+                ));
+            }
         } else if (Constants.LITERAL_TYPES.contains(keyType)) {
             validKey = true;
         }

@@ -59,7 +59,7 @@ final class JsonE2eTest {
     private final Instant NOW = Instant.now();
 
     static SharedType.TargetType[] testTypes() {
-        return new SharedType.TargetType[]{SharedType.TargetType.RUST};
+        return SharedType.TargetType.values();
     }
 
     @BeforeAll

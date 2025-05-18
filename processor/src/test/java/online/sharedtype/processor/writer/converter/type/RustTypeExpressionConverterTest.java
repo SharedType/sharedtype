@@ -4,13 +4,18 @@ import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.RenderFlags;
+import online.sharedtype.processor.domain.component.EnumValueInfo;
+import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.type.ArrayTypeInfo;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.DateTimeInfo;
+import online.sharedtype.processor.domain.value.ValueHolder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -72,5 +77,16 @@ final class RustTypeExpressionConverterTest {
         assertThat(converter.dateTimeTypeExpr(dateTimeInfo, config)).isEqualTo("DefaultDateLiteral");
         dateTimeInfo.addMappedName(SharedType.TargetType.RUST, "BBB");
         assertThat(converter.dateTimeTypeExpr(dateTimeInfo, config)).isEqualTo("BBB");
+    }
+
+    @Test
+    void mapEnumValueType() {
+        ConcreteTypeInfo enumType = ConcreteTypeInfo.builder().simpleName("EnumA").build();
+        EnumDef enumDef = EnumDef.builder().simpleName("EnumA")
+            .enumValueInfos(List.of(
+                EnumValueInfo.builder().value(ValueHolder.ofEnum("Value1", Constants.INT_TYPE_INFO, 1)).build()
+            ))
+            .build();
+        assertThat(converter.mapEnumValueType(enumType, enumDef)).isEqualTo(Constants.INT_TYPE_INFO);
     }
 }

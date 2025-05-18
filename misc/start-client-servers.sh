@@ -14,6 +14,9 @@ cd "$BASE_DIR/client-test/go" || exit 1
 . setenv
 go run server.go &
 
+cd "$BASE_DIR/client-test/rust" || exit 1
+cargo run &
+
 # kill all child processes upon exit
 trap 'pkill -P $$' EXIT
 

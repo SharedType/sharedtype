@@ -304,7 +304,6 @@ public @interface SharedType {
      * The enum value must be "compile-time resolvable" in enum constant expressions (See "Constant" section in {@link SharedType}).
      * Note: When there are multiple enum constant constructor parameters, the value is resolved by field order.
      * If the constructor parameter order is different from the field order, value will not be resolved correctly.
-     * Additional custom annotation types can be configured via global properties.
      * <pre>
      * {@code
      * //A simple example:
@@ -318,7 +317,7 @@ public @interface SharedType {
      * type Enum = 1 | 2;
      * }
      * </pre>
-     * <br>
+     * Additional custom annotation types can be configured via global properties. E.g. {@code @JsonValue} in Jackson.
      */
     @Target({ElementType.FIELD})
     @Retention(RetentionPolicy.CLASS)

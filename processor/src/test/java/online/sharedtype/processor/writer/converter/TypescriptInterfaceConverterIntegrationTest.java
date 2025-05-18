@@ -3,6 +3,7 @@ package online.sharedtype.processor.writer.converter;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.Props;
+import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.type.ArrayTypeInfo;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
@@ -98,7 +99,9 @@ final class TypescriptInterfaceConverterIntegrationTest {
                         ConcreteTypeInfo.builder()
                             .qualifiedName("java.util.Map").simpleName("Map").kind(ConcreteTypeInfo.Kind.MAP)
                             .typeArgs(List.of(
-                                ConcreteTypeInfo.builder().simpleName("MyEnum").kind(ConcreteTypeInfo.Kind.ENUM).build(),
+                                ConcreteTypeInfo.builder().simpleName("MyEnum").kind(ConcreteTypeInfo.Kind.ENUM)
+                                    .typeDef(EnumDef.builder().simpleName("MyEnum").qualifiedName("com.github.cuzfrog.MyEnum").build())
+                                    .build(),
                                 INT_TYPE_INFO
                             ))
                             .build()
