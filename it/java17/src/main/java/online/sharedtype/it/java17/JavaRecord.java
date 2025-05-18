@@ -10,6 +10,7 @@ import online.sharedtype.it.java8.EnumGalaxy;
 import online.sharedtype.it.java8.EnumSize;
 import online.sharedtype.it.java8.InterfaceA;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +43,7 @@ public record JavaRecord<T>(
     Boolean boxedBoolean,
     char primitiveChar,
     Character boxedChar,
-
+    @SharedType.TagLiteral(tags = "#[serde(serialize_with = \"serialize_any\", deserialize_with = \"deserialize_any\")]", targets = SharedType.TargetType.RUST)
     Object object,
 //    Void aVoid,
 
@@ -75,6 +76,7 @@ public record JavaRecord<T>(
         return null;
     }
 
+    @Nullable
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Override
     public T getValue() {

@@ -1,5 +1,6 @@
 package online.sharedtype.e2e;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.it.java17.JavaRecord;
 import online.sharedtype.it.java8.ArrayClass;
 import online.sharedtype.it.java8.Container;
@@ -15,7 +16,6 @@ import online.sharedtype.it.java8.JavaClass;
 import online.sharedtype.it.java8.JavaTimeClass;
 import online.sharedtype.it.java8.MapClass;
 import online.sharedtype.it.java8.MathClass;
-import online.sharedtype.processor.domain.TargetCodeType;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.awaitility.Awaitility;
@@ -58,20 +58,20 @@ final class JsonE2eTest {
 
     private final Instant NOW = Instant.now();
 
-    static TargetCodeType[] testTypes() {
-        return new TargetCodeType[]{TargetCodeType.RUST};
+    static SharedType.TargetType[] testTypes() {
+        return new SharedType.TargetType[]{SharedType.TargetType.RUST};
     }
 
     @BeforeAll
     void waitForServers() {
-        for (TargetCodeType targetCodeType : testTypes()) {
+        for (SharedType.TargetType targetCodeType : testTypes()) {
             Awaitility.await().atMost(4, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).until(() -> caller.isHealthy(targetCodeType));
         }
     }
 
     @ParameterizedTest
     @MethodSource("testTypes")
-    void javaClassWithSuperType(TargetCodeType targetCodeType) throws Exception {
+    void javaClassWithSuperType(SharedType.TargetType targetCodeType) throws Exception {
         JavaClass obj = new JavaClass();
         obj.setSize(EnumSize.LARGE);
         obj.setString("foo");
@@ -84,7 +84,7 @@ final class JsonE2eTest {
 
     @ParameterizedTest
     @MethodSource("testTypes")
-    void javaTimeClass(TargetCodeType targetCodeType) throws Exception {
+    void javaTimeClass(SharedType.TargetType targetCodeType) throws Exception {
         var obj = new JavaTimeClass();
         obj.setInstant(NOW);
         obj.setUtilDate(new java.util.Date());
@@ -111,7 +111,7 @@ final class JsonE2eTest {
 
     @ParameterizedTest
     @MethodSource("testTypes")
-    void subtypeWithNestedCustomTypeString(TargetCodeType targetCodeType) throws Exception {
+    void subtypeWithNestedCustomTypeString(SharedType.TargetType targetCodeType) throws Exception {
         var obj = new GenericTypeReifyIssue44.SubtypeWithNestedCustomTypeString();
         var value = new GenericTypeReifyIssue44.CustomContainer<String>();
         value.setValue("foo");
@@ -122,7 +122,7 @@ final class JsonE2eTest {
 
     @ParameterizedTest
     @MethodSource("testTypes")
-    void cyclicDependencyClass(TargetCodeType targetCodeType) throws Exception {
+    void cyclicDependencyClass(SharedType.TargetType targetCodeType) throws Exception {
         var objC = new DependencyClassC();
         var objB = new DependencyClassB();
         objB.setC(objC);
@@ -140,7 +140,7 @@ final class JsonE2eTest {
 
     @ParameterizedTest
     @MethodSource("testTypes")
-    void mapClass(TargetCodeType targetCodeType) throws Exception {
+    void mapClass(SharedType.TargetType targetCodeType) throws Exception {
         var obj = new MapClass();
         obj.setMapField(new ConcurrentHashMap<>());
         obj.getMapField().put(5, "bar");
@@ -157,7 +157,7 @@ final class JsonE2eTest {
 
     @ParameterizedTest
     @MethodSource("testTypes")
-    void arrayClass(TargetCodeType targetCodeType) throws Exception {
+    void arrayClass(SharedType.TargetType targetCodeType) throws Exception {
         var obj = new ArrayClass();
         obj.setArr(new CustomList());
         obj.getArr().add("foo");
@@ -168,7 +168,7 @@ final class JsonE2eTest {
 
     @ParameterizedTest
     @MethodSource("testTypes")
-    void complexJavaRecord(TargetCodeType targetCodeType) throws Exception {
+    void complexJavaRecord(SharedType.TargetType targetCodeType) throws Exception {
         var obj = JavaRecord
             .<String>builder()
             .string("exampleString")
@@ -213,7 +213,7 @@ final class JsonE2eTest {
 
     @ParameterizedTest
     @MethodSource("testTypes")
-    void mathClass(TargetCodeType targetCodeType) throws Exception {
+    void mathClass(SharedType.TargetType targetCodeType) throws Exception {
         var obj = new MathClass();
         obj.setBigDecimal(new BigDecimal("1.2345"));
         obj.setBigInteger(new BigInteger("123456789"));

@@ -2,7 +2,9 @@ mod types;
 
 use std::io::Cursor;
 use tiny_http::{Method, Response, Server, StatusCode};
-use types::*;
+use types::{JavaClass, JavaTimeClass, SubtypeWithNestedCustomTypeString, DependencyClassA};
+
+type JavaRecord = types::JavaRecord<String>;
 
 #[derive(Debug, Clone)]
 struct ResponseValue {
@@ -30,7 +32,7 @@ macro_rules! parse_obj {
                     match res {
                         Ok(obj) => Some(serde_json::to_string(&obj).unwrap()),
                         Err(e) => {
-                            println!("Error parsing {}: {:?}, content: {:?}", stringify!($t), e, $content);
+                            println!("Error parsing {}: {:?}, content: {}", stringify!($t), e, $content);
                             None
                         }
                     }
@@ -79,7 +81,8 @@ fn main() {
                             JavaClass,
                             JavaTimeClass,
                             SubtypeWithNestedCustomTypeString,
-                            DependencyClassA
+                            DependencyClassA,
+                            JavaRecord
                         )
                     };
                     match json_opt {

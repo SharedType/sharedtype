@@ -5,9 +5,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import online.sharedtype.processor.domain.TargetCodeType;
+import online.sharedtype.SharedType;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -17,10 +16,10 @@ import java.net.http.HttpResponse;
 import java.util.Map;
 
 final class ObjectRemoteClientCaller {
-    private static final Map<TargetCodeType, URI> endpoints = Map.of(
-        TargetCodeType.TYPESCRIPT, URI.create("http://localhost:3005/"),
-        TargetCodeType.GO, URI.create("http://localhost:3001/"),
-        TargetCodeType.RUST, URI.create("http://localhost:3002/")
+    private static final Map<SharedType.TargetType, URI> endpoints = Map.of(
+        SharedType.TargetType.TYPESCRIPT, URI.create("http://localhost:3005/"),
+        SharedType.TargetType.GO, URI.create("http://localhost:3001/"),
+        SharedType.TargetType.RUST, URI.create("http://localhost:3002/")
     );
     private final HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -32,7 +31,7 @@ final class ObjectRemoteClientCaller {
         objectMapper.registerModule(module);
     }
 
-    <T> T call(T t, TargetCodeType targetCodeType) throws Exception {
+    <T> T call(T t, SharedType.TargetType targetCodeType) throws Exception {
         String simpleName = t.getClass().getSimpleName();
         String json = objectMapper.writeValueAsString(t);
 
@@ -49,7 +48,7 @@ final class ObjectRemoteClientCaller {
         return (T)objectMapper.readValue(body, t.getClass());
     }
 
-    boolean isHealthy(TargetCodeType targetCodeType) {
+    boolean isHealthy(SharedType.TargetType targetCodeType) {
         var req = HttpRequest.newBuilder()
             .uri(endpoints.get(targetCodeType).resolve("health"))
             .build();
