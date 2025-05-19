@@ -63,7 +63,8 @@ public record JavaRecord<T>(
     EnumSize enumSize,
 
     String duplicateAccessor,
-    @SharedType.Ignore @JsonIgnore String explicitlyIgnored
+    @SharedType.Ignore @JsonIgnore String explicitlyIgnored,
+    T value
 ) implements InterfaceA<T> {
     static final int STATIC_FIELD_FROM_JAVA_RECORD = 888;
 
@@ -76,10 +77,9 @@ public record JavaRecord<T>(
         return null;
     }
 
-    @Nullable
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @Override
     public T getValue() {
-        return null;
+        return value;
     }
 }

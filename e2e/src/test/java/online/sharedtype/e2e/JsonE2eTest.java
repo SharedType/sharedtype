@@ -201,6 +201,7 @@ final class JsonE2eTest {
             .enumSize(EnumSize.LARGE)
             .duplicateAccessor("duplicate")
             .explicitlyIgnored("value should be ignored and empty in response")
+            .value("value-foo")
             .build();
         obj.cyclicDependency().setA(999);
         obj.containerStringList().get(0).setT("bar");
