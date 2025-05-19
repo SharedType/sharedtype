@@ -1,6 +1,9 @@
 {{macroTraitsExpr}}
 pub enum {{name}} {
 {{#enumerations}}
+    {{#tagLiterals}}
+    {{{.}}}
+    {{/tagLiterals}}
     {{name}},
 {{/enumerations}}
 }

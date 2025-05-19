@@ -1,5 +1,8 @@
 export const {{name}} = {
 {{#constants}}
+    {{#tagLiterals}}
+    {{{.}}}
+    {{/tagLiterals}}
     {{name}}: {{{value}}},
 {{/constants}}
 } as const;

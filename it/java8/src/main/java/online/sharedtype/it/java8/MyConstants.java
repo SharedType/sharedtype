@@ -28,6 +28,7 @@ final class MyConstants extends IgnoredSuperClassB {
     static final EnumTShirt REFERENCED_ENUM_VALUE2 = EnumTShirt.S;
     static final EnumSize REFERENCED_ENUM_VALUE3 = EnumSize.SMALL;
 
+    @SharedType.TagLiteral(tags = "// test comments for inlined constant")
     static final long REFERENCED_VALUE_IN_STATIC_BLOCK;
     static final long REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK;
     static final long SELF_REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK;
@@ -76,6 +77,7 @@ final class MyConstants extends IgnoredSuperClassB {
 @SharedType(includes = SharedType.ComponentType.CONSTANTS)
 enum MyEnumConstants {
     ;
+    @SharedType.TagLiteral(tags = "// test comments for constant in enum type")
     private static final int INT_VALUE = 1;
     private static final String STR_VALUE = "abc";
 }

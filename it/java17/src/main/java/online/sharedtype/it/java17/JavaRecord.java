@@ -43,6 +43,7 @@ public record JavaRecord<T>(
     Boolean boxedBoolean,
     char primitiveChar,
     Character boxedChar,
+    @SharedType.TagLiteral(tags = "// test comments for class")
     @SharedType.TagLiteral(tags = "#[serde(serialize_with = \"serialize_any\", deserialize_with = \"deserialize_any\")]", targets = SharedType.TargetType.RUST)
     Object object,
 //    Void aVoid,

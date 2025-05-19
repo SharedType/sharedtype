@@ -11,7 +11,10 @@ import online.sharedtype.SharedType;
 )
 @RequiredArgsConstructor
 public enum EnumSize {
-    SMALL(1), MEDIUM(2), LARGE(3);
+    SMALL(1),
+    MEDIUM(2),
+    @SharedType.TagLiteral(tags = "// test comments for enum")
+    LARGE(3);
 
     @JsonValue
     @SharedType.EnumValue

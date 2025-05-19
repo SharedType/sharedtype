@@ -1,5 +1,8 @@
 const (
 {{#constants}}
+    {{#tagLiterals}}
+    {{{.}}}
+    {{/tagLiterals}}
     {{name}} {{{type}}} = {{{value}}};
 {{/constants}}
 )

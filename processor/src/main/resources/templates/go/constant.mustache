@@ -1,5 +1,8 @@
 var {{name}} = struct {
 {{#constants}}
+    {{#tagLiterals}}
+    {{{.}}}
+    {{/tagLiterals}}
     {{name}} {{type}}
 {{/constants}}
 }{
