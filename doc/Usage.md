@@ -23,7 +23,7 @@ Add Maven properties:
 ```xml
 <properties>
     <compilerArg /> <!-- Placeholder -->
-    <sharedtype.version>0.11.0</sharedtype.version>
+    <sharedtype.version>0.12.0</sharedtype.version>
     <sharedtype.enabled>false</sharedtype.enabled> <!-- Disable by default so not to participate in every compilation -->
 </properties>
 ```
