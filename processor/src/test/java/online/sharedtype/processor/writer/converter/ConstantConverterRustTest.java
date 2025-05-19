@@ -1,8 +1,8 @@
 package online.sharedtype.processor.writer.converter;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.context.OutputTarget;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.component.ConstantField;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
@@ -20,16 +20,16 @@ import static org.mockito.Mockito.when;
 final class ConstantConverterRustTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeExpressionConverter typeExpressionConverter = TypeExpressionConverter.rustLiteral();
-    private final ConstantConverter typescriptConverter = new ConstantConverter(ctxMocks.getContext(), typeExpressionConverter, OutputTarget.RUST);
+    private final ConstantConverter typescriptConverter = new ConstantConverter(ctxMocks.getContext(), typeExpressionConverter, SharedType.TargetType.RUST);
 
     private final ConstantNamespaceDef constantNamespaceDef = ConstantNamespaceDef.builder()
         .simpleName("Abc")
         .qualifiedName("com.github.cuzfrog.Abc")
         .constants(List.of(
-            new ConstantField("VALUE1", ValueHolder.of(Constants.BOOLEAN_TYPE_INFO, true)),
-            new ConstantField("VALUE2", ValueHolder.of(Constants.STRING_TYPE_INFO, "value2")),
-            new ConstantField("VALUE3", ValueHolder.of(Constants.FLOAT_TYPE_INFO, 3.5f)),
-            new ConstantField("VALUE4", ValueHolder.ofEnum("ENUM_CONST", Constants.BOXED_INT_TYPE_INFO, 1))
+            ConstantField.builder().name("VALUE1").value(ValueHolder.of(Constants.BOOLEAN_TYPE_INFO, true)).build(),
+            ConstantField.builder().name("VALUE2").value(ValueHolder.of(Constants.STRING_TYPE_INFO, "value2")).build(),
+            ConstantField.builder().name("VALUE3").value(ValueHolder.of(Constants.FLOAT_TYPE_INFO, 3.5f)).build(),
+            ConstantField.builder().name("VALUE4").value(ValueHolder.ofEnum("ENUM_CONST", Constants.BOXED_INT_TYPE_INFO, 1)).build()
         ))
         .build();
     private final Config config = mock(Config.class);
@@ -68,6 +68,6 @@ final class ConstantConverterRustTest {
             }
         );
         var template = tuple.a();
-        assertThat(template.getOutputTarget()).isEqualTo(OutputTarget.RUST);
+        assertThat(template.getTargetType()).isEqualTo(SharedType.TargetType.RUST);
     }
 }

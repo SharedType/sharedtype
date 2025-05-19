@@ -1,5 +1,6 @@
 package online.sharedtype.it;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.domain.type.ArrayTypeInfo;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
@@ -163,6 +164,13 @@ final class JavaRecordIntegrationTest {
         var objectField = componentByName.get("object");
         var typeInfo = (ConcreteTypeInfo)objectField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Object");
+        assertThat(objectField.getTagLiterals(SharedType.TargetType.RUST)).satisfiesExactly(
+            literal1 -> assertThat(literal1).isEqualTo("// test comments for class"),
+            literal2 -> assertThat(literal2).startsWith("#[serde")
+        );
+        assertThat(objectField.getTagLiterals(SharedType.TargetType.TYPESCRIPT)).satisfiesExactly(
+            literal1 -> assertThat(literal1).isEqualTo("// test comments for class")
+        );
     }
 
 //    @Disabled("not supported")

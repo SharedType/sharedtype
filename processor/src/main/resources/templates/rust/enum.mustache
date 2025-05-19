@@ -1,10 +1,12 @@
 {{macroTraitsExpr}}
 pub enum {{name}} {
 {{#enumerations}}
+    {{#tagLiterals}}
+    {{{.}}}
+    {{/tagLiterals}}
     {{name}},
 {{/enumerations}}
 }
-
 {{#hasValue}}
 impl {{name}} {
     pub const fn value(self) -> {{{valueType}}} {

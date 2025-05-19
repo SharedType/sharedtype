@@ -1,9 +1,9 @@
 package online.sharedtype.processor.context;
 
+import online.sharedtype.SharedType;
 import org.junit.jupiter.api.Test;
 import online.sharedtype.processor.support.exception.SharedTypeException;
 
-import javax.annotation.Nullable;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,6 +25,7 @@ final class PropsFactoryTest {
     void loadDefaultProps() {
         Props props = PropsFactory.loadProps(Paths.get("not-exist"));
         assertThat(props.getTargets()).containsExactly(OutputTarget.TYPESCRIPT);
+        assertThat(props.getTargetTypes()).containsExactly(SharedType.TargetType.TYPESCRIPT);
         assertThat(props.getOptionalAnnotations()).containsExactly("javax.annotation.Nullable");
         assertThat(props.getIgnoreAnnotations()).isEmpty();
         assertThat(props.getAccessorAnnotations()).isEmpty();

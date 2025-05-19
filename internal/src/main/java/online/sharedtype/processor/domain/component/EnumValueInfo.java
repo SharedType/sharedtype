@@ -2,9 +2,9 @@ package online.sharedtype.processor.domain.component;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.domain.def.EnumDef;
-import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.EnumConstantValue;
 
 /**
@@ -16,16 +16,11 @@ import online.sharedtype.processor.domain.value.EnumConstantValue;
  * @see SharedType.EnumValue
  * @author Cause Chung
  */
-@EqualsAndHashCode
-@RequiredArgsConstructor
-public final class EnumValueInfo implements ComponentInfo {
+@EqualsAndHashCode(of = {"value"}, callSuper = true)
+@SuperBuilder
+public final class EnumValueInfo extends AbstractComponentInfo {
     private static final long serialVersionUID = 1117324458104635595L;
-    private final String name;
     private final EnumConstantValue value;
-
-    public String name() {
-        return name;
-    }
 
     public EnumConstantValue value() {
         return value;

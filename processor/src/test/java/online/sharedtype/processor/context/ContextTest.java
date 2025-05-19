@@ -9,9 +9,11 @@ import javax.annotation.Nullable;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ElementKind;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -125,5 +127,38 @@ final class ContextTest {
             )
             .element();
         assertThat(ctx.isAnnotatedAsEnumValue(typeElement)).isTrue();
+    }
+
+    @Test
+    void tagLiteralsWithTargets() {
+        ctx = new Context(processingEnv, Props.builder().build());
+        var variableElement = ctxMocks.executable("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.TagLiteral.class, mock -> {
+                when(mock.tags()).thenReturn(new String[]{"a", "b"});
+                when(mock.targets()).thenReturn(new SharedType.TargetType[]{SharedType.TargetType.GO, SharedType.TargetType.RUST});
+            })
+            .withAnnotation(SharedType.TagLiteral.class, mock -> {
+                when(mock.tags()).thenReturn(new String[]{"c"});
+                when(mock.targets()).thenReturn(new SharedType.TargetType[]{SharedType.TargetType.TYPESCRIPT, SharedType.TargetType.RUST});
+            })
+            .element();
+        var res = ctx.extractTagLiterals(variableElement);
+        assertThat(res).hasSize(3);
+        assertThat(res.get(SharedType.TargetType.TYPESCRIPT)).isEqualTo(List.of("c"));
+        assertThat(res.get(SharedType.TargetType.GO)).isEqualTo(List.of("a", "b"));
+        assertThat(res.get(SharedType.TargetType.RUST)).isEqualTo(List.of("a", "b", "c"));
+    }
+
+    @Test
+    void tagLiteralsWithoutTargetsFallbackToGlobalTargets() {
+        ctx = new Context(processingEnv, Props.builder().targetTypes(Set.of(SharedType.TargetType.RUST)).build());
+        var variableElement = ctxMocks.executable("com.github.cuzfrog.Abc")
+            .withAnnotation(SharedType.TagLiteral.class, mock -> {
+                when(mock.tags()).thenReturn(new String[]{"a", "b"});
+            })
+            .element();
+        var res = ctx.extractTagLiterals(variableElement);
+        assertThat(res).hasSize(1);
+        assertThat(res.get(SharedType.TargetType.RUST)).isEqualTo(List.of("a", "b"));
     }
 }

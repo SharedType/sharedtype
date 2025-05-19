@@ -1,8 +1,10 @@
 package online.sharedtype.processor.writer.converter;
 
 import lombok.RequiredArgsConstructor;
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.domain.component.ComponentInfo;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.def.TypeDef;
@@ -24,7 +26,7 @@ final class GoEnumConverter extends AbstractEnumConverter {
     private final Context ctx;
     private final TypeExpressionConverter typeExpressionConverter;
     @Override
-    public Tuple<Template, Object> convert(TypeDef typeDef) {
+    public Tuple<Template, AbstractTypeExpr> convert(TypeDef typeDef) {
         EnumDef enumDef = (EnumDef) typeDef;
 
         String valueType = getValueTypeExpr(enumDef);
@@ -41,7 +43,7 @@ final class GoEnumConverter extends AbstractEnumConverter {
 
     private static EnumerationExpr buildEnumExpr(EnumValueInfo component, String valueTypeExpr) {
         return new EnumerationExpr(
-            component.name(),
+            component,
             valueTypeExpr,
             component.value().literalValue()
         );
@@ -58,18 +60,21 @@ final class GoEnumConverter extends AbstractEnumConverter {
 
     @SuppressWarnings("unused")
     @RequiredArgsConstructor
-    static final class EnumExpr {
+    static final class EnumExpr extends AbstractTypeExpr {
         final String name;
         final List<EnumerationExpr> enumerations;
         final String valueType;
     }
 
     @SuppressWarnings("unused")
-    @RequiredArgsConstructor
-    static final class EnumerationExpr {
-        final String name;
+    static final class EnumerationExpr extends AbstractFieldExpr {
         final String enumName;
         @Nullable
         final String value;
+        EnumerationExpr(ComponentInfo componentInfo, String enumName, @Nullable String value) {
+            super(componentInfo, SharedType.TargetType.GO);
+            this.enumName = enumName;
+            this.value = value;
+        }
     }
 }

@@ -1,6 +1,9 @@
 type {{name}} = {{valueType}}
 const (
 {{#enumerations}}
+    {{#tagLiterals}}
+    {{{.}}}
+    {{/tagLiterals}}
     {{name}} {{enumName}} = {{{value}}}
 {{/enumerations}}
 )

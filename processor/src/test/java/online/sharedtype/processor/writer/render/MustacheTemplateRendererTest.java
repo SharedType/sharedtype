@@ -2,7 +2,7 @@ package online.sharedtype.processor.writer.render;
 
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
-import online.sharedtype.processor.context.OutputTarget;
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.support.utils.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,7 +25,7 @@ final class MustacheTemplateRendererTest {
 
     private @Mock Mustache compiledMustache;
     private @Mock Writer writer;
-    private final Template template = new Template(OutputTarget.GO, "test");
+    private final Template template = new Template(SharedType.TargetType.GO, "test");
 
     @BeforeEach
     void setUp() {

@@ -1,5 +1,6 @@
 package online.sharedtype.it;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.value.EnumConstantValue;
 import org.junit.jupiter.api.Test;
@@ -79,6 +80,7 @@ final class ConstantsIntegrationTest {
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_VALUE_IN_STATIC_BLOCK");
                 assertThat(component.value().getValue()).isEqualTo(112L);
+                assertThat(component.getTagLiterals(SharedType.TargetType.GO)).anyMatch(s -> s.contains("test comments"));
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK");

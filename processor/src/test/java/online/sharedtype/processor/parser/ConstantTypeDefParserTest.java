@@ -3,10 +3,10 @@ package online.sharedtype.processor.parser;
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
-import online.sharedtype.processor.domain.def.ClassDef;
-import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.parser.value.ValueParser;
@@ -17,6 +17,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -110,12 +111,14 @@ final class ConstantTypeDefParserTest {
                 assertThat(field1.value().getValueType()).isEqualTo(Constants.INT_TYPE_INFO);
                 assertThat(field1.value().getValue()).isEqualTo(105);
                 assertThat(field1.value().literalValue()).isEqualTo("105");
+                assertThat(field1.getElement()).isEqualTo(intStaticField.element());
             },
             field2 -> {
                 assertThat(field2.name()).isEqualTo("CONST_STRING_VALUE");
                 assertThat(field2.value().getValueType()).isEqualTo(Constants.STRING_TYPE_INFO);
                 assertThat(field2.value().getValue()).isEqualTo("abc123");
                 assertThat(field2.value().literalValue()).isEqualTo("\"abc123\"");
+                assertThat(field2.getElement()).isEqualTo(stringStaticField.element());
             }
         );
     }

@@ -1,9 +1,11 @@
 package online.sharedtype.processor.writer.converter;
 
 import lombok.RequiredArgsConstructor;
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.Props;
+import online.sharedtype.processor.domain.component.ComponentInfo;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import online.sharedtype.processor.domain.def.TypeDef;
@@ -31,7 +33,7 @@ final class TypescriptInterfaceConverter extends AbstractStructConverter {
     }
 
     @Override
-    public Tuple<Template, Object> convert(TypeDef typeDef) {
+    public Tuple<Template, AbstractTypeExpr> convert(TypeDef typeDef) {
         ClassDef classDef = (ClassDef) typeDef;
         Config config = ctx.getTypeStore().getConfig(typeDef);
         InterfaceExpr value = new InterfaceExpr(
@@ -47,7 +49,7 @@ final class TypescriptInterfaceConverter extends AbstractStructConverter {
     private PropertyExpr toPropertyExpr(FieldComponentInfo field, TypeDef contextTypeDef, Config config) {
         boolean isFieldOptional = ConversionUtils.isOptionalField(field);
         return new PropertyExpr(
-            field.name(),
+            field,
             typeExpressionConverter.toTypeExpr(field.type(), contextTypeDef),
             interfacePropertyDelimiter,
             isFieldOptional && config.getTypescriptOptionalFieldFormats().contains(QUESTION_MARK),
@@ -72,7 +74,7 @@ final class TypescriptInterfaceConverter extends AbstractStructConverter {
 
     @RequiredArgsConstructor
     @SuppressWarnings("unused")
-    static final class InterfaceExpr {
+    static final class InterfaceExpr extends AbstractTypeExpr {
         final String name;
         final List<String> typeParameters;
         final List<String> supertypes;
@@ -93,15 +95,23 @@ final class TypescriptInterfaceConverter extends AbstractStructConverter {
         }
     }
 
-    @RequiredArgsConstructor
     @SuppressWarnings("unused")
-    static final class PropertyExpr{
-        final String name;
+    static final class PropertyExpr extends AbstractFieldExpr {
         final String type;
         final char propDelimiter;
         final boolean optional;
         final boolean unionNull;
         final boolean unionUndefined;
         final boolean readonly;
+        PropertyExpr(ComponentInfo componentInfo, String type, char propDelimiter, boolean optional, boolean unionNull,
+                     boolean unionUndefined, boolean readonly) {
+            super(componentInfo, SharedType.TargetType.TYPESCRIPT);
+            this.type = type;
+            this.propDelimiter = propDelimiter;
+            this.optional = optional;
+            this.unionNull = unionNull;
+            this.unionUndefined = unionUndefined;
+            this.readonly = readonly;
+        }
     }
 }

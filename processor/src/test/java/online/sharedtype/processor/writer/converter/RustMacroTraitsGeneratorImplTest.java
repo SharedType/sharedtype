@@ -1,11 +1,9 @@
 package online.sharedtype.processor.writer.converter;
 
-import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TestUtils;
 import online.sharedtype.processor.domain.def.ClassDef;
-import online.sharedtype.processor.domain.def.EnumDef;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,10 +1,12 @@
 package online.sharedtype.it.java8;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import online.sharedtype.SharedType;
 
-@Getter
-@Setter
+@SharedType(
+    rustMacroTraits = {"serde::Serialize", "serde::Deserialize"}
+)
+@Data
 public final class Container<T> {
     private T t;
 }

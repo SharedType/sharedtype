@@ -2,6 +2,7 @@ package online.sharedtype;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -242,9 +243,11 @@ public @interface SharedType {
      * Whether to mark generated type fields as readonly. Default fallback to global properties.
      *
      * @return value can be one of:
-     * "all" - all fields are readonly
-     * "acyclic" - only fields of not cyclic-referenced types are readonly
-     * "none" - no fields are readonly
+     * <ul>
+     *     <li>"all" - all fields are readonly</li>
+     *     <li>"acyclic" - only fields of not cyclic-referenced types are readonly</li>
+     *     <li>"none" - no fields are readonly</li>
+     * </ul>
      */
     String typescriptFieldReadonlyType() default "";
 
@@ -301,7 +304,6 @@ public @interface SharedType {
      * The enum value must be "compile-time resolvable" in enum constant expressions (See "Constant" section in {@link SharedType}).
      * Note: When there are multiple enum constant constructor parameters, the value is resolved by field order.
      * If the constructor parameter order is different from the field order, value will not be resolved correctly.
-     * Additional custom annotation types can be configured via global properties.
      * <pre>
      * {@code
      * //A simple example:
@@ -315,11 +317,30 @@ public @interface SharedType {
      * type Enum = 1 | 2;
      * }
      * </pre>
-     * <br>
+     * Additional custom annotation types can be configured via global properties. E.g. {@code @JsonValue} in Jackson.
      */
     @Target({ElementType.FIELD})
     @Retention(RetentionPolicy.CLASS)
     @interface EnumValue {
+    }
+
+    /**
+     * Add any tag literals to a field. E.g.
+     * <pre>
+     *     {@code
+     *     @SharedType.TagLiterals(tags = "#[serde(skip)]", targets = RUST)
+     *     private final Object ignoredField;
+     *     }
+     * </pre>
+     * It's treated as plain string, thus can also be used to emit comments or documentation.
+     */
+    @Target({ElementType.FIELD, ElementType.METHOD})
+    @Retention(RetentionPolicy.SOURCE)
+    @Repeatable(TagLiterals.class)
+    @interface TagLiteral {
+        String[] tags();
+        /** If empty, fallback to globally enabled targets. */
+        TargetType[] targets() default {};
     }
 
     enum ComponentType {
@@ -359,5 +380,9 @@ public @interface SharedType {
          * Fallback to global default.
          */
         DEFAULT,
+    }
+
+    enum TargetType {
+        TYPESCRIPT, GO, RUST
     }
 }

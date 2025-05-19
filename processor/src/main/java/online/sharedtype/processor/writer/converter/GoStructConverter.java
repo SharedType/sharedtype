@@ -3,6 +3,8 @@ package online.sharedtype.processor.writer.converter;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.component.ComponentInfo;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.def.TypeDef;
@@ -11,7 +13,9 @@ import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter
 import online.sharedtype.processor.writer.render.Template;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -19,7 +23,7 @@ final class GoStructConverter extends AbstractStructConverter {
     private final TypeExpressionConverter typeExpressionConverter;
 
     @Override
-    public Tuple<Template, Object> convert(TypeDef typeDef) {
+    public Tuple<Template, AbstractTypeExpr> convert(TypeDef typeDef) {
         ClassDef classDef = (ClassDef) typeDef;
         StructExpr value = new StructExpr(
             classDef.simpleName(),
@@ -40,7 +44,7 @@ final class GoStructConverter extends AbstractStructConverter {
 
     private PropertyExpr toPropertyExpr(FieldComponentInfo field, TypeDef contextTypeDef) {
         return new PropertyExpr(
-            ConversionUtils.capitalize(field.name()),
+            field,
             typeExpressionConverter.toTypeExpr(field.type(), contextTypeDef),
             ConversionUtils.isOptionalField(field)
         );
@@ -48,7 +52,7 @@ final class GoStructConverter extends AbstractStructConverter {
 
     @SuppressWarnings("unused")
     @RequiredArgsConstructor
-    static final class StructExpr {
+    static final class StructExpr extends AbstractTypeExpr {
         final String name;
         final List<String> typeParameters;
         final List<String> supertypes;
@@ -64,18 +68,34 @@ final class GoStructConverter extends AbstractStructConverter {
 
     @ToString
     @SuppressWarnings("unused")
-    @EqualsAndHashCode(of = "name")
-    @RequiredArgsConstructor
-    static final class PropertyExpr {
-        final String name;
+    @EqualsAndHashCode(of = {}, callSuper = true)
+    static final class PropertyExpr extends AbstractFieldExpr {
         final String type;
         final boolean optional;
+        PropertyExpr(ComponentInfo componentInfo, String type, boolean optional) {
+            super(componentInfo, SharedType.TargetType.GO);
+            this.type = type;
+            this.optional = optional;
+        }
+
+        String capitalizedName() {
+            return ConversionUtils.capitalize(name);
+        }
 
         String typeExpr() {
             if (optional) {
                 return String.format("*%s", type);
             }
             return type;
+        }
+
+        String tagsExpr() {
+            Set<String> jsonTags = new HashSet<>(2);
+            jsonTags.add(name);
+            if (optional) {
+                jsonTags.add("omitempty");
+            }
+            return String.format("json:\"%s\"", String.join(",", jsonTags));
         }
     }
 }

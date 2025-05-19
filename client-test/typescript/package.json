@@ -4,15 +4,27 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "npx tsc --noEmit && vitest"
+    "lint": "tsc --noEmit && eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "test": "npx tsc --noEmit && vitest",
+    "start": "tsc && node dist/client-test/typescript/src/server.js"
   },
   "keywords": [],
   "author": "Cause Chung",
   "license": "CC BY 4.0",
   "description": "typescript-client-test",
   "devDependencies": {
+    "@eslint/js": "9.26.0",
+    "@types/express": "5.0.1",
+    "@types/morgan": "1.9.9",
+    "@types/node": "22.15.17",
     "eslint": "9.24.0",
     "typescript": "5.6.3",
+    "typescript-eslint": "8.32.0",
     "vitest": "3.1.1"
+  },
+  "dependencies": {
+    "body-parser": "2.2.0",
+    "express": "5.1.0",
+    "morgan": "1.10.0"
   }
 }

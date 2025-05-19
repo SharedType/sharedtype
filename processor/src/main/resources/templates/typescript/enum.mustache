@@ -1,5 +1,8 @@
 export {{#isConst}}const {{/isConst}}enum {{name}} {
 {{#values}}
+    {{#tagLiterals}}
+    {{{.}}}
+    {{/tagLiterals}}
     {{name}} = {{{value}}},
 {{/values}}
 }

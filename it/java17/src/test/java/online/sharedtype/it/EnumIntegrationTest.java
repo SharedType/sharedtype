@@ -1,5 +1,6 @@
 package online.sharedtype.it;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
@@ -43,6 +44,7 @@ final class EnumIntegrationTest {
 
         EnumValueInfo constant3 = enumSize.components().get(2);
         assertThat(constant3.value().getValue()).isEqualTo(3);
+        assertThat(constant3.getTagLiterals(SharedType.TargetType.RUST)).containsExactly("// test comments for enum");
     }
 
     @Test

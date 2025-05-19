@@ -1,14 +1,15 @@
 package online.sharedtype.processor.writer.converter;
 
 import lombok.RequiredArgsConstructor;
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
-import online.sharedtype.processor.context.OutputTarget;
-import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.component.ComponentInfo;
 import online.sharedtype.processor.domain.component.ConstantField;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
-import online.sharedtype.processor.domain.value.EnumConstantValue;
 import online.sharedtype.processor.domain.def.TypeDef;
+import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.value.EnumConstantValue;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
@@ -23,7 +24,7 @@ final class ConstantConverter implements TemplateDataConverter {
     private final Context ctx;
     @Nullable
     private final TypeExpressionConverter typeExpressionConverter;
-    private final OutputTarget outputTarget;
+    private final SharedType.TargetType targetType;
 
     @Override
     public boolean shouldAccept(TypeDef typeDef) {
@@ -31,7 +32,7 @@ final class ConstantConverter implements TemplateDataConverter {
     }
 
     @Override
-    public Tuple<Template, Object> convert(TypeDef typeDef) {
+    public Tuple<Template, AbstractTypeExpr> convert(TypeDef typeDef) {
         ConstantNamespaceDef constantNamespaceDef = (ConstantNamespaceDef) typeDef;
         ConstantNamespaceExpr value = new ConstantNamespaceExpr(
             constantNamespaceDef.simpleName(),
@@ -39,19 +40,19 @@ final class ConstantConverter implements TemplateDataConverter {
         );
 
         Config config = ctx.getTypeStore().getConfig(typeDef);
-        return Tuple.of(Template.forConstant(outputTarget, config.isConstantNamespaced()), value);
+        return Tuple.of(Template.forConstant(targetType, config.isConstantNamespaced()), value);
     }
 
     private ConstantExpr toConstantExpr(ConstantField constantField, TypeDef contextTypeDef) {
         return new ConstantExpr(
-            constantField.name(),
+            constantField,
             typeExpressionConverter == null ? null : typeExpressionConverter.toTypeExpr(constantField.value().getValueType(), contextTypeDef),
             toConstantValue(constantField)
         );
     }
 
     private String toConstantValue(ConstantField constantField) {
-        if (outputTarget == OutputTarget.RUST) {
+        if (targetType == SharedType.TargetType.RUST) {
             ConcreteTypeInfo type = constantField.value().getValueType();
             ValueHolder value = constantField.value();
             if (value instanceof EnumConstantValue && value.getValueType().getKind() == ConcreteTypeInfo.Kind.ENUM) {
@@ -63,15 +64,18 @@ final class ConstantConverter implements TemplateDataConverter {
     }
 
     @RequiredArgsConstructor
-    static final class ConstantNamespaceExpr {
+    static final class ConstantNamespaceExpr extends AbstractTypeExpr {
         final String name;
         final List<ConstantExpr> constants;
     }
 
-    @RequiredArgsConstructor
-    static final class ConstantExpr {
-        final String name;
+    final class ConstantExpr extends AbstractFieldExpr {
         final String type;
         final String value;
+        ConstantExpr(ComponentInfo componentInfo, String type, String value) {
+            super(componentInfo, targetType);
+            this.type = type;
+            this.value = value;
+        }
     }
 }

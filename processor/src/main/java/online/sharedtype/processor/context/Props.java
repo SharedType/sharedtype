@@ -3,8 +3,8 @@ package online.sharedtype.processor.context;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import online.sharedtype.SharedType;
 
-import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,6 +17,7 @@ import java.util.Set;
 @Getter
 public final class Props {
     private final Set<OutputTarget> targets;
+    private final Set<SharedType.TargetType> targetTypes;
     private final Typescript typescript;
     private final Go go;
     private final Rust rust;

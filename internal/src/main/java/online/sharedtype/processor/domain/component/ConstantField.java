@@ -2,6 +2,7 @@ package online.sharedtype.processor.domain.component;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 
@@ -11,16 +12,11 @@ import online.sharedtype.processor.domain.value.ValueHolder;
  *
  * @author Cause Chung
  */
-@EqualsAndHashCode
-@RequiredArgsConstructor
-public final class ConstantField implements ComponentInfo {
+@EqualsAndHashCode(of = {"value"}, callSuper = true)
+@SuperBuilder
+public final class ConstantField extends AbstractComponentInfo {
     private static final long serialVersionUID = -155863067131290289L;
-    private final String name;
     private final ValueHolder value;
-
-    public String name() {
-        return name;
-    }
 
     public ValueHolder value() {
         return value;
@@ -33,6 +29,6 @@ public final class ConstantField implements ComponentInfo {
 
     @Override
     public String toString() {
-        return String.format("%s=%s", name, value);
+        return String.format("%s=%s", name(), value);
     }
 }

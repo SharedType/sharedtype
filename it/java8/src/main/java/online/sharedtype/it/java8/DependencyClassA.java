@@ -1,10 +1,12 @@
 package online.sharedtype.it.java8;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import online.sharedtype.SharedType;
 
 @SharedType(rustMacroTraits = {"PartialEq", "serde::Serialize", "serde::Deserialize"})
-@RequiredArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = true)
 public final class DependencyClassA extends SuperClassA {
-    private final DependencyClassB b;
+    private DependencyClassB b;
 }

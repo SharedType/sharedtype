@@ -5,8 +5,8 @@ import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TestUtils;
 import online.sharedtype.processor.context.TypeElementMock;
-import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.parser.type.TypeInfoParser;
 import org.junit.jupiter.api.Test;
@@ -96,11 +96,13 @@ final class ClassTypeDefParserTest {
                 assertThat(component.name()).isEqualTo("field1");
                 assertThat(component.type()).isEqualTo(parsedField1Type);
                 assertThat(component.optional()).isFalse();
+                assertThat(component.getElement()).isEqualTo(field1.element());
             },
             component -> {
                 assertThat(component.name()).isEqualTo("field2");
                 assertThat(component.type()).isEqualTo(parsedField2Type);
                 assertThat(component.optional()).isTrue();
+                assertThat(component.getElement()).isEqualTo(field2.element());
             },
             component -> {
                 assertThat(component.name()).isEqualTo("value");

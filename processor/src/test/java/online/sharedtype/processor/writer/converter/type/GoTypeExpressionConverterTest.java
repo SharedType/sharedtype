@@ -1,9 +1,9 @@
 package online.sharedtype.processor.writer.converter.type;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.TargetCodeType;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ArrayTypeInfo;
 import online.sharedtype.processor.domain.type.DateTimeInfo;
@@ -41,7 +41,7 @@ final class GoTypeExpressionConverterTest {
         when(config.getGoTargetDatetimeTypeLiteral()).thenReturn("DefaultDateLiteral");
         DateTimeInfo dateTimeInfo = new DateTimeInfo("a.b.A2");
         assertThat(converter.dateTimeTypeExpr(dateTimeInfo, config)).isEqualTo("DefaultDateLiteral");
-        dateTimeInfo.addMappedName(TargetCodeType.GO, "BBB");
+        dateTimeInfo.addMappedName(SharedType.TargetType.GO, "BBB");
         assertThat(converter.dateTimeTypeExpr(dateTimeInfo, config)).isEqualTo("BBB");
     }
 

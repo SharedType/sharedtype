@@ -2,7 +2,7 @@ package online.sharedtype.processor.context;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import online.sharedtype.processor.domain.TargetCodeType;
+import online.sharedtype.SharedType;
 
 import javax.annotation.Nullable;
 
@@ -16,12 +16,12 @@ public enum OutputTarget {
     CONSOLE,
     /** Write metadata to Java serialized file. Used for integration test. */
     JAVA_SERIALIZED,
-    TYPESCRIPT(TargetCodeType.TYPESCRIPT),
-    GO(TargetCodeType.GO),
-    RUST(TargetCodeType.RUST),
+    TYPESCRIPT(SharedType.TargetType.TYPESCRIPT),
+    GO(SharedType.TargetType.GO),
+    RUST(SharedType.TargetType.RUST),
     ;
     @Nullable
-    private final TargetCodeType targetCodeType;
+    private final SharedType.TargetType targetType;
 
     OutputTarget() {
         this(null);

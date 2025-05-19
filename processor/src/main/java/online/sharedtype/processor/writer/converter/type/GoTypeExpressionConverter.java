@@ -1,9 +1,9 @@
 package online.sharedtype.processor.writer.converter.type;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.Constants;
-import online.sharedtype.processor.domain.TargetCodeType;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.DateTimeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
@@ -23,7 +23,7 @@ final class GoTypeExpressionConverter extends AbstractTypeExpressionConverter {
         super(ctx);
         typeNameMappings.put(Constants.BOOLEAN_TYPE_INFO, "bool");
         typeNameMappings.put(Constants.BYTE_TYPE_INFO, "byte");
-        typeNameMappings.put(Constants.CHAR_TYPE_INFO, "rune");
+        typeNameMappings.put(Constants.CHAR_TYPE_INFO, "string");
         typeNameMappings.put(Constants.DOUBLE_TYPE_INFO, "float64");
         typeNameMappings.put(Constants.FLOAT_TYPE_INFO, "float32");
         typeNameMappings.put(Constants.INT_TYPE_INFO, "int32");
@@ -32,7 +32,7 @@ final class GoTypeExpressionConverter extends AbstractTypeExpressionConverter {
 
         typeNameMappings.put(Constants.BOXED_BOOLEAN_TYPE_INFO, "bool");
         typeNameMappings.put(Constants.BOXED_BYTE_TYPE_INFO, "byte");
-        typeNameMappings.put(Constants.BOXED_CHAR_TYPE_INFO, "rune");
+        typeNameMappings.put(Constants.BOXED_CHAR_TYPE_INFO, "string");
         typeNameMappings.put(Constants.BOXED_DOUBLE_TYPE_INFO, "float64");
         typeNameMappings.put(Constants.BOXED_FLOAT_TYPE_INFO, "float32");
         typeNameMappings.put(Constants.BOXED_INT_TYPE_INFO, "int32");
@@ -54,18 +54,18 @@ final class GoTypeExpressionConverter extends AbstractTypeExpressionConverter {
     }
     @Override
     TypeArgsSpec typeArgsSpec(ConcreteTypeInfo typeInfo) {
-        if (ARRAY_LITERAL.equals(typeInfo.mappedName(TargetCodeType.GO))) {
+        if (ARRAY_LITERAL.equals(typeInfo.mappedName(SharedType.TargetType.GO))) {
             return ARRAY_TYPE_ARGS_SPEC;
         }
         return TYPE_ARGS_SPEC;
     }
     @Override
     String dateTimeTypeExpr(DateTimeInfo dateTimeInfo, Config config) {
-        return dateTimeInfo.mappedNameOrDefault(TargetCodeType.GO, config.getGoTargetDatetimeTypeLiteral());
+        return dateTimeInfo.mappedNameOrDefault(SharedType.TargetType.GO, config.getGoTargetDatetimeTypeLiteral());
     }
     @Override
     String toTypeExpression(ConcreteTypeInfo typeInfo, String defaultExpr) {
-        String expr = typeInfo.mappedName(TargetCodeType.GO);
+        String expr = typeInfo.mappedName(SharedType.TargetType.GO);
         if (expr == null) {
             expr = typeNameMappings.getOrDefault(typeInfo, defaultExpr);
         }

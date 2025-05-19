@@ -34,8 +34,8 @@ final class GoEnumConverterTest {
             .qualifiedName("com.github.cuzfrog.EnumA")
             .typeInfo(enumTypeInfo)
             .enumValueInfos(Arrays.asList(
-                new EnumValueInfo("Value1", ValueHolder.ofEnum("Value1", INT_TYPE_INFO, 11)),
-                new EnumValueInfo("Value2", ValueHolder.ofEnum("Value2", INT_TYPE_INFO, 22))
+                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", INT_TYPE_INFO, 11)).build(),
+                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", INT_TYPE_INFO, 22)).build()
             ))
             .build();
 
@@ -43,7 +43,7 @@ final class GoEnumConverterTest {
         when(ctxMocks.getContext().getTypeStore().getConfig(enumDef)).thenReturn(config);
         when(config.getGoEnumFormat()).thenReturn(Props.Go.EnumFormat.CONST);
 
-        Tuple<Template, Object> tuple = converter.convert(enumDef);
+        Tuple<Template, AbstractTypeExpr> tuple = converter.convert(enumDef);
         assertThat(tuple.a()).isEqualTo(Template.TEMPLATE_GO_CONST_ENUM);
         GoEnumConverter.EnumExpr value = (GoEnumConverter.EnumExpr) tuple.b();
         assertThat(value.name).isEqualTo("EnumA");
@@ -67,15 +67,15 @@ final class GoEnumConverterTest {
             .qualifiedName("com.github.cuzfrog.EnumA")
             .typeInfo(enumTypeInfo)
             .enumValueInfos(Arrays.asList(
-                new EnumValueInfo("Value1", ValueHolder.ofEnum("Value1", enumTypeInfo, "Value1")),
-                new EnumValueInfo("Value2", ValueHolder.ofEnum("Value2", enumTypeInfo, "Value2"))
+                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", enumTypeInfo, "Value1")).build(),
+                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", enumTypeInfo, "Value2")).build()
             ))
             .build();
 
         when(ctxMocks.getContext().getTypeStore().getConfig(enumDef)).thenReturn(config);
         when(config.getGoEnumFormat()).thenReturn(Props.Go.EnumFormat.STRUCT);
 
-        Tuple<Template, Object> tuple = converter.convert(enumDef);
+        Tuple<Template, AbstractTypeExpr> tuple = converter.convert(enumDef);
         assertThat(tuple.a()).isEqualTo(Template.TEMPLATE_GO_STRUCT_ENUM);
         GoEnumConverter.EnumExpr value = (GoEnumConverter.EnumExpr) tuple.b();
         assertThat(value.name).isEqualTo("EnumA");

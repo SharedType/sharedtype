@@ -1,17 +1,19 @@
 package online.sharedtype.processor.domain;
 
+import online.sharedtype.SharedType;
+
 import javax.annotation.Nullable;
 
 public interface MappableType {
     String qualifiedName();
 
     @Nullable
-    String mappedName(@Nullable TargetCodeType targetCodeType);
+    String mappedName(@Nullable SharedType.TargetType targetType);
 
-    default String mappedNameOrDefault(TargetCodeType targetCodeType, String defaultExpr) {
-        String name = mappedName(targetCodeType);
+    default String mappedNameOrDefault(SharedType.TargetType targetType, String defaultExpr) {
+        String name = mappedName(targetType);
         return name == null ? defaultExpr : name;
     }
 
-    void addMappedName(TargetCodeType targetCodeType, String mappedName);
+    void addMappedName(SharedType.TargetType targetType, String mappedName);
 }

@@ -11,6 +11,25 @@ mod tests {
     use super::types::*;
 
     #[test]
+    fn test_java_class() {
+        let java_class = JavaClass {
+            a: 5,
+            size: EnumSize::LARGE.value(),
+            value: 4,
+            notIgnoredImplementedMethod: 5,
+            string: String::from("test"),
+        };
+        let json = serde_json::to_string(&java_class).unwrap();
+        let java_class_deser: JavaClass = serde_json::from_str(&json).unwrap();
+        assert_eq!(java_class_deser, java_class);
+        print!("{}", &json);
+        assert_eq!(
+            &json,
+            r#"{"string":"test","size":3,"notIgnoredImplementedMethod":5,"a":5,"value":4}"#
+        );
+    }
+
+    #[test]
     fn cyclic_dependencies() {
         let dep_a = DependencyClassA {
             b: Some(Box::new(DependencyClassB {

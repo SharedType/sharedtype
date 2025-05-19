@@ -10,9 +10,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Global properties loader.
@@ -43,8 +45,10 @@ public final class PropsFactory {
     }
 
     private static Props loadProps(Properties properties) {
+        Set<OutputTarget> targets = parseEnumSet(properties, "sharedtype.targets", OutputTarget.class, OutputTarget::valueOf);
         return Props.builder()
-            .targets(parseEnumSet(properties, "sharedtype.targets", OutputTarget.class, OutputTarget::valueOf))
+            .targets(targets)
+            .targetTypes(targets.stream().map(OutputTarget::getTargetType).filter(Objects::nonNull).collect(Collectors.toSet()))
             .optionalAnnotations(splitArray(properties.getProperty("sharedtype.optional-annotations")))
             .ignoreAnnotations(splitArray(properties.getProperty("sharedtype.ignore-annotations")))
             .accessorAnnotations(splitArray(properties.getProperty("sharedtype.accessor-annotations")))

@@ -2,6 +2,8 @@ package online.sharedtype.processor.parser;
 
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.context.Context;
+import online.sharedtype.processor.domain.component.AbstractComponentInfo;
+import online.sharedtype.processor.domain.component.ComponentInfo;
 import online.sharedtype.processor.domain.def.TypeDef;
 
 import javax.lang.model.element.TypeElement;
@@ -44,9 +46,19 @@ final class CompositeTypeDefParser implements TypeDefParser {
             List<TypeDef> parsedTypeDefs = typeDefParser.parse(typeElement);
             for (TypeDef parsedTypeDef : parsedTypeDefs) {
                 ctx.getTypeStore().saveTypeDef(qualifiedName, parsedTypeDef);
+                populateTagLiterals(parsedTypeDef);
             }
             typeDefs.addAll(parsedTypeDefs);
         }
         return typeDefs;
+    }
+
+    private void populateTagLiterals(TypeDef typeDef) {
+        for (ComponentInfo component : typeDef.components()) {
+            if (component instanceof AbstractComponentInfo) {
+                AbstractComponentInfo abstractComponentInfo = (AbstractComponentInfo) component;
+                abstractComponentInfo.setTagLiterals(ctx.extractTagLiterals(abstractComponentInfo.getElement()));
+            }
+        }
     }
 }
