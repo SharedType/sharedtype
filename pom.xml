@@ -61,9 +61,9 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-annotations</artifactId>
-                <version>4.9.3</version>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>3.0.2</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
@@ -258,12 +258,28 @@
             <id>dev</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>enable-jdk-module</name>
+                </property>
             </activation>
             <modules>
                 <module>annotation</module>
                 <module>processor</module>
                 <module>it</module>
             </modules>
+        </profile>
+        <profile>
+            <id>java9</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>enable-jdk-module</name>
+                </property>
+            </activation>
+            <properties>
+                <maven.compiler.source>9</maven.compiler.source>
+                <maven.compiler.target>9</maven.compiler.target>
+            </properties>
         </profile>
         <profile>
             <id>e2e</id>
