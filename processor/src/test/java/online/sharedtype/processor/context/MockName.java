@@ -3,7 +3,6 @@ package online.sharedtype.processor.context;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
-import javax.annotation.Nonnull;
 import javax.lang.model.element.Name;
 
 @EqualsAndHashCode
@@ -23,12 +22,12 @@ final class MockName implements Name {
     public char charAt(int index) {
         return name.charAt(index);
     }
-    @Override @Nonnull
+    @Override
     public CharSequence subSequence(int start, int end) {
         return name.subSequence(start, end);
     }
 
-    @Override @Nonnull
+    @Override
     public String toString() {
         return name;
     }

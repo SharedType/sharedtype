@@ -2,7 +2,7 @@ package online.sharedtype.processor.domain;
 
 import online.sharedtype.SharedType;
 
-import javax.annotation.Nullable;
+import online.sharedtype.processor.support.annotation.Nullable;
 
 public interface MappableType {
     String qualifiedName();

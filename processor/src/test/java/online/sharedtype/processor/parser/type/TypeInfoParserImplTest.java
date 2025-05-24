@@ -4,6 +4,7 @@ import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.type.ArrayTypeInfo;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.DateTimeInfo;
+import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.support.annotation.Issue;
 import online.sharedtype.processor.support.annotation.SideEffect;
@@ -19,6 +20,7 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -289,6 +291,16 @@ class TypeInfoParserImplTest {
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.util.Optional");
         assertThat(typeInfo.typeArgs()).hasSize(1);
         assertThat(typeInfo.resolved()).isTrue();
+    }
+
+    @Test
+    void reportKindError() {
+        var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("a.b.A").type())
+            .withTypeKind(TypeKind.ERROR)
+            .type();
+        var res = parser.parse(type, ctxTypeElementOuter);
+        assertThat(res).isEqualTo(TypeInfo.NO_TYPE_INFO);
+        verify(ctxMocks.getContext()).error(eq(ctxTypeElementOuter), argThat(s -> s.contains("type is not visible in the scope")), any(Object[].class));
     }
 
     @Test

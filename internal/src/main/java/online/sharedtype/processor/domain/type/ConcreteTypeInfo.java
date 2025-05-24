@@ -8,7 +8,7 @@ import online.sharedtype.processor.domain.def.ConcreteTypeDef;
 import online.sharedtype.processor.domain.MappableType;
 import online.sharedtype.processor.domain.def.TypeDef;
 
-import javax.annotation.Nullable;
+import online.sharedtype.processor.support.annotation.Nullable;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;

@@ -10,7 +10,6 @@ import online.sharedtype.it.java8.EnumGalaxy;
 import online.sharedtype.it.java8.EnumSize;
 import online.sharedtype.it.java8.InterfaceA;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;

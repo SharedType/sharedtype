@@ -12,7 +12,35 @@
     <name>SharedType Integration Test Java8</name>
 
     <properties>
-        <maven.compiler.testSource>8</maven.compiler.testSource>
-        <maven.compiler.testTarget>8</maven.compiler.testTarget>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.testSource>${java.version}</maven.compiler.testSource>
+        <maven.compiler.testTarget>${java.version}</maven.compiler.testTarget>
     </properties>
+
+    <build>
+        <plugins>
+
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>it-no-jpms</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <java.version>8</java.version>
+                <excludeClasses>module-info.java</excludeClasses>
+            </properties>
+        </profile>
+        <profile>
+            <id>it-jpms</id>
+            <properties>
+                <java.version>9</java.version>
+                <excludeClasses/>
+            </properties>
+        </profile>
+    </profiles>
 </project>

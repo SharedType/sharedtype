@@ -2,7 +2,7 @@ package online.sharedtype.processor.context;
 
 import online.sharedtype.processor.support.exception.SharedTypeException;
 
-import javax.annotation.Nullable;
+import online.sharedtype.processor.support.annotation.Nullable;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;

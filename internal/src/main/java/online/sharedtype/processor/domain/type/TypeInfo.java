@@ -31,6 +31,7 @@ public interface TypeInfo extends Serializable {
 
     /**
      * Replace type variables with type arguments.
+     *
      * @param mappings key is a type variable e.g. T
      *                 value is a type argument, a concrete type e.g. Integer, or a generic type with concrete type parameter, e.g. {@code Tuple<String, String>}
      * @return a newly created type info if updated.
@@ -41,7 +42,14 @@ public interface TypeInfo extends Serializable {
 
     /**
      * Mark this type as referenced by another type. Used for e.g. cyclic reference detection.
+     *
      * @param typeDef type that references this type
      */
     void addReferencingType(TypeDef typeDef);
+
+    /**
+     * Represents no type. This can happen when a type is not visible, e.g. not on module path.
+     * @see online.sharedtype.processor.parser.type.TypeInfoParser
+     */
+    TypeInfo NO_TYPE_INFO = NoTypeInfo.INSTANCE;
 }

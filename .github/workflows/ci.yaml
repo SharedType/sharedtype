@@ -44,8 +44,10 @@ jobs:
         with:
           path: ~/.m2/repository
           key: build_maven
-      - name: Build
+      - name: Build And Test
         run: ./mvnw install -e --ntp -B
+      - name: Test JPMS
+        run: ./mvnw clean verify -pl it/java8 -P it-jpms -e --ntp -B
       - name: Javadoc
         run: ./mvnw -P release javadoc:javadoc --ntp -B
       - name: Upload generated sources

@@ -59,6 +59,13 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                     " SharedType currently does not support wildcard generic types." +
                     " If it's from a dependency type, consider ignore it via global properties.",
                 typeMirror, typeKind, ctxTypeElement));
+        } else if (typeKind == TypeKind.ERROR) {
+            ctx.error(
+                ctxTypeElement,
+                "Failed to parse type '%s'. This is possibly because the type is not visible in the scope," +
+                    " if JPMS is used to resolve dependencies, check if it is on module path.",
+                typeMirror);
+            return TypeInfo.NO_TYPE_INFO;
         }
         throw new SharedTypeInternalError(String.format("Unsupported type: %s, typeKind: %s, contextType: %s. " +
                 "If it's from a dependency type, consider ignore it via global properties.",

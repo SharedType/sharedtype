@@ -36,11 +36,11 @@ pub struct User {
 ```
 
 ## Features
-* Java8 support.
+* Java8 compatible; Java 9 module (Jigsaw) compatible.
 * Generics support.
-* Constant support.
+* Compile-time constant support.
 * Client source dependency is only `@SharedType` retained at source code level.
-* SharedType AP has only 2 small dependencies: jsr305 annotations and [mustache](https://github.com/spullara/mustache.java).
+* SharedType annotation processor has only 1 dependency: [mustache](https://github.com/spullara/mustache.java).
 * Parsing takes milliseconds with `-proc:only`.
 * Intuitive defaults, put `@SharedType` and there you go. Global + class level options.
 

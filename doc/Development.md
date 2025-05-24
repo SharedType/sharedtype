@@ -29,11 +29,14 @@ Optionally mount tmpfs to save your disk by:
 ```
 Optionally setup `MVND_HOME` to use [maven daemon](https://github.com/apache/maven-mvnd) by `./mvnd`
 
+Choose maven profiles in IDE accordingly as below.
+
 ### Maven profiles
 * `dev` and `release` - control whether to include test maven modules during build.
 * `it` - enable integration test profile. `internal` folder is shared source between `processor` and `it`,
 IDE may not able to properly resolve classes in `internal` folder for both modules.
 Enable this profile to enable `it` modules in IDE, and disable it when developing against `processor` module.
+* `it-no-jpms` and `it-jpms` - control whether to enable Java 9 Jigsaw module test in `it`. `it/java8` sources are reused to test on jdk9. Turn on `it-jpms` for IDE to correctly resolve `it/java8` classes.
 
 ## Development
 ### Run test
@@ -53,6 +56,11 @@ Setup `JAVA8_HOME` to point to your Java8 installation. Open a new terminal and 
 . setenv 8
 ./mvnw verify -pl it/java8
 ```
+#### Verify JDK9 JPMS compatibility locally:
+```bash
+./mvnw verify -pl it/java8 -P it-jpms
+```
+
 #### Run client tests locally:
 Client tests are run in target languages in respective dir inside `./client-test`. They do basic type checking.
 * Typescript - `. setenv && npm i && npm run test`
