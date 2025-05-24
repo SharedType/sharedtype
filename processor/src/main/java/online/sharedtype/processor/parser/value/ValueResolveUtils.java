@@ -12,7 +12,7 @@ import lombok.experimental.UtilityClass;
 import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
-import javax.annotation.Nullable;
+import online.sharedtype.processor.support.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;

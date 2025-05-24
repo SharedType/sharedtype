@@ -10,7 +10,7 @@ import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.DateTimeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 
-import javax.annotation.Nullable;
+import online.sharedtype.processor.support.annotation.Nullable;
 
 final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter {
     private static final ArraySpec ARRAY_SPEC = new ArraySpec("Vec<", ">");

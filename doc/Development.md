@@ -29,6 +29,8 @@ Optionally mount tmpfs to save your disk by:
 ```
 Optionally setup `MVND_HOME` to use [maven daemon](https://github.com/apache/maven-mvnd) by `./mvnd`
 
+Choose maven profiles in IDE accordingly as below.
+
 ### Maven profiles
 * `dev` and `release` - control whether to include test maven modules during build.
 * `it` - enable integration test profile. `internal` folder is shared source between `processor` and `it`,

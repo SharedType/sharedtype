@@ -1,0 +1,6 @@
+module sharedtype.it {
+    requires online.sharedtype.annotation;
+    requires com.fasterxml.jackson.annotation;
+
+    requires static lombok;
+}

@@ -3,7 +3,7 @@ package online.sharedtype.processor.context;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import javax.annotation.Nullable;
+import online.sharedtype.processor.support.annotation.Nullable;
 import javax.lang.model.element.VariableElement;
 
 

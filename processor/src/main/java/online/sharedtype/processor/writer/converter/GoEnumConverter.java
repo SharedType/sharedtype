@@ -13,7 +13,7 @@ import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
 
-import javax.annotation.Nullable;
+import online.sharedtype.processor.support.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 

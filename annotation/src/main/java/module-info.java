@@ -1,4 +1,4 @@
-module sharedtype.annotation {
+module online.sharedtype.annotation {
     exports online.sharedtype;
     requires java.base;
 }

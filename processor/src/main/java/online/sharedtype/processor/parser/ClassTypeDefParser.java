@@ -14,7 +14,7 @@ import online.sharedtype.processor.support.annotation.VisibleForTesting;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.support.utils.Utils;
 
-import javax.annotation.Nullable;
+import online.sharedtype.processor.support.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
