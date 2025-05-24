@@ -27,6 +27,8 @@ public interface TypeInfoParser {
      * An unresolved type is a type whose TypeElement hasn't been processed.
      * So there's no structural information, e.g. name, saved in global context yet.
      * </p>
+     *
+     * @return a no type info instance if the kind of the typeMirror is ERROR.
      */
     TypeInfo parse(TypeMirror typeMirror, TypeElement ctxTypeElement);
 

@@ -16,6 +16,7 @@
         <compilerArg />
         <sharedtype.propsFile>it/sharedtype.properties</sharedtype.propsFile>
         <compileClasses/>
+        <excludeClasses/>
     </properties>
 
     <dependencies>
@@ -100,6 +101,7 @@
                         <arg>-Asharedtype.enabled=true</arg>
                     </compilerArgs>
                     <includes>${compileClasses}</includes>
+                    <excludes>${excludeClasses}</excludes>
                 </configuration>
             </plugin>
             <plugin>
