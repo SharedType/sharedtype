@@ -25,3 +25,5 @@ mountTmpfs "$DIR/e2e/target" 64M
 mountTmpfs "$MAVEN_REPO_DIR" 64M
 mountTmpfs "$DIR/client-test/rust/target" 512M
 mountTmpfs "$DIR/client-test/typescript/dist" 32M
+mountTmpfs "$DIR/client-test/zig/.zig-cache" 512M
+mountTmpfs "$DIR/client-test/zig/zig-out" 64M

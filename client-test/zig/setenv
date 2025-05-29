@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PATH=$ZIG_HOME:$PATH
+echo Zig:"$(zig version)"
+
