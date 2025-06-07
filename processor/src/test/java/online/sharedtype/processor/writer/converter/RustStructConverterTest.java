@@ -67,8 +67,8 @@ final class RustStructConverterTest {
             .simpleName("EnumA")
             .qualifiedName("com.github.cuzfrog.EnumA")
             .enumValueInfos(List.of(
-                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", Constants.BOOLEAN_TYPE_INFO, true)).build(),
-                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", Constants.BOOLEAN_TYPE_INFO, false)).build()
+                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum(enumATypeInfo, "Value1", Constants.BOOLEAN_TYPE_INFO, true)).build(),
+                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum(enumATypeInfo, "Value2", Constants.BOOLEAN_TYPE_INFO, false)).build()
             ))
             .build();
         enumATypeInfo.markShallowResolved(enumADef);
@@ -78,7 +78,7 @@ final class RustStructConverterTest {
             .simpleName("EnumB")
             .qualifiedName("com.github.cuzfrog.EnumB")
             .enumValueInfos(List.of(
-                EnumValueInfo.builder().name("ValueB1").value(ValueHolder.ofEnum("ValueB1", enumBTypeInfo, "ValueB1")).build()
+                EnumValueInfo.builder().name("ValueB1").value(ValueHolder.ofEnum(enumATypeInfo, "ValueB1", enumBTypeInfo, "ValueB1")).build()
             ))
             .build();
         enumBTypeInfo.markShallowResolved(enumBDef);

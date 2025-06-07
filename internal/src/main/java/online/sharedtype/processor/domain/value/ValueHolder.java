@@ -2,7 +2,6 @@ package online.sharedtype.processor.domain.value;
 
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.type.TypeInfo;
 
 import java.io.Serializable;
 
@@ -27,7 +26,7 @@ public interface ValueHolder extends Serializable {
         }
     }
 
-    static EnumConstantValue ofEnum(String enumConstantName, ConcreteTypeInfo valueType, Object value) {
+    static EnumConstantValue ofEnum(ConcreteTypeInfo enumType, String enumConstantName, ConcreteTypeInfo valueType, Object value) {
         ConcreteTypeInfo actualValueType = valueType;
         Object actualValue = value;
         while (actualValue instanceof ValueHolder) {
@@ -35,7 +34,7 @@ public interface ValueHolder extends Serializable {
             actualValueType = valueHolder.getValueType();
             actualValue = valueHolder.getValue();
         }
-        return new EnumConstantValue(enumConstantName, actualValueType, actualValue);
+        return new EnumConstantValue(enumType, enumConstantName, actualValueType, actualValue);
     }
 
     LiteralValue NULL = new LiteralValue(Constants.NULL_TYPE_INFO,null);

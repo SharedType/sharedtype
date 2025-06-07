@@ -23,6 +23,7 @@ final class ValueHolderTest {
             ValueHolder.of(
                 enumType,
                 ValueHolder.ofEnum(
+                    enumType,
                     "ENUM_CONST",
                     STRING_TYPE_INFO,
                     ValueHolder.of(STRING_TYPE_INFO, ValueHolder.of(STRING_TYPE_INFO, "Value1"))

@@ -8,7 +8,6 @@ import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
-import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.EnumConstantValue;
 import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
@@ -40,19 +39,17 @@ final class RustEnumConverter extends AbstractEnumConverter {
             rustMacroTraitsGenerator.generate(enumDef),
             hasValue,
             valueType,
-            hasValue && ctx.getProps().getRust().hasEnumValueTypeAlias() ? String.format("%sValue", enumDef.simpleName()) : null
+            hasValue && ctx.getProps().getRust().hasEnumValueTypeAlias() ? enumDef.valueTypeAlias() : null
         );
         return Tuple.of(Template.TEMPLATE_RUST_ENUM, value);
     }
 
     @Nullable
     private String getValueTypeExpr(EnumDef enumDef) {
-        TypeInfo componentValueType = enumDef.getComponentValueType();
-        TypeInfo enumTypeInfo = enumDef.typeInfoSet().iterator().next();
-        if (enumTypeInfo.equals(componentValueType)) {
-            return null;
+        if (enumDef.hasComponentValueType()) {
+            return typeExpressionConverter.toTypeExpr(enumDef.getComponentValueType(), enumDef);
         }
-        return typeExpressionConverter.toTypeExpr(componentValueType, enumDef);
+        return null;
     }
 
     private List<EnumerationExpr> extractEnumValues(List<EnumValueInfo> components) {

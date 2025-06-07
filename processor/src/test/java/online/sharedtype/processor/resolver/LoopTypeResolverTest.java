@@ -159,8 +159,8 @@ final class LoopTypeResolverTest {
         EnumDef typeDef = EnumDef.builder()
             .qualifiedName("com.github.cuzfrog.EnumA").simpleName("EnumA")
             .enumValueInfos(Arrays.asList(
-                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", enumType, "Value1")).build(),
-                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", enumType, "Value2")).build()
+                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum(enumType, "Value1", enumType, "Value1")).build(),
+                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum(enumType, "Value2", enumType, "Value2")).build()
             ))
             .build();
 

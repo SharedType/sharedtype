@@ -9,9 +9,11 @@ import online.sharedtype.processor.domain.type.TypeInfo;
 @EqualsAndHashCode(callSuper = true)
 public final class EnumConstantValue extends LiteralValue {
     private static final long serialVersionUID = -6711930218877737970L;
+    private final ConcreteTypeInfo enumType;
     private final String enumConstantName;
-    EnumConstantValue(String enumConstantName, ConcreteTypeInfo valueType, Object value) {
+    EnumConstantValue(ConcreteTypeInfo enumType, String enumConstantName, ConcreteTypeInfo valueType, Object value) {
         super(valueType, value);
+        this.enumType = enumType;
         this.enumConstantName = enumConstantName;
     }
 

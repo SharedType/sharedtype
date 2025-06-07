@@ -146,10 +146,12 @@ final class ClassTypeDefParserTest {
         var fieldElement = ctxMocks.declaredTypeVariable("field333", string.type()).withElementKind(ElementKind.FIELD).element();
         var typeElement = ctxMocks.typeElement("com.github.cuzfrog.Abc")
             .withEnclosedElements(
-
+                fieldElement
             )
             .element();
         when(ctxMocks.getContext().isIgnored(fieldElement)).thenReturn(true);
+        var typeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.Abc").build();
+        when(typeInfoParser.parse(typeElement.asType(), typeElement)).thenReturn(typeInfo);
 
         var classDef = parser.parse(typeElement).get(0);
         assertThat(classDef.components()).isEmpty();

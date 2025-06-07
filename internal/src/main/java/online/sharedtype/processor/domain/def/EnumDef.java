@@ -54,6 +54,13 @@ public final class EnumDef extends ConcreteTypeDef {
         }
         return enumValueInfos.get(0).value().getValueType();
     }
+    /** @return true if component value has a different type other than this enumType, i.e. when enumValue is defined */
+    public boolean hasComponentValueType() {
+        return !getComponentValueType().equals(typeInfo);
+    }
+    public String valueTypeAlias() {
+        return String.format("%sValue", simpleName);
+    }
 
     @Override
     public Set<ConcreteTypeInfo> typeInfoSet() {

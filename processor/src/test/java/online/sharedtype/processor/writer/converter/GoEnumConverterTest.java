@@ -34,8 +34,8 @@ final class GoEnumConverterTest {
             .qualifiedName("com.github.cuzfrog.EnumA")
             .typeInfo(enumTypeInfo)
             .enumValueInfos(Arrays.asList(
-                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", INT_TYPE_INFO, 11)).build(),
-                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", INT_TYPE_INFO, 22)).build()
+                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum(enumTypeInfo, "Value1", INT_TYPE_INFO, 11)).build(),
+                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum(enumTypeInfo, "Value2", INT_TYPE_INFO, 22)).build()
             ))
             .build();
 
@@ -67,8 +67,8 @@ final class GoEnumConverterTest {
             .qualifiedName("com.github.cuzfrog.EnumA")
             .typeInfo(enumTypeInfo)
             .enumValueInfos(Arrays.asList(
-                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", enumTypeInfo, "Value1")).build(),
-                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", enumTypeInfo, "Value2")).build()
+                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum(enumTypeInfo, "Value1", enumTypeInfo, "Value1")).build(),
+                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum(enumTypeInfo, "Value2", enumTypeInfo, "Value2")).build()
             ))
             .build();
 

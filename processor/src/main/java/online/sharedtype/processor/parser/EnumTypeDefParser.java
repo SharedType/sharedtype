@@ -62,7 +62,7 @@ final class EnumTypeDefParser implements TypeDefParser {
             .build();
         enumDef.components().addAll(parseEnumConstants(typeElement, enumConstantElems));
         TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), typeElement);
-        enumDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);
+        ((ConcreteTypeInfo) typeInfo).markShallowResolved(enumDef);
         return Collections.singletonList(enumDef);
     }
 
