@@ -90,6 +90,7 @@ public final class PropsFactory {
                 .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.rust.target-datetime-type"))
                 .typeMappings(parseMap(properties, "sharedtype.rust.type-mappings"))
                 .customCodePath(properties.getProperty("sharedtype.rust.custom-code-path"))
+                .hasEnumValueTypeAlias(parseBoolean(properties, "sharedtype.rust.enum-value-type-alias"))
                 .build())
             .build();
     }
