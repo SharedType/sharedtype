@@ -19,6 +19,7 @@ public enum OutputTarget {
     TYPESCRIPT(SharedType.TargetType.TYPESCRIPT),
     GO(SharedType.TargetType.GO),
     RUST(SharedType.TargetType.RUST),
+    ZIG(SharedType.TargetType.ZIG),
     ;
     @Nullable
     private final SharedType.TargetType targetType;

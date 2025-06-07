@@ -91,6 +91,12 @@ public final class PropsFactory {
                 .typeMappings(parseMap(properties, "sharedtype.rust.type-mappings"))
                 .customCodePath(properties.getProperty("sharedtype.rust.custom-code-path"))
                 .build())
+            .zig(Props.Zig.builder()
+                .outputFileName(properties.getProperty("sharedtype.zig.output-file-name"))
+                .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.zig.target-datetime-type"))
+                .typeMappings(parseMap(properties, "sharedtype.zig.type-mappings"))
+                .customCodePath(properties.getProperty("sharedtype.zig.custom-code-path"))
+                .build())
             .build();
     }
 

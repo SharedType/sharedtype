@@ -21,6 +21,7 @@ public final class Props {
     private final Typescript typescript;
     private final Go go;
     private final Rust rust;
+    private final Zig zig;
 
     private final Set<String> optionalAnnotations;
     private final Set<String> ignoreAnnotations;
@@ -114,6 +115,15 @@ public final class Props {
         private final Set<String> defaultTypeMacros;
         private final String targetDatetimeTypeLiteral;
         private final Map<String, String> typeMappings;
+        private final String customCodePath;
+    }
+
+    @Builder(access = AccessLevel.PACKAGE)
+    @Getter
+    public static final class Zig {
+        private final String outputFileName;
+        private final Map<String, String> typeMappings;
+        private final String targetDatetimeTypeLiteral;
         private final String customCodePath;
     }
 }

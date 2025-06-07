@@ -75,6 +75,12 @@ final class PropsFactoryTest {
         assertThat(rustProps.getTargetDatetimeTypeLiteral()).isEqualTo("String");
         assertThat(rustProps.getTypeMappings()).isEmpty();
         assertThat(rustProps.getCustomCodePath()).isEqualTo("sharedtype-custom-code.rs");
+
+        Props.Zig zigProps = props.getZig();
+        assertThat(zigProps.getOutputFileName()).isEqualTo("types.zig");
+        assertThat(zigProps.getTargetDatetimeTypeLiteral()).isEqualTo("String");
+        assertThat(zigProps.getTypeMappings()).isEmpty();
+        assertThat(zigProps.getCustomCodePath()).isEqualTo("sharedtype-custom-code.zig");
     }
 
     @Test

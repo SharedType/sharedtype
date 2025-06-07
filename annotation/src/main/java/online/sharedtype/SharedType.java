@@ -383,6 +383,6 @@ public @interface SharedType {
     }
 
     enum TargetType {
-        TYPESCRIPT, GO, RUST
+        TYPESCRIPT, GO, RUST, ZIG
     }
 }
