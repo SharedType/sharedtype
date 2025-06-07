@@ -7,6 +7,7 @@ import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.component.ComponentInfo;
 import online.sharedtype.processor.domain.component.ConstantField;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
+import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.value.EnumConstantValue;
@@ -22,7 +23,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 final class ConstantConverter implements TemplateDataConverter {
     private final Context ctx;
-    @Nullable
     private final TypeExpressionConverter typeExpressionConverter;
     private final SharedType.TargetType targetType;
 
@@ -46,9 +46,22 @@ final class ConstantConverter implements TemplateDataConverter {
     private ConstantExpr toConstantExpr(ConstantField constantField, TypeDef contextTypeDef) {
         return new ConstantExpr(
             constantField,
-            typeExpressionConverter == null ? null : typeExpressionConverter.toTypeExpr(constantField.value().getValueType(), contextTypeDef),
+            toConstantTypeExpr(constantField, contextTypeDef),
             toConstantValue(constantField)
         );
+    }
+
+    private String toConstantTypeExpr(ConstantField constantField, TypeDef contextTypeDef) {
+        if (targetType == SharedType.TargetType.RUST && constantField.value() instanceof EnumConstantValue) {
+            EnumConstantValue enumConstantValue = (EnumConstantValue) constantField.value();
+            ConcreteTypeInfo enumTypeInfo = enumConstantValue.getEnumType();
+            EnumDef enumTypeDef = (EnumDef) enumTypeInfo.typeDef();
+            if (enumTypeDef.hasComponentValueType() && ctx.getProps().getRust().hasEnumValueTypeAlias()) {
+                return enumTypeDef.valueTypeAlias();
+            }
+        }
+
+        return typeExpressionConverter.toTypeExpr(constantField.value().getValueType(), contextTypeDef);
     }
 
     private String toConstantValue(ConstantField constantField) {

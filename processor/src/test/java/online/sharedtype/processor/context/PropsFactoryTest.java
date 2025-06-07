@@ -71,6 +71,7 @@ final class PropsFactoryTest {
         assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");
         assertThat(rustProps.isAllowDeadcode()).isEqualTo(true);
         assertThat(rustProps.isConvertToSnakeCase()).isEqualTo(false);
+        assertThat(rustProps.hasEnumValueTypeAlias()).isEqualTo(true);
         assertThat(rustProps.getDefaultTypeMacros()).containsExactly("Debug");
         assertThat(rustProps.getTargetDatetimeTypeLiteral()).isEqualTo("String");
         assertThat(rustProps.getTypeMappings()).isEmpty();

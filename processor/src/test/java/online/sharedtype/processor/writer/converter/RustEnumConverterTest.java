@@ -26,7 +26,7 @@ final class RustEnumConverterTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeExpressionConverter rustTypeExpressionConverter = mock(TypeExpressionConverter.class);
     private final RustMacroTraitsGenerator rustMacroTraitsGenerator = mock(RustMacroTraitsGenerator.class);
-    private final RustEnumConverter converter = new RustEnumConverter(rustTypeExpressionConverter, rustMacroTraitsGenerator);
+    private final RustEnumConverter converter = new RustEnumConverter(ctxMocks.getContext(), rustTypeExpressionConverter, rustMacroTraitsGenerator);
 
     private final Config config = mock(Config.class);
     @BeforeEach
@@ -51,8 +51,8 @@ final class RustEnumConverterTest {
             .simpleName("EnumA")
             .qualifiedName("com.github.cuzfrog.EnumA")
             .enumValueInfos(Arrays.asList(
-                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", enumType, "Value1")).build(),
-                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", enumType, "Value2"))
+                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum(enumType, "Value1", enumType, "Value1")).build(),
+                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum(enumType, "Value2", enumType, "Value2"))
                     .tagLiterals(Map.of(SharedType.TargetType.RUST, List.of("tag1", "tag2")))
                     .build()
             ))
@@ -84,16 +84,17 @@ final class RustEnumConverterTest {
 
     @Test
     void convertEnumWithValues() {
+        var enumTypeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").build();
         EnumDef enumDef = EnumDef.builder()
             .simpleName("EnumA")
             .qualifiedName("com.github.cuzfrog.EnumA")
             .enumValueInfos(Arrays.asList(
-                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum("Value1", INT_TYPE_INFO, 11)).build(),
-                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum("Value2", INT_TYPE_INFO, 22)).build(),
-                EnumValueInfo.builder().name("Value3").value(ValueHolder.ofEnum("Value3", INT_TYPE_INFO, 33)).build()
+                EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum(enumTypeInfo, "Value1", INT_TYPE_INFO, 11)).build(),
+                EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum(enumTypeInfo, "Value2", INT_TYPE_INFO, 22)).build(),
+                EnumValueInfo.builder().name("Value3").value(ValueHolder.ofEnum(enumTypeInfo, "Value3", INT_TYPE_INFO, 33)).build()
             ))
             .build();
-        enumDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").build());
+        enumDef.linkTypeInfo(enumTypeInfo);
         when(ctxMocks.getTypeStore().getConfig(enumDef)).thenReturn(config);
         when(rustMacroTraitsGenerator.generate(enumDef)).thenReturn(Set.of("TestMacro"));
         when(rustTypeExpressionConverter.toTypeExpr(INT_TYPE_INFO, enumDef)).thenReturn("i32");
@@ -106,6 +107,7 @@ final class RustEnumConverterTest {
         assertThat(model.macroTraits).containsExactly("TestMacro");
         assertThat(model.hasValue).isTrue();
         assertThat(model.valueType).isEqualTo("i32");
+        assertThat(model.valueTypeAlias).isEqualTo("EnumAValue");
         assertThat(model.enumerations).satisfiesExactly(
             v1 -> {
                 assertThat(v1.name).isEqualTo("Value1");

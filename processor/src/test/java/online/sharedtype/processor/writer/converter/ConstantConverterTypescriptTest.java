@@ -7,6 +7,7 @@ import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.component.ConstantField;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.value.ValueHolder;
+import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 final class ConstantConverterTypescriptTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final ConstantConverter typescriptConverter = new ConstantConverter(ctxMocks.getContext(), null, SharedType.TargetType.TYPESCRIPT);
+    private final ConstantConverter typescriptConverter = new ConstantConverter(ctxMocks.getContext(), TypeExpressionConverter.nullOp(), SharedType.TargetType.TYPESCRIPT);
 
     private final ConstantNamespaceDef constantNamespaceDef = ConstantNamespaceDef.builder()
         .simpleName("Abc")

@@ -29,6 +29,7 @@ public abstract class ConcreteTypeDef implements TypeDef {
 
     /**
      * Register a counterpart typeInfo.
+     * <b>Note:</b> This method should not be called from outside, please use {@link ConcreteTypeInfo#shallowResolved()}
      */
     public abstract void linkTypeInfo(ConcreteTypeInfo typeInfo);
 }

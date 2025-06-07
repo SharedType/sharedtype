@@ -84,7 +84,7 @@ final class RustTypeExpressionConverterTest {
         ConcreteTypeInfo enumType = ConcreteTypeInfo.builder().simpleName("EnumA").build();
         EnumDef enumDef = EnumDef.builder().simpleName("EnumA")
             .enumValueInfos(List.of(
-                EnumValueInfo.builder().value(ValueHolder.ofEnum("Value1", Constants.INT_TYPE_INFO, 1)).build()
+                EnumValueInfo.builder().value(ValueHolder.ofEnum(enumType, "Value1", Constants.INT_TYPE_INFO, 1)).build()
             ))
             .build();
         assertThat(converter.mapEnumValueType(enumType, enumDef)).isEqualTo(Constants.INT_TYPE_INFO);

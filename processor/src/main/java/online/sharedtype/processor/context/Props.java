@@ -3,6 +3,7 @@ package online.sharedtype.processor.context;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 import online.sharedtype.SharedType;
 
 import java.util.Map;
@@ -111,6 +112,9 @@ public final class Props {
         private final String outputFileName;
         private final boolean allowDeadcode;
         private final boolean convertToSnakeCase;
+        @Accessors(fluent = true, chain = false)
+        @Getter
+        private final boolean hasEnumValueTypeAlias;
         private final Set<String> defaultTypeMacros;
         private final String targetDatetimeTypeLiteral;
         private final Map<String, String> typeMappings;

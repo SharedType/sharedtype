@@ -33,9 +33,9 @@ final class EnumValueParser implements ValueParser {
         VariableElement enumConstant = (VariableElement) enumConstantElement;
         String enumConstantName = enumConstant.getSimpleName().toString();
         EnumCtorIndex ctorArgIdx = resolveCtorIndex(enumTypeElement);
+        ConcreteTypeInfo enumTypeInfo = (ConcreteTypeInfo) typeInfoParser.parse(enumTypeElement.asType(), enumTypeElement);
         if (ctorArgIdx == EnumCtorIndex.NONE) {
-            ConcreteTypeInfo typeInfo = (ConcreteTypeInfo) typeInfoParser.parse(enumTypeElement.asType(), enumTypeElement);
-            return ValueHolder.ofEnum(enumConstantName, typeInfo, enumConstantName);
+            return ValueHolder.ofEnum(enumTypeInfo, enumConstantName, enumTypeInfo, enumConstantName);
         }
 
         Tree tree = ctx.getTrees().getTree(enumConstant);
@@ -58,7 +58,7 @@ final class EnumValueParser implements ValueParser {
                     return ValueHolder.NULL;
                 }
             }
-            return ValueHolder.ofEnum(enumConstantName, valueType, value);
+            return ValueHolder.ofEnum(enumTypeInfo, enumConstantName, valueType, value);
         } else if (tree == null) {
             ctx.error(enumConstant, "Literal value cannot be parsed from enum constant: %s of enum %s, because source tree from the element is null." +
                     " This could mean at the time of the annotation processing, the source tree was not available." +

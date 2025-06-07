@@ -76,7 +76,7 @@ final class ClassTypeDefParser implements TypeDefParser {
         classDef.directSupertypes().addAll(parseSupertypes(typeElement));
 
         TypeInfo typeInfo = typeInfoParser.parse(typeElement.asType(), typeElement);
-        classDef.linkTypeInfo((ConcreteTypeInfo) typeInfo);
+        ((ConcreteTypeInfo) typeInfo).markShallowResolved(classDef);
         return Collections.singletonList(classDef);
     }
 

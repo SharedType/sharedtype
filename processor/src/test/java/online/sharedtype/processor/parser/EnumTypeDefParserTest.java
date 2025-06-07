@@ -58,9 +58,9 @@ final class EnumTypeDefParserTest {
 
         ConcreteTypeInfo typeInfo = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").build();
         when(typeInfoParser.parse(enumType.type(), enumType.element())).thenReturn(typeInfo);
-        var value1 = ValueHolder.ofEnum(enumConstant1.getSimpleName().toString(), Constants.STRING_TYPE_INFO, "Value1");
+        var value1 = ValueHolder.ofEnum(typeInfo, enumConstant1.getSimpleName().toString(), Constants.STRING_TYPE_INFO, "Value1");
         when(valueParser.resolve(enumConstant1, enumType.element())).thenReturn(value1);
-        var value2 = ValueHolder.ofEnum(enumConstant2.getSimpleName().toString(), Constants.STRING_TYPE_INFO,"Value2");
+        var value2 = ValueHolder.ofEnum(typeInfo, enumConstant2.getSimpleName().toString(), Constants.STRING_TYPE_INFO,"Value2");
         when(valueParser.resolve(enumConstant2, enumType.element())).thenReturn(value2);
 
         EnumDef typeDef = (EnumDef) parser.parse(enumType.element()).getFirst();

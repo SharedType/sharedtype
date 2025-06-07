@@ -78,7 +78,7 @@ final class EnumValueParserTest {
             .thenReturn(new EnumCtorIndex(0, enumConstant1));
         reset(valueResolverBackend);
         when(valueResolverBackend.recursivelyResolve(any()))
-            .thenReturn(ValueHolder.ofEnum("AnotherEnumConstant1", anotherEnumTypeInfo, "AnotherEnumConstant1"));
+            .thenReturn(ValueHolder.ofEnum(null, "AnotherEnumConstant1", anotherEnumTypeInfo, "AnotherEnumConstant1"));
 
         EnumConstantValue value1 = (EnumConstantValue) resolver.resolve(enumConstant1, enumType.element());
         assertThat(value1.getEnumConstantName()).isEqualTo(enumConstant1.getSimpleName().toString());
