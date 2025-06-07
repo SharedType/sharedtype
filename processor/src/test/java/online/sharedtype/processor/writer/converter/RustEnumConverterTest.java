@@ -26,7 +26,7 @@ final class RustEnumConverterTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeExpressionConverter rustTypeExpressionConverter = mock(TypeExpressionConverter.class);
     private final RustMacroTraitsGenerator rustMacroTraitsGenerator = mock(RustMacroTraitsGenerator.class);
-    private final RustEnumConverter converter = new RustEnumConverter(rustTypeExpressionConverter, rustMacroTraitsGenerator);
+    private final RustEnumConverter converter = new RustEnumConverter(ctxMocks.getContext(), rustTypeExpressionConverter, rustMacroTraitsGenerator);
 
     private final Config config = mock(Config.class);
     @BeforeEach
@@ -106,6 +106,7 @@ final class RustEnumConverterTest {
         assertThat(model.macroTraits).containsExactly("TestMacro");
         assertThat(model.hasValue).isTrue();
         assertThat(model.valueType).isEqualTo("i32");
+        assertThat(model.valueTypeAlias).isEqualTo("EnumAValue");
         assertThat(model.enumerations).satisfiesExactly(
             v1 -> {
                 assertThat(v1.name).isEqualTo("Value1");

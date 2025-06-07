@@ -2,6 +2,7 @@ package online.sharedtype.processor.writer.converter;
 
 import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.domain.component.ComponentInfo;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.def.EnumDef;
@@ -14,6 +15,7 @@ import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter
 import online.sharedtype.processor.writer.render.Template;
 
 import online.sharedtype.processor.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +23,7 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 final class RustEnumConverter extends AbstractEnumConverter {
+    private final Context ctx;
     private final TypeExpressionConverter typeExpressionConverter;
     private final RustMacroTraitsGenerator rustMacroTraitsGenerator;
 
@@ -29,13 +32,15 @@ final class RustEnumConverter extends AbstractEnumConverter {
         EnumDef enumDef = (EnumDef) typeDef;
 
         String valueType = getValueTypeExpr(enumDef);
+        boolean hasValue = valueType != null;
         // value can be literal or enum
         EnumExpr value = new EnumExpr(
             enumDef.simpleName(),
             extractEnumValues(enumDef.components()),
             rustMacroTraitsGenerator.generate(enumDef),
-            valueType != null,
-            valueType
+            hasValue,
+            valueType,
+            hasValue && ctx.getProps().getRust().hasEnumValueTypeAlias() ? String.format("%sValue", enumDef.simpleName()) : null
         );
         return Tuple.of(Template.TEMPLATE_RUST_ENUM, value);
     }
@@ -76,7 +81,10 @@ final class RustEnumConverter extends AbstractEnumConverter {
         final List<EnumerationExpr> enumerations;
         final Set<String> macroTraits;
         final boolean hasValue;
+        @Nullable
         final String valueType;
+        @Nullable
+        final String valueTypeAlias;
 
         String macroTraitsExpr() {
             return ConversionUtils.buildRustMacroTraitsExpr(macroTraits);

@@ -39,7 +39,7 @@ public interface TemplateDataConverter {
         TypeExpressionConverter rustLiteralTypeExpressionConverter = TypeExpressionConverter.rustLiteral();
         Set<TemplateDataConverter> converters = new HashSet<>(3);
         converters.add(new RustStructConverter(ctx, rustTypeExpressionConverter, rustMacroTraitsGenerator));
-        converters.add(new RustEnumConverter(rustLiteralTypeExpressionConverter, rustMacroTraitsGenerator));
+        converters.add(new RustEnumConverter(ctx, rustLiteralTypeExpressionConverter, rustMacroTraitsGenerator));
         converters.add(new ConstantConverter(ctx, rustLiteralTypeExpressionConverter, SharedType.TargetType.RUST));
         return converters;
     }

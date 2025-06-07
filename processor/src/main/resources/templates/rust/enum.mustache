@@ -8,8 +8,11 @@ pub enum {{name}} {
 {{/enumerations}}
 }
 {{#hasValue}}
+{{#valueTypeAlias}}
+pub type {{valueTypeAlias}} = {{{valueType}}};
+{{/valueTypeAlias}}
 impl {{name}} {
-    pub const fn value(self) -> {{{valueType}}} {
+    pub const fn value(self) -> {{valueTypeAlias}} {
         use {{name}}::*;
         match self {
             {{#enumerations}}
@@ -18,5 +21,4 @@ impl {{name}} {
         }
     }
 }
-
 {{/hasValue}}
