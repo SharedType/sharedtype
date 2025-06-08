@@ -94,7 +94,6 @@ public final class Props {
         private final String javaObjectMapType;
         private final String targetDatetimeTypeLiteral;
         private final EnumFormat enumFormat;
-        private final Set<String> jsonTags;
         private final Map<String, String> typeMappings;
         private final String customCodePath;
 
