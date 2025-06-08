@@ -260,12 +260,14 @@ public @interface SharedType {
 
     /**
      * Type literal to be emitted for date/time types. How a java type is considered a date/time type is defined by global properties.
+     *
      * @return any literal, e.g. "string", "Date". When empty, fallback to global default.
      */
     String goTargetDatetimeTypeLiteral() default "";
 
     /**
      * Format of enum in Go.
+     *
      * @return "const" or "struct". If empty, fallback to global default.
      */
     String goEnumFormat() default "";
@@ -325,22 +327,37 @@ public @interface SharedType {
     }
 
     /**
-     * Add any tag literals to a field. E.g.
+     * Add any tag literals to a field. E.g. below will add "#[serde(skip)]" tag literal to the emitted Rust struct field.
      * <pre>
      *     {@code
      *     @SharedType.TagLiterals(tags = "#[serde(skip)]", targets = RUST)
      *     private final Object ignoredField;
      *     }
      * </pre>
-     * It's treated as plain string, thus can also be used to emit comments or documentation.
+     * It's treated as plain string, thus can also be used to emit comments, documentation, or Golang struct tags.
      */
     @Target({ElementType.FIELD, ElementType.METHOD})
     @Retention(RetentionPolicy.SOURCE)
     @Repeatable(TagLiterals.class)
     @interface TagLiteral {
+        /**
+         * Tag literals will be emitted for the field.
+         *
+         * @see #position()
+         */
         String[] tags();
         /** If empty, fallback to globally enabled targets. */
         TargetType[] targets() default {};
+
+        /**
+         * <ul>
+         *      <li>{@link TagPosition#NEWLINE_ABOVE} - emitted above the field. Every tag content will be in a new line.</li>
+         *      <li>{@link TagPosition#INLINE_AFTER} - emitted after the field at the same line. Tags will be separated by space.
+         *          This can be used to generate Golang struct tags as well.
+         *          By default, Golang struct tag contains minimal json tags, e.g. `json:"fieldName,omitempty"`, "omitempty" is added when the field is optional.</li>
+         *  </ul>
+         */
+        TagPosition position() default TagPosition.NEWLINE_ABOVE;
     }
 
     enum ComponentType {
@@ -384,5 +401,9 @@ public @interface SharedType {
 
     enum TargetType {
         TYPESCRIPT, GO, RUST
+    }
+
+    enum TagPosition {
+        NEWLINE_ABOVE, INLINE_AFTER,
     }
 }

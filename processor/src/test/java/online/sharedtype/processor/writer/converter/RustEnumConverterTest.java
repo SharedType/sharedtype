@@ -5,6 +5,7 @@ import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.context.TestUtils;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
+import online.sharedtype.processor.domain.component.TagLiteralContainer;
 import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
@@ -45,6 +46,10 @@ final class RustEnumConverterTest {
 
     @Test
     void convertSimpleEnum() {
+        var tagLiterals = List.of(
+            new TagLiteralContainer(List.of("tag1"), SharedType.TagPosition.NEWLINE_ABOVE),
+            new TagLiteralContainer(List.of("tag2"), SharedType.TagPosition.NEWLINE_ABOVE)
+        );
         ConcreteTypeInfo enumType = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").simpleName("EnumA")
             .kind(ConcreteTypeInfo.Kind.ENUM).build();
         EnumDef enumDef = EnumDef.builder()
@@ -53,7 +58,7 @@ final class RustEnumConverterTest {
             .enumValueInfos(Arrays.asList(
                 EnumValueInfo.builder().name("Value1").value(ValueHolder.ofEnum(enumType, "Value1", enumType, "Value1")).build(),
                 EnumValueInfo.builder().name("Value2").value(ValueHolder.ofEnum(enumType, "Value2", enumType, "Value2"))
-                    .tagLiterals(Map.of(SharedType.TargetType.RUST, List.of("tag1", "tag2")))
+                    .tagLiterals(Map.of(SharedType.TargetType.RUST, tagLiterals))
                     .build()
             ))
             .build();
@@ -72,12 +77,12 @@ final class RustEnumConverterTest {
             v1 -> {
                 assertThat(v1.name).isEqualTo("Value1");
                 assertThat(v1.value).isEqualTo("EnumA::Value1");
-                assertThat(v1.tagLiterals).isEmpty();
+                assertThat(v1.tagLiteralsAbove).isEmpty();
             },
             v2 -> {
                 assertThat(v2.name).isEqualTo("Value2");
                 assertThat(v2.value).isEqualTo("EnumA::Value2");
-                assertThat(v2.tagLiterals).containsExactly("tag1", "tag2");
+                assertThat(v2.tagLiteralsAbove).containsExactly("tag1", "tag2");
             }
         );
     }

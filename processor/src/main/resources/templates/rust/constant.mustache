@@ -1,8 +1,8 @@
 pub mod {{name}} {
 {{#constants}}
-    {{#tagLiterals}}
+    {{#tagLiteralsAbove}}
     {{{.}}}
-    {{/tagLiterals}}
+    {{/tagLiteralsAbove}}
     pub const {{name}}: {{{type}}} = {{{value}}};
 {{/constants}}
 }

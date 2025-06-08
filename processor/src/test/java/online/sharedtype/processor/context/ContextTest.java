@@ -1,11 +1,12 @@
 package online.sharedtype.processor.context;
 
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.component.TagLiteralContainer;
+import online.sharedtype.processor.support.annotation.Nullable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import online.sharedtype.processor.support.annotation.Nullable;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ElementKind;
@@ -13,7 +14,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -136,17 +136,26 @@ final class ContextTest {
             .withAnnotation(SharedType.TagLiteral.class, mock -> {
                 when(mock.tags()).thenReturn(new String[]{"a", "b"});
                 when(mock.targets()).thenReturn(new SharedType.TargetType[]{SharedType.TargetType.GO, SharedType.TargetType.RUST});
+                when(mock.position()).thenReturn(SharedType.TagPosition.NEWLINE_ABOVE);
             })
             .withAnnotation(SharedType.TagLiteral.class, mock -> {
                 when(mock.tags()).thenReturn(new String[]{"c"});
                 when(mock.targets()).thenReturn(new SharedType.TargetType[]{SharedType.TargetType.TYPESCRIPT, SharedType.TargetType.RUST});
+                when(mock.position()).thenReturn(SharedType.TagPosition.INLINE_AFTER);
             })
             .element();
         var res = ctx.extractTagLiterals(variableElement);
         assertThat(res).hasSize(3);
-        assertThat(res.get(SharedType.TargetType.TYPESCRIPT)).isEqualTo(List.of("c"));
-        assertThat(res.get(SharedType.TargetType.GO)).isEqualTo(List.of("a", "b"));
-        assertThat(res.get(SharedType.TargetType.RUST)).isEqualTo(List.of("a", "b", "c"));
+        assertThat(res.get(SharedType.TargetType.TYPESCRIPT)).containsExactly(
+            new TagLiteralContainer(List.of("c"), SharedType.TagPosition.INLINE_AFTER)
+        );
+        assertThat(res.get(SharedType.TargetType.GO)).containsExactly(
+            new TagLiteralContainer(List.of("a", "b"), SharedType.TagPosition.NEWLINE_ABOVE)
+        );
+        assertThat(res.get(SharedType.TargetType.RUST)).containsExactly(
+            new TagLiteralContainer(List.of("a", "b"), SharedType.TagPosition.NEWLINE_ABOVE),
+            new TagLiteralContainer(List.of("c"), SharedType.TagPosition.INLINE_AFTER)
+        );
     }
 
     @Test
@@ -155,10 +164,13 @@ final class ContextTest {
         var variableElement = ctxMocks.executable("com.github.cuzfrog.Abc")
             .withAnnotation(SharedType.TagLiteral.class, mock -> {
                 when(mock.tags()).thenReturn(new String[]{"a", "b"});
+                when(mock.position()).thenReturn(SharedType.TagPosition.NEWLINE_ABOVE);
             })
             .element();
         var res = ctx.extractTagLiterals(variableElement);
         assertThat(res).hasSize(1);
-        assertThat(res.get(SharedType.TargetType.RUST)).isEqualTo(List.of("a", "b"));
+        assertThat(res.get(SharedType.TargetType.RUST)).containsExactly(
+            new TagLiteralContainer(List.of("a", "b"), SharedType.TagPosition.NEWLINE_ABOVE)
+        );
     }
 }

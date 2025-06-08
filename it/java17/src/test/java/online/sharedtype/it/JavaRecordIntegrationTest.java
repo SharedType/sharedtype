@@ -165,11 +165,11 @@ final class JavaRecordIntegrationTest {
         var typeInfo = (ConcreteTypeInfo)objectField.type();
         assertThat(typeInfo.qualifiedName()).isEqualTo("java.lang.Object");
         assertThat(objectField.getTagLiterals(SharedType.TargetType.RUST)).satisfiesExactly(
-            literal1 -> assertThat(literal1).isEqualTo("// test comments for class"),
-            literal2 -> assertThat(literal2).startsWith("#[serde")
+            literal1 -> assertThat(literal1.getContents()).containsExactly("// test comments for class"),
+            literal2 -> assertThat(literal2.getContents().get(0)).startsWith("#[serde")
         );
         assertThat(objectField.getTagLiterals(SharedType.TargetType.TYPESCRIPT)).satisfiesExactly(
-            literal1 -> assertThat(literal1).isEqualTo("// test comments for class")
+            literal1 -> assertThat(literal1.getContents()).containsExactly("// test comments for class")
         );
     }
 

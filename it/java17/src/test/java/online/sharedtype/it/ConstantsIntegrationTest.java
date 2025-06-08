@@ -80,7 +80,7 @@ final class ConstantsIntegrationTest {
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_VALUE_IN_STATIC_BLOCK");
                 assertThat(component.value().getValue()).isEqualTo(112L);
-                assertThat(component.getTagLiterals(SharedType.TargetType.GO)).anyMatch(s -> s.contains("test comments"));
+                assertThat(component.getTagLiterals(SharedType.TargetType.GO)).anyMatch(s -> s.getContents().contains("// test comments for inlined constant"));
             },
             component -> {
                 assertThat(component.name()).isEqualTo("REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK");
