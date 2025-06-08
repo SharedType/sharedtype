@@ -79,6 +79,7 @@ public final class PropsFactory {
                 .javaObjectMapType(properties.getProperty("sharedtype.go.java-object-map-type"))
                 .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.go.target-datetime-type"))
                 .enumFormat(parseEnum(properties, "sharedtype.go.enum-format", Props.Go.EnumFormat::fromString))
+                .jsonTags(splitArray(properties.getProperty("sharedtype.go.json-tags")))
                 .typeMappings(parseMap(properties, "sharedtype.go.type-mappings"))
                 .customCodePath(properties.getProperty("sharedtype.go.custom-code-path"))
                 .build())

@@ -64,6 +64,7 @@ final class PropsFactoryTest {
         assertThat(goProps.getJavaObjectMapType()).isEqualTo("any");
         assertThat(goProps.getTargetDatetimeTypeLiteral()).isEqualTo("string");
         assertThat(goProps.getEnumFormat()).isEqualTo(Props.Go.EnumFormat.CONST);
+        assertThat(goProps.getJsonTags()).containsExactly("omitempty");
         assertThat(goProps.getTypeMappings()).isEmpty();
         assertThat(goProps.getCustomCodePath()).isEqualTo("sharedtype-custom-code.go");
 
