@@ -1,9 +1,9 @@
 var {{name}} = struct {
 {{#constants}}
-    {{#tagLiterals}}
+    {{#tagLiteralsAbove}}
     {{{.}}}
-    {{/tagLiterals}}
-    {{name}} {{type}}
+    {{/tagLiteralsAbove}}
+    {{name}} {{type}}{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/constants}}
 }{
 {{#constants}}

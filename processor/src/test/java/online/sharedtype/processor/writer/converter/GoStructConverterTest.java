@@ -1,8 +1,10 @@
 package online.sharedtype.processor.writer.converter;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.component.TagLiteralContainer;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
@@ -10,6 +12,7 @@ import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -96,7 +99,7 @@ final class GoStructConverterTest {
         assertThat(prop1.type).isEqualTo("int32");
         assertThat(prop1.typeExpr()).isEqualTo("int32");
         assertThat(prop1.optional).isFalse();
-        assertThat(prop1.tagsExpr()).isEqualTo("json:\"field1\"");
+        assertThat(prop1.inlineTagsExpr()).isEqualTo("`json:\"field1\"`");
 
         GoStructConverter.PropertyExpr prop2 = model.properties.get(1);
         assertThat(prop2.name).isEqualTo("field2");
@@ -107,11 +110,28 @@ final class GoStructConverterTest {
         assertThat(prop3.type).isEqualTo("RecursiveClass");
         assertThat(prop3.typeExpr()).isEqualTo("*RecursiveClass");
         assertThat(prop3.optional).isTrue();
-        assertThat(prop3.tagsExpr()).isEqualTo("json:\"field3,omitempty\"");
+        assertThat(prop3.inlineTagsExpr()).isEqualTo("`json:\"field3,omitempty\"`");
 
         GoStructConverter.PropertyExpr prop5 = model.properties.get(3);
         assertThat(prop5.name).isEqualTo("mapField");
         assertThat(prop5.capitalizedName()).isEqualTo("MapField");
         assertThat(prop5.type).isEqualTo("map[string]int32");
+    }
+
+    @Test
+    void inlineTagsOverrideDefaultTags() {
+        var propertyExpr = new GoStructConverter.PropertyExpr(
+            FieldComponentInfo.builder()
+                .name("field1")
+                .type(Constants.INT_TYPE_INFO)
+                .tagLiterals(Map.of(SharedType.TargetType.GO, List.of(
+                    new TagLiteralContainer(List.of("`json:\"-\"` //override"), SharedType.TagPosition.INLINE_AFTER)
+                )))
+                .build(),
+            "int32",
+            false
+        );
+
+        assertThat(propertyExpr.inlineTagsExpr()).isEqualTo("`json:\"-\"` //override");
     }
 }

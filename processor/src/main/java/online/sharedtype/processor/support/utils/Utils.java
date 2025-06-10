@@ -51,4 +51,8 @@ public final class Utils {
         }
         return fields;
     }
+
+    public static boolean isBlank(String str) {
+        return str == null || str.trim().isEmpty();
+    }
 }

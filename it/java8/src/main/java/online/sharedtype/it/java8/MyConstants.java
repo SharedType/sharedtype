@@ -30,6 +30,7 @@ final class MyConstants extends IgnoredSuperClassB {
 
     @SharedType.TagLiteral(tags = "// test comments for inlined constant")
     static final long REFERENCED_VALUE_IN_STATIC_BLOCK;
+    @SharedType.TagLiteral(tags = "// test inline comments", position = SharedType.TagPosition.INLINE_AFTER)
     static final long REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK;
     static final long SELF_REFERENCED_LOCAL_VALUE_IN_STATIC_BLOCK;
     static final long SELF_REFERENCED_LOCAL_VALUE_QUALIFIED_NAME_IN_STATIC_BLOCK;
@@ -78,6 +79,7 @@ final class MyConstants extends IgnoredSuperClassB {
 enum MyEnumConstants {
     ;
     @SharedType.TagLiteral(tags = "// test comments for constant in enum type")
+    @SharedType.TagLiteral(tags = "// test inline comments", position = SharedType.TagPosition.INLINE_AFTER)
     private static final int INT_VALUE = 1;
     private static final String STR_VALUE = "abc";
 }

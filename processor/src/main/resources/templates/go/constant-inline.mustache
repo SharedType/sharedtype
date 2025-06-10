@@ -1,8 +1,8 @@
 const (
 {{#constants}}
-    {{#tagLiterals}}
+    {{#tagLiteralsAbove}}
     {{{.}}}
-    {{/tagLiterals}}
-    {{name}} {{{type}}} = {{{value}}};
+    {{/tagLiteralsAbove}}
+    {{name}} {{{type}}} = {{{value}}};{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/constants}}
 )

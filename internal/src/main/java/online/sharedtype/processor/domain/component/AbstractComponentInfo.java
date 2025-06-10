@@ -21,7 +21,7 @@ public abstract class AbstractComponentInfo implements ComponentInfo {
     private transient final Element element;
     private final String name;
     @Setter @Builder.Default
-    private Map<SharedType.TargetType, List<String>> tagLiterals = Collections.emptyMap();
+    private Map<SharedType.TargetType, List<TagLiteralContainer>> tagLiterals = Collections.emptyMap();
 
     @Override
     public final String name() {
@@ -29,7 +29,7 @@ public abstract class AbstractComponentInfo implements ComponentInfo {
     }
 
     @Override
-    public final List<String> getTagLiterals(SharedType.TargetType targetType) {
+    public final List<TagLiteralContainer> getTagLiterals(SharedType.TargetType targetType) {
         return tagLiterals.getOrDefault(targetType, Collections.emptyList());
     }
 }

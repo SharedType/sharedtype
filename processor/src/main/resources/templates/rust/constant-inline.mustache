@@ -1,7 +1,7 @@
 {{#constants}}
-{{#tagLiterals}}
+{{#tagLiteralsAbove}}
 {{{.}}}
-{{/tagLiterals}}
-pub const {{name}}: {{{type}}} = {{{value}}};
+{{/tagLiteralsAbove}}
+pub const {{name}}: {{{type}}} = {{{value}}};{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/constants}}
 

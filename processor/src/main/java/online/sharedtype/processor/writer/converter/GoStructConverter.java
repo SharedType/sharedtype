@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static online.sharedtype.processor.support.utils.Utils.isBlank;
+
 @RequiredArgsConstructor
 final class GoStructConverter extends AbstractStructConverter {
     private final TypeExpressionConverter typeExpressionConverter;
@@ -89,13 +91,17 @@ final class GoStructConverter extends AbstractStructConverter {
             return type;
         }
 
-        String tagsExpr() {
+        String inlineTagsExpr() {
+            if (!isBlank(tagLiteralsInlineAfter)) {
+                return tagLiteralsInlineAfter;
+            }
+
             Set<String> jsonTags = new HashSet<>(2);
             jsonTags.add(name);
             if (optional) {
                 jsonTags.add("omitempty");
             }
-            return String.format("json:\"%s\"", String.join(",", jsonTags));
+            return String.format("`json:\"%s\"`", String.join(",", jsonTags));
         }
     }
 }

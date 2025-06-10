@@ -4,7 +4,6 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -76,7 +75,7 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
 
         var existingAnnotations = element.getAnnotationsByType(annotationClazz);
         int arrLength = existingAnnotations != null ? existingAnnotations.length + 1 : 1;
-        A[] arr = (A[]) Array.newInstance(annotationClazz, arrLength);
+        A[] arr = createArray(annotationClazz, arrLength);
         arr[arrLength - 1] = supplier.get();
         if (existingAnnotations != null) {
             System.arraycopy(existingAnnotations, 0, arr, 0, existingAnnotations.length);
@@ -143,5 +142,10 @@ abstract class AbstractElementMock<E extends Element, T extends TypeMirror, M ex
     @SuppressWarnings("unchecked")
     private M returnThis() {
         return (M)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <A> A[] createArray(Class<A> clazz, int length) {
+        return (A[]) Array.newInstance(clazz, length);
     }
 }

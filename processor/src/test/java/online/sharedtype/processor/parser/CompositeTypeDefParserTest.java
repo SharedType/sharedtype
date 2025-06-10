@@ -3,6 +3,7 @@ package online.sharedtype.processor.parser;
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.component.TagLiteralContainer;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
 import org.junit.jupiter.api.BeforeEach;
@@ -101,12 +102,16 @@ final class CompositeTypeDefParserTest {
                 FieldComponentInfo.builder().name("a").element(variableElement).build()
             ))
             .build();
-        when(ctxMocks.getContext().extractTagLiterals(variableElement)).thenReturn(Map.of(SharedType.TargetType.RUST, List.of("a", "b")));
+        var tagLiterals = List.of(
+            new TagLiteralContainer(List.of("a"), SharedType.TagPosition.NEWLINE_ABOVE),
+            new TagLiteralContainer(List.of("b"), SharedType.TagPosition.NEWLINE_ABOVE)
+        );
+        when(ctxMocks.getContext().extractTagLiterals(variableElement)).thenReturn(Map.of(SharedType.TargetType.RUST, tagLiterals));
         when(delegate1.parse(typeElement)).thenReturn(Collections.singletonList(typeDef));
 
         var typeDefs = parser.parse(typeElement);
         var typeDef1 = typeDefs.get(0);
         var component1 = (FieldComponentInfo)typeDef1.components().get(0);
-        assertThat(component1.getTagLiterals(SharedType.TargetType.RUST)).containsExactly("a", "b");
+        assertThat(component1.getTagLiterals(SharedType.TargetType.RUST)).containsExactlyElementsOf(tagLiterals);
     }
 }

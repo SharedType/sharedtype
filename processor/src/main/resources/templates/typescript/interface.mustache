@@ -1,9 +1,9 @@
 export interface {{name}}{{{typeParametersExpr}}} {{{supertypesExpr}}}{
 {{#properties}}
-    {{#tagLiterals}}
+    {{#tagLiteralsAbove}}
     {{{.}}}
-    {{/tagLiterals}}
-    {{#readonly}}readonly {{/readonly}}{{name}}{{#optional}}?{{/optional}}: {{{type}}}{{#unionNull}} | null{{/unionNull}}{{#unionUndefined}} | undefined{{/unionUndefined}}{{propDelimiter}}
+    {{/tagLiteralsAbove}}
+    {{#readonly}}readonly {{/readonly}}{{name}}{{#optional}}?{{/optional}}: {{{type}}}{{#unionNull}} | null{{/unionNull}}{{#unionUndefined}} | undefined{{/unionUndefined}}{{propDelimiter}}{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/properties}}
 }
 

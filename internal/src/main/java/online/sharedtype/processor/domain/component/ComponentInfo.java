@@ -14,5 +14,5 @@ import java.util.List;
 public interface ComponentInfo extends Serializable {
     boolean resolved();
     String name();
-    List<String> getTagLiterals(SharedType.TargetType targetType);
+    List<TagLiteralContainer> getTagLiterals(SharedType.TargetType targetType);
 }

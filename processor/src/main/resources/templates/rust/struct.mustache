@@ -1,10 +1,10 @@
 {{macroTraitsExpr}}
 pub struct {{name}}{{{typeParametersExpr}}} {
 {{#properties}}
-    {{#tagLiterals}}
+    {{#tagLiteralsAbove}}
     {{{.}}}
-    {{/tagLiterals}}
-    pub {{name}}: {{{typeExpr}}},
+    {{/tagLiteralsAbove}}
+    pub {{name}}: {{{typeExpr}}},{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/properties}}
 }
 

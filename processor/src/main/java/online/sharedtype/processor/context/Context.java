@@ -3,6 +3,7 @@ package online.sharedtype.processor.context;
 import com.sun.source.util.Trees;
 import lombok.Getter;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.domain.component.TagLiteralContainer;
 import online.sharedtype.processor.support.annotation.VisibleForTesting;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -145,16 +146,17 @@ public final class Context {
         return isAnnotatedByQualifiedNames(element, props.getEnumValueAnnotations());
     }
 
-    public Map<SharedType.TargetType, List<String>> extractTagLiterals(Element element) {
+    public Map<SharedType.TargetType, List<TagLiteralContainer>> extractTagLiterals(Element element) {
         SharedType.TagLiteral[] tagLiterals = element.getAnnotationsByType(SharedType.TagLiteral.class);
         if (tagLiterals.length == 0) {
             return Collections.emptyMap();
         }
-        Map<SharedType.TargetType, List<String>> tagLiteralsByTargetCodeType = new HashMap<>();
+        Map<SharedType.TargetType, List<TagLiteralContainer>> tagLiteralsByTargetCodeType = new HashMap<>();
         for (SharedType.TagLiteral tagLiteral : tagLiterals) {
             Iterable<SharedType.TargetType> targets = tagLiteral.targets().length > 0 ? Arrays.asList(tagLiteral.targets()) : props.getTargetTypes();
             for (SharedType.TargetType target : targets) {
-                tagLiteralsByTargetCodeType.compute(target, (k, v) -> v == null ? new ArrayList<>() : v).addAll(Arrays.asList(tagLiteral.tags()));
+                tagLiteralsByTargetCodeType.compute(target, (k, v) -> v == null ? new ArrayList<>() : v)
+                    .add(new TagLiteralContainer(Arrays.asList(tagLiteral.tags()), tagLiteral.position()));
             }
         }
         return tagLiteralsByTargetCodeType;

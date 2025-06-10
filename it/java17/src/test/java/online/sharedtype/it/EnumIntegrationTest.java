@@ -44,7 +44,7 @@ final class EnumIntegrationTest {
 
         EnumValueInfo constant3 = enumSize.components().get(2);
         assertThat(constant3.value().getValue()).isEqualTo(3);
-        assertThat(constant3.getTagLiterals(SharedType.TargetType.RUST)).containsExactly("// test comments for enum");
+        assertThat(constant3.getTagLiterals(SharedType.TargetType.RUST).get(0).getContents()).containsExactly("// test comments for enum");
     }
 
     @Test

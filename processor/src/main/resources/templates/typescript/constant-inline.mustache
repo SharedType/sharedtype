@@ -1,7 +1,7 @@
 {{#constants}}
-{{#tagLiterals}}
+{{#tagLiteralsAbove}}
 {{{.}}}
-{{/tagLiterals}}
-export const {{name}} = {{{value}}};
+{{/tagLiteralsAbove}}
+export const {{name}} = {{{value}}};{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/constants}}
 

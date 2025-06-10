@@ -1,10 +1,10 @@
 type {{name}} = {{valueType}}
 var {{name}}Enums = struct {
 {{#enumerations}}
-    {{#tagLiterals}}
+    {{#tagLiteralsAbove}}
     {{{.}}}
-    {{/tagLiterals}}
-    {{name}} {{enumName}}
+    {{/tagLiteralsAbove}}
+    {{name}} {{enumName}}{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/enumerations}}
 }{
 {{#enumerations}}

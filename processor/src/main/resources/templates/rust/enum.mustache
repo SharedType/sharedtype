@@ -1,10 +1,10 @@
 {{macroTraitsExpr}}
 pub enum {{name}} {
 {{#enumerations}}
-    {{#tagLiterals}}
+    {{#tagLiteralsAbove}}
     {{{.}}}
-    {{/tagLiterals}}
-    {{name}},
+    {{/tagLiteralsAbove}}
+    {{name}},{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/enumerations}}
 }
 {{#hasValue}}

@@ -3,9 +3,9 @@ type {{name}}{{typeParametersExpr}} struct {
     {{.}}
 {{/supertypes}}
 {{#properties}}
-    {{#tagLiterals}}
+    {{#tagLiteralsAbove}}
     {{{.}}}
-    {{/tagLiterals}}
-    {{capitalizedName}} {{{typeExpr}}} `{{{tagsExpr}}}`
+    {{/tagLiteralsAbove}}
+    {{capitalizedName}} {{{typeExpr}}} {{{inlineTagsExpr}}}
 {{/properties}}
 }
