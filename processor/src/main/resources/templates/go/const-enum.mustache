@@ -4,6 +4,6 @@ const (
     {{#tagLiteralsAbove}}
     {{{.}}}
     {{/tagLiteralsAbove}}
-    {{name}} {{enumName}} = {{{value}}}
+    {{name}} {{enumName}} = {{{value}}}{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/enumerations}}
 )

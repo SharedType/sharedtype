@@ -334,7 +334,7 @@ public @interface SharedType {
      *     private final Object ignoredField;
      *     }
      * </pre>
-     * It's treated as plain string, thus can also be used to emit comments, documentation, or Golang struct tags.
+     * It's treated as plain text, thus can also be used to emit comments, documentation, or Golang struct tags.
      */
     @Target({ElementType.FIELD, ElementType.METHOD})
     @Retention(RetentionPolicy.SOURCE)
@@ -353,7 +353,7 @@ public @interface SharedType {
          * <ul>
          *      <li>{@link TagPosition#NEWLINE_ABOVE} - emitted above the field. Every tag content will be in a new line.</li>
          *      <li>{@link TagPosition#INLINE_AFTER} - emitted after the field at the same line. Tags will be separated by space.
-         *          This can be used to generate Golang struct tags as well.
+         *          This can be used to generate Golang struct tags as well. <b>Note:</b> this will override default behavior.
          *          By default, Golang struct tag contains minimal json tags, e.g. `json:"fieldName,omitempty"`, "omitempty" is added when the field is optional.</li>
          *  </ul>
          */

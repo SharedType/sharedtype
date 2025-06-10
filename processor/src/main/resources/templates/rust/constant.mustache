@@ -3,7 +3,7 @@ pub mod {{name}} {
     {{#tagLiteralsAbove}}
     {{{.}}}
     {{/tagLiteralsAbove}}
-    pub const {{name}}: {{{type}}} = {{{value}}};
+    pub const {{name}}: {{{type}}} = {{{value}}};{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/constants}}
 }
 

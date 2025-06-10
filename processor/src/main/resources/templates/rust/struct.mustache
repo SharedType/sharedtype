@@ -4,7 +4,7 @@ pub struct {{name}}{{{typeParametersExpr}}} {
     {{#tagLiteralsAbove}}
     {{{.}}}
     {{/tagLiteralsAbove}}
-    pub {{name}}: {{{typeExpr}}},
+    pub {{name}}: {{{typeExpr}}},{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/properties}}
 }
 

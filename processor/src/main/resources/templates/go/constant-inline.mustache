@@ -3,6 +3,6 @@ const (
     {{#tagLiteralsAbove}}
     {{{.}}}
     {{/tagLiteralsAbove}}
-    {{name}} {{{type}}} = {{{value}}};
+    {{name}} {{{type}}} = {{{value}}};{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/constants}}
 )

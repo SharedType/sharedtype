@@ -3,7 +3,7 @@ export const {{name}} = {
     {{#tagLiteralsAbove}}
     {{{.}}}
     {{/tagLiteralsAbove}}
-    {{name}}: {{{value}}},
+    {{name}}: {{{value}}},{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/constants}}
 } as const;
 

@@ -3,7 +3,7 @@ var {{name}} = struct {
     {{#tagLiteralsAbove}}
     {{{.}}}
     {{/tagLiteralsAbove}}
-    {{name}} {{type}}
+    {{name}} {{type}}{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/constants}}
 }{
 {{#constants}}

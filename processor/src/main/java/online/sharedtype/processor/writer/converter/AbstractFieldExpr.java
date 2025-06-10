@@ -6,7 +6,6 @@ import online.sharedtype.processor.domain.component.TagLiteralContainer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 abstract class AbstractFieldExpr {
     final String name;

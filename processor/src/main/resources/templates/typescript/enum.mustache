@@ -3,7 +3,7 @@ export {{#isConst}}const {{/isConst}}enum {{name}} {
     {{#tagLiteralsAbove}}
     {{{.}}}
     {{/tagLiteralsAbove}}
-    {{name}} = {{{value}}},
+    {{name}} = {{{value}}},{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/values}}
 }
 

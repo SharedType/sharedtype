@@ -4,7 +4,7 @@ pub enum {{name}} {
     {{#tagLiteralsAbove}}
     {{{.}}}
     {{/tagLiteralsAbove}}
-    {{name}},
+    {{name}},{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/enumerations}}
 }
 {{#hasValue}}

@@ -14,6 +14,7 @@ public enum EnumSize {
     SMALL(1),
     MEDIUM(2),
     @SharedType.TagLiteral(tags = "// test comments for enum")
+    @SharedType.TagLiteral(tags = "// test inline comments", position = SharedType.TagPosition.INLINE_AFTER)
     LARGE(3);
 
     @JsonValue

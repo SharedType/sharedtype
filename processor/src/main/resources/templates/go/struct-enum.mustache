@@ -4,7 +4,7 @@ var {{name}}Enums = struct {
     {{#tagLiteralsAbove}}
     {{{.}}}
     {{/tagLiteralsAbove}}
-    {{name}} {{enumName}}
+    {{name}} {{enumName}}{{#tagLiteralsInlineAfter}} {{{.}}}{{/tagLiteralsInlineAfter}}
 {{/enumerations}}
 }{
 {{#enumerations}}
