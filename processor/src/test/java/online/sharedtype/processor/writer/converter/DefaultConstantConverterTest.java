@@ -13,13 +13,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static online.sharedtype.processor.context.TestUtils.typeCast;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-final class ConstantConverterTypescriptTest {
+final class DefaultConstantConverterTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final ConstantConverter typescriptConverter = new ConstantConverter(ctxMocks.getContext(), TypeExpressionConverter.nullOp(), SharedType.TargetType.TYPESCRIPT);
+    private final DefaultConstantConverter typescriptConverter = new DefaultConstantConverter(ctxMocks.getContext(), TypeExpressionConverter.nullOp(), SharedType.TargetType.TYPESCRIPT);
 
     private final ConstantNamespaceDef constantNamespaceDef = ConstantNamespaceDef.builder()
         .simpleName("Abc")
@@ -42,7 +43,7 @@ final class ConstantConverterTypescriptTest {
     @Test
     void convertToConstObject() {
         var tuple = typescriptConverter.convert(constantNamespaceDef);
-        var value = (ConstantConverter.ConstantNamespaceExpr)tuple.b();
+        DefaultConstantConverter.ConstantNamespaceExpr<DefaultConstantConverter.ConstantExpr> value = typeCast(tuple.b());
         assertThat(value.name).isEqualTo("Abc");
         assertThat(value.constants).hasSize(3).satisfiesExactly(
             constantExpr -> {

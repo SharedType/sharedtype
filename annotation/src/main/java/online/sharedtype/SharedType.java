@@ -226,6 +226,11 @@ public @interface SharedType {
     String rustTargetDatetimeTypeLiteral() default "";
 
     /**
+     * @return either "const" or "static".
+     */
+    String rustConstKeyword() default "const";
+
+    /**
      * How to render optional fields in Typescript.
      *
      * @return combination of "?", "null", "undefined", the latter 2 are rendered as union types. If empty, fallback to global default.

@@ -45,7 +45,7 @@ final class ClassTypeDefParserTest {
         var supertype1 = ctxMocks.typeElement("com.github.cuzfrog.SuperClassA");
         var supertype2 = ctxMocks.typeElement("com.github.cuzfrog.InterfaceA");
         var supertype3 = ctxMocks.typeElement("com.github.cuzfrog.InterfaceB");
-        var anno = TestUtils.defaultSharedTypeAnnotation();
+        var anno = TestUtils.spiedDefaultSharedTypeAnnotation();
         var clazz = ctxMocks.typeElement("com.github.cuzfrog.Abc")
             .withAnnotation(SharedType.class, () -> anno)
             .withEnclosedElements(

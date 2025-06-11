@@ -16,43 +16,38 @@ import online.sharedtype.processor.support.utils.Tuple;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
 
-import online.sharedtype.processor.support.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-final class ConstantConverter implements TemplateDataConverter {
+final class RustConstantConverter extends AbstractConstantConverter {
     private final Context ctx;
     private final TypeExpressionConverter typeExpressionConverter;
-    private final SharedType.TargetType targetType;
-
-    @Override
-    public boolean shouldAccept(TypeDef typeDef) {
-        return typeDef instanceof ConstantNamespaceDef;
-    }
 
     @Override
     public Tuple<Template, AbstractTypeExpr> convert(TypeDef typeDef) {
+        Config config = ctx.getTypeStore().getConfig(typeDef);
+
         ConstantNamespaceDef constantNamespaceDef = (ConstantNamespaceDef) typeDef;
-        ConstantNamespaceExpr value = new ConstantNamespaceExpr(
+        ConstantNamespaceExpr<ConstantExpr> value = new ConstantNamespaceExpr<>(
             constantNamespaceDef.simpleName(),
-            constantNamespaceDef.components().stream().map(field -> toConstantExpr(field, typeDef)).collect(Collectors.toList())
+            constantNamespaceDef.components().stream().map(field -> toConstantExpr(field, typeDef, config.getRustConstKeyword())).collect(Collectors.toList())
         );
 
-        Config config = ctx.getTypeStore().getConfig(typeDef);
-        return Tuple.of(Template.forConstant(targetType, config.isConstantNamespaced()), value);
+        return Tuple.of(Template.forConstant(SharedType.TargetType.RUST, config.isConstantNamespaced()), value);
     }
 
-    private ConstantExpr toConstantExpr(ConstantField constantField, TypeDef contextTypeDef) {
+    private ConstantExpr toConstantExpr(ConstantField constantField, TypeDef contextTypeDef, String keyword) {
         return new ConstantExpr(
             constantField,
+            keyword,
             toConstantTypeExpr(constantField, contextTypeDef),
             toConstantValue(constantField)
         );
     }
 
     private String toConstantTypeExpr(ConstantField constantField, TypeDef contextTypeDef) {
-        if (targetType == SharedType.TargetType.RUST && constantField.value() instanceof EnumConstantValue) {
+        if (constantField.value() instanceof EnumConstantValue) {
             EnumConstantValue enumConstantValue = (EnumConstantValue) constantField.value();
             ConcreteTypeInfo enumTypeInfo = enumConstantValue.getEnumType();
             EnumDef enumTypeDef = (EnumDef) enumTypeInfo.typeDef();
@@ -65,28 +60,22 @@ final class ConstantConverter implements TemplateDataConverter {
     }
 
     private String toConstantValue(ConstantField constantField) {
-        if (targetType == SharedType.TargetType.RUST) {
-            ConcreteTypeInfo type = constantField.value().getValueType();
-            ValueHolder value = constantField.value();
-            if (value instanceof EnumConstantValue && value.getValueType().getKind() == ConcreteTypeInfo.Kind.ENUM) {
-                EnumConstantValue enumConstantValue = (EnumConstantValue) value;
-                return String.format("%s::%s",type.simpleName(), enumConstantValue.getEnumConstantName());
-            }
+        ConcreteTypeInfo type = constantField.value().getValueType();
+        ValueHolder value = constantField.value();
+        if (value instanceof EnumConstantValue && value.getValueType().getKind() == ConcreteTypeInfo.Kind.ENUM) {
+            EnumConstantValue enumConstantValue = (EnumConstantValue) value;
+            return String.format("%s::%s",type.simpleName(), enumConstantValue.getEnumConstantName());
         }
         return constantField.value().literalValue();
     }
 
-    @RequiredArgsConstructor
-    static final class ConstantNamespaceExpr extends AbstractTypeExpr {
-        final String name;
-        final List<ConstantExpr> constants;
-    }
-
-    final class ConstantExpr extends AbstractFieldExpr {
+    static final class ConstantExpr extends AbstractFieldExpr {
+        final String keyword;
         final String type;
         final String value;
-        ConstantExpr(ComponentInfo componentInfo, String type, String value) {
-            super(componentInfo, targetType);
+        ConstantExpr(ComponentInfo componentInfo, String keyword, String type, String value) {
+            super(componentInfo, SharedType.TargetType.RUST);
+            this.keyword = keyword;
             this.type = type;
             this.value = value;
         }

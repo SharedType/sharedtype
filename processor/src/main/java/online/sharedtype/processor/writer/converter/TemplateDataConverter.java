@@ -20,7 +20,7 @@ public interface TemplateDataConverter {
         Set<TemplateDataConverter> converters = new HashSet<>(3);
         converters.add(new TypescriptInterfaceConverter(ctx, TypeExpressionConverter.typescript(ctx)));
         converters.add(new TypescriptEnumConverter(ctx));
-        converters.add(new ConstantConverter(ctx, TypeExpressionConverter.nullOp(), SharedType.TargetType.TYPESCRIPT));
+        converters.add(new DefaultConstantConverter(ctx, TypeExpressionConverter.nullOp(), SharedType.TargetType.TYPESCRIPT));
         return converters;
     }
 
@@ -29,7 +29,7 @@ public interface TemplateDataConverter {
         TypeExpressionConverter typeExpressionConverter = TypeExpressionConverter.go(ctx);
         converters.add(new GoStructConverter(typeExpressionConverter));
         converters.add(new GoEnumConverter(ctx, typeExpressionConverter));
-        converters.add(new ConstantConverter(ctx, typeExpressionConverter, SharedType.TargetType.GO));
+        converters.add(new DefaultConstantConverter(ctx, typeExpressionConverter, SharedType.TargetType.GO));
         return converters;
     }
 
@@ -40,7 +40,7 @@ public interface TemplateDataConverter {
         Set<TemplateDataConverter> converters = new HashSet<>(3);
         converters.add(new RustStructConverter(ctx, rustTypeExpressionConverter, rustMacroTraitsGenerator));
         converters.add(new RustEnumConverter(ctx, rustLiteralTypeExpressionConverter, rustMacroTraitsGenerator));
-        converters.add(new ConstantConverter(ctx, rustLiteralTypeExpressionConverter, SharedType.TargetType.RUST));
+        converters.add(new RustConstantConverter(ctx, rustLiteralTypeExpressionConverter));
         return converters;
     }
 }
