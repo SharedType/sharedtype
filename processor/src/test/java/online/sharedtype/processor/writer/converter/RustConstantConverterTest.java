@@ -16,14 +16,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static online.sharedtype.processor.context.TestUtils.typeCast;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-final class ConstantConverterRustTest {
+final class RustConstantConverterTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeExpressionConverter typeExpressionConverter = TypeExpressionConverter.rustLiteral(ctxMocks.getContext());
-    private final ConstantConverter typescriptConverter = new ConstantConverter(ctxMocks.getContext(), typeExpressionConverter, SharedType.TargetType.RUST);
+    private final RustConstantConverter constantConverter = new RustConstantConverter(ctxMocks.getContext(), typeExpressionConverter);
 
     private final ConcreteTypeInfo enumType = ConcreteTypeInfo.builder().qualifiedName("com.github.cuzfrog.EnumA").simpleName("EnumA").build();
     private final ConstantNamespaceDef constantNamespaceDef = ConstantNamespaceDef.builder()
@@ -41,6 +42,7 @@ final class ConstantConverterRustTest {
     @BeforeEach
     void setup() {
         when(config.getQualifiedName()).thenReturn("com.github.cuzfrog.Abc");
+        when(config.getRustConstKeyword()).thenReturn("const");
         ctxMocks.getTypeStore().saveConfig(config);
         when(config.isConstantNamespaced()).thenReturn(true);
 
@@ -50,10 +52,11 @@ final class ConstantConverterRustTest {
 
     @Test
     void interpretType() {
-        var tuple = typescriptConverter.convert(constantNamespaceDef);
-        var value = (ConstantConverter.ConstantNamespaceExpr) tuple.b();
+        var tuple = constantConverter.convert(constantNamespaceDef);
+        RustConstantConverter.ConstantNamespaceExpr<RustConstantConverter.ConstantExpr> value = typeCast(tuple.b());
         assertThat(value.constants).hasSize(4).satisfiesExactly(
             constantExpr -> {
+                assertThat(constantExpr.keyword).isEqualTo("const");
                 assertThat(constantExpr.name).isEqualTo("VALUE1");
                 assertThat(constantExpr.type).isEqualTo("bool");
                 assertThat(constantExpr.value).isEqualTo("true");
@@ -87,8 +90,8 @@ final class ConstantConverterRustTest {
             .build();
         enumType.markShallowResolved(enumDef);
 
-        var tuple = typescriptConverter.convert(constantNamespaceDef);
-        var value = (ConstantConverter.ConstantNamespaceExpr) tuple.b();
+        var tuple = constantConverter.convert(constantNamespaceDef);
+        RustConstantConverter.ConstantNamespaceExpr<RustConstantConverter.ConstantExpr> value = typeCast(tuple.b());
         var constantExpr4 = value.constants.get(3);
         assertThat(constantExpr4.name).isEqualTo("VALUE4");
         assertThat(constantExpr4.type).isEqualTo("EnumAValue");

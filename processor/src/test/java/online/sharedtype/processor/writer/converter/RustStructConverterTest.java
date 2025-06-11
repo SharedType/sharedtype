@@ -192,7 +192,7 @@ final class RustStructConverterTest {
             ))
             .build();
         when(ctxMocks.getTypeStore().getConfig(classDef)).thenReturn(config);
-        when(config.getAnno()).thenReturn(TestUtils.defaultSharedTypeAnnotation());
+        when(config.getAnno()).thenReturn(TestUtils.spiedDefaultSharedTypeAnnotation());
         when(rustMacroTraitsGenerator.generate(classDef)).thenReturn(Set.of("TestMacro"));
 
         var data = converter.convert(classDef);

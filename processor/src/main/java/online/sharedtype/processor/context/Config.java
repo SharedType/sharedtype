@@ -35,6 +35,7 @@ public final class Config {
     private final String typescriptTargetDatetimeTypeLiteral;
     private final String goTargetDatetimeTypeLiteral;
     private final String rustTargetDatetimeTypeLiteral;
+    private final String rustConstKeyword;
 
     @Retention(RetentionPolicy.RUNTIME)
     @interface AnnoContainer {
@@ -74,6 +75,7 @@ public final class Config {
             ctx.getProps().getRust().getTargetDatetimeTypeLiteral(),
             () -> String.format("Loading rustTargetDatetimeTypeLiteral failed. Please check your configuration for '%s'", qualifiedName)
         );
+        rustConstKeyword = validateRustConstKeyword(anno.rustConstKeyword());
     }
 
     public boolean includes(SharedType.ComponentType componentType) {
@@ -142,5 +144,13 @@ public final class Config {
             }
         }
         return ctx.getProps().getGo().getEnumFormat();
+    }
+
+    private static String validateRustConstKeyword(String rustConstKeyword) {
+        if (!rustConstKeyword.equals("const") && !rustConstKeyword.equals("static")) {
+            throw new SharedTypeException(String.format(
+                "Invalid value for SharedType.rustConstKeyword: '%s', only 'const' or 'static' is allowed.", rustConstKeyword));
+        }
+        return rustConstKeyword;
     }
 }

@@ -49,7 +49,7 @@ final class EnumTypeDefParserTest {
 
     @Test
     void simpleEnum() {
-        var anno = TestUtils.defaultSharedTypeAnnotation();
+        var anno = TestUtils.spiedDefaultSharedTypeAnnotation();
         var enumConstant1 = ctxMocks.declaredTypeVariable("Value1", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element();
         var enumConstant2 = ctxMocks.declaredTypeVariable("Value2", enumType.type()).withElementKind(ElementKind.ENUM_CONSTANT).element();
         enumType

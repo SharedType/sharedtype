@@ -75,11 +75,16 @@ final class MyConstants extends IgnoredSuperClassB {
     }
 }
 
-@SharedType(includes = SharedType.ComponentType.CONSTANTS)
+@SharedType(includes = SharedType.ComponentType.CONSTANTS, rustConstKeyword = "static")
 enum MyEnumConstants {
     ;
     @SharedType.TagLiteral(tags = "// test comments for constant in enum type")
     @SharedType.TagLiteral(tags = "// test inline comments", position = SharedType.TagPosition.INLINE_AFTER)
     private static final int INT_VALUE = 1;
     private static final String STR_VALUE = "abc";
+}
+
+@SharedType(constantNamespaced = SharedType.OptionalBool.FALSE, includes = SharedType.ComponentType.CONSTANTS, rustConstKeyword = "static")
+class AnotherInlineConstants {
+    static final long ANOTHER_INLINE_LONG_VALUE = 112L;
 }

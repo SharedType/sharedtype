@@ -32,7 +32,7 @@ final class RustEnumConverterTest {
     private final Config config = mock(Config.class);
     @BeforeEach
     void setup() {
-        when(config.getAnno()).thenReturn(TestUtils.defaultSharedTypeAnnotation());
+        when(config.getAnno()).thenReturn(TestUtils.spiedDefaultSharedTypeAnnotation());
     }
 
     @Test

@@ -124,6 +124,7 @@ mod tests {
         assert_eq!(LONG_VALUE, 999);
         assert_eq!(MATH_VALUE, "1.1");
         assert_eq!(MATH_VALUE_QUALIFIED_NAME, "88885555");
+        assert_eq!(ANOTHER_INLINE_LONG_VALUE, 112);
 
         assert_eq!(MyEnumConstants::INT_VALUE, 1);
         assert_eq!(MyEnumConstants::STR_VALUE, "abc");

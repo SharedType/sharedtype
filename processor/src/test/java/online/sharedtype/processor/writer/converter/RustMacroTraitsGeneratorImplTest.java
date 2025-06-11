@@ -26,7 +26,7 @@ final class RustMacroTraitsGeneratorImplTest {
 
     @Test
     void genMacroTraits() {
-        var anno = TestUtils.defaultSharedTypeAnnotation();
+        var anno = TestUtils.spiedDefaultSharedTypeAnnotation();
         when(config.getAnno()).thenReturn(anno);
         when(anno.rustMacroTraits()).thenReturn(new String[]{"PartialEq", "Clone"});
         assertThat(generator.generate(typeDef)).containsExactly("Debug", "PartialEq", "Clone");
