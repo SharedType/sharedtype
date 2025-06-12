@@ -282,6 +282,11 @@ class TypeInfoParserImplTest {
     }
 
     @Test
+    void parseMapType() {
+        throw new AssertionError("TODO");
+    }
+
+    @Test
     void reportKindError() {
         var type = ctxMocks.declaredTypeVariable("field1", ctxMocks.typeElement("a.b.A").type())
             .withTypeKind(TypeKind.ERROR)

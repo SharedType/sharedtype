@@ -34,10 +34,10 @@ final class CompositeTypeDefParser implements TypeDefParser {
             ctx.warn(typeElement, "Type '%s' is an array type, which cannot be parsed and emitted as a standalone type.", typeElement.getQualifiedName());
             return Collections.emptyList();
         }
-//        if (ctx.isMaplike(typeElement.asType())) {
-//            ctx.warn(typeElement, "Type '%s' is a map type, which cannot be parsed and emitted as a standalone type.", typeElement.getQualifiedName());
-//            return Collections.emptyList();
-//        }
+        if (ctx.isMaplike(typeElement.asType())) {
+            ctx.warn(typeElement, "Type '%s' is a map type, which cannot be parsed and emitted as a standalone type.", typeElement.getQualifiedName());
+            return Collections.emptyList();
+        }
         if (ctx.isDatetimelike(typeElement.asType())) {
             ctx.warn(typeElement, "Type '%s' is a datetime type, which cannot be parsed and emitted as a standalone type.", typeElement.getQualifiedName());
             return Collections.emptyList();

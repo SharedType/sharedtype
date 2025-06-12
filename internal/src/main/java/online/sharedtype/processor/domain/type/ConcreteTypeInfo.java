@@ -38,7 +38,7 @@ public final class ConcreteTypeInfo extends ReferableTypeInfo implements Mappabl
     private final List<TypeInfo> typeArgs = Collections.emptyList();
 
     @Getter @Builder.Default
-    private final Kind kind = Kind.OTHER;
+    private final Kind kind = Kind.CLASS;
 
     @Builder.Default
     private boolean resolved = true;
@@ -129,6 +129,6 @@ public final class ConcreteTypeInfo extends ReferableTypeInfo implements Mappabl
      * Date/Time is represented by DateTimeTypeInfo.
      */
     public enum Kind {
-        ENUM, MAP, OTHER
+        ENUM, @Deprecated MAP, CLASS
     }
 }

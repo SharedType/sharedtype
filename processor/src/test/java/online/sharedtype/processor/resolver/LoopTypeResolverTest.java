@@ -177,4 +177,9 @@ final class LoopTypeResolverTest {
         assertThat(defs).hasSize(1);
         assertThat(defs.get(0)).isSameAs(classDef);
     }
+
+    @Test
+    void resolveMapKeyValue() {
+        throw new AssertionError("TODO");
+    }
 }

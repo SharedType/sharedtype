@@ -162,6 +162,11 @@ public final class Context {
         return tagLiteralsByTargetCodeType;
     }
 
+    public String getTypeQualifiedName(DeclaredType typeMirror) {
+        TypeElement element = (TypeElement) types.asElement(typeMirror);
+        return element.getQualifiedName().toString();
+    }
+
     public FileObject createSourceOutput(String filename) throws IOException {
         return processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", filename);
     }

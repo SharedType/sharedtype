@@ -114,4 +114,19 @@ final class CompositeTypeDefParserTest {
         var component1 = (FieldComponentInfo)typeDef1.components().get(0);
         assertThat(component1.getTagLiterals(SharedType.TargetType.RUST)).containsExactlyElementsOf(tagLiterals);
     }
+
+    @Test
+    void ignoreArrayType() {
+        throw new AssertionError("TODO");
+    }
+
+    @Test
+    void ignoreMapType() {
+        throw new AssertionError("TODO");
+    }
+
+    @Test
+    void ignoreDateTimeType() {
+        throw new AssertionError("TODO");
+    }
 }

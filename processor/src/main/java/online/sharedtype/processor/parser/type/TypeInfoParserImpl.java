@@ -5,6 +5,7 @@ import online.sharedtype.processor.context.TypeStore;
 import online.sharedtype.processor.domain.type.ArrayTypeInfo;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.type.DateTimeInfo;
+import online.sharedtype.processor.domain.type.MapTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.support.exception.SharedTypeException;
@@ -18,12 +19,15 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Types;
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 import static online.sharedtype.processor.domain.Constants.PRIMITIVES;
 import static online.sharedtype.processor.support.Preconditions.checkArgument;
+import static online.sharedtype.processor.support.Preconditions.requireNonNull;
 
 /**
  * @author Cause Chung
@@ -109,6 +113,10 @@ final class TypeInfoParserImpl implements TypeInfoParser {
         if (typeInfo == null && ctx.isDatetimelike(currentType)) {
             typeInfo = new DateTimeInfo(qualifiedName);
         }
+        if (typeInfo == null && ctx.isMaplike(currentType) && currentType instanceof DeclaredType) { // maplike type has to be DeclaredType, check here to suppress warning
+            DeclaredType maplikeType = (DeclaredType) currentType;
+            typeInfo = buildMapTypeInfo(maplikeType, ctxTypeElement);
+        }
 
         if (typeInfo == null) {
             boolean resolved = typeStore.containsTypeDef(qualifiedName) || ctx.isOptionalType(qualifiedName);
@@ -130,12 +138,10 @@ final class TypeInfoParserImpl implements TypeInfoParser {
     }
 
     private ConcreteTypeInfo.Kind parseKind(TypeMirror typeMirror) {
-        if (ctx.isMaplike(typeMirror)) {
-            return ConcreteTypeInfo.Kind.MAP;
-        } else if (ctx.isEnumType(typeMirror)) {
+        if (ctx.isEnumType(typeMirror)) {
             return ConcreteTypeInfo.Kind.ENUM;
         } else {
-            return ConcreteTypeInfo.Kind.OTHER;
+            return ConcreteTypeInfo.Kind.CLASS;
         }
     }
 
@@ -170,8 +176,35 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                 throw new SharedTypeInternalError("Array type hierarchy exceed max depth: " + typeMirror);
             }
         }
-        List<? extends TypeMirror> typeArgs = ((DeclaredType)cur).getTypeArguments();
+        List<? extends TypeMirror> typeArgs = ((DeclaredType) cur).getTypeArguments();
         checkArgument(typeArgs.size() == 1, "Array type must have exactly one type argument, but got: %s, type: %s", typeArgs.size(), typeMirror);
         return typeArgs.get(0);
+    }
+
+    private MapTypeInfo buildMapTypeInfo(DeclaredType maplikeType, TypeElement ctxTypeElement) {
+        Queue<DeclaredType> queue = new ArrayDeque<>();
+        DeclaredType baseMapType = maplikeType;
+        String baseMapTypeQualifiedName;
+        while (!ctx.getProps().getMaplikeTypeQualifiedNames().contains(baseMapTypeQualifiedName = ctx.getTypeQualifiedName(baseMapType))) {
+            for (TypeMirror directSupertype : types.directSupertypes(baseMapType)) {
+                if (directSupertype instanceof DeclaredType) {
+                    queue.add((DeclaredType) directSupertype);
+                }
+            }
+            baseMapType = requireNonNull(queue.poll(), "Cannot find a qualified type name of a map-like type: %s", maplikeType);
+        }
+        List<? extends TypeMirror> typeArgs = baseMapType.getTypeArguments();
+        if (typeArgs.size() != 2) {
+            ctx.error(ctxTypeElement, "Base Map type must have 2 type arguments, with first as the key type and the second as the value type," +
+                "but is %s, when trying to build expression for type: %s", baseMapType, maplikeType);
+        }
+        TypeInfo keyType = parse(typeArgs.get(0), ctxTypeElement);
+        TypeInfo valueType = parse(typeArgs.get(1), ctxTypeElement);
+        return MapTypeInfo.builder()
+            .baseMapTypeQualifiedName(baseMapTypeQualifiedName)
+            .qualifiedName(ctx.getTypeQualifiedName(maplikeType))
+            .keyType(keyType)
+            .valueType(valueType)
+            .build();
     }
 }

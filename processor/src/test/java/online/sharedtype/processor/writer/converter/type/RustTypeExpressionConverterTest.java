@@ -11,6 +11,7 @@ import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.DateTimeInfo;
+import online.sharedtype.processor.domain.type.MapTypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -54,7 +55,7 @@ final class RustTypeExpressionConverterTest {
         verify(renderFlags).setUseRustAny(true);
 
         verify(renderFlags, never()).setUseRustMap(anyBoolean());
-        converter.beforeVisitTypeInfo(ConcreteTypeInfo.builder().kind(ConcreteTypeInfo.Kind.MAP).build());
+        converter.beforeVisitTypeInfo(MapTypeInfo.builder().build());
         verify(renderFlags).setUseRustMap(true);
     }
 

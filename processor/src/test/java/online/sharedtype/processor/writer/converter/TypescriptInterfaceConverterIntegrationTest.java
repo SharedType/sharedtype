@@ -8,6 +8,7 @@ import online.sharedtype.processor.domain.type.ArrayTypeInfo;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.type.MapTypeInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import online.sharedtype.processor.writer.render.Template;
@@ -33,14 +34,6 @@ final class TypescriptInterfaceConverterIntegrationTest {
         ctxMocks.getContext(), TypeExpressionConverter.typescript(ctxMocks.getContext())
     );
     private final Config config = mock(Config.class);
-
-    @Test
-    void skipMapClassDef() {
-        ClassDef classDef = ClassDef.builder()
-            .build();
-        classDef.linkTypeInfo(ConcreteTypeInfo.builder().kind(ConcreteTypeInfo.Kind.MAP).build());
-        assertThat(converter.shouldAccept(classDef)).isFalse();
-    }
 
     @Test
     void skipEmptyClassDef() {
@@ -88,22 +81,21 @@ final class TypescriptInterfaceConverterIntegrationTest {
                     .build(),
                 FieldComponentInfo.builder().name("mapField")
                     .type(
-                        ConcreteTypeInfo.builder()
-                            .qualifiedName("java.util.Map").simpleName("Map").kind(ConcreteTypeInfo.Kind.MAP)
-                            .typeArgs(Arrays.asList(STRING_TYPE_INFO, INT_TYPE_INFO))
+                        MapTypeInfo.builder()
+                            .qualifiedName("java.util.Map")
+                            .valueType(INT_TYPE_INFO).valueType(INT_TYPE_INFO)
                             .build()
                     )
                     .build(),
                 FieldComponentInfo.builder().name("mapFieldEnumKey")
                     .type(
-                        ConcreteTypeInfo.builder()
-                            .qualifiedName("java.util.Map").simpleName("Map").kind(ConcreteTypeInfo.Kind.MAP)
-                            .typeArgs(List.of(
+                        MapTypeInfo.builder()
+                            .qualifiedName("java.util.Map")
+                            .keyType(
                                 ConcreteTypeInfo.builder().simpleName("MyEnum").kind(ConcreteTypeInfo.Kind.ENUM)
                                     .typeDef(EnumDef.builder().simpleName("MyEnum").qualifiedName("com.github.cuzfrog.MyEnum").build())
-                                    .build(),
-                                INT_TYPE_INFO
-                            ))
+                                    .build())
+                            .valueType(INT_TYPE_INFO)
                             .build()
                     )
                     .build(),

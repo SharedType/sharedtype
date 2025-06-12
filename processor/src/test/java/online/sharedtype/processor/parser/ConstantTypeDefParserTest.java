@@ -6,9 +6,7 @@ import online.sharedtype.processor.context.ContextMocks;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
-import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
-import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.parser.value.ValueParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +15,6 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -25,9 +22,8 @@ import static org.mockito.Mockito.when;
 
 final class ConstantTypeDefParserTest {
     private final ContextMocks ctxMocks = new ContextMocks();
-    private final TypeInfoParser typeInfoParser = mock(TypeInfoParser.class);
     private final ValueParser valueParser = mock(ValueParser.class);
-    private final ConstantTypeDefParser parser = new ConstantTypeDefParser(ctxMocks.getContext(), typeInfoParser, valueParser);
+    private final ConstantTypeDefParser parser = new ConstantTypeDefParser(ctxMocks.getContext(), valueParser);
 
     private final ClassDef mainTypeDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.Abc").annotated(true).build();
     private final Config config = mock(Config.class);
@@ -37,12 +33,6 @@ final class ConstantTypeDefParserTest {
         ctxMocks.getTypeStore().saveTypeDef("com.github.cuzfrog.Abc", mainTypeDef);
         when(config.getQualifiedName()).thenReturn("com.github.cuzfrog.Abc");
         ctxMocks.getTypeStore().saveConfig(config);
-    }
-
-    @Test
-    void skipMapType() {
-        mainTypeDef.linkTypeInfo(ConcreteTypeInfo.builder().qualifiedName("java.util.Map").kind(ConcreteTypeInfo.Kind.MAP).build());
-        assertThat(parser.parse(ctxMocks.typeElement("com.github.cuzfrog.Abc").element())).isEmpty();
     }
 
     @Test
@@ -98,8 +88,6 @@ final class ConstantTypeDefParserTest {
                 nonStaticField.element()
             )
             .element();
-        when(typeInfoParser.parse(intStaticField.type(), typeElement)).thenReturn(Constants.INT_TYPE_INFO);
-        when(typeInfoParser.parse(stringStaticField.type(), typeElement)).thenReturn(Constants.STRING_TYPE_INFO);
         when(valueParser.resolve(intStaticField.element(), typeElement)).thenReturn(ValueHolder.of(Constants.INT_TYPE_INFO, 105));
         when(valueParser.resolve(stringStaticField.element(), typeElement)).thenReturn(ValueHolder.of(Constants.STRING_TYPE_INFO, "abc123"));
 

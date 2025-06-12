@@ -10,6 +10,7 @@ import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import online.sharedtype.processor.domain.def.TypeDef;
+import online.sharedtype.processor.domain.type.MapTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.context.Context;
@@ -134,7 +135,14 @@ final class LoopTypeResolver implements TypeResolver {
                 if (!arrayTypeInfo.resolved()) {
                     processingInfoStack.push(arrayTypeInfo.component());
                 }
-            } else if (typeInfo instanceof TypeVariableInfo) {
+            } else if (typeInfo instanceof MapTypeInfo) {
+                MapTypeInfo mapTypeInfo = (MapTypeInfo) typeInfo;
+                if (!mapTypeInfo.resolved()) {
+                    processingInfoStack.push(mapTypeInfo.getKeyType());
+                    processingInfoStack.push(mapTypeInfo.getValueType());
+                }
+            }
+            else if (typeInfo instanceof TypeVariableInfo) {
                 TypeVariableInfo typeVariableInfo = (TypeVariableInfo) typeInfo;
                 throw new SharedTypeInternalError("TypeVariableInfo is not supported yet: " + typeVariableInfo);
             } else {
