@@ -40,12 +40,6 @@ public final class ConcreteTypeInfo extends ReferableTypeInfo implements Mappabl
     @Getter @Builder.Default
     private final Kind kind = Kind.OTHER;
 
-    /**
-     * If this type is defined in global config as base Map type
-     */
-    @Getter
-    private final boolean baseMapType;
-
     @Builder.Default
     private boolean resolved = true;
 

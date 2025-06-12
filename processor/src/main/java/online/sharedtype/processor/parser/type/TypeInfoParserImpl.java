@@ -43,7 +43,6 @@ final class TypeInfoParserImpl implements TypeInfoParser {
     public TypeInfo parse(TypeMirror typeMirror, TypeElement ctxTypeElement) {
         TypeKind typeKind = typeMirror.getKind();
 
-        // TODO: use enumMap
         if (typeKind.isPrimitive()) {
             return PRIMITIVES.get(typeKind);
         } else if (typeKind == TypeKind.ARRAY) {
@@ -118,7 +117,6 @@ final class TypeInfoParserImpl implements TypeInfoParser {
                 .simpleName(simpleName)
                 .typeArgs(parsedTypeArgs)
                 .kind(parseKind(currentType))
-                .baseMapType(ctx.getProps().getMaplikeTypeQualifiedNames().contains(qualifiedName))
                 .resolved(resolved)
                 .build();
             typeStore.saveTypeInfo(qualifiedName, parsedTypeArgs, typeInfo);
