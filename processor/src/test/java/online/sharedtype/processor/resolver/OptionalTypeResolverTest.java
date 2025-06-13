@@ -6,6 +6,7 @@ import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.type.MapTypeInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +48,15 @@ final class OptionalTypeResolverTest {
                             .build()
                     )
                     .build(),
-                FieldComponentInfo.builder().name("field2").type(Constants.BOOLEAN_TYPE_INFO).build()
+                FieldComponentInfo.builder().name("field2").type(Constants.BOOLEAN_TYPE_INFO).build(),
+                FieldComponentInfo.builder().name("field3").type(
+                    MapTypeInfo.builder()
+                        .keyType(Constants.BOXED_INT_TYPE_INFO)
+                        .valueType(ConcreteTypeInfo.builder().qualifiedName("java.util.Optional").simpleName("Optional")
+                            .typeArgs(new ArrayList<>(List.of(Constants.STRING_TYPE_INFO)))
+                            .build())
+                        .build()
+                ).build()
             ))
             .build();
 
@@ -55,7 +64,7 @@ final class OptionalTypeResolverTest {
         assertThat(res).hasSize(1);
         ClassDef resTypeDef = (ClassDef) res.get(0);
 
-        assertThat(resTypeDef.components()).hasSize(2);
+        assertThat(resTypeDef.components()).hasSize(3);
         var optionalField1 = resTypeDef.components().get(0);
         assertThat(optionalField1.name()).isEqualTo("optionalField1");
         assertThat(optionalField1.optional()).isTrue();
@@ -70,6 +79,11 @@ final class OptionalTypeResolverTest {
         assertThat(field2.name()).isEqualTo("field2");
         assertThat(field2.optional()).isFalse();
         assertThat(field2.type()).isEqualTo(Constants.BOOLEAN_TYPE_INFO);
-    }
 
+        var field3 = resTypeDef.components().get(2);
+        assertThat(field3.name()).isEqualTo("field3");
+        assertThat(field3.optional()).isFalse();
+        MapTypeInfo field3Type = (MapTypeInfo) field3.type();
+        assertThat(field3Type.getValueType()).isEqualTo(Constants.STRING_TYPE_INFO);
+    }
 }

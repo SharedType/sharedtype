@@ -7,6 +7,7 @@ import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import online.sharedtype.processor.domain.def.TypeDef;
+import online.sharedtype.processor.domain.type.MapTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.support.annotation.SideEffect;
 
@@ -73,6 +74,9 @@ final class OptionalTypeResolver implements TypeResolver {
         } else if (typeInfo instanceof ArrayTypeInfo) {
             ArrayTypeInfo arrayTypeInfo = (ArrayTypeInfo) typeInfo;
             return new ArrayTypeInfo(recursivelyFlattenOptionalTypes(arrayTypeInfo.component(), ctxTypeDef));
+        } else if (typeInfo instanceof MapTypeInfo) {
+            MapTypeInfo mapTypeInfo = (MapTypeInfo) typeInfo;
+            return mapTypeInfo.toBuilder().valueType(recursivelyFlattenOptionalTypes(mapTypeInfo.getValueType(), ctxTypeDef)).build();
         }
         return typeInfo;
     }
