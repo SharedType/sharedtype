@@ -129,6 +129,6 @@ public final class ConcreteTypeInfo extends ReferableTypeInfo implements Mappabl
      * Date/Time is represented by DateTimeTypeInfo.
      */
     public enum Kind {
-        ENUM, @Deprecated MAP, CLASS
+        ENUM, CLASS
     }
 }
