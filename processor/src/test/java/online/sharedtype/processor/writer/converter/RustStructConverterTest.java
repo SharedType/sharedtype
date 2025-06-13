@@ -9,6 +9,7 @@ import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
+import online.sharedtype.processor.domain.type.MapTypeInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
@@ -42,14 +43,6 @@ final class RustStructConverterTest {
     @Test
     void skipAnnotatedEmptyClassDef() {
         assertThat(converter.shouldAccept(ClassDef.builder().annotated(true).build())).isFalse();
-    }
-
-    @Test
-    void skipMapClassDef() {
-        ClassDef classDef = ClassDef.builder()
-            .build();
-        classDef.linkTypeInfo(ConcreteTypeInfo.builder().kind(ConcreteTypeInfo.Kind.MAP).build());
-        assertThat(converter.shouldAccept(classDef)).isFalse();
     }
 
     @Test
@@ -154,14 +147,10 @@ final class RustStructConverterTest {
                     .build(),
                 FieldComponentInfo.builder()
                     .name("mapField")
-                    .type(ConcreteTypeInfo.builder()
+                    .type(MapTypeInfo.builder()
                         .qualifiedName("java.util.Map")
-                        .simpleName("Map")
-                        .kind(ConcreteTypeInfo.Kind.MAP)
-                        .typeArgs(List.of(
-                            Constants.STRING_TYPE_INFO,
-                            Constants.INT_TYPE_INFO
-                        ))
+                        .keyType(Constants.STRING_TYPE_INFO)
+                        .valueType(Constants.INT_TYPE_INFO)
                         .build()
                     )
                     .build()

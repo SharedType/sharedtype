@@ -74,10 +74,6 @@ public final class ClassDef extends ConcreteTypeDef {
         return typeInfoSet;
     }
 
-    public boolean isMapType() {
-        return typeInfoSet.stream().anyMatch(t -> t.getKind() == ConcreteTypeInfo.Kind.MAP);
-    }
-
     public void addSubtype(TypeDef subtype) {
         subtypes.add(subtype);
     }
@@ -91,6 +87,11 @@ public final class ClassDef extends ConcreteTypeDef {
         typeInfoSet.add(typeInfo);
     }
 
+    /**
+     * Replace any type variables with the type arguments. The supplied type arguments can also be type variables.
+     * @param typeArgs type arguments that must have the same size as type variables of this classDef
+     * @see TypeVariableInfo
+     */
     public ClassDef reify(List<? extends TypeInfo> typeArgs) {
         int l;
         if ((l = typeArgs.size()) != typeVariables.size()) {

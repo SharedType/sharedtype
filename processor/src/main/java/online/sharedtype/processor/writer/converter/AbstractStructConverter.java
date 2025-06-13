@@ -10,9 +10,6 @@ abstract class AbstractStructConverter implements TemplateDataConverter {
             return false;
         }
         ClassDef classDef = (ClassDef) typeDef;
-        if (classDef.isMapType()) {
-            return false;
-        }
         return !classDef.components().isEmpty() || classDef.isDepended();
     }
 }

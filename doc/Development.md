@@ -13,6 +13,7 @@ Internal types also have javadoc for more information.
     * `java8` contains major types for tests.
     * `java17` uses symlink to reuse types in `java8` then does more type checks, e.g. for Java `record`.
 * `client-test` contains target languages' tests respectively against generated code.
+* `e2e` contains e2e json 2-way serialization and deserialization tests against target languages' http servers.
 
 Domain types are shared among processor and integration tests to reduce maven module count.
 
@@ -27,7 +28,7 @@ Optionally mount tmpfs to save your disk by:
 ```bash
 ./mount-tmpfs.sh
 ```
-Optionally setup `MVND_HOME` to use [maven daemon](https://github.com/apache/maven-mvnd) by `./mvnd`
+Optionally setup `MVND_HOME` to use [maven daemon](https://github.com/apache/maven-mvnd) by `mvnd`
 
 Choose maven profiles in IDE accordingly as below.
 

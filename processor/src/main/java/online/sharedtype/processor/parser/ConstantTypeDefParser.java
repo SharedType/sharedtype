@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import online.sharedtype.SharedType;
 import online.sharedtype.processor.context.Config;
 import online.sharedtype.processor.context.Context;
-import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.component.ConstantField;
+import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.def.TypeDef;
-import online.sharedtype.processor.domain.type.TypeInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
-import online.sharedtype.processor.parser.type.TypeInfoParser;
 import online.sharedtype.processor.parser.value.ValueParser;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
 
@@ -34,7 +32,6 @@ final class ConstantTypeDefParser implements TypeDefParser {
     }
 
     private final Context ctx;
-    private final TypeInfoParser typeInfoParser;
     private final ValueParser valueParser;
 
     @Override
@@ -91,7 +88,7 @@ final class ConstantTypeDefParser implements TypeDefParser {
     private static boolean shouldSkip(TypeDef mainTypeDef) {
         if (mainTypeDef instanceof ClassDef) {
             ClassDef classDef = (ClassDef) mainTypeDef;
-            return classDef.isMapType() || !classDef.isAnnotated();
+            return !classDef.isAnnotated();
         }
         return false;
     }

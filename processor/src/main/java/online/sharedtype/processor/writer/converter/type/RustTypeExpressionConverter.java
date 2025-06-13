@@ -8,6 +8,7 @@ import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.type.DateTimeInfo;
+import online.sharedtype.processor.domain.type.MapTypeInfo;
 import online.sharedtype.processor.domain.type.TypeInfo;
 
 import online.sharedtype.processor.support.annotation.Nullable;
@@ -26,7 +27,7 @@ final class RustTypeExpressionConverter extends AbstractTypeExpressionConverter 
     void beforeVisitTypeInfo(TypeInfo typeInfo) {
         if (typeInfo.equals(Constants.OBJECT_TYPE_INFO)) {
             renderFlags.setUseRustAny(true);
-        } else if (typeInfo instanceof ConcreteTypeInfo && ((ConcreteTypeInfo) typeInfo).getKind() == ConcreteTypeInfo.Kind.MAP) {
+        } else if (typeInfo instanceof MapTypeInfo) {
             renderFlags.setUseRustMap(true);
         }
     }

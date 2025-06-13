@@ -7,6 +7,7 @@ import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import online.sharedtype.processor.domain.component.TagLiteralContainer;
 import online.sharedtype.processor.domain.def.ClassDef;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.MapTypeInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.writer.converter.type.TypeExpressionConverter;
 import org.junit.jupiter.api.Test;
@@ -61,14 +62,10 @@ final class GoStructConverterTest {
                     .build(),
                 FieldComponentInfo.builder()
                     .name("mapField")
-                    .type(ConcreteTypeInfo.builder()
+                    .type(MapTypeInfo.builder()
                         .qualifiedName("java.util.Map")
-                        .simpleName("Map")
-                        .kind(ConcreteTypeInfo.Kind.MAP)
-                        .typeArgs(List.of(
-                            Constants.STRING_TYPE_INFO,
-                            Constants.INT_TYPE_INFO
-                        ))
+                        .keyType(Constants.STRING_TYPE_INFO)
+                        .valueType(Constants.INT_TYPE_INFO)
                         .build()
                     )
                     .build()

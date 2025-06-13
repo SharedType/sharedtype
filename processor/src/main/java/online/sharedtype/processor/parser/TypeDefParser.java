@@ -33,7 +33,7 @@ public interface TypeDefParser {
         List<TypeDefParser> parsers = new ArrayList<>(3); // order matters! see #parse
         parsers.add(new ClassTypeDefParser(ctx, typeInfoParser));
         parsers.add(new EnumTypeDefParser(ctx, typeInfoParser, valueParser));
-        parsers.add(new ConstantTypeDefParser(ctx, typeInfoParser, valueParser));
+        parsers.add(new ConstantTypeDefParser(ctx, valueParser));
         return new CompositeTypeDefParser(ctx, parsers);
     }
 }

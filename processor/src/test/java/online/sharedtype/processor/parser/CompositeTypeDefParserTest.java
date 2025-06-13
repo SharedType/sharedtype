@@ -114,4 +114,28 @@ final class CompositeTypeDefParserTest {
         var component1 = (FieldComponentInfo)typeDef1.components().get(0);
         assertThat(component1.getTagLiterals(SharedType.TargetType.RUST)).containsExactlyElementsOf(tagLiterals);
     }
+
+    @Test
+    void ignoreArrayType() {
+        when(ctxMocks.getContext().isArraylike(typeElement.asType())).thenReturn(true);
+        assertThat(parser.parse(typeElement)).isEmpty();
+        verify(delegate1, never()).parse(any());
+        verify(delegate2, never()).parse(any());
+    }
+
+    @Test
+    void ignoreMapType() {
+        when(ctxMocks.getContext().isMaplike(typeElement.asType())).thenReturn(true);
+        assertThat(parser.parse(typeElement)).isEmpty();
+        verify(delegate1, never()).parse(any());
+        verify(delegate2, never()).parse(any());
+    }
+
+    @Test
+    void ignoreDateTimeType() {
+        when(ctxMocks.getContext().isDatetimelike(typeElement.asType())).thenReturn(true);
+        assertThat(parser.parse(typeElement)).isEmpty();
+        verify(delegate1, never()).parse(any());
+        verify(delegate2, never()).parse(any());
+    }
 }
