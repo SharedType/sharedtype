@@ -1,9 +1,9 @@
 package online.sharedtype.it;
 
-import online.sharedtype.processor.domain.type.ArrayTypeInfo;
-import online.sharedtype.processor.domain.def.ClassDef;
-import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
 import online.sharedtype.processor.domain.Constants;
+import online.sharedtype.processor.domain.def.ClassDef;
+import online.sharedtype.processor.domain.type.ArrayTypeInfo;
+import online.sharedtype.processor.domain.type.MapTypeInfo;
 import org.junit.jupiter.api.Test;
 
 import static online.sharedtype.it.support.TypeDefDeserializer.deserializeTypeDef;
@@ -34,13 +34,10 @@ final class OptionalTypeIntegrationTest {
             field4 -> {
                 assertThat(field4.name()).isEqualTo("mapNestedValueOptional");
                 assertThat(field4.optional()).isTrue();
-                ConcreteTypeInfo fieldTypeInfo = (ConcreteTypeInfo) field4.type();
-                assertThat(fieldTypeInfo.getKind()).isEqualTo(ConcreteTypeInfo.Kind.MAP);
+                MapTypeInfo fieldTypeInfo = (MapTypeInfo) field4.type();
                 assertThat(fieldTypeInfo.qualifiedName()).isEqualTo("java.util.Map");
-                assertThat(fieldTypeInfo.typeArgs()).hasSize(2).satisfiesExactly(
-                    keyType -> assertThat(keyType).isEqualTo(Constants.BOXED_INT_TYPE_INFO),
-                    valueType -> assertThat(valueType).isEqualTo(Constants.STRING_TYPE_INFO)
-                );
+                assertThat(fieldTypeInfo.keyType()).isEqualTo(Constants.BOXED_INT_TYPE_INFO);
+                assertThat(fieldTypeInfo.valueType()).isEqualTo(Constants.STRING_TYPE_INFO);
             }
         );
     }

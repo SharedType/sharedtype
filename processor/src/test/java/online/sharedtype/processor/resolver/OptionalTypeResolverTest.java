@@ -84,6 +84,6 @@ final class OptionalTypeResolverTest {
         assertThat(field3.name()).isEqualTo("field3");
         assertThat(field3.optional()).isFalse();
         MapTypeInfo field3Type = (MapTypeInfo) field3.type();
-        assertThat(field3Type.getValueType()).isEqualTo(Constants.STRING_TYPE_INFO);
+        assertThat(field3Type.valueType()).isEqualTo(Constants.STRING_TYPE_INFO);
     }
 }

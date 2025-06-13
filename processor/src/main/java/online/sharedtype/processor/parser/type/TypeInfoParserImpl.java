@@ -181,7 +181,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
         return typeArgs.get(0);
     }
 
-    private MapTypeInfo buildMapTypeInfo(DeclaredType maplikeType, TypeElement ctxTypeElement) {
+    private TypeInfo buildMapTypeInfo(DeclaredType maplikeType, TypeElement ctxTypeElement) {
         Queue<DeclaredType> queue = new ArrayDeque<>();
         DeclaredType baseMapType = maplikeType;
         String baseMapTypeQualifiedName;
@@ -197,6 +197,7 @@ final class TypeInfoParserImpl implements TypeInfoParser {
         if (typeArgs.size() != 2) {
             ctx.error(ctxTypeElement, "Base Map type must have 2 type arguments, with first as the key type and the second as the value type," +
                 "but is %s, when trying to build expression for type: %s", baseMapType, maplikeType);
+            return TypeInfo.NO_TYPE_INFO;
         }
         TypeInfo keyType = parse(typeArgs.get(0), ctxTypeElement);
         TypeInfo valueType = parse(typeArgs.get(1), ctxTypeElement);

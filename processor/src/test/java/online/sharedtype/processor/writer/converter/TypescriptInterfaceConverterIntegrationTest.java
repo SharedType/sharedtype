@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import static online.sharedtype.processor.context.Props.Typescript.OptionalFieldFormat.NULL;
@@ -83,7 +82,7 @@ final class TypescriptInterfaceConverterIntegrationTest {
                     .type(
                         MapTypeInfo.builder()
                             .qualifiedName("java.util.Map")
-                            .valueType(INT_TYPE_INFO).valueType(INT_TYPE_INFO)
+                            .keyType(STRING_TYPE_INFO).valueType(INT_TYPE_INFO)
                             .build()
                     )
                     .build(),

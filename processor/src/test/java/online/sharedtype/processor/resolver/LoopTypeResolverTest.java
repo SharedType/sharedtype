@@ -1,6 +1,7 @@
 package online.sharedtype.processor.resolver;
 
 import online.sharedtype.processor.context.ContextMocks;
+import online.sharedtype.processor.domain.Constants;
 import online.sharedtype.processor.domain.component.EnumValueInfo;
 import online.sharedtype.processor.domain.component.FieldComponentInfo;
 import online.sharedtype.processor.domain.def.ClassDef;
@@ -8,6 +9,7 @@ import online.sharedtype.processor.domain.def.EnumDef;
 import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.domain.type.ArrayTypeInfo;
 import online.sharedtype.processor.domain.type.ConcreteTypeInfo;
+import online.sharedtype.processor.domain.type.MapTypeInfo;
 import online.sharedtype.processor.domain.type.TypeVariableInfo;
 import online.sharedtype.processor.domain.value.ValueHolder;
 import online.sharedtype.processor.parser.TypeDefParser;
@@ -179,7 +181,22 @@ final class LoopTypeResolverTest {
     }
 
     @Test
-    void resolveMapKeyValue() {
-        throw new AssertionError("TODO");
+    void resolveMapType() {
+        ConcreteTypeInfo mapValueType = ConcreteTypeInfo.builder().qualifiedName("a.b.MyObj").resolved(false).build();
+        ClassDef classDef = ClassDef.builder().qualifiedName("com.github.cuzfrog.ClassA")
+            .components(List.of(
+                FieldComponentInfo.builder().name("mapField")
+                    .type(MapTypeInfo.builder().keyType(Constants.STRING_TYPE_INFO).valueType(mapValueType).build())
+                    .build()
+            ))
+            .build();
+        var mapValueTypeDef = ClassDef.builder().qualifiedName("a.b.MyObj").build();
+        when(typeDefParser.parse(ctxMocks.typeElement("a.b.MyObj").element())).thenReturn(Collections.singletonList(mapValueTypeDef));
+
+        List<TypeDef> defs = resolver.resolve(List.of(classDef));
+        assertThat(defs).hasSize(2);
+        assertThat(defs.get(1)).isSameAs(classDef);
+        assertThat(defs.get(0)).isSameAs(mapValueTypeDef);
+        assertThat(mapValueType.resolved()).isTrue();
     }
 }

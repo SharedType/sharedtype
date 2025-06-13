@@ -117,16 +117,25 @@ final class CompositeTypeDefParserTest {
 
     @Test
     void ignoreArrayType() {
-        throw new AssertionError("TODO");
+        when(ctxMocks.getContext().isArraylike(typeElement.asType())).thenReturn(true);
+        assertThat(parser.parse(typeElement)).isEmpty();
+        verify(delegate1, never()).parse(any());
+        verify(delegate2, never()).parse(any());
     }
 
     @Test
     void ignoreMapType() {
-        throw new AssertionError("TODO");
+        when(ctxMocks.getContext().isMaplike(typeElement.asType())).thenReturn(true);
+        assertThat(parser.parse(typeElement)).isEmpty();
+        verify(delegate1, never()).parse(any());
+        verify(delegate2, never()).parse(any());
     }
 
     @Test
     void ignoreDateTimeType() {
-        throw new AssertionError("TODO");
+        when(ctxMocks.getContext().isDatetimelike(typeElement.asType())).thenReturn(true);
+        assertThat(parser.parse(typeElement)).isEmpty();
+        verify(delegate1, never()).parse(any());
+        verify(delegate2, never()).parse(any());
     }
 }

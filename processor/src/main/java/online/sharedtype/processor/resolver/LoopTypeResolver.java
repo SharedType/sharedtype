@@ -138,8 +138,8 @@ final class LoopTypeResolver implements TypeResolver {
             } else if (typeInfo instanceof MapTypeInfo) {
                 MapTypeInfo mapTypeInfo = (MapTypeInfo) typeInfo;
                 if (!mapTypeInfo.resolved()) {
-                    processingInfoStack.push(mapTypeInfo.getKeyType());
-                    processingInfoStack.push(mapTypeInfo.getValueType());
+                    processingInfoStack.push(mapTypeInfo.keyType());
+                    processingInfoStack.push(mapTypeInfo.valueType());
                 }
             }
             else if (typeInfo instanceof TypeVariableInfo) {

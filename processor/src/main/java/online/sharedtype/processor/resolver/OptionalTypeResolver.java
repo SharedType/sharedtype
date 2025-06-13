@@ -76,7 +76,7 @@ final class OptionalTypeResolver implements TypeResolver {
             return new ArrayTypeInfo(recursivelyFlattenOptionalTypes(arrayTypeInfo.component(), ctxTypeDef));
         } else if (typeInfo instanceof MapTypeInfo) {
             MapTypeInfo mapTypeInfo = (MapTypeInfo) typeInfo;
-            return mapTypeInfo.toBuilder().valueType(recursivelyFlattenOptionalTypes(mapTypeInfo.getValueType(), ctxTypeDef)).build();
+            return mapTypeInfo.toBuilder().valueType(recursivelyFlattenOptionalTypes(mapTypeInfo.valueType(), ctxTypeDef)).build();
         }
         return typeInfo;
     }

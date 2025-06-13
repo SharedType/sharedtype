@@ -3,9 +3,11 @@ package online.sharedtype.processor.domain.type;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 
 import java.util.Map;
 
+@Accessors(fluent = true, chain = false)
 @Getter
 @EqualsAndHashCode(of = {"keyType", "valueType"}, callSuper = false)
 @Builder(toBuilder = true)

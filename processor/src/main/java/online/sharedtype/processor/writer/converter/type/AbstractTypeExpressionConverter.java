@@ -98,12 +98,12 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
         exprBuilder.append(mapSpec.prefix);
         exprBuilder.append(keyTypeExpr);
         exprBuilder.append(mapSpec.delimiter);
-        buildTypeExprRecursively(mapTypeInfo.getValueType(), exprBuilder, contextTypeDef, config);
+        buildTypeExprRecursively(mapTypeInfo.valueType(), exprBuilder, contextTypeDef, config);
         exprBuilder.append(mapSpec.suffix);
     }
 
     private ConcreteTypeInfo getKeyType(MapTypeInfo mapType, TypeDef contextTypeDef) {
-        TypeInfo keyType = mapType.getKeyType();
+        TypeInfo keyType = mapType.keyType();
         boolean validKey = false;
         if (keyType instanceof ConcreteTypeInfo && ((ConcreteTypeInfo) keyType).getKind() == ConcreteTypeInfo.Kind.ENUM) {
             validKey = true;
@@ -124,13 +124,13 @@ abstract class AbstractTypeExpressionConverter implements TypeExpressionConverte
             ctx.error(contextTypeDef.getElement(),
                 "Key type of %s must be string or numbers or enum (with EnumValue being string or numbers), but is %s, " +
                     "when trying to build expression for sub map-like type: %s, context type: %s.",
-                mapType.getBaseMapTypeQualifiedName(), keyType, mapType, contextTypeDef);
+                mapType.baseMapTypeQualifiedName(), keyType, mapType, contextTypeDef);
         }
         if (!(keyType instanceof ConcreteTypeInfo)) {
             throw new SharedTypeInternalError(String.format(
-                "Key type of %s is not a ConcreteTypeInfo, but is %s %s, " +
+                "Key type of %s is not a ConcreteTypeInfo, but is %s, " +
                     "when trying to build expression for type: %s, context type: %s.",
-                mapType.getBaseMapTypeQualifiedName(), keyType.getClass(), keyType, mapType, contextTypeDef));
+                keyType == null ? null : keyType.getClass(), keyType, mapType, contextTypeDef));
         }
         return (ConcreteTypeInfo) keyType;
     }
