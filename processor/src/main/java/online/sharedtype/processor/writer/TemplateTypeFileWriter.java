@@ -42,7 +42,7 @@ final class TemplateTypeFileWriter implements TypeWriter {
         for (TypeDef typeDef : typeDefs) {
             TypeDef duplicate = typeDef instanceof ConstantNamespaceDef ? null : simpleNames.get(typeDef.simpleName()); // todo: split class/enum and constant duplication checks
             if (duplicate != null) {
-                ctx.warn("Duplicate names found: %s and %s, which is not allowed in output code." +
+                ctx.warn("Duplicate names found: %s and %s, which may not be valid in output code." +
                     " You may use @SharedType(name=\"...\") to rename a type.", typeDef.qualifiedName(), duplicate.qualifiedName());
             }
             simpleNames.put(typeDef.simpleName(), typeDef);
