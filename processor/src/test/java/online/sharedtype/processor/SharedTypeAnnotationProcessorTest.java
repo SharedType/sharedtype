@@ -20,12 +20,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class AnnotationProcessorImplTest {
+class SharedTypeAnnotationProcessorTest {
     private final ContextMocks ctxMocks = new ContextMocks();
     private final TypeDefParser typeDefParser = mock(TypeDefParser.class);
     private final TypeResolver typeResolver = mock(TypeResolver.class);
     private final TypeWriter typeWriter = mock(TypeWriter.class);
-    private final AnnotationProcessorImpl processor = new AnnotationProcessorImpl();
+    private final SharedTypeAnnotationProcessor processor = new SharedTypeAnnotationProcessor();
 
     private final ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
 
