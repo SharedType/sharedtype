@@ -83,6 +83,12 @@ Compile specific classes, **along with debug, this is useful for developing a sp
 ./mvnw clean compile -pl it/java17 -DcompileClasses=online/sharedtype/it/java8/TempClass.java
 ```
 
+### Maven Plugin Development
+Debug Maven plugin IT:
+```bash
+mvnd -pl maven-plugin clean install && ./mvne -pl maven-plugin/it sharedtype:gen
+```
+
 ## Coding Style Guide / Keep it simple
 1. since annotation processing is one shot execution, JIT is not likely to optimize the code. So prefer plain loop than long calling stacks like Stream chains.
 2. no adding dependencies without strong justification.

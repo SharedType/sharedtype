@@ -22,8 +22,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -31,7 +31,7 @@ import java.util.Set;
 
 @Mojo(name = "gen")
 public final class SharedTypeGenMojo extends AbstractMojo {
-    private static final Set<String> DEFAULT_COMPILER_OPTIONS = Collections.singleton("-proc:only");
+    private static final List<String> DEFAULT_COMPILER_OPTIONS = Arrays.asList("-proc:only", "-Asharedtype.enabled=true");
     private @Inject RepositorySystem repositorySystem;
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
     private MavenSession session;
@@ -39,25 +39,27 @@ public final class SharedTypeGenMojo extends AbstractMojo {
     private MavenProject project;
     @Parameter(property = "encoding", defaultValue = "${project.build.sourceEncoding}")
     private String encoding;
-    @Parameter(defaultValue = "${project.build.outputDirectory}", required = true, readonly = true)
-    private Path outputDirectory;
-    @Parameter(defaultValue = "generated-sources", required = false, readonly = true)
-    private Path generatedSourcesDirectory;
+    @Parameter(defaultValue = "${project.build.directory}", required = true, readonly = true)
+    private String outputDirectory;
+    @Parameter(defaultValue = "generated-sources", readonly = true)
+    private String generatedSourcesDirectory;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         JavaCompiler compiler = getJavaCompiler();
-//        DependencyResolver dependencyResolver = new DependencyResolver(repositorySystem, session, project);
+        DependencyResolver dependencyResolver = new DependencyResolver(repositorySystem, session, project);
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, charset(encoding));
         try {
 //            fileManager.setLocation(StandardLocation.ANNOTATION_PROCESSOR_PATH, dependencyResolver.getProcessorDependencies());
-            fileManager.setLocation(StandardLocation.SOURCE_OUTPUT, Collections.singleton(outputDirectory.resolve(generatedSourcesDirectory).toFile()));
+            fileManager.setLocation(StandardLocation.SOURCE_OUTPUT, Collections.singleton(Paths.get(outputDirectory, generatedSourcesDirectory).toFile()));
+            fileManager.setLocation(StandardLocation.CLASS_PATH, dependencyResolver.getSourceDependencies());
         } catch (IOException e) {
             throw new MojoExecutionException(e);
         }
         Iterable<? extends JavaFileObject> sources = fileManager.getJavaFileObjectsFromFiles(walkAllSourceFiles());
         JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, DEFAULT_COMPILER_OPTIONS, null, sources);
         task.setProcessors(Collections.singleton(new SharedTypeAnnotationProcessor()));
+        task.call();
     }
 
     private List<File> walkAllSourceFiles() throws MojoExecutionException {

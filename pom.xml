@@ -271,6 +271,7 @@
                 <module>processor</module>
                 <module>it</module>
                 <module>maven-plugin</module>
+                <module>maven-plugin/it</module>
             </modules>
         </profile>
         <profile>
