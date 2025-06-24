@@ -1,6 +1,7 @@
 package online.sharedtype.maven;
 
 import online.sharedtype.processor.SharedTypeAnnotationProcessor;
+import online.sharedtype.processor.support.annotation.Nullable;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -17,61 +18,84 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
 @Mojo(name = "gen")
 public final class SharedTypeGenMojo extends AbstractMojo {
     private static final List<String> DEFAULT_COMPILER_OPTIONS = Arrays.asList("-proc:only", "-Asharedtype.enabled=true");
     private @Inject RepositorySystem repositorySystem;
-    @Parameter(defaultValue = "${session}", readonly = true, required = true)
+
+    @Inject
     private MavenSession session;
-    @Parameter(defaultValue = "${project}", readonly = true, required = true)
+
+    @Inject
     private MavenProject project;
-    @Parameter(property = "encoding", defaultValue = "${project.build.sourceEncoding}")
-    private String encoding;
-    @Parameter(defaultValue = "${project.build.directory}", required = true, readonly = true)
-    private String outputDirectory;
-    @Parameter(defaultValue = "generated-sources", readonly = true)
+
+    @Parameter(defaultValue = "generated-sources")
     private String generatedSourcesDirectory;
+
+    /**
+     * The path of file 'sharedtype.properties'. If not provided, default values will be used. If provided, the file must exist.
+     */
+    @Nullable
+    @Parameter
+    private String propertyFile;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         JavaCompiler compiler = getJavaCompiler();
+
         DependencyResolver dependencyResolver = new DependencyResolver(repositorySystem, session, project);
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, charset(encoding));
+        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, getCharset());
         try {
-//            fileManager.setLocation(StandardLocation.ANNOTATION_PROCESSOR_PATH, dependencyResolver.getProcessorDependencies());
-            fileManager.setLocation(StandardLocation.SOURCE_OUTPUT, Collections.singleton(Paths.get(outputDirectory, generatedSourcesDirectory).toFile()));
+            String projectBuildDir = project.getBuild().getDirectory();
+            Path outputDir = Paths.get(projectBuildDir, generatedSourcesDirectory);
+            if (Files.notExists(outputDir)) {
+                Files.createDirectories(outputDir);
+            }
+            fileManager.setLocation(StandardLocation.SOURCE_OUTPUT, Collections.singleton(outputDir.toFile()));
             fileManager.setLocation(StandardLocation.CLASS_PATH, dependencyResolver.getSourceDependencies());
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new MojoExecutionException(e);
         }
         Iterable<? extends JavaFileObject> sources = fileManager.getJavaFileObjectsFromFiles(walkAllSourceFiles());
-        JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, DEFAULT_COMPILER_OPTIONS, null, sources);
+        JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, getCompilerOptions(), null, sources);
         task.setProcessors(Collections.singleton(new SharedTypeAnnotationProcessor()));
         task.call();
     }
 
     private List<File> walkAllSourceFiles() throws MojoExecutionException {
-        SourceFileGatherer gatherer = new SourceFileGatherer();
-        for (String compileSourceRoot : project.getCompileSourceRoots()) {
-            try {
-                Files.walkFileTree(Paths.get(compileSourceRoot), EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, gatherer);
-            } catch (IOException e) {
-                throw new MojoExecutionException(e);
+        SourceFileVisitor visitor = new SourceFileVisitor();
+        try {
+            for (String compileSourceRoot : project.getCompileSourceRoots()) {
+                Files.walkFileTree(Paths.get(compileSourceRoot), EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, visitor);
             }
+        } catch (Exception e) {
+            throw new MojoExecutionException(e);
         }
-        return gatherer.getFiles();
+        return visitor.getFiles();
+    }
+
+    private List<String> getCompilerOptions() throws MojoFailureException {
+        List<String> options = new ArrayList<>(DEFAULT_COMPILER_OPTIONS.size() + 1);
+        options.addAll(DEFAULT_COMPILER_OPTIONS);
+        if (propertyFile != null) {
+            if (Files.notExists(Paths.get(propertyFile))) {
+                throw new MojoFailureException("Property file not found: " + propertyFile);
+            }
+            options.add("-Asharedtype.propsFile=" + propertyFile);
+        }
+        return options;
     }
 
     private static JavaCompiler getJavaCompiler() throws MojoExecutionException {
@@ -82,7 +106,8 @@ public final class SharedTypeGenMojo extends AbstractMojo {
         throw new MojoExecutionException("Java compiler not found, currently only compiler from jdk.compiler module is supported.");
     }
 
-    private static Charset charset(String encoding) throws MojoFailureException {
+    private Charset getCharset() throws MojoFailureException {
+        String encoding = project.getProperties().getProperty("project.build.sourceEncoding");
         if (encoding != null) {
             try {
                 return Charset.forName(encoding);

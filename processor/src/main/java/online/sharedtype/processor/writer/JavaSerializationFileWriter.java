@@ -1,5 +1,6 @@
 package online.sharedtype.processor.writer;
 
+import lombok.RequiredArgsConstructor;
 import online.sharedtype.processor.domain.def.ConstantNamespaceDef;
 import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.context.Context;
@@ -18,18 +19,15 @@ import java.util.List;
  *
  * @author Cause Chung
  */
+@RequiredArgsConstructor
 final class JavaSerializationFileWriter implements TypeWriter {
-    private final Filer filer;
-
-    JavaSerializationFileWriter(Context ctx) {
-        this.filer = ctx.getProcessingEnv().getFiler();
-    }
+    private final Context ctx;
 
     @Override
     public void write(List<TypeDef> typeDefs) {
         try {
             for (TypeDef typeDef : typeDefs) {
-                FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", getTypeName(typeDef) + ".ser");
+                FileObject file = ctx.createSourceOutput(getTypeName(typeDef) + ".ser");
                 try(OutputStream outputStream = file.openOutputStream();
                     ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {
                     oos.writeObject(typeDef);

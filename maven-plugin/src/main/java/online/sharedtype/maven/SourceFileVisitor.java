@@ -8,12 +8,15 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-final class SourceFileGatherer extends SimpleFileVisitor<Path> {
+final class SourceFileVisitor extends SimpleFileVisitor<Path> {
+    private static final String FILE_EXTENSION = ".java";
     private final List<File> files = new ArrayList<>();
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-        files.add(file.toFile());
+        if (file.toString().endsWith(FILE_EXTENSION)) {
+            files.add(file.toFile());
+        }
         return FileVisitResult.CONTINUE;
     }
 

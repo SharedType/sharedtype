@@ -14,6 +14,7 @@ Internal types also have javadoc for more information.
     * `java17` uses symlink to reuse types in `java8` then does more type checks, e.g. for Java `record`.
 * `client-test` contains target languages' tests respectively against generated code.
 * `e2e` contains e2e json 2-way serialization and deserialization tests against target languages' http servers.
+* `maven-plugin` contains maven plugin for SharedType annotation, and `maven-plugin/it` contains integration tests for maven plugin.
 
 Domain types are shared among processor and integration tests to reduce maven module count.
 
