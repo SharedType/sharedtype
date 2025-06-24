@@ -1,5 +1,6 @@
 package online.sharedtype.maven;
 
+import online.sharedtype.SharedType;
 import online.sharedtype.processor.SharedTypeAnnotationProcessor;
 import online.sharedtype.processor.support.annotation.Nullable;
 import org.apache.maven.execution.MavenSession;
@@ -30,6 +31,11 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
+/**
+ * Generate types from {@link SharedType} annotated classes.
+ * See <a href="https://github.com/SharedType/sharedtype">SharedType</a> for details.
+ * @author Cause Chung
+ */
 @Mojo(name = "gen")
 public final class SharedTypeGenMojo extends AbstractMojo {
     private static final List<String> DEFAULT_COMPILER_OPTIONS = Arrays.asList("-proc:only", "-Asharedtype.enabled=true");
@@ -41,8 +47,11 @@ public final class SharedTypeGenMojo extends AbstractMojo {
     @Inject
     private MavenProject project;
 
-    @Parameter(defaultValue = "generated-sources")
-    private String generatedSourcesDirectory;
+    /**
+     * Output directory for generated types. Defaults to '${project.build.directory}/generated-sources'.
+     */
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources")
+    private String outputDirectory;
 
     /**
      * The path of file 'sharedtype.properties'. If not provided, default values will be used. If provided, the file must exist.
@@ -58,12 +67,11 @@ public final class SharedTypeGenMojo extends AbstractMojo {
         DependencyResolver dependencyResolver = new DependencyResolver(repositorySystem, session, project);
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, getCharset());
         try {
-            String projectBuildDir = project.getBuild().getDirectory();
-            Path outputDir = Paths.get(projectBuildDir, generatedSourcesDirectory);
-            if (Files.notExists(outputDir)) {
-                Files.createDirectories(outputDir);
+            Path outputDirPath = Paths.get(outputDirectory);
+            if (Files.notExists(outputDirPath)) {
+                Files.createDirectories(outputDirPath);
             }
-            fileManager.setLocation(StandardLocation.SOURCE_OUTPUT, Collections.singleton(outputDir.toFile()));
+            fileManager.setLocation(StandardLocation.SOURCE_OUTPUT, Collections.singleton(outputDirPath.toFile()));
             fileManager.setLocation(StandardLocation.CLASS_PATH, dependencyResolver.getSourceDependencies());
         } catch (Exception e) {
             throw new MojoExecutionException(e);
