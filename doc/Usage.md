@@ -90,7 +90,7 @@ or
 ```bash
 MAVEN_OPTS="-Dsharedtype.typescript.custom-code-path=it/custom-code.ts" ./mvnw clean compile
 ```
-or can use [properties-maven-plugin](https://www.mojohaus.org/properties-maven-plugin/usage.html#set-system-properties) to set system properties for the build.
+or can use [properties-maven-plugin](https://www.mojohaus.org/properties-maven-plugin/usage.html#set-system-properties) to set system properties for the build. (Not recommended for multi-module builds, due to potential system property pollution.)
 
 See [Default Properties](../processor/src/main/resources/sharedtype-default.properties) for details.
 

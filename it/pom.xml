@@ -104,34 +104,6 @@
                     <excludes>${excludeClasses}</excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>set-system-properties</goal>
-                        </goals>
-                        <configuration>
-                            <properties>
-                                <property>
-                                    <name>sharedtype.typescript.custom-code-path</name>
-                                    <value>it/custom-code.ts</value>
-                                </property>
-                                <property>
-                                    <name>sharedtype.go.custom-code-path</name>
-                                    <value>it/custom-code.go</value>
-                                </property>
-                                <property>
-                                    <name>sharedtype.rust.custom-code-path</name>
-                                    <value>it/custom-code.rs</value>
-                                </property>
-                            </properties>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <profiles>
@@ -172,6 +144,20 @@
                                     <sources>
                                         <source>${maven.multiModuleProjectDirectory}/internal/src/test/java</source>
                                     </sources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>add-test-resource</id>
+                                <phase>generate-test-resources</phase>
+                                <goals>
+                                    <goal>add-test-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/generated-sources</directory>
+                                        </resource>
+                                    </resources>
                                 </configuration>
                             </execution>
                         </executions>

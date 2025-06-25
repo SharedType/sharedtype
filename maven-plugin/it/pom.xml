@@ -40,6 +40,15 @@
                 <configuration>
                     <propertyFile>${project.basedir}/sharedtype.properties</propertyFile>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>gen-for-testing</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>gen</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
