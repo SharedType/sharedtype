@@ -75,7 +75,7 @@ final class PropsFactoryTest {
         assertThat(typescriptProps.getEnumFormat()).isEqualTo(Props.Typescript.EnumFormat.UNION);
         assertThat(typescriptProps.getFieldReadonlyType()).isEqualTo(Props.Typescript.FieldReadonlyType.ACYCLIC);
         assertThat(typescriptProps.getTypeMappings()).isEmpty();
-        assertThat(typescriptProps.getCustomCodePath()).isEqualTo("sharedtype-custom-code.ts");
+        assertThat(typescriptProps.getCustomCodePath()).isNull();
 
         Props.Go goProps = props.getGo();
         assertThat(goProps.getOutputFileName()).isEqualTo("types.go");
@@ -84,7 +84,7 @@ final class PropsFactoryTest {
         assertThat(goProps.getTargetDatetimeTypeLiteral()).isEqualTo("string");
         assertThat(goProps.getEnumFormat()).isEqualTo(Props.Go.EnumFormat.CONST);
         assertThat(goProps.getTypeMappings()).isEmpty();
-        assertThat(goProps.getCustomCodePath()).isEqualTo("sharedtype-custom-code.go");
+        assertThat(goProps.getCustomCodePath()).isNull();
 
         Props.Rust rustProps = props.getRust();
         assertThat(rustProps.getOutputFileName()).isEqualTo("types.rs");
@@ -94,7 +94,13 @@ final class PropsFactoryTest {
         assertThat(rustProps.getDefaultTypeMacros()).containsExactly("Debug");
         assertThat(rustProps.getTargetDatetimeTypeLiteral()).isEqualTo("String");
         assertThat(rustProps.getTypeMappings()).isEmpty();
-        assertThat(rustProps.getCustomCodePath()).isEqualTo("sharedtype-custom-code.rs");
+        assertThat(rustProps.getCustomCodePath()).isNull();
+    }
+
+    @Test
+    void failWhenCustomCodeFilePathProvidedButNotExists() {
+        var userProps = Map.of("sharedtype.typescript.custom-code-path", "not-exists.ts");
+        assertThatThrownBy(() -> PropsFactory.loadProps(null, userProps)).isInstanceOf(SharedTypeException.class);
     }
 
     @Test
