@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public final class PropsFactory {
     private static final String DEFAULT_PROPERTIES_FILE = "sharedtype-default.properties";
 
-    public static Props loadProps(@Nullable Path userPropertiesFile) {
+    public static Props loadProps(@Nullable Path userPropertiesFile, @Nullable Map<String, String> userProperties) {
         ClassLoader classLoader = PropsFactory.class.getClassLoader();
         try (InputStream defaultPropsInputstream = classLoader.getResourceAsStream(DEFAULT_PROPERTIES_FILE);
              InputStream userPropsInputstream = userPropertiesFile == null || Files.notExists(userPropertiesFile) ? null : Files.newInputStream(userPropertiesFile)) {
@@ -33,8 +33,11 @@ public final class PropsFactory {
             if (userPropsInputstream != null) {
                 properties.load(userPropsInputstream);
             }
+            if (userProperties != null) {
+                properties.putAll(userProperties);
+            }
             properties.putAll(System.getProperties());
-            Props props = loadProps(properties);
+            Props props = convertProps(properties);
             if (props.getTypescript().getOptionalFieldFormats().isEmpty()) {
                 throw new IllegalArgumentException("Props 'typescript.optional-field-format' cannot be empty.");
             }
@@ -44,7 +47,7 @@ public final class PropsFactory {
         }
     }
 
-    private static Props loadProps(Properties properties) {
+    private static Props convertProps(Properties properties) {
         Set<OutputTarget> targets = parseEnumSet(properties, "sharedtype.targets", OutputTarget.class, OutputTarget::valueOf);
         return Props.builder()
             .targets(targets)

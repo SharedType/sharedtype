@@ -3,10 +3,12 @@ package online.sharedtype.processor.context;
 import online.sharedtype.SharedType;
 import org.junit.jupiter.api.Test;
 import online.sharedtype.processor.support.exception.SharedTypeException;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -14,16 +16,33 @@ import static org.assertj.core.api.Assertions.entry;
 
 final class PropsFactoryTest {
     @Test
-    void loadUserProps() {
-        Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-user.properties"));
+    void loadUserPropsFile() {
+        Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-user.properties"), null);
         assertThat(props.getTargets()).containsExactly(OutputTarget.CONSOLE, OutputTarget.TYPESCRIPT);
         assertThat(props.getOptionalAnnotations()).containsExactly("a.b.TsOptional");
         assertThat(props.getTypescript().getJavaObjectMapType()).isEqualTo("unknown");
     }
 
     @Test
+    void loadUserProps() {
+        var userProps = Map.of("sharedtype.optional-annotations", "a.b.TsOptionalOverride");
+        Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-user.properties"), userProps);
+        assertThat(props.getTargets()).containsExactly(OutputTarget.CONSOLE, OutputTarget.TYPESCRIPT);
+        assertThat(props.getOptionalAnnotations()).containsExactly("a.b.TsOptionalOverride");
+    }
+
+    @SetSystemProperty(key = "sharedtype.optional-annotations", value = "a.b.TsOptionalOverride2")
+    @Test
+    void loadSysProps() {
+        var userProps = Map.of("sharedtype.optional-annotations", "a.b.TsOptionalOverride");
+        Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-user.properties"), userProps);
+        assertThat(props.getTargets()).containsExactly(OutputTarget.CONSOLE, OutputTarget.TYPESCRIPT);
+        assertThat(props.getOptionalAnnotations()).containsExactly("a.b.TsOptionalOverride2");
+    }
+
+    @Test
     void loadDefaultProps() {
-        Props props = PropsFactory.loadProps(Paths.get("not-exist"));
+        Props props = PropsFactory.loadProps(Paths.get("not-exist"), null);
         assertThat(props.getTargets()).containsExactly(OutputTarget.TYPESCRIPT);
         assertThat(props.getTargetTypes()).containsExactly(SharedType.TargetType.TYPESCRIPT);
         assertThat(props.getOptionalAnnotations()).containsExactly("javax.annotation.Nullable");
@@ -80,13 +99,14 @@ final class PropsFactoryTest {
 
     @Test
     void wrongTarget() {
-        assertThatThrownBy(() -> PropsFactory.loadProps(resolveResource("test-sharedtype-wrong-target.properties")))
-            .isInstanceOf(SharedTypeException.class);
+        var userProps = Map.of("sharedtype.targets", "ENGLISH");
+        assertThatThrownBy(() -> PropsFactory.loadProps(null, userProps)).isInstanceOf(SharedTypeException.class);
     }
 
     @Test
     void wrongTypescriptOptionalFieldFormat() {
-        assertThatThrownBy(() -> PropsFactory.loadProps(resolveResource("test-sharedtype-wrong-ts-optional-field-format.properties")))
+        var userProps = Map.of("sharedtype.typescript.optional-field-format", "abc,?");
+        assertThatThrownBy(() -> PropsFactory.loadProps(null, userProps))
             .isInstanceOf(SharedTypeException.class)
             .cause().cause()
             .hasMessageContaining("Unknown optional field format: 'abc', only '?', 'null', 'undefined' are allowed");
@@ -94,7 +114,7 @@ final class PropsFactoryTest {
 
     @Test
     void typeMappings() {
-        Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-type-mappings.properties"));
+        Props props = PropsFactory.loadProps(resolveResource("test-sharedtype-type-mappings.properties"), null);
         assertThat(props.getTypescript().getTypeMappings()).containsExactly(
             entry("MyType1", "RenamedType1"),
             entry("MyType2", "RenamedType2")
@@ -103,7 +123,9 @@ final class PropsFactoryTest {
 
     private static Path resolveResource(String resource) {
         try {
-            return Paths.get(PropsFactoryTest.class.getClassLoader().getResource(resource).toURI());
+            var testRes = PropsFactoryTest.class.getClassLoader().getResource(resource);
+            assert testRes != null;
+            return Paths.get(testRes.toURI());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

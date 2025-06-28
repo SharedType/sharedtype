@@ -29,7 +29,7 @@ public final class ContextMocks {
     private final Context context = mock(Context.class);
 
     public ContextMocks() {
-        this.props = spy(PropsFactory.loadProps(null));
+        this.props = spy(PropsFactory.loadProps(null, null));
         when(context.getProps()).thenReturn(props);
         when(context.getProcessingEnv()).thenReturn(processingEnv);
         when(processingEnv.getElementUtils()).thenReturn(elements);
