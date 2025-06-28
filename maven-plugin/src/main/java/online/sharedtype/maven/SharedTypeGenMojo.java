@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Generate types from {@link SharedType} annotated classes.
@@ -55,10 +56,20 @@ public final class SharedTypeGenMojo extends AbstractMojo {
 
     /**
      * The path of file 'sharedtype.properties'. If not provided, default values will be used. If provided, the file must exist.
+     * User-provided properties will be checked in below order:
+     * 1. 'sharedtype.properties' file set by this config, 2. individual properties set by this plugin's 'properties' config, 3. System properties.
      */
     @Nullable
     @Parameter
     private String propertyFile;
+
+    /**
+     * Sharedtype properties. See doc for all the property entries. User-provided properties will be checked in below order:
+     * 1. 'sharedtype.properties' file, 2. this config, 3. System properties.
+     */
+    @Nullable
+    @Parameter
+    private Map<String, String> properties;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -78,7 +89,9 @@ public final class SharedTypeGenMojo extends AbstractMojo {
         }
         Iterable<? extends JavaFileObject> sources = fileManager.getJavaFileObjectsFromFiles(walkAllSourceFiles());
         JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, getCompilerOptions(), null, sources);
-        task.setProcessors(Collections.singleton(new SharedTypeAnnotationProcessor()));
+        SharedTypeAnnotationProcessor annotationProcessor = new SharedTypeAnnotationProcessor();
+        annotationProcessor.setUserProps(properties);
+        task.setProcessors(Collections.singleton(annotationProcessor));
         task.call();
     }
 

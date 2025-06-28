@@ -39,6 +39,9 @@
                 <version>${project.version}</version>
                 <configuration>
                     <propertyFile>${project.basedir}/sharedtype.properties</propertyFile>
+                    <properties>
+                        <sharedtype.typescript.custom-code-path>${project.parent.basedir}/it/custom-code.ts</sharedtype.typescript.custom-code-path>
+                    </properties>
                 </configuration>
                 <executions>
                     <execution>
