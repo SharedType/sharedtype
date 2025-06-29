@@ -285,6 +285,7 @@
             <modules>
                 <module>annotation</module>
                 <module>processor</module>
+                <module>maven-plugin</module>
             </modules>
             <build>
                 <plugins>

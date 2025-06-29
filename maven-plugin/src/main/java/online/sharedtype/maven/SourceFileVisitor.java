@@ -8,6 +8,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Cause Chung
+ */
 final class SourceFileVisitor extends SimpleFileVisitor<Path> {
     private static final String FILE_EXTENSION = ".java";
     private final List<File> files = new ArrayList<>();

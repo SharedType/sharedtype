@@ -14,6 +14,9 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Cause Chung
+ */
 final class DependencyResolver {
     private final RepositorySystem repositorySystem;
     private final MavenSession session;
