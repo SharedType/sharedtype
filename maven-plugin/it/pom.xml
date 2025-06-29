@@ -46,7 +46,7 @@
                 <executions>
                     <execution>
                         <id>gen-for-testing</id>
-                        <phase>compile</phase>
+                        <phase>generate-test-resources</phase>
                         <goals>
                             <goal>gen</goal>
                         </goals>
