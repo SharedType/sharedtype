@@ -73,6 +73,7 @@ public final class SharedTypeGenMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        SharedTypeDiagnosticListener diagnosticListener = new SharedTypeDiagnosticListener(getLog(), project.getBasedir().toPath());
         JavaCompiler compiler = getJavaCompiler();
 
         DependencyResolver dependencyResolver = new DependencyResolver(repositorySystem, session, project);
@@ -88,11 +89,14 @@ public final class SharedTypeGenMojo extends AbstractMojo {
             throw new MojoExecutionException(e);
         }
         Iterable<? extends JavaFileObject> sources = fileManager.getJavaFileObjectsFromFiles(walkAllSourceFiles());
-        JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, getCompilerOptions(), null, sources);
-        SharedTypeAnnotationProcessor annotationProcessor = new SharedTypeAnnotationProcessor();
-        annotationProcessor.setUserProps(properties);
-        task.setProcessors(Collections.singleton(annotationProcessor));
-        task.call();
+
+        try(SharedTypeLogger logger = new SharedTypeLogger(getLog())) {
+            JavaCompiler.CompilationTask task = compiler.getTask(logger, fileManager, diagnosticListener, getCompilerOptions(), null, sources);
+            SharedTypeAnnotationProcessor annotationProcessor = new SharedTypeAnnotationProcessor();
+            annotationProcessor.setUserProps(properties);
+            task.setProcessors(Collections.singleton(annotationProcessor));
+            task.call();
+        }
     }
 
     private List<File> walkAllSourceFiles() throws MojoExecutionException {

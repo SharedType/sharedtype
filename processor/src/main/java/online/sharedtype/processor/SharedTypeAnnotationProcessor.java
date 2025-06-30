@@ -41,6 +41,7 @@ import static online.sharedtype.processor.support.Preconditions.checkArgument;
 @AutoService(Processor.class)
 public final class SharedTypeAnnotationProcessor extends AbstractProcessor {
     private static final String PROPS_FILE_OPTION_NAME = "sharedtype.propsFile";
+    private static final String PROPS_ENABLED = "sharedtype.enabled";
     private static final String DEFAULT_USER_PROPS_FILE = "sharedtype.properties";
     private static final boolean ANNOTATION_CONSUMED = true;
     /** Programmatically provided user properties, e.g. from Maven plugin */
@@ -94,7 +95,8 @@ public final class SharedTypeAnnotationProcessor extends AbstractProcessor {
                 List<TypeDef> typeDefs = parser.parse(typeElement);
                 discoveredDefs.addAll(typeDefs);
                 if (typeDefs.isEmpty()){
-                    ctx.warn(element, "Type '%s' is ignored or invalid, but annotated with '%s'.", typeElement.getQualifiedName().toString(), ANNOTATION_QUALIFIED_NAME);
+                    ctx.warn(element, "Type '%s' is ignored or invalid, but annotated with '%s'.",
+                        typeElement.getQualifiedName().toString(), ANNOTATION_QUALIFIED_NAME);
                 }
             } else {
                 throw new SharedTypeInternalError(String.format("Unsupported element: %s of kind %s", element, element.getKind()));
@@ -109,7 +111,7 @@ public final class SharedTypeAnnotationProcessor extends AbstractProcessor {
     }
 
     private static boolean isEnabled(ProcessingEnvironment processingEnv) {
-        String enabledExpr = processingEnv.getOptions().getOrDefault("sharedtype.enabled", "false");
+        String enabledExpr = processingEnv.getOptions().getOrDefault(PROPS_ENABLED, "false");
         return enabledExpr.equalsIgnoreCase("true") || enabledExpr.equalsIgnoreCase("yes");
     }
 }

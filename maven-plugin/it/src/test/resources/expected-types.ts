@@ -9,3 +9,7 @@ export interface MyClass {
     readonly value: number;
 }
 
+export interface MyClass2<T> {
+    readonly value: T;
+}
+
