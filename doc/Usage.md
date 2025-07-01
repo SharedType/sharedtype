@@ -34,6 +34,9 @@ Add sharedtype dependency:
 </dependency>
 ```
 
+`sharedtype-maven-plugin` requires Maven 3.2.5+.
+Annotation processing can also be setup and configured via `maven-compiler-plugin`, see [example](../it/pom.xml).
+The advantage of using `sharedtype-maven-plugin` is that no need to execute other annotation processors if there are multiple.
 ## Usage
 
 ### A simple example
@@ -82,8 +85,6 @@ You can also specify individual properties:
 See [Default Properties](../processor/src/main/resources/sharedtype-default.properties) for all property entries.
 
 Execution goal `gen` can be bound to a Maven lifecycle phase.
-Annotation processing can also be setup and configured via `maven-compiler-plugin`, see [example](../it/pom.xml).
-The advantage of using `sharedtype-maven-plugin` is that you don't need to execute other annotation processors if there are multiple.
 #### Per annotation options
 See Javadoc on [@SharedType](../annotation/src/main/java/online/sharedtype/SharedType.java) for details.
 

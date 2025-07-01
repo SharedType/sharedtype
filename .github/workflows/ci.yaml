@@ -50,7 +50,7 @@ jobs:
         run: ./mvnw clean verify -pl it/java8 -P it-jpms -e --ntp -B
       - name: Test Maven 3.2.5 compatibility
         working-directory: maven-plugin/it
-        run: ./mvnw stype:gen -e --ntp -B
+        run: ./mvnw stype:gen -e -B
       - name: Javadoc
         run: ./mvnw -P release javadoc:javadoc --ntp -B
       - name: Upload generated sources
@@ -96,6 +96,9 @@ jobs:
           key: build_maven
       - name: Test
         run: ./mvnw verify -pl it/java8 -e --ntp -B
+      - name: Maven Plugin Test
+        working-directory: maven-plugin/it
+        run: ./mvnw stype:gen -e -B
 
   client_test:
     needs: [build_and_test]
