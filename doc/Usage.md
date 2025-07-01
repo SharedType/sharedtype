@@ -5,10 +5,25 @@ Menu:
 * [Configurations](#Configurations)
 
 ## Setup
-
 ### Maven
 
-Add sharedtype dependency, the annotation `@SharedType` is only used at compile time on source code:
+Add Maven properties:
+```xml
+<properties>
+    <sharedtype.version>0.13.0</sharedtype.version>
+</properties>
+```
+
+Add sharedtype-maven-plugin:
+```xml
+<plugin>
+    <groupId>online.sharedtype</groupId>
+    <artifactId>sharedtype-maven-plugin</artifactId>
+    <version>${project.version}</version>
+</plugin>
+```
+
+Add sharedtype dependency:
 ```xml
 <dependency>
     <groupId>online.sharedtype</groupId>
@@ -17,37 +32,6 @@ Add sharedtype dependency, the annotation `@SharedType` is only used at compile 
     <scope>provided</scope>
     <optional>true</optional>
 </dependency>
-```
-
-Add Maven properties:
-```xml
-<properties>
-    <compilerArg /> <!-- Placeholder -->
-    <sharedtype.version>0.12.1</sharedtype.version>
-    <sharedtype.enabled>false</sharedtype.enabled> <!-- Disable by default so not to participate in every compilation -->
-</properties>
-```
-Setup annotation processing:
-```xml
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <configuration>
-        <annotationProcessorPaths>
-            <path>
-                <groupId>online.sharedtype</groupId>
-                <artifactId>sharedtype-ap</artifactId>
-                <version>${sharedtype.version}</version>
-            </path>
-        </annotationProcessorPaths>
-        <showWarnings>true</showWarnings> <!-- Show annotation processing info log -->
-        <compilerArgs>
-            <!-- supplied as properties from cmd -->
-            <arg>${compilerArg}</arg>
-            <arg>-Asharedtype.enabled=${sharedtype.enabled}</arg>
-        </compilerArgs>
-    </configuration>
-</plugin>
 ```
 
 ## Usage
@@ -59,8 +43,8 @@ Annotate on a class:
 record User(String name, int age, String email) {}
 ```
 
-Execute annotation processing:
-* maven: `./mvnw compile -DcompilerArg=-proc:only -Dsharedtype.enabled=true`
+Execute:
+* maven: `./mvnw stype:gen` (Why `stype`? Because it's easy to type while explicitly enough to remember.)
 
 By default, below code will be generated:
 ```typescript
@@ -75,25 +59,30 @@ export interface User {
 
 #### Global options
 By default, the file `sharedtype.properties` on current cmd path will be picked up.
-You can customize the path by config `maven-compiler-plugin`:
+You can customize the path:
 ```xml
-<compilerArgs>
-    <arg>-Asharedtype.propsFile=${your.properties.path}</arg>
-</compilerArgs>
+<plugin>
+    <configuration>
+        <propertyFile>${project.basedir}/sharedtype-my-custom.properties</propertyFile>
+    </configuration>
+</plugin>
 ```
 
-Properties can also be passed in as system properties, which will override the properties files, e.g.
-```bash
-./mvnw clean compile -Dsharedtype.typescript.custom-code-path=it/custom-code.ts
+You can also specify individual properties:
+```xml
+<plugin>
+    <configuration>
+        <properties>
+            <sharedtype.typescript.custom-code-path>${project.basedir}/custom-code.ts</sharedtype.typescript.custom-code-path>
+        </properties>
+    </configuration>
+</plugin>
 ```
-or
-```bash
-MAVEN_OPTS="-Dsharedtype.typescript.custom-code-path=it/custom-code.ts" ./mvnw clean compile
-```
-or can use [properties-maven-plugin](https://www.mojohaus.org/properties-maven-plugin/usage.html#set-system-properties) to set system properties for the build. (Not recommended for multi-module builds, due to potential system property pollution.)
 
-See [Default Properties](../processor/src/main/resources/sharedtype-default.properties) for details.
+See [Default Properties](../processor/src/main/resources/sharedtype-default.properties) for all property entries.
 
+Execution goal `gen` can be bound to a Maven lifecycle phase.
+Annotation processing can also be setup and configured via `maven-compiler-plugin`, see [example](../it/pom.xml).
 #### Per annotation options
 See Javadoc on [@SharedType](../annotation/src/main/java/online/sharedtype/SharedType.java) for details.
 
