@@ -35,10 +35,12 @@ import java.util.Map;
 /**
  * Generate types from {@link SharedType} annotated classes.
  * See <a href="https://github.com/SharedType/sharedtype">SharedType</a> for details.
+ *
  * @author Cause Chung
  */
 @Mojo(name = "gen")
 public final class SharedTypeGenMojo extends AbstractMojo {
+    private static final String JAVA8_VERSION = "1.8";
     private static final List<String> DEFAULT_COMPILER_OPTIONS = Arrays.asList("-proc:only", "-Asharedtype.enabled=true");
     private @Inject RepositorySystem repositorySystem;
 
@@ -84,13 +86,13 @@ public final class SharedTypeGenMojo extends AbstractMojo {
                 Files.createDirectories(outputDirPath);
             }
             fileManager.setLocation(StandardLocation.SOURCE_OUTPUT, Collections.singleton(outputDirPath.toFile()));
-            fileManager.setLocation(StandardLocation.CLASS_PATH, dependencyResolver.getSourceDependencies());
+            fileManager.setLocation(StandardLocation.CLASS_PATH, dependencyResolver.getClasspathDependencies());
         } catch (Exception e) {
             throw new MojoExecutionException(e);
         }
         Iterable<? extends JavaFileObject> sources = fileManager.getJavaFileObjectsFromFiles(walkAllSourceFiles());
 
-        try(SharedTypeLogger logger = new SharedTypeLogger(getLog())) {
+        try (SharedTypeLogger logger = new SharedTypeLogger(getLog())) {
             JavaCompiler.CompilationTask task = compiler.getTask(logger, fileManager, diagnosticListener, getCompilerOptions(), null, sources);
             SharedTypeAnnotationProcessor annotationProcessor = new SharedTypeAnnotationProcessor();
             annotationProcessor.setUserProps(properties);
@@ -124,7 +126,18 @@ public final class SharedTypeGenMojo extends AbstractMojo {
     }
 
     private static JavaCompiler getJavaCompiler() throws MojoExecutionException {
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        String javaVersion = System.getProperty("java.specification.version");
+        JavaCompiler compiler;
+        if (JAVA8_VERSION.equals(javaVersion)) {
+            try {
+                Class<?> javacToolClass = SharedTypeAnnotationProcessor.class.getClassLoader().loadClass("com.sun.tools.javac.api.JavacTool");
+                compiler = (JavaCompiler) javacToolClass.getConstructor().newInstance();
+            } catch (Exception e) {
+                throw new MojoExecutionException("Failed to load JavaCompiler.", e);
+            }
+        } else {
+            compiler = ToolProvider.getSystemJavaCompiler();
+        }
         if (compiler != null) {
             return compiler;
         }

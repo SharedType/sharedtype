@@ -28,7 +28,7 @@ final class DependencyResolver {
         this.project = project;
     }
 
-    List<File> getSourceDependencies() throws MojoExecutionException {
+    List<File> getClasspathDependencies() throws MojoExecutionException {
         try {
             ArtifactTypeRegistry artifactTypeRegistry =
                 session.getRepositorySession().getArtifactTypeRegistry();

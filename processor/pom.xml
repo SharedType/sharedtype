@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>online.sharedtype</groupId>
@@ -62,6 +63,50 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <!-- For JDK 8, need to explicit add tools.jar dependency for Tree API -->
+    <profiles>
+        <profile>
+            <id>jdk-tools-jar-env-var</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <file>
+                    <exists>${JAVA_HOME}/lib/tools.jar</exists>
+                </file>
+            </activation>
+            <properties>
+                <!--suppress UnresolvedMavenProperty -->
+                <toolsjar>${JAVA_HOME}/lib/tools.jar</toolsjar>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdk-tools-jar-sys-prop</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <file>
+                    <exists>${java.home}/../lib/tools.jar</exists>
+                </file>
+            </activation>
+            <properties>
+                <toolsjar>${java.home}/../lib/tools.jar</toolsjar>
+            </properties>
+        </profile>
+        <profile>
+            <id>java8-jdk-tools-jar</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>jdk.tools</groupId>
+                    <artifactId>jdk.tools</artifactId>
+                    <version>jdk1.8.0</version>
+                    <scope>system</scope>
+                    <systemPath>${toolsjar}</systemPath>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
