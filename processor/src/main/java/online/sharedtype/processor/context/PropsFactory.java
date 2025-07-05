@@ -1,11 +1,12 @@
 package online.sharedtype.processor.context;
 
+import online.sharedtype.processor.support.annotation.Nullable;
 import online.sharedtype.processor.support.exception.SharedTypeException;
 
-import online.sharedtype.processor.support.annotation.Nullable;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 public final class PropsFactory {
     private static final String DEFAULT_PROPERTIES_FILE = "sharedtype-default.properties";
 
-    public static Props loadProps(@Nullable Path userPropertiesFile) {
+    public static Props loadProps(@Nullable Path userPropertiesFile, @Nullable Map<String, String> userProperties) {
         ClassLoader classLoader = PropsFactory.class.getClassLoader();
         try (InputStream defaultPropsInputstream = classLoader.getResourceAsStream(DEFAULT_PROPERTIES_FILE);
              InputStream userPropsInputstream = userPropertiesFile == null || Files.notExists(userPropertiesFile) ? null : Files.newInputStream(userPropertiesFile)) {
@@ -33,8 +34,11 @@ public final class PropsFactory {
             if (userPropsInputstream != null) {
                 properties.load(userPropsInputstream);
             }
+            if (userProperties != null) {
+                properties.putAll(userProperties);
+            }
             properties.putAll(System.getProperties());
-            Props props = loadProps(properties);
+            Props props = convertProps(properties);
             if (props.getTypescript().getOptionalFieldFormats().isEmpty()) {
                 throw new IllegalArgumentException("Props 'typescript.optional-field-format' cannot be empty.");
             }
@@ -44,7 +48,7 @@ public final class PropsFactory {
         }
     }
 
-    private static Props loadProps(Properties properties) {
+    private static Props convertProps(Properties properties) {
         Set<OutputTarget> targets = parseEnumSet(properties, "sharedtype.targets", OutputTarget.class, OutputTarget::valueOf);
         return Props.builder()
             .targets(targets)
@@ -71,7 +75,7 @@ public final class PropsFactory {
                 .enumFormat(parseEnum(properties, "sharedtype.typescript.enum-format", Props.Typescript.EnumFormat::fromString))
                 .fieldReadonlyType(parseEnum(properties, "sharedtype.typescript.field-readonly-type", Props.Typescript.FieldReadonlyType::fromString))
                 .typeMappings(parseMap(properties, "sharedtype.typescript.type-mappings"))
-                .customCodePath(properties.getProperty("sharedtype.typescript.custom-code-path"))
+                .customCodePath(resolvePath(properties, "sharedtype.typescript.custom-code-path"))
                 .build())
             .go(Props.Go.builder()
                 .outputFileName(properties.getProperty("sharedtype.go.output-file-name"))
@@ -80,7 +84,7 @@ public final class PropsFactory {
                 .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.go.target-datetime-type"))
                 .enumFormat(parseEnum(properties, "sharedtype.go.enum-format", Props.Go.EnumFormat::fromString))
                 .typeMappings(parseMap(properties, "sharedtype.go.type-mappings"))
-                .customCodePath(properties.getProperty("sharedtype.go.custom-code-path"))
+                .customCodePath(resolvePath(properties,"sharedtype.go.custom-code-path"))
                 .build())
             .rust(Props.Rust.builder()
                 .outputFileName(properties.getProperty("sharedtype.rust.output-file-name"))
@@ -89,7 +93,7 @@ public final class PropsFactory {
                 .defaultTypeMacros(splitArray(properties.getProperty("sharedtype.rust.default-macros-traits")))
                 .targetDatetimeTypeLiteral(properties.getProperty("sharedtype.rust.target-datetime-type"))
                 .typeMappings(parseMap(properties, "sharedtype.rust.type-mappings"))
-                .customCodePath(properties.getProperty("sharedtype.rust.custom-code-path"))
+                .customCodePath(resolvePath(properties, "sharedtype.rust.custom-code-path"))
                 .hasEnumValueTypeAlias(parseBoolean(properties, "sharedtype.rust.enum-value-type-alias"))
                 .build())
             .build();
@@ -165,6 +169,18 @@ public final class PropsFactory {
             map.put(keyValue[0].trim(), keyValue[1].trim());
         }
         return map;
+    }
+
+    private static Path resolvePath(Properties properties, String propertyName) {
+        String value = properties.getProperty(propertyName);
+        if (value == null || value.isEmpty()) {
+            return null;
+        }
+        Path path = Paths.get(value);
+        if (Files.notExists(path)) {
+            throw new IllegalArgumentException(String.format("Invalid property %s=%s, file of path does not exist.", propertyName, path));
+        }
+        return path;
     }
 
     @SuppressWarnings("unchecked")

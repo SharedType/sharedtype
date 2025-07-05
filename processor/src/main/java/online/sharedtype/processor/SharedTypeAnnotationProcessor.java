@@ -1,11 +1,13 @@
 package online.sharedtype.processor;
 
 import com.google.auto.service.AutoService;
+import lombok.Setter;
 import online.sharedtype.processor.domain.def.TypeDef;
 import online.sharedtype.processor.context.Context;
 import online.sharedtype.processor.context.PropsFactory;
 import online.sharedtype.processor.parser.TypeDefParser;
 import online.sharedtype.processor.resolver.TypeResolver;
+import online.sharedtype.processor.support.annotation.Nullable;
 import online.sharedtype.processor.support.annotation.VisibleForTesting;
 import online.sharedtype.processor.support.exception.SharedTypeException;
 import online.sharedtype.processor.support.exception.SharedTypeInternalError;
@@ -24,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static online.sharedtype.processor.domain.Constants.ANNOTATION_QUALIFIED_NAME;
@@ -36,10 +39,14 @@ import static online.sharedtype.processor.support.Preconditions.checkArgument;
 @SupportedAnnotationTypes("online.sharedtype.SharedType")
 @SupportedOptions({"sharedtype.propsFile", "sharedtype.enabled"})
 @AutoService(Processor.class)
-public final class AnnotationProcessorImpl extends AbstractProcessor {
+public final class SharedTypeAnnotationProcessor extends AbstractProcessor {
     private static final String PROPS_FILE_OPTION_NAME = "sharedtype.propsFile";
+    private static final String PROPS_ENABLED = "sharedtype.enabled";
     private static final String DEFAULT_USER_PROPS_FILE = "sharedtype.properties";
     private static final boolean ANNOTATION_CONSUMED = true;
+    /** Programmatically provided user properties, e.g. from Maven plugin */
+    @Nullable @Setter
+    private Map<String, String> userProps;
     private boolean enabled;
     Context ctx;
     TypeDefParser parser;
@@ -54,10 +61,10 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        String configFile = processingEnv.getOptions().getOrDefault(PROPS_FILE_OPTION_NAME, DEFAULT_USER_PROPS_FILE);
+        String userPropsFile = processingEnv.getOptions().getOrDefault(PROPS_FILE_OPTION_NAME, DEFAULT_USER_PROPS_FILE);
         enabled = isEnabled(processingEnv);
         if (enabled) {
-            ctx = new Context(processingEnv, PropsFactory.loadProps(Paths.get(configFile)));
+            ctx = new Context(processingEnv, PropsFactory.loadProps(Paths.get(userPropsFile), userProps));
             parser = TypeDefParser.create(ctx);
             resolver = TypeResolver.create(ctx, parser);
             writer = TypeWriter.create(ctx);
@@ -88,7 +95,8 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
                 List<TypeDef> typeDefs = parser.parse(typeElement);
                 discoveredDefs.addAll(typeDefs);
                 if (typeDefs.isEmpty()){
-                    ctx.warn(element, "Type '%s' is ignored or invalid, but annotated with '%s'.", typeElement.getQualifiedName().toString(), ANNOTATION_QUALIFIED_NAME);
+                    ctx.warn(element, "Type '%s' is ignored or invalid, but annotated with '%s'.",
+                        typeElement.getQualifiedName().toString(), ANNOTATION_QUALIFIED_NAME);
                 }
             } else {
                 throw new SharedTypeInternalError(String.format("Unsupported element: %s of kind %s", element, element.getKind()));
@@ -103,7 +111,7 @@ public final class AnnotationProcessorImpl extends AbstractProcessor {
     }
 
     private static boolean isEnabled(ProcessingEnvironment processingEnv) {
-        String enabledExpr = processingEnv.getOptions().getOrDefault("sharedtype.enabled", "false");
+        String enabledExpr = processingEnv.getOptions().getOrDefault(PROPS_ENABLED, "false");
         return enabledExpr.equalsIgnoreCase("true") || enabledExpr.equalsIgnoreCase("yes");
     }
 }

@@ -4,7 +4,10 @@ import online.sharedtype.processor.context.ContextMocks;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
+import java.nio.file.Paths;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 final class TypescriptHeaderDataAdaptorTest {
@@ -16,11 +19,9 @@ final class TypescriptHeaderDataAdaptorTest {
         assertThat(adaptor.customCodeSnippet()).isEqualTo("interface A {}" + System.lineSeparator());
     }
 
-    @SetSystemProperty(key = "sharedtype.typescript.custom-code-path", value = "not-exists.ts")
     @Test
     void customCodeSnippetNoFile() {
-        ContextMocks ctxMocks = new ContextMocks();
-        TypescriptHeaderDataAdaptor adaptor = new TypescriptHeaderDataAdaptor(ctxMocks.getContext());
-        assertThat(adaptor.customCodeSnippet()).isEqualTo("");
+        assertThatThrownBy(() -> TypescriptHeaderDataAdaptor.readCustomCodeSnippet(Paths.get("not-exists.ts")));
+        assertThat(TypescriptHeaderDataAdaptor.readCustomCodeSnippet(null)).isEqualTo("");
     }
 }

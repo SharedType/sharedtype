@@ -1,3 +1,5 @@
+import online.sharedtype.processor.SharedTypeAnnotationProcessor;
+
 module online.sharedtype.processor {
     requires online.sharedtype.annotation;
     requires java.base;
@@ -8,5 +10,5 @@ module online.sharedtype.processor {
 
     requires com.github.mustachejava;
 
-    provides javax.annotation.processing.Processor with online.sharedtype.processor.AnnotationProcessorImpl;
+    provides javax.annotation.processing.Processor with SharedTypeAnnotationProcessor;
 }

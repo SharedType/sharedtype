@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>online.sharedtype</groupId>
@@ -13,7 +14,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <compilerArg />
+        <compilerArg/>
         <sharedtype.propsFile>it/sharedtype.properties</sharedtype.propsFile>
         <compileClasses/>
         <excludeClasses/>
@@ -99,38 +100,11 @@
                         <arg>${compilerArg}</arg> <!-- supplied from cmd "-Dsharedtype.compilerArg=-proc:only" -->
                         <arg>-Asharedtype.propsFile=${sharedtype.propsFile}</arg>
                         <arg>-Asharedtype.enabled=true</arg>
+                        <!-- Execute processor: ./mvnw compile -DcompilerArg=-proc:only -Dsharedtype.enabled=true -->
                     </compilerArgs>
                     <includes>${compileClasses}</includes>
                     <excludes>${excludeClasses}</excludes>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>set-system-properties</goal>
-                        </goals>
-                        <configuration>
-                            <properties>
-                                <property>
-                                    <name>sharedtype.typescript.custom-code-path</name>
-                                    <value>it/custom-code.ts</value>
-                                </property>
-                                <property>
-                                    <name>sharedtype.go.custom-code-path</name>
-                                    <value>it/custom-code.go</value>
-                                </property>
-                                <property>
-                                    <name>sharedtype.rust.custom-code-path</name>
-                                    <value>it/custom-code.rs</value>
-                                </property>
-                            </properties>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -172,6 +146,20 @@
                                     <sources>
                                         <source>${maven.multiModuleProjectDirectory}/internal/src/test/java</source>
                                     </sources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>add-test-resource</id>
+                                <phase>generate-test-resources</phase>
+                                <goals>
+                                    <goal>add-test-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/generated-sources</directory>
+                                        </resource>
+                                    </resources>
                                 </configuration>
                             </execution>
                         </executions>

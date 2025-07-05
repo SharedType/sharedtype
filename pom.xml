@@ -43,6 +43,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <maven.compiler.testSource>21</maven.compiler.testSource>
@@ -59,6 +60,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sharedtype</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>sharedtype-ap</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -264,6 +270,8 @@
                 <module>annotation</module>
                 <module>processor</module>
                 <module>it</module>
+                <module>maven-plugin</module>
+                <module>maven-plugin/it</module>
             </modules>
         </profile>
         <profile>
@@ -277,6 +285,7 @@
             <modules>
                 <module>annotation</module>
                 <module>processor</module>
+                <module>maven-plugin</module>
             </modules>
             <build>
                 <plugins>

@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import online.sharedtype.SharedType;
+import online.sharedtype.processor.support.annotation.Nullable;
 
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,7 +49,8 @@ public final class Props {
         private final EnumFormat enumFormat;
         private final FieldReadonlyType fieldReadonlyType;
         private final Map<String, String> typeMappings;
-        private final String customCodePath;
+        @Nullable
+        private final Path customCodePath;
 
         @Getter
         public enum OptionalFieldFormat {
@@ -95,7 +98,8 @@ public final class Props {
         private final String targetDatetimeTypeLiteral;
         private final EnumFormat enumFormat;
         private final Map<String, String> typeMappings;
-        private final String customCodePath;
+        @Nullable
+        private final Path customCodePath;
 
         public enum EnumFormat {
             CONST, STRUCT,
@@ -118,6 +122,7 @@ public final class Props {
         private final Set<String> defaultTypeMacros;
         private final String targetDatetimeTypeLiteral;
         private final Map<String, String> typeMappings;
-        private final String customCodePath;
+        @Nullable
+        private final Path customCodePath;
     }
 }

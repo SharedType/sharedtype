@@ -4,7 +4,7 @@
 [![CI](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml/badge.svg)](https://github.com/cuzfrog/sharedtype/actions/workflows/ci.yaml)
 [![Maven Central](https://img.shields.io/maven-central/v/online.sharedtype/sharedtype?style=social)](https://central.sonatype.com/search?q=g:online.sharedtype++a:sharedtype&smo=true)
 
-# SharedType - Sharing Java Types made easy
+# SharedType - Lightweight Java Type Sharing
 From Java:
 ```java
 @SharedType
@@ -36,13 +36,11 @@ pub struct User {
 ```
 
 ## Features
-* Java8 compatible; Java 9 module (Jigsaw) compatible.
+* Java8+ compatible.
 * Generics support.
 * Compile-time constant support.
-* Client source dependency is only `@SharedType` retained at source code level.
-* SharedType annotation processor has only 1 dependency: [mustache](https://github.com/spullara/mustache.java).
-* Parsing takes milliseconds with `-proc:only`.
-* Intuitive defaults, put `@SharedType` and there you go. Global + class level options.
+* Fast. (Execution takes milliseconds with `-proc:only`.)
+* Simple global + type level configurations.
 
 ## Documentation
 * [User Guide](doc/Usage.md)

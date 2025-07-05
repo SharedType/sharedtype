@@ -157,8 +157,7 @@ import java.lang.annotation.Target;
  * <b>Custom code snippet:</b><br>
  * Clients can provide custom code snippets to be injected into the emitted file.
  * This can be useful when e.g. a 3rd party type is referenced at client code.
- * By default, SharedType will search files "sharedtype-custom-code.ts", "sharedtype-custom-code.rs" respectively on cmd path.
- * File paths can be configured via global properties.
+ * Custom code file paths can be configured via global properties.
  * </p>
  *
  * <br>

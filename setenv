@@ -23,7 +23,7 @@ export MAVEN_OPTS="-Xmx512m -Xms512m"
 export PATH=$JAVA_HOME/bin:$MVND_HOME/bin:$PATH
 
 if [ -z "$MVND_HOME" ];then
-    echo "MVND_HOME is not set, mvnd is recommended for local development, see https://github.com/apache/maven-mvnd"
+    echo "MVND_HOME is not set, mvnd can speed up local build, see https://github.com/apache/maven-mvnd. (mvnd currently does not update plugins on each run, when developing maven plugin, use mvnw)"
     java -version
 else
     mvnd -version
