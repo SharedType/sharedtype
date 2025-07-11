@@ -270,8 +270,6 @@
                 <module>annotation</module>
                 <module>processor</module>
                 <module>it</module>
-                <module>maven-plugin</module>
-                <module>maven-plugin/it</module>
             </modules>
         </profile>
         <profile>
@@ -281,11 +279,22 @@
             </modules>
         </profile>
         <profile>
+            <id>dev-build-tool-plugins</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>build-tool-plugins/core</module>
+                <module>build-tool-plugins/maven-plugin</module>
+                <module>build-tool-plugins/maven-plugin/it</module>
+            </modules>
+        </profile>
+        <profile>
             <id>release</id>
             <modules>
                 <module>annotation</module>
                 <module>processor</module>
-                <module>maven-plugin</module>
+                <module>build-tool-plugins/maven-plugin</module>
             </modules>
             <build>
                 <plugins>
