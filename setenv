@@ -19,7 +19,7 @@ else
   return
 fi
 
-export MAVEN_OPTS="-Xmx512m -Xms512m"
+export MAVEN_OPTS="-Xmx512m -Xms128m"
 export PATH=$JAVA_HOME/bin:$MVND_HOME/bin:$PATH
 
 if [ -z "$MVND_HOME" ];then
