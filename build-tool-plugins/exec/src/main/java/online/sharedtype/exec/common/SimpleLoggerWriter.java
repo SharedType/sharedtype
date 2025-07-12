@@ -1,14 +1,12 @@
-package online.sharedtype.maven;
-
-import org.apache.maven.plugin.logging.Log;
+package online.sharedtype.exec.common;
 
 import java.io.Writer;
 
-final class SharedTypeLogger extends Writer {
-    private final Log log;
+final class SimpleLoggerWriter extends Writer {
+    private final Logger log;
     private final StringBuffer buffer = new StringBuffer();
 
-    SharedTypeLogger(Log log) {
+    SimpleLoggerWriter(Logger log) {
         this.log = log;
     }
 

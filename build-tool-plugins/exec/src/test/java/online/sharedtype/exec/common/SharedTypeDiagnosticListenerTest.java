@@ -1,6 +1,5 @@
-package online.sharedtype.maven;
+package online.sharedtype.exec.common;
 
-import org.apache.maven.plugin.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,7 +8,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -19,15 +17,15 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 final class SharedTypeDiagnosticListenerTest {
     private @Mock Diagnostic<JavaFileObject> diagnostic;
-    private @Mock Log log;
+    private @Mock Logger log;
     private final Path baseDir = Paths.get("/test/project/dir");
-    private SharedTypeDiagnosticListener listener;
+    private SimpleDiagnosticListener listener;
 
     private @Mock JavaFileObject source;
 
     @BeforeEach
     void setup() {
-        listener = new SharedTypeDiagnosticListener(log, baseDir);
+        listener = new SimpleDiagnosticListener(log, baseDir);
     }
 
     @Test

@@ -1,8 +1,6 @@
-package online.sharedtype.maven;
+package online.sharedtype.exec.common;
 
-import com.google.common.annotations.VisibleForTesting;
 import online.sharedtype.processor.support.annotation.SideEffect;
-import org.apache.maven.plugin.logging.Log;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
@@ -10,10 +8,10 @@ import javax.tools.JavaFileObject;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-final class SharedTypeDiagnosticListener implements DiagnosticListener<JavaFileObject> {
-    private final Log log;
+final class SimpleDiagnosticListener implements DiagnosticListener<JavaFileObject> {
+    private final Logger log;
     private final Path projectBaseDir;
-    SharedTypeDiagnosticListener(Log log, Path projectBaseDir) {
+    SimpleDiagnosticListener(Logger log, Path projectBaseDir) {
         this.log = log;
         this.projectBaseDir = projectBaseDir;
     }
@@ -40,7 +38,6 @@ final class SharedTypeDiagnosticListener implements DiagnosticListener<JavaFileO
         }
     }
 
-    @VisibleForTesting
     void addSourceInfo(@SideEffect StringBuilder sb, Diagnostic<? extends JavaFileObject> diagnostic) {
         if (diagnostic.getSource() == null) {
             return;

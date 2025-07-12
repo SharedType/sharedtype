@@ -1,5 +1,6 @@
 package online.sharedtype.maven;
 
+import online.sharedtype.exec.common.DependencyResolver;
 import org.apache.maven.RepositoryUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -17,18 +18,19 @@ import java.util.stream.Collectors;
 /**
  * @author Cause Chung
  */
-final class DependencyResolver {
+final class MavenDependencyResolver implements DependencyResolver {
     private final RepositorySystem repositorySystem;
     private final MavenSession session;
     private final MavenProject project;
 
-    DependencyResolver(RepositorySystem repositorySystem, MavenSession session, MavenProject project) {
+    MavenDependencyResolver(RepositorySystem repositorySystem, MavenSession session, MavenProject project) {
         this.repositorySystem = repositorySystem;
         this.session = session;
         this.project = project;
     }
 
-    List<File> getClasspathDependencies() throws MojoExecutionException {
+    @Override
+    public List<File> getClasspathDependencies() throws Exception {
         try {
             ArtifactTypeRegistry artifactTypeRegistry =
                 session.getRepositorySession().getArtifactTypeRegistry();
