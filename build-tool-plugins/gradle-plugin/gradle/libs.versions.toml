@@ -4,9 +4,10 @@
 [versions]
 junit-jupiter = "5.10.2"
 assertj = "3.25.3"
-sharedtype-ap = "0.14.0-SNAPSHOT"
+sharedtype = "0.14.0-SNAPSHOT"
 
 [libraries]
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
-sharedtype-ap = { module = "online.sharedtype:sharedtype-ap", version.ref = "sharedtype-ap" }
+sharedtype-ap = { module = "online.sharedtype:sharedtype-ap", version.ref = "sharedtype" }
+sharedtype-ap-exec = { module = "online.sharedtype:sharedtype-ap-exec", version.ref = "sharedtype" }

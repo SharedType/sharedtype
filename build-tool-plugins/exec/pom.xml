@@ -12,7 +12,7 @@
     <artifactId>sharedtype-ap-exec</artifactId>
     <version>0.14.0-SNAPSHOT</version>
     <name>SharedType Annotation Processor Executor</name>
-    <description>Call javac to execute annotation processing with -proc:only</description>
+    <description>Call javac to execute annotation processing.</description>
 
     <dependencies>
         <dependency>

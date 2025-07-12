@@ -9,6 +9,7 @@ repositories {
 
 dependencies {
     implementation(libs.sharedtype.ap)
+    implementation(libs.sharedtype.ap.exec)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.assertj)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
