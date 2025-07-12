@@ -1,9 +1,5 @@
 package online.sharedtype.exec.common;
 
-import online.sharedtype.processor.SharedTypeAnnotationProcessor;
-import online.sharedtype.processor.support.annotation.Nullable;
-import online.sharedtype.processor.support.exception.SharedTypeException;
-
 import javax.annotation.processing.Processor;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -13,16 +9,19 @@ import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
+/**
+ * Generic annotation processor executor. This module does not depend on sharedtype-ap.
+ * @see SharedTypeApCompilerOptions
+ * @author Cause Chung
+ */
 public final class AnnotationProcessorExecutor {
     private static final String JAVA8_VERSION = "1.8";
     private final Processor processor;
@@ -39,7 +38,7 @@ public final class AnnotationProcessorExecutor {
                         Path outputDir,
                         Iterable<String> compileSourceRoots,
                         String sourceEncoding,
-                        Collection<String> compilerOptions) throws Exception {
+                        Iterable<String> compilerOptions) throws Exception {
         SimpleDiagnosticListener diagnosticListener = new SimpleDiagnosticListener(log, projectBaseDir);
         JavaCompiler compiler = getJavaCompiler();
 
@@ -66,32 +65,24 @@ public final class AnnotationProcessorExecutor {
         return visitor.getFiles();
     }
 
-    private static JavaCompiler getJavaCompiler() throws SharedTypeException {
+    private static JavaCompiler getJavaCompiler() throws Exception {
         String javaVersion = System.getProperty("java.specification.version");
         JavaCompiler compiler;
         if (JAVA8_VERSION.equals(javaVersion)) {
-            try {
-                Class<?> javacToolClass = SharedTypeAnnotationProcessor.class.getClassLoader().loadClass("com.sun.tools.javac.api.JavacTool");
-                compiler = (JavaCompiler) javacToolClass.getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new SharedTypeException("Failed to load JavaCompiler.", e);
-            }
+            Class<?> javacToolClass = Class.forName("com.sun.tools.javac.api.JavacTool");
+            compiler = (JavaCompiler) javacToolClass.getConstructor().newInstance();
         } else {
             compiler = ToolProvider.getSystemJavaCompiler();
         }
         if (compiler != null) {
             return compiler;
         }
-        throw new SharedTypeException("Java compiler not found, currently only compiler from jdk.compiler module is supported.");
+        throw new ClassNotFoundException("Java compiler not found, currently only compiler from jdk.compiler module is supported.");
     }
 
-    private static Charset getCharset(@Nullable String encoding) {
+    private static Charset getCharset(String encoding) {
         if (encoding != null) {
-            try {
-                return Charset.forName(encoding);
-            } catch (UnsupportedCharsetException e) {
-                throw new SharedTypeException("Invalid 'encoding' option: " + encoding, e);
-            }
+            return Charset.forName(encoding);
         }
         return null;
     }

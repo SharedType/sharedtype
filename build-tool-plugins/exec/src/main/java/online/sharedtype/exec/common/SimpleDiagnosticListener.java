@@ -1,13 +1,14 @@
 package online.sharedtype.exec.common;
 
-import online.sharedtype.processor.support.annotation.SideEffect;
-
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileObject;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * @author Cause Chung
+ */
 final class SimpleDiagnosticListener implements DiagnosticListener<JavaFileObject> {
     private final Logger log;
     private final Path projectBaseDir;
@@ -38,7 +39,7 @@ final class SimpleDiagnosticListener implements DiagnosticListener<JavaFileObjec
         }
     }
 
-    void addSourceInfo(@SideEffect StringBuilder sb, Diagnostic<? extends JavaFileObject> diagnostic) {
+    void addSourceInfo(StringBuilder sb, Diagnostic<? extends JavaFileObject> diagnostic) {
         if (diagnostic.getSource() == null) {
             return;
         }

@@ -22,6 +22,11 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>sharedtype-ap</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>sharedtype-ap-exec</artifactId>
             <version>${project.version}</version>
         </dependency>

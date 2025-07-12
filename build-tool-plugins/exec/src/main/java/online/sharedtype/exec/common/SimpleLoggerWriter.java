@@ -2,6 +2,9 @@ package online.sharedtype.exec.common;
 
 import java.io.Writer;
 
+/**
+ * @author Cause Chung
+ */
 final class SimpleLoggerWriter extends Writer {
     private final Logger log;
     private final StringBuffer buffer = new StringBuffer();
