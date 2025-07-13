@@ -1,0 +1,12 @@
+plugins {
+    id("online.sharedtype.sharedtype-gradle-plugin")
+}
+
+repositories {
+//    mavenCentral()
+    mavenLocal()
+}
+
+sharedtype {
+    propertyFile = project.file("sharedtype-test.properties")
+}

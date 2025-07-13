@@ -18,7 +18,7 @@ dependencies {
 gradlePlugin {
     val greeting by plugins.creating {
         id = "online.sharedtype.sharedtype-gradle-plugin"
-        implementationClass = "online.sharedtype.SharedtypeGradlePlugin"
+        implementationClass = "online.sharedtype.gradle.SharedtypeGradlePlugin"
     }
 }
 

@@ -25,6 +25,7 @@ import java.util.Map;
  */
 @Mojo(name = "gen")
 public final class SharedTypeGenMojo extends AbstractMojo {
+    private static final String PROP_PROJECT_SOURCE_ENCODING = "project.build.sourceEncoding";
     private @Inject RepositorySystem repositorySystem;
     private @Inject MavenSession session;
     private @Inject MavenProject project;
@@ -66,7 +67,7 @@ public final class SharedTypeGenMojo extends AbstractMojo {
                 project.getBasedir().toPath(),
                 Paths.get(outputDirectory),
                 project.getCompileSourceRoots(),
-                project.getProperties().getProperty("project.build.sourceEncoding"),
+                project.getProperties().getProperty(PROP_PROJECT_SOURCE_ENCODING),
                 new SharedTypeApCompilerOptions(propertyFile).toList()
             );
         } catch (Exception e) {

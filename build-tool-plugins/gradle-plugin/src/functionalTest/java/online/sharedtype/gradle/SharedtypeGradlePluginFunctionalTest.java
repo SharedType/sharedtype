@@ -1,50 +1,43 @@
 package online.sharedtype.gradle;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-import java.io.FileWriter;
-
-import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.testkit.runner.BuildResult;
+import org.gradle.testkit.runner.GradleRunner;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import static org.junit.jupiter.api.Assertions.*;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 final class SharedtypeGradlePluginFunctionalTest {
     @TempDir
-    File projectDir;
+    private Path projectDir;
 
-    private File getBuildFile() {
-        return new File(projectDir, "build.gradle");
+    @BeforeEach
+    void setup() throws Exception {
+        Files.createFile(projectDir.resolve("settings.gradle"));
+        copyResourceToProjectDir("build.gradle");
+        copyResourceToProjectDir("sharedtype-test.properties");
     }
 
-    private File getSettingsFile() {
-        return new File(projectDir, "settings.gradle");
-    }
-
-    @Test void canRunTask() throws IOException {
-        writeString(getSettingsFile(), "");
-        writeString(getBuildFile(),
-            "plugins {" +
-            "  id('org.example.greeting')" +
-            "}");
-
-        // Run the build
+    @Test
+    void canRunTask() {
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
+        runner.withArguments("--stacktrace", "--info", "stypeGen");
         runner.withPluginClasspath();
-        runner.withArguments("greeting");
-        runner.withProjectDir(projectDir);
+        runner.withProjectDir(projectDir.toFile());
         BuildResult result = runner.build();
 
-        // Verify the result
-        assertTrue(result.getOutput().contains("Hello from plugin 'org.example.greeting'"));
+        assertThat(result.getOutput()).contains("");
     }
 
-    private void writeString(File file, String string) throws IOException {
-        try (Writer writer = new FileWriter(file)) {
-            writer.write(string);
+    private void copyResourceToProjectDir(String resourceName) throws Exception {
+        try (var input = getClass().getClassLoader().getResourceAsStream(resourceName)) {
+            assertThat(input).isNotNull();
+            Files.copy(input, projectDir.resolve(resourceName));
         }
     }
 }

@@ -14,14 +14,16 @@ Internal types also have javadoc for more information.
     * `java17` uses symlink to reuse types in `java8` then does more type checks, e.g. for Java `record`.
 * `client-test` contains target languages' tests respectively against generated code.
 * `e2e` contains e2e json 2-way serialization and deserialization tests against target languages' http servers.
-* `maven-plugin` contains maven plugin for SharedType annotation, and `maven-plugin/it` contains integration tests for maven plugin.
+* `build-tool-plugins` contains Maven and Gradle plugin for SharedType annotation.
+    * `exec` contains generic annotation processor executor.
+    * `maven-plugin/it` contains integration tests for maven plugin.
 
 Domain types are shared among processor and integration tests to reduce maven module count.
 
 ## Setup
-**Linux is assumed**. If you use Windows, you can use WSL with a remotely connected IDE. Windows 11 supports GUI app inside WSL.
+**Linux/macOS is assumed**. If you use Windows, you can use WSL with a remotely connected IDE. Windows 11 supports GUI app inside WSL.
 
-Setup Java env vars (>= Java17 for development), configure `JAVA17_HOME` to point to your Java installation:
+Setup Java env vars (>= Java21 for development), configure `JAVA21_HOME` to point to your Java installation:
 ```bash
 . setenv
 ```
@@ -39,6 +41,7 @@ Choose maven profiles in IDE accordingly as below.
 IDE may not able to properly resolve classes in `internal` folder for both modules.
 Enable this profile to enable `it` modules in IDE, and disable it when developing against `processor` module.
 * `it-no-jpms` and `it-jpms` - control whether to enable Java 9 Jigsaw module test in `it`. `it/java8` sources are reused to test on jdk9. Turn on `it-jpms` for IDE to correctly resolve `it/java8` classes.
+* `dev-build-tool` - controls build tool plugin modules.
 
 ## Development
 ### Run test
