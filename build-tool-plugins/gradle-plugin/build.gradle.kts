@@ -1,6 +1,18 @@
 plugins {
     `java-gradle-plugin`
+    `maven-publish`
 }
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+group = "online.sharedtype"
+version = "0.14.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -20,26 +32,6 @@ gradlePlugin {
         id = "online.sharedtype.sharedtype-gradle-plugin"
         implementationClass = "online.sharedtype.gradle.SharedtypeGradlePlugin"
     }
-}
-
-// Add a source set for the functional test suite
-val functionalTestSourceSet = sourceSets.create("functionalTest") {
-}
-
-configurations["functionalTestImplementation"].extendsFrom(configurations["testImplementation"])
-configurations["functionalTestRuntimeOnly"].extendsFrom(configurations["testRuntimeOnly"])
-
-// Add a task to run the functional tests
-val functionalTest by tasks.registering(Test::class) {
-    testClassesDirs = functionalTestSourceSet.output.classesDirs
-    classpath = functionalTestSourceSet.runtimeClasspath
-    useJUnitPlatform()
-}
-
-gradlePlugin.testSourceSets.add(functionalTestSourceSet)
-
-tasks.named<Task>("check") {
-    dependsOn(functionalTest)
 }
 
 tasks.named<Test>("test") {

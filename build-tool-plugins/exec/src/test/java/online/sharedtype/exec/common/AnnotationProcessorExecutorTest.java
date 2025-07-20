@@ -53,7 +53,7 @@ final class AnnotationProcessorExecutorTest {
 
     @Test
     void execute() throws Exception {
-        executor.execute(projectBaseDir, outputDir, Collections.singleton(sourceDir.toString()), "UTF-8", Collections.singleton("-proc:only"));
+        executor.execute(projectBaseDir, outputDir, Collections.singleton(sourceDir), "UTF-8", Collections.singleton("-proc:only"));
         verify(processor).init(any());
         verify(processor, times(2)).process(any(), any());
         assertThat(Files.readString(outputDir.resolve("out.txt"))).isEqualTo("OK");

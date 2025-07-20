@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -36,7 +35,7 @@ public final class AnnotationProcessorExecutor {
 
     public void execute(Path projectBaseDir,
                         Path outputDir,
-                        Iterable<String> compileSourceRoots,
+                        Iterable<Path> compileSourceRoots,
                         String sourceEncoding,
                         Iterable<String> compilerOptions) throws Exception {
         SimpleDiagnosticListener diagnosticListener = new SimpleDiagnosticListener(log, projectBaseDir);
@@ -57,10 +56,10 @@ public final class AnnotationProcessorExecutor {
         }
     }
 
-    private static List<File> walkAllSourceFiles(Iterable<String> compileSourceRoots) throws IOException {
+    private static List<File> walkAllSourceFiles(Iterable<Path> compileSourceRoots) throws IOException {
         SourceFileVisitor visitor = new SourceFileVisitor();
-        for (String compileSourceRoot : compileSourceRoots) {
-            Files.walkFileTree(Paths.get(compileSourceRoot), EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, visitor);
+        for (Path compileSourceRoot : compileSourceRoots) {
+            Files.walkFileTree(compileSourceRoot, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, visitor);
         }
         return visitor.getFiles();
     }

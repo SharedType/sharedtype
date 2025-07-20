@@ -1,5 +1,6 @@
 package online.sharedtype.exec.common;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -17,6 +18,9 @@ public final class SharedTypeApCompilerOptions {
 
     public SharedTypeApCompilerOptions(String propertyFile) {
         this.propertyFile = propertyFile;
+    }
+    public SharedTypeApCompilerOptions(File propertyFile) {
+        this(propertyFile == null ? null : propertyFile.getAbsolutePath());
     }
 
     public List<String> toList() {

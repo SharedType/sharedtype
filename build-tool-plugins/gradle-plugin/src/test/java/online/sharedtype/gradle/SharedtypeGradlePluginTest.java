@@ -9,9 +9,9 @@ final class SharedtypeGradlePluginTest {
     @Test
     void pluginRegistersATask() {
         Project project = ProjectBuilder.builder().build();
-        project.getPlugins().apply("org.example.greeting");
+        project.getPlugins().apply("online.sharedtype.sharedtype-gradle-plugin");
 
         // Verify the result
-        assertNotNull(project.getTasks().findByName("greeting"));
+        assertNotNull(project.getTasks().findByName("stypeGen"));
     }
 }

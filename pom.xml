@@ -299,6 +299,7 @@
             <modules>
                 <module>annotation</module>
                 <module>processor</module>
+                <module>build-tool-plugins/exec</module>
                 <module>build-tool-plugins/maven-plugin</module>
             </modules>
             <build>

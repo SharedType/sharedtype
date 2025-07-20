@@ -16,6 +16,7 @@ import org.eclipse.aether.RepositorySystem;
 import javax.inject.Inject;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Generate types from {@link SharedType} annotated classes.
@@ -66,7 +67,7 @@ public final class SharedTypeGenMojo extends AbstractMojo {
             apExecutor.execute(
                 project.getBasedir().toPath(),
                 Paths.get(outputDirectory),
-                project.getCompileSourceRoots(),
+                project.getCompileSourceRoots().stream().map(Paths::get).collect(Collectors.toList()),
                 project.getProperties().getProperty(PROP_PROJECT_SOURCE_ENCODING),
                 new SharedTypeApCompilerOptions(propertyFile).toList()
             );

@@ -1,0 +1,7 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+    }
+}
+
+rootProject.name="sharedtype-gradle-plugin-it"

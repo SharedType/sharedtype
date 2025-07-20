@@ -10,8 +10,34 @@ import java.util.Map;
  *
  * @author Cause Chung
  */
-final class SharedtypeConfigExtension {
-    File outputDirectory;
-    File propertyFile;
-    Map<String, String> properties;
+public final class SharedtypeConfigExtension {
+    private File outputDirectory;
+    private File propertyFile;
+    private Map<String, String> properties;
+    private String sourceEncoding;
+
+    public File getOutputDirectory() {
+        return outputDirectory;
+    }
+    public void setOutputDirectory(File outputDirectory) {
+        this.outputDirectory = outputDirectory;
+    }
+    public File getPropertyFile() {
+        return propertyFile;
+    }
+    public void setPropertyFile(File propertyFile) {
+        this.propertyFile = propertyFile;
+    }
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
+    }
+    public String getSourceEncoding() {
+        return sourceEncoding;
+    }
+    public void setSourceEncoding(String sourceEncoding) {
+        this.sourceEncoding = sourceEncoding;
+    }
 }
