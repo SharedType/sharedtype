@@ -77,7 +77,7 @@ Style check:
 ```
 Debug annotation processor by run maven build:
 ```bash
-./mvne <your args goes here>
+./demvnw <your args goes here>
 ```
 Then attach your debugger on it. E.g. [IDEA run config](../.run/mvnDebug.run.xml).
 
@@ -90,7 +90,7 @@ Compile specific classes, **along with debug, this is useful for developing a sp
 ### Maven Plugin Development
 Debug Maven plugin IT:
 ```bash
-mvnd -pl maven-plugin clean install && ./mvne -pl maven-plugin/it sharedtype:gen
+mvnd -pl maven-plugin clean install && ./demvnw -pl maven-plugin/it sharedtype:gen
 ```
 
 ## Coding Style Guide / Keep it simple
