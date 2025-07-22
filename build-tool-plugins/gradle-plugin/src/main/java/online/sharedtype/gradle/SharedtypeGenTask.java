@@ -8,7 +8,6 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
-import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskAction;
 
 import javax.inject.Inject;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
  */
 class SharedtypeGenTask extends DefaultTask {
     static final String TASK_NAME = "stypeGen";
-    private static final String DEFAULT_OUTPUT_DIRECTORY = "generated-sources";
+    private static final String DEFAULT_OUTPUT_DIRECTORY = "generated";
     private final Project project;
     private SharedtypeConfigExtension extension;
 
@@ -50,7 +49,7 @@ class SharedtypeGenTask extends DefaultTask {
             throw new UnsupportedOperationException("Could not find JavaPluginExtension, only Java projects are supported.");
         }
         List<SourceSet> sourceSets = javaPluginExtension.getSourceSets().stream()
-            .filter(srcSet -> extension.getSourceSetNames().contains(srcSet.getName()))
+            .filter(srcSet -> extension.getSourceSets().contains(srcSet.getName()))
             .collect(Collectors.toList());
         List<Path> sourceDirs = sourceSets.stream()
             .flatMap(srcSet -> srcSet.getAllJava().getSrcDirs().stream())

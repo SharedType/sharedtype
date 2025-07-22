@@ -19,7 +19,7 @@ public final class SharedtypeConfigExtension {
     private File propertyFile;
     private Map<String, String> properties;
     private String sourceEncoding;
-    private Set<String> sourceSetNames = DEFAULT_SRC_SET_NAME;
+    private Set<String> sourceSets = DEFAULT_SRC_SET_NAME;
 
     public File getOutputDirectory() {
         return outputDirectory;
@@ -45,10 +45,10 @@ public final class SharedtypeConfigExtension {
     public void setSourceEncoding(String sourceEncoding) {
         this.sourceEncoding = sourceEncoding;
     }
-    public Set<String> getSourceSetNames() {
-        return sourceSetNames;
+    public Set<String> getSourceSets() {
+        return sourceSets;
     }
-    public void setSourceSetNames(Set<String> sourceSetNames) {
-        this.sourceSetNames = sourceSetNames;
+    public void setSourceSets(Set<String> sourceSets) {
+        this.sourceSets = sourceSets;
     }
 }
