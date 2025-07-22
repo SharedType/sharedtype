@@ -59,7 +59,9 @@ public final class AnnotationProcessorExecutor {
     private static List<File> walkAllSourceFiles(Iterable<Path> compileSourceRoots) throws IOException {
         SourceFileVisitor visitor = new SourceFileVisitor();
         for (Path compileSourceRoot : compileSourceRoots) {
-            Files.walkFileTree(compileSourceRoot, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, visitor);
+            if (Files.isDirectory(compileSourceRoot)) {
+                Files.walkFileTree(compileSourceRoot, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, visitor);
+            }
         }
         return visitor.getFiles();
     }

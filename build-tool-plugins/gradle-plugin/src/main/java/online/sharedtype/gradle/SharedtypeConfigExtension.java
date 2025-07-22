@@ -1,7 +1,9 @@
 package online.sharedtype.gradle;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -11,10 +13,13 @@ import java.util.Map;
  * @author Cause Chung
  */
 public final class SharedtypeConfigExtension {
+    private static final Set<String> DEFAULT_SRC_SET_NAME = Collections.singleton("main");
+
     private File outputDirectory;
     private File propertyFile;
     private Map<String, String> properties;
     private String sourceEncoding;
+    private Set<String> sourceSetNames = DEFAULT_SRC_SET_NAME;
 
     public File getOutputDirectory() {
         return outputDirectory;
@@ -39,5 +44,11 @@ public final class SharedtypeConfigExtension {
     }
     public void setSourceEncoding(String sourceEncoding) {
         this.sourceEncoding = sourceEncoding;
+    }
+    public Set<String> getSourceSetNames() {
+        return sourceSetNames;
+    }
+    public void setSourceSetNames(Set<String> sourceSetNames) {
+        this.sourceSetNames = sourceSetNames;
     }
 }

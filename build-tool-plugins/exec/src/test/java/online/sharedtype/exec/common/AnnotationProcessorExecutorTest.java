@@ -12,7 +12,9 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,7 +55,7 @@ final class AnnotationProcessorExecutorTest {
 
     @Test
     void execute() throws Exception {
-        executor.execute(projectBaseDir, outputDir, Collections.singleton(sourceDir), "UTF-8", Collections.singleton("-proc:only"));
+        executor.execute(projectBaseDir, outputDir, List.of(sourceDir, Paths.get("not-exist")), "UTF-8", Collections.singleton("-proc:only"));
         verify(processor).init(any());
         verify(processor, times(2)).process(any(), any());
         assertThat(Files.readString(outputDir.resolve("out.txt"))).isEqualTo("OK");

@@ -7,6 +7,8 @@ import online.sharedtype.processor.support.exception.SharedTypeException;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPluginExtension;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskAction;
 
 import javax.inject.Inject;
@@ -47,12 +49,14 @@ class SharedtypeGenTask extends DefaultTask {
         if (javaPluginExtension == null) {
             throw new UnsupportedOperationException("Could not find JavaPluginExtension, only Java projects are supported.");
         }
-        List<Path> sourceDirs = javaPluginExtension.getSourceSets().stream()
-            .flatMap(srcSet -> srcSet.getAllSource().getSrcDirs().stream())
-            .map(File::toPath)
-            .filter(path -> path.getFileName().toString().endsWith(".java"))
+        List<SourceSet> sourceSets = javaPluginExtension.getSourceSets().stream()
+            .filter(srcSet -> extension.getSourceSetNames().contains(srcSet.getName()))
             .collect(Collectors.toList());
-        List<File> classpathDependencies = javaPluginExtension.getSourceSets().stream()
+        List<Path> sourceDirs = sourceSets.stream()
+            .flatMap(srcSet -> srcSet.getAllJava().getSrcDirs().stream())
+            .map(File::toPath)
+            .collect(Collectors.toList());
+        List<File> classpathDependencies = sourceSets.stream()
             .flatMap(srcSet -> srcSet.getCompileClasspath().getFiles().stream())
             .collect(Collectors.toList());
 
