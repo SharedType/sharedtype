@@ -18,4 +18,7 @@ repositories {
 
 sharedtype {
     propertyFile = project.file("sharedtype-test.properties")
+    properties = [
+        "sharedtype.typescript.custom-code-path": project.file("custom-code.ts").absolutePath
+    ]
 }

@@ -1,6 +1,7 @@
 # User Guide
 Menu:
 * [Setup Maven](#Maven)
+* [Setup Gradle](#Gradle)
 * [A simple example](#A-simple-example)
 * [Configurations](#Configurations)
 
@@ -37,6 +38,18 @@ Add sharedtype dependency:
 `sharedtype-maven-plugin` requires Maven 3.2.5+.
 Annotation processing can also be setup and configured via `maven-compiler-plugin`, see [example](../it/pom.xml).
 The advantage of using `sharedtype-maven-plugin` is that no need to execute other annotation processors if there are multiple.
+
+### Gradle
+Add sharedtype plugin and annotation dependency:
+```groovy
+plugins {
+    id("online.sharedtype.sharedtype-gradle-plugin") version "${sharedtype.version}"
+}
+
+dependencies {
+    compileOnly "online.sharedtype:sharedtype:${sharedtype.version}"
+}
+```
 ## Usage
 
 ### A simple example
@@ -47,7 +60,9 @@ record User(String name, int age, String email) {}
 ```
 
 Execute:
-* maven: `./mvnw stype:gen` (Why `stype`? Because it's easy to type while explicitly enough to remember.)
+* maven: `./mvnw stype:gen`
+* gradle: `./gradlew stypeGen`
+(Why `stype`? Because it's easy to type while explicitly enough to remember.)
 
 By default, below code will be generated:
 ```typescript
@@ -63,6 +78,8 @@ export interface User {
 #### Global options
 By default, the file `sharedtype.properties` on current cmd path will be picked up.
 You can customize the path:
+
+Maven:
 ```xml
 <plugin>
     <configuration>
@@ -71,7 +88,16 @@ You can customize the path:
 </plugin>
 ```
 
+Gradle:
+```groovy
+sharedtype {
+    propertyFile = project.file("sharedtype.properties")
+}
+```
+
 You can also specify individual properties:
+
+Maven:
 ```xml
 <plugin>
     <configuration>
@@ -80,6 +106,15 @@ You can also specify individual properties:
         </properties>
     </configuration>
 </plugin>
+```
+
+Gradle:
+```groovy
+sharedtype {
+    properties = [
+        "sharedtype.typescript.custom-code-path": project.file("custom-code.ts").absolutePath
+    ]
+}
 ```
 
 See [Default Properties](../processor/src/main/resources/sharedtype-default.properties) for all property entries.
