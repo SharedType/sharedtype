@@ -50,6 +50,8 @@ dependencies {
     compileOnly "online.sharedtype:sharedtype:${sharedtype.version}"
 }
 ```
+
+`sharedtype-gradle-plugin` requires Gradle 7.6+. For old gradle versions, can setup annotation processing.
 ## Usage
 
 ### A simple example

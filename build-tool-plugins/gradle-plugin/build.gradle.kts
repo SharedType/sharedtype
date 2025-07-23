@@ -4,9 +4,6 @@ plugins {
 }
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
@@ -20,10 +17,10 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.sharedtype.ap)
-    implementation(libs.sharedtype.ap.exec)
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.assertj)
+    implementation("online.sharedtype:sharedtype-ap:${project.version}")
+    implementation("online.sharedtype:sharedtype-ap-exec:${project.version}")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+    testImplementation("org.assertj:assertj-core:3.25.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

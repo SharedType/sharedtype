@@ -25,8 +25,9 @@ mountTmpfs "$DIR/e2e/target" 64M
 mountTmpfs "$DIR/build-tool-plugins/exec/target" 32M
 mountTmpfs "$DIR/build-tool-plugins/maven-plugin/target" 32M
 mountTmpfs "$DIR/build-tool-plugins/maven-plugin/it/target" 16M
-mountTmpfs "$DIR/build-tool-plugins/gradle-plugin/.gradle" 16M
+mountTmpfs "$DIR/build-tool-plugins/gradle-plugin/.gradle" 32M
 mountTmpfs "$DIR/build-tool-plugins/gradle-plugin/build" 32M
+mountTmpfs "$DIR/build-tool-plugins/gradle-plugin/target" 32M
 mountTmpfs "$DIR/build-tool-plugins/gradle-plugin/it/.gradle" 16M
 mountTmpfs "$DIR/build-tool-plugins/gradle-plugin/it/build" 16M
 mountTmpfs "$MAVEN_REPO_DIR" 64M
