@@ -55,10 +55,13 @@ jobs:
         run: ./mvnw stype:gen -e -B
       - name: Build and Test Gradle plugin
         working-directory: build-tool-plugins/gradle-plugin
-        run: ./gradlew test publishToMavenLocal --stacktrace
-      - name: Test Gradle plugin
+        run: ./gradlew --no-daemon test publishToMavenLocal --stacktrace
+      - name: Download Gradle in Gradle Plugin IT
         working-directory: build-tool-plugins/gradle-plugin/it
-        run: ./gradlew stypeGen test --stacktrace
+        run: ./gradlew --no-daemon --version
+#      - name: Test Gradle plugin # Gradle 7 does not support JDK21
+#        working-directory: build-tool-plugins/gradle-plugin/it
+#        run: ./gradlew stypeGen test --stacktrace
       - name: Javadoc
         run: ./mvnw -P release javadoc:javadoc --ntp -B
       - name: Upload generated sources
