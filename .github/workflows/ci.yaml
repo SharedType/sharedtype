@@ -53,9 +53,9 @@ jobs:
       - name: Test Maven 3.2.5 compatibility
         working-directory: build-tool-plugins/maven-plugin/it
         run: ./mvnw stype:gen -e -B
-      - name: Build Gradle plugin
+      - name: Build and Test Gradle plugin
         working-directory: build-tool-plugins/gradle-plugin
-        run: ./gradlew publishToMavenLocal --stacktrace
+        run: ./gradlew test publishToMavenLocal --stacktrace
       - name: Test Gradle plugin
         working-directory: build-tool-plugins/gradle-plugin/it
         run: ./gradlew stypeGen test --stacktrace
