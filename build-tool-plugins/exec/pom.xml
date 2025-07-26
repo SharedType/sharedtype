@@ -5,12 +5,12 @@
     <parent>
         <groupId>online.sharedtype</groupId>
         <artifactId>sharedtype-parent</artifactId>
-        <version>0.14.0-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>sharedtype-ap-exec</artifactId>
-    <version>0.14.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>SharedType Annotation Processor Executor</name>
     <description>Call javac to execute annotation processing.</description>
 
