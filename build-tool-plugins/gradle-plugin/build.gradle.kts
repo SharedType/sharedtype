@@ -1,7 +1,7 @@
 plugins {
     `java-gradle-plugin`
     id("com.gradle.plugin-publish") version "1.2.1"
-    id("com.vanniktech.maven.publish") version "0.34.0"
+    id("com.vanniktech.maven.publish") version "0.34.0" //currently only used for local publish, plugin is published bto Gradle Plugin Portal
 }
 
 java {
