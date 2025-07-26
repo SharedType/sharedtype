@@ -31,6 +31,7 @@ final class ObjectRemoteClientCaller {
         objectMapper.registerModule(module);
     }
 
+    @SuppressWarnings("unchecked")
     <T> T call(T t, SharedType.TargetType targetCodeType) throws Exception {
         String simpleName = t.getClass().getSimpleName();
         String json = objectMapper.writeValueAsString(t);

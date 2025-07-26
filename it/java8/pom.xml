@@ -20,7 +20,12 @@
 
     <build>
         <plugins>
-
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-showversion</argLine> <!-- Override default setting from adding mockito agent -->
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

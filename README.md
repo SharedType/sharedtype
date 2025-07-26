@@ -18,22 +18,6 @@ export interface User {
     email: string;
 }
 ```
-Go:
-```golang
-type User struct {
-    Name string
-    Age int
-    Email string
-}
-```
-Rust:
-```rust
-pub struct User {
-    name: String,
-    age: i32,
-    email: String,
-}
-```
 
 ## Features
 * Java8+ compatible.
@@ -41,6 +25,7 @@ pub struct User {
 * Compile-time constant support.
 * Fast. (Execution takes milliseconds with `-proc:only`.)
 * Simple global + type level configurations.
+* Multiple target language options: Typescript, Go, Rust.
 
 ## Documentation
 * [User Guide](doc/Usage.md)

@@ -1,0 +1,3 @@
+#!/bin/sh
+# port is 5005, can be seen from --info
+./gradlew -Dorg.gradle.debug=true --no-daemon "$@"
