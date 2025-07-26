@@ -41,13 +41,19 @@ The advantage of using `sharedtype-maven-plugin` is that no need to execute othe
 
 ### Gradle
 Add sharedtype plugin and annotation dependency:
+```properties
+# gradle.properties
+sharedtypeVersion=<your-version>
+```
+
 ```groovy
+// build.gradle
 plugins {
-    id("online.sharedtype.sharedtype-gradle-plugin") version "${sharedtype.version}"
+    id "online.sharedtype.sharedtype-gradle-plugin" version "${sharedtypeVersion}"
 }
 
 dependencies {
-    compileOnly "online.sharedtype:sharedtype:${sharedtype.version}"
+    compileOnly "online.sharedtype:sharedtype:${sharedtypeVersion}"
 }
 ```
 
