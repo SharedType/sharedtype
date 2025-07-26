@@ -18,14 +18,6 @@
         <maven.compiler.testTarget>${java.version}</maven.compiler.testTarget>
     </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
     <profiles>
         <profile>
             <id>it-no-jpms</id>

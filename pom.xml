@@ -355,26 +355,5 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>mockito-agent</id>
-            <activation>
-                <jdk>[17,)</jdk>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <version>3.2.5</version>
-                            <configuration>
-                                <argLine>
-                                    -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
-                                </argLine>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
     </profiles>
 </project>
