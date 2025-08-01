@@ -14,14 +14,17 @@ Internal types also have javadoc for more information.
     * `java17` uses symlink to reuse types in `java8` then does more type checks, e.g. for Java `record`.
 * `client-test` contains target languages' tests respectively against generated code.
 * `e2e` contains e2e json 2-way serialization and deserialization tests against target languages' http servers.
-* `maven-plugin` contains maven plugin for SharedType annotation, and `maven-plugin/it` contains integration tests for maven plugin.
+* `build-tool-plugins` contains Maven and Gradle plugin for SharedType annotation.
+    * `exec` contains generic annotation processor executor.
+    * `maven-plugin` and `maven-plugin/it` contains Maven plugin and integration tests.
+    * `gradle-plugin` and `gradle-plugin/it` contains Gradle plugin and integration tests.
 
 Domain types are shared among processor and integration tests to reduce maven module count.
 
 ## Setup
-**Linux is assumed**. If you use Windows, you can use WSL with a remotely connected IDE. Windows 11 supports GUI app inside WSL.
+**Linux/macOS is assumed**. If you use Windows, you can use WSL with a remotely connected IDE. Windows 11 supports GUI app inside WSL.
 
-Setup Java env vars (>= Java17 for development), configure `JAVA17_HOME` to point to your Java installation:
+Setup Java env vars (>= Java21 for development), configure `JAVA21_HOME` to point to your Java installation:
 ```bash
 . setenv
 ```
@@ -31,7 +34,7 @@ Optionally mount tmpfs to save your disk by:
 ```
 Optionally setup `MVND_HOME` to use [maven daemon](https://github.com/apache/maven-mvnd) by `mvnd`
 
-Choose maven profiles in IDE accordingly as below.
+**Choose maven profiles in IDE accordingly as below.**
 
 ### Maven profiles
 * `dev` and `release` - control whether to include test maven modules during build.
@@ -39,6 +42,8 @@ Choose maven profiles in IDE accordingly as below.
 IDE may not able to properly resolve classes in `internal` folder for both modules.
 Enable this profile to enable `it` modules in IDE, and disable it when developing against `processor` module.
 * `it-no-jpms` and `it-jpms` - control whether to enable Java 9 Jigsaw module test in `it`. `it/java8` sources are reused to test on jdk9. Turn on `it-jpms` for IDE to correctly resolve `it/java8` classes.
+* `java8-jdk-tools-jar` - auto managed for adding `tools.jar` dependency for annotation processor.
+* `dev-build-tool` - controls build tool plugin modules.
 
 ## Development
 ### Run test
@@ -74,7 +79,7 @@ Style check:
 ```
 Debug annotation processor by run maven build:
 ```bash
-./mvne <your args goes here>
+./demvnw <your args goes here>
 ```
 Then attach your debugger on it. E.g. [IDEA run config](../.run/mvnDebug.run.xml).
 
@@ -87,7 +92,7 @@ Compile specific classes, **along with debug, this is useful for developing a sp
 ### Maven Plugin Development
 Debug Maven plugin IT:
 ```bash
-mvnd -pl maven-plugin clean install && ./mvne -pl maven-plugin/it sharedtype:gen
+mvnd -pl maven-plugin clean install && ./demvnw -pl maven-plugin/it sharedtype:gen
 ```
 
 ## Coding Style Guide / Keep it simple

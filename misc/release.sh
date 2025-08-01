@@ -33,3 +33,9 @@ sed -i -E "s/<sharedtype\.version>[0-9]+\.[0-9\.\[0-9]+\.[0-9]+<\/sharedtype\.ve
 NEW_VERSION="$(increment_version "$version" 1)-SNAPSHOT"
 ./mvnw versions:set -DgenerateBackupPoms=false -DnewVersion="$NEW_VERSION" --ntp -B
 printf '%s' "$NEW_VERSION" > NEW_VERSION.cache
+
+# gradle plugin
+cd build-tool-plugins/gradle-plugin || exit 1
+./gradlew publishPlugins -Pversion="$version" -Pgradle.publish.key="$GRADLE_PUBLISH_KEY" -Pgradle.publish.secret="$GRADLE_PUBLISH_SECRET" --no-daemon
+sed -i -E "s/^version=.*\$/version=$version/g" build-tool-plugins/gradle-plugin/gradle.properties
+sed -i -E "s/^projectVersion=.*\$/projectVersion=$version/g" build-tool-plugins/gradle-plugin/it/gradle.properties

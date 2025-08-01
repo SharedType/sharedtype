@@ -1,25 +1,25 @@
 #!/bin/bash
-version=$1
+javaVersion=$1
 
-if [ -z "$version" ];then
-  version="21"
-  echo "No version provided, use default jdk$version"
+if [ -z "$javaVersion" ];then
+  javaVersion="21"
+  echo "No javaVersion provided, use default jdk$javaVersion"
 fi
 
-if [[ "$version" == "17" ]];then
+if [[ "$javaVersion" == "17" ]];then
   export JAVA_HOME=$JAVA17_HOME
-elif [[ "$version" == "8" ]];then
+elif [[ "$javaVersion" == "8" ]];then
   export JAVA_HOME=$JAVA8_HOME
-elif [[ "$version" == "11" ]];then
+elif [[ "$javaVersion" == "11" ]];then
   export JAVA_HOME=$JAVA11_HOME
-elif [[ "$version" == "21" ]];then
+elif [[ "$javaVersion" == "21" ]];then
   export JAVA_HOME=$JAVA21_HOME
 else
-  echo "Unsupported version $version"
+  echo "Unsupported javaVersion $javaVersion"
   return
 fi
 
-export MAVEN_OPTS="-Xmx512m -Xms512m"
+export MAVEN_OPTS="-Xmx512m -Xms128m"
 export PATH=$JAVA_HOME/bin:$MVND_HOME/bin:$PATH
 
 if [ -z "$MVND_HOME" ];then

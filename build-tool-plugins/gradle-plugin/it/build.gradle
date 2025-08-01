@@ -1,0 +1,24 @@
+plugins {
+    id "java"
+    id "online.sharedtype.sharedtype-gradle-plugin" version "${projectVersion}"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+dependencies {
+    compileOnly "online.sharedtype:sharedtype:${projectVersion}"
+}
+
+repositories {
+    mavenLocal()
+}
+
+sharedtype {
+    propertyFile = project.file("sharedtype-test.properties")
+    properties = [
+        "sharedtype.typescript.custom-code-path": project.file("custom-code.ts").absolutePath
+    ]
+}
