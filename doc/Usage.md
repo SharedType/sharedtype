@@ -11,7 +11,7 @@ Menu:
 Add Maven properties:
 ```xml
 <properties>
-    <sharedtype.version>0.13.0</sharedtype.version>
+    <sharedtype.version>0.13.1</sharedtype.version>
 </properties>
 ```
 
@@ -70,6 +70,7 @@ record User(String name, int age, String email) {}
 Execute:
 * maven: `./mvnw stype:gen`
 * gradle: `./gradlew stypeGen`
+
 (Why `stype`? Because it's easy to type while explicitly enough to remember.)
 
 By default, below code will be generated:
