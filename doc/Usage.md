@@ -70,6 +70,7 @@ record User(String name, int age, String email) {}
 Execute:
 * maven: `./mvnw stype:gen`
 * gradle: `./gradlew stypeGen`
+
 (Why `stype`? Because it's easy to type while explicitly enough to remember.)
 
 By default, below code will be generated:
