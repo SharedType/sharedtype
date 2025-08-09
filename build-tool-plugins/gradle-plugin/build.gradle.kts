@@ -1,7 +1,7 @@
 plugins {
     `java-gradle-plugin`
     id("com.gradle.plugin-publish") version "1.2.1"
-    id("com.vanniktech.maven.publish") version "0.34.0" //currently only used for local publish, plugin is published bto Gradle Plugin Portal
+    //id("com.vanniktech.maven.publish") version "0.34.0" //currently only used for local publish, plugin is published bto Gradle Plugin Portal
 }
 
 java {
@@ -41,30 +41,30 @@ gradlePlugin {
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
-
-mavenPublishing {
-    pom {
-        name.set("SharedType Gradle Plugin")
-        description.set("SharedType Gradle Plugin, SharedType is the tool to generate types from Java to target languages.")
-        inceptionYear.set("2024")
-        url.set("https://github.com/SharedType/sharedtype")
-        licenses {
-            license {
-                name.set("CC BY 4.0")
-                url.set("https://creativecommons.org/licenses/by/4.0/deed.en")
-                distribution.set("https://creativecommons.org/licenses/by/4.0/deed.en")
-            }
-        }
-        developers {
-            developer {
-                id.set("cuzfrog")
-                name.set("Cause Chung")
-                url.set("https://github.com/cuzfrog")
-            }
-        }
-        scm {
-            url.set("https://github.com/SharedType/sharedtype")
-            connection.set("scm:git@github.com:SharedType/sharedtype.git")
-        }
-    }
-}
+//
+//mavenPublishing {
+//    pom {
+//        name.set("SharedType Gradle Plugin")
+//        description.set("SharedType Gradle Plugin, SharedType is the tool to generate types from Java to target languages.")
+//        inceptionYear.set("2024")
+//        url.set("https://github.com/SharedType/sharedtype")
+//        licenses {
+//            license {
+//                name.set("CC BY 4.0")
+//                url.set("https://creativecommons.org/licenses/by/4.0/deed.en")
+//                distribution.set("https://creativecommons.org/licenses/by/4.0/deed.en")
+//            }
+//        }
+//        developers {
+//            developer {
+//                id.set("cuzfrog")
+//                name.set("Cause Chung")
+//                url.set("https://github.com/cuzfrog")
+//            }
+//        }
+//        scm {
+//            url.set("https://github.com/SharedType/sharedtype")
+//            connection.set("scm:git@github.com:SharedType/sharedtype.git")
+//        }
+//    }
+//}
