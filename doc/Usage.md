@@ -11,7 +11,7 @@ Menu:
 Add Maven properties:
 ```xml
 <properties>
-    <sharedtype.version>0.13.1</sharedtype.version>
+    <sharedtype.version>0.13.2</sharedtype.version>
 </properties>
 ```
 
