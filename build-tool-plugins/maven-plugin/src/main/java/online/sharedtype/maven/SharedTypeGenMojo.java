@@ -5,6 +5,7 @@ import online.sharedtype.exec.common.AnnotationProcessorExecutor;
 import online.sharedtype.exec.common.SharedTypeApCompilerOptions;
 import online.sharedtype.processor.SharedTypeAnnotationProcessor;
 import online.sharedtype.processor.support.annotation.Nullable;
+import online.sharedtype.processor.support.exception.SharedTypeException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -64,13 +65,16 @@ public final class SharedTypeGenMojo extends AbstractMojo {
             new MavenDependencyResolver(repositorySystem, session, project)
         );
         try {
-            apExecutor.execute(
+            boolean success = apExecutor.execute(
                 project.getBasedir().toPath(),
                 Paths.get(outputDirectory),
                 project.getCompileSourceRoots().stream().map(Paths::get).collect(Collectors.toList()),
                 project.getProperties().getProperty(PROP_PROJECT_SOURCE_ENCODING),
                 new SharedTypeApCompilerOptions(propertyFile).toList()
             );
+            if (!success) {
+                throw new SharedTypeException("Some error during annotation processing.");
+            }
         } catch (Exception e) {
             throw new MojoExecutionException(e);
         }

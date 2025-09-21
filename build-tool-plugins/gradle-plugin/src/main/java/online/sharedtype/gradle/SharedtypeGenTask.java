@@ -36,14 +36,18 @@ class SharedtypeGenTask extends DefaultTask {
 
     @TaskAction
     void action() {
+        boolean success;
         try {
-            execute();
+            success = execute();
         } catch (Exception e) {
             throw new SharedTypeException(String.format("Failed to execute task '%s'", TASK_NAME), e);
         }
+        if (!success) {
+            throw new SharedTypeException(String.format("Failed to execute task '%s'", TASK_NAME));
+        }
     }
 
-    private void execute() throws Exception {
+    private boolean execute() throws Exception {
         JavaPluginExtension javaPluginExtension = project.getExtensions().findByType(JavaPluginExtension.class);
         if (javaPluginExtension == null) {
             throw new UnsupportedOperationException("Could not find JavaPluginExtension, only Java projects are supported.");
@@ -67,7 +71,7 @@ class SharedtypeGenTask extends DefaultTask {
             () -> classpathDependencies
         );
 
-        executor.execute(
+        return executor.execute(
             project.getProjectDir().toPath(),
             resolveOutputDirectory().toPath(),
             sourceDirs,
