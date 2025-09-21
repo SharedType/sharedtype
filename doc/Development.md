@@ -111,4 +111,4 @@ To Test Javadoc locally:
 ```
 Then open `annotation/target/reports/apidocs/index.html`.
 
-To test deployment, see [release](../misc/release.sh).
+To test deployment, see scripts: [release](../misc/release.sh), [setversion](../misc/setversion.sh).

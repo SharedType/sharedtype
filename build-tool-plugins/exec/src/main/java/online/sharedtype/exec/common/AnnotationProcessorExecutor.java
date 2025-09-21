@@ -33,7 +33,8 @@ public final class AnnotationProcessorExecutor {
         this.dependencyResolver = dependencyResolver;
     }
 
-    public void execute(Path projectBaseDir,
+    /** @return true if successful; false otherwise.  */
+    public boolean execute(Path projectBaseDir,
                         Path outputDir,
                         Iterable<Path> compileSourceRoots,
                         String sourceEncoding,
@@ -52,7 +53,7 @@ public final class AnnotationProcessorExecutor {
 
             JavaCompiler.CompilationTask task = compiler.getTask(logger, fileManager, diagnosticListener, compilerOptions, null, sources);
             task.setProcessors(Collections.singleton(processor));
-            task.call();
+            return task.call();
         }
     }
 
